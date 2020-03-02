@@ -1,0 +1,51 @@
+# Secrets Manager (for holding sensitive data) - Options are: Vault and AWS SSM
+secrets_manager:
+  value: vault
+
+# Image Repository - Options: ecr, docker, quay, gcr
+image_repository:
+  value: ecr
+
+
+# Options are: AWS and GCP
+cloud_platform:
+  # name: gcp:
+  # enabled: no
+  # project_id: zinbabel
+  # region: us-east-1
+  # credentials: some-gcp-role
+  name: AWS
+  region: us-east-1
+
+# Options are: Travis, Gitlab, Jenkins
+ci_platform:
+  name: travis
+  # name: gitlab:
+  # name: jenkins:
+
+
+# Options are: prod, staging, qa, dev
+environment:
+  default: dev
+
+# Specify Terraform version. Options: Terraform 0.11.14 or 0.12.21
+terraform:
+  version: "0.11.14"
+
+travis_cli:
+  version: "0.1.0"
+
+# Specify Kubernetes version: Options: Kubernetes 1.11, 1.12, 1.13.7, and 1.14
+kubectl:
+  version: "1.13.7"
+
+# Specify Helm version. Options: 2.16.1 or 3.1.1
+helm:
+  version: "3.1.1"
+  
+
+  
+
+
+
+    
