@@ -1,0 +1,6 @@
+dependencies:
+- name: mariadb
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 7.3.12
+digest: sha256:3f28d5788a5de6ea45ab46583381147505fea1b5be41d58897e4b8b17184e291
+generated: "2020-03-03T17:31:28.657619-05:00"
