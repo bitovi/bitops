@@ -1,0 +1,14 @@
+---
+  - name: update!
+    yum:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: enable epel!
+    template:
+      src: epel.repo.j2
+      dest: /etc/yum.repos.d/epel.repo
+      owner: root
+      group: root
+      mode: 0644

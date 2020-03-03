@@ -1,0 +1,41 @@
+---
+
+  - name: install prereqs.
+    yum:
+      name: '{{ item }}'
+      state: present
+    with_items:
+      - screen
+      - glibc.i686
+
+  - name: make squad directory
+    file:
+      state: directory
+      path: /opt/SquadServer/server1/
+      owner: ec2-user
+
+  - name: copy over steam files.
+    copy:
+      src: steam
+      dest: /opt/SquadServer
+      mode: 0755
+      owner: ec2-user
+      
+  - name: install squad server.
+    command: '/opt/SquadServer/steam/steamcmd.sh +login anonymous +force_install_dir ../server1 +app_update 403240 validate +quit'
+    tags:
+      - update
+
+  - name: copy over admins and moderators.
+    template:
+      src: Admins.cfg.j2
+      dest: /opt/SquadServer/server1/Squad/ServerConfig/Admins.cfg
+      mode: 0755
+      owner: ec2-user
+
+  - name: template server config.
+    template:
+      src: Server.cfg.j2
+      dest: /opt/SquadServer/server1/Squad/ServerConfig/Server.cfg
+      mode: 0755
+      owner: ec2-user 
