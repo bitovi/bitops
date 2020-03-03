@@ -3,6 +3,18 @@ provider "aws" {
   profile = "${var.profile}"
 }
 
+terraform {
+   backend "s3" {
+     bucket         = "carnigals-terraform"
+     key            = "aws/bitops/terraform.workspace/terraform.tfstate"
+     acl            = "bucket-owner-full-control"
+     region         = "us-east-1"
+     encrypt        = true
+     profile        = "default"
+     dynamodb_table = "cg-terraform"
+   }
+ }
+
 # VPC - Production & Staging
 module "vpc" {
   source              = "./network"
