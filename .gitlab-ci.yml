@@ -11,5 +11,7 @@ build:
     - docker-compose up -d --build && sleep 5
     - docker-compose exec -T bitops /bin/bash -c "cd ./terraform && /usr/local/bin/terraform init && /usr/local/bin/terraform plan"
     - docker-compose exec -T bitops /bin/bash -c "./scripts/helm/helm_deploy.sh"
+    - docker-compose exec -T bitops /bin/bash -c "ansible-playbook ansible/upsquad.yml"
+    - docker-compose exec -T bitops /bin/bash -c "ansible-playbook ansible/gosquad.yml"
     - docker-compose down
 

@@ -56,9 +56,7 @@ function install_helm() {
 
 
 function install_ansible() {
-    apt-get install -y software-properties-common
-    apt-add-repository --yes --update ppa:ansible/ansible
-    apt-get install -y ansible   
+    pip3 install --user ansible  
 }
 
 
