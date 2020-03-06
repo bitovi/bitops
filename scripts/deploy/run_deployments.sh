@@ -63,7 +63,7 @@ function terraform_plan() {
         return 1
     else
        #launch terraform to create EKS cluster
-       cd /opt/deploy/terraform/$TERRAFORM_DIRECTORY
+       cd $TERRAFORM_DIRECTORY
        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
     fi
 }
@@ -75,7 +75,7 @@ function terraform_apply() {
         return 1
     else
        #launch terraform to create EKS cluster
-       cd /opt/deploy/terraform/$TERRAFORM_DIRECTORY
+       cd $TERRAFORM_DIRECTORY
        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
        /usr/local/bin/terraform apply -auto-approve
     fi  
@@ -88,7 +88,7 @@ function terraform_destroy() {
         return 1
     else
        #launch terraform to create EKS cluster
-       cd /opt/deploy/terraform/$TERRAFORM_DIRECTORY
+       cd $TERRAFORM_DIRECTORY
        /usr/local/bin/terraform init
        /usr/local/bin/terraform destroy -auto-approve
     fi     
@@ -151,7 +151,7 @@ function install_loki() {
 function run_ansible_playbooks() {
     if [ -z "$ANSIBLE_PLAYBOOKS" ]
     then
-        echo "Ansible Directory is empty"
+        echo "Ansible Playbook is empty"
         return 1
     else
         /root/.local/bin/ansible-playbook $ANSIBLE_PLAYBOOKS
@@ -249,6 +249,14 @@ fi
 if [ -z "$HELM_CHARTS" ]
 then 
     echo "Helm directory not set."
+    return 0
+else
+    helm_deploy_custom_charts
+fi 
+
+if [ -z "$ANSIBLE_PLAYBOOKS" ]
+then 
+    echo "Ansible Playbooks directory not set."
     return 0
 else
     helm_deploy_custom_charts
