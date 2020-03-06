@@ -249,7 +249,6 @@ fi
 if [ -z "$HELM_CHARTS" ]
 then 
     echo "Helm directory not set."
-    return 0
 else
     helm_deploy_custom_charts
 fi 
@@ -257,7 +256,6 @@ fi
 if [ -z "$ANSIBLE_PLAYBOOKS" ]
 then 
     echo "Ansible Playbooks directory not set."
-    return 0
 else
     helm_deploy_custom_charts
 fi 
