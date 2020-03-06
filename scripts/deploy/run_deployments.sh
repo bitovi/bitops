@@ -36,23 +36,17 @@ function get_context() {
     if [ -z "KUBECONFIG" ]
     then 
        #launch terraform to create EKS cluster
-       cd /opt/deploy/terraform/$CURRENT_ENVIRONMENT
+       cd /opt/deploy/terraform/
        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
-       /usr/local/bin/terraform apply -auto-approve
-       mkdir -p ~/.kube
-       /root/.local/bin/aws sts get-caller-identity
-       /root/.local/bin/aws eks update-kubeconfig --name bitops 
+       #/usr/local/bin/terraform apply -auto-approve
+       #mkdir -p ~/.kube
+       #/root/.local/bin/aws sts get-caller-identity
+       #/root/.local/bin/aws eks update-kubeconfig --name bitops 
     else
        #create config file
-       echo $KUBECONFIG | shyaml keys
-       if [[ $? -eq 0 ]];
-       then    
-           mkdir -p ~/.kube
-           echo $KUBECONFIG >> ~/.kube/config
-           kubectl config get-contexts 
-        else
-            echo "unable to read config file or malformed yaml."
-        fi
+       mkdir -p ~/.kube
+       echo $KUBECONFIG >> ~/.kube/config
+       kubectl config get-contexts 
     fi
 }
 
@@ -95,37 +89,48 @@ function terraform_destroy() {
 }
 
 function helm_deploy_default_charts() {
+    get_context
     install_grafana
     install_prometheus
     install_loki
 }
 
 function helm_deploy_custom_charts() {
+    echo "Installing charts in $HELM_CHARTS"
+
+    # Get Kubernetes context
+    get_context
+
     path=$HELM_CHARTS
     cd $path
     if [ -e requirements.yaml ]; then
-    for subDir in $(awk -F'repository: file://' '{print $2}' requirements.yaml)
-    do
-        echo "Updating dependencies in "$(pwd)"/"$subDir" ..."
-        rm -rf "$(pwd)"/"$subDir"/charts
-        helm dep up "$(pwd)"/"$subDir"
+        for subDir in $(awk -F'repository: file://' '{print $2}' requirements.yaml)
+        do
+            echo "Updating dependencies in "$(pwd)"/"$subDir" ..."
+            rm -rf "$(pwd)"/"$subDir"/charts
+            helm dep up "$(pwd)"/"$subDir"
+            echo
+        done
+        echo "Updating dependencies in "$(pwd)" ..."
+        rm -rf "$(pwd)"/charts
+        helm dep up "$(pwd)"
         echo
-    done
-    echo "Updating dependencies in "$(pwd)" ..."
-    rm -rf "$(pwd)"/charts
-    helm dep up "$(pwd)"
-    echo
+    else
+        echo "Can't find requirement.yaml in $HELM_CHARTS/requirement.yaml."
+        return 1
     fi
 
 }
 
 function install_grafana() {
+    get_context
     helm repo add loki https://grafana.github.io/loki/charts
     helm repo update
     helm install --name grafana stable/grafana --set=ingress.enabled=True,ingress.hosts={grafana.$DOMAIN_NAME} --namespace $NAMESPACE --set rbac.create=true
 }
 
 function install_prometheus() {
+    get_context
     mkdir -p /opt/prometheus
     cd /opt/prometheus
     git clone https://github.com/helm/charts.git
@@ -134,6 +139,7 @@ function install_prometheus() {
 }
 
 function install_loki() {
+    get_context
     if [ -z "$NAMESPACE" ]
     then
         echo "No namespace set. Default will be used."
@@ -250,6 +256,7 @@ if [ -z "$HELM_CHARTS" ]
 then 
     echo "Helm directory not set."
 else
+    echo "Installing Helm Charts"
     helm_deploy_custom_charts
 fi 
 
@@ -257,5 +264,6 @@ if [ -z "$ANSIBLE_PLAYBOOKS" ]
 then 
     echo "Ansible Playbooks directory not set."
 else
-    helm_deploy_custom_charts
+    echo "Running Ansible Playbooks"
+    run_ansible_playbooks
 fi 
