@@ -9,9 +9,6 @@ build:
     - apk add --no-cache py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
     - pip install docker-compose
     - docker-compose up -d --build && sleep 5
-    - docker-compose exec -T bitops /bin/bash -c "cd ./terraform && /usr/local/bin/terraform init && /usr/local/bin/terraform plan"
-    - docker-compose exec -T bitops /bin/bash -c "./scripts/helm/helm_deploy.sh"
-    - docker-compose exec -T bitops /bin/bash -c "ansible-playbook ./ansible/squad/upsquad.yml"
-    - docker-compose exec -T bitops /bin/bash -c "ansible-playbook ./ansible/squad/gosquad.yml"
+    - docker-compose exec -T bitops /bin/bash -cx "scripts/deploy/run_deployments.sh --terraform-plan true --terraform-directory /opt/deploy/terraform --helm-chart /opt/deploy/qa --environment qa"
     - docker-compose down
 
