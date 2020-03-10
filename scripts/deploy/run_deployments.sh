@@ -24,9 +24,6 @@ function usage() {
     echo -e "--terraform-destroy \t Destroy terraform stack"
     echo -e "--helm-charts \t The folder containing the helm charts"
     echo -e "--ansible-directory \t The directory containing your ansible playbooks"
-    echo -e "--install-prometheus \t Install Prometheus on the cluster"
-    echo -e "--install-grafana \t Install Grafana on the cluster"
-    echo -e "--install-loki \t Install Loki on the cluster"
     echo -e "--domain-name \t Set the domain name. Required for Prometheus and Grafana."
     echo -e "--namespace \t Set the namespace to be used by Prometheus and Grafana."
     echo -e "--install-default-charts \t Install Prometheus, Grafana and Loki on the cluster"
@@ -45,7 +42,11 @@ function get_context() {
     else
        #create config file
        mkdir -p ~/.kube
-       echo $KUBECONFIG >> ~/.kube/config
+cat << 'EOF' >> ~/.kube/config
+# kubeconfig
+$KUBECONFIG2
+EOF
+
        kubectl config get-contexts 
     fi
 }
@@ -57,7 +58,7 @@ function terraform_plan() {
         return 1
     else
        #launch terraform to create EKS cluster
-       cd $TERRAFORM_DIRECTORY
+       cd $TERRAFORM_DIRECTORY/$CURRENT_ENVIRONMENT
        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
     fi
 }
@@ -69,7 +70,7 @@ function terraform_apply() {
         return 1
     else
        #launch terraform to create EKS cluster
-       cd $TERRAFORM_DIRECTORY
+       cd $TERRAFORM_DIRECTORY/$CURRENT_ENVIRONMENT
        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
        /usr/local/bin/terraform apply -auto-approve
     fi  
@@ -82,7 +83,7 @@ function terraform_destroy() {
         return 1
     else
        #launch terraform to create EKS cluster
-       cd $TERRAFORM_DIRECTORY
+       cd $TERRAFORM_DIRECTORY/$CURRENT_ENVIRONMENT
        /usr/local/bin/terraform init
        /usr/local/bin/terraform destroy -auto-approve
     fi     
@@ -238,7 +239,7 @@ while true; do
 done
  
 echo "Running deployments"
-echo "${PLAN} ${DOMAIN_NAME} ${TERRAFORM_DIRECTORY} ${HELM_CHARTS}"
+echo "${PLAN} ${DOMAIN_NAME} ${TERRAFORM_DIRECTORY} ${HELM_CHARTS} ${CURRENT_ENVIRONMENT}"
 
 if [[ ${PLAN} == "true" ]];then
     terraform_plan
