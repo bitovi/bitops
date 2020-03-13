@@ -1,9 +1,0 @@
-dependencies:
-- name: cra-frontend
-  repository: file://../frontend/frontend-chart
-  version: 0.1.0
-- name: cra-backend
-  repository: file://../server/server-chart
-  version: 0.1.0
-digest: sha256:c16bf7120fb93536a4e490766ed4c9b5317fdb31d7eebf08e3e65a0603628057
-generated: 2018-12-01T20:12:43.823413108+02:00
