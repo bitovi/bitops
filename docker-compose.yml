@@ -1,10 +1,14 @@
 version: '3.7'
 services:
   bitops:
-    build: .
-    env_file: 
-      - bitops.env
+    #build: .
+    image: 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops-runner:latest
     volumes:
-      - .:/opt/deploy
+      - .:/opt/our_deployment
     entrypoint: /opt/deploy/entrypoint.sh
+    environment:
+        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+        - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+        - KUBECONFIG_BASE64=${KUBECONFIG_BASE64}
 

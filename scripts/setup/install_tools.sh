@@ -5,13 +5,13 @@ python3 --version
 find / -name pip3
 pip3 install --upgrade --user 'awscli==1.17.7'
 
-export TERRAFORM_VERSION=$(cat config.yml | shyaml get-value terraform.version)
-export HELM_VERSION=$(cat config.yml | shyaml get-value helm.version)
-export KUBECTL_VERSION=$(cat config.yml | shyaml get-value kubectl.version)
-export CLOUD_PLATFORM=$(cat config.yml | shyaml get-value cloud_platform.name)
-export CI_PLATFORM=$(cat config.yml | shyaml get-value ci_platform.name)
-export AWS_REGION=$(cat config.yml | shyaml get-value cloud_platform.region)
-export CURRENT_ENVIRONMENT=$(cat config.yml | shyaml get-value environment.default)
+export TERRAFORM_VERSION=$(cat bitops.config.default.yaml | shyaml get-value terraform.version)
+export HELM_VERSION=$(cat bitops.config.default.yaml | shyaml get-value helm.version)
+export KUBECTL_VERSION=$(cat bitops.config.default.yaml | shyaml get-value kubectl.version)
+export CLOUD_PLATFORM=$(cat bitops.config.default.yaml | shyaml get-value cloud_platform.name)
+export CI_PLATFORM=$(cat bitops.config.default.yaml | shyaml get-value ci_platform.name)
+export AWS_REGION=$(cat bitops.config.default.yaml | shyaml get-value cloud_platform.region)
+export CURRENT_ENVIRONMENT=$(cat bitops.config.default.yaml | shyaml get-value environment.default)
 
 
 mkdir -p /opt/download 

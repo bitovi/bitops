@@ -4,8 +4,17 @@ set -e
 
 export PATH=/root/.local/bin:$PATH
 export TERRAFORM_APPLIED=0
+export DEPLOYMENT_DIR=""
+
+if [ -e /opt/our_deployment ];
+then
+    DEPLOYMENT_DIR=/opt/our_deployment
+else
+    DEPLOYMENT_DIR=/opt/deploy/
+fi
+
 # Read the options from cli input
-OPTIONS=`getopt -o h --longoptions help,kubeconfig:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,install-default-charts:,external-helm-charts: -n $0 -- "$@"`
+OPTIONS=`getopt -o h --longoptions help,kubeconfig_base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory: -n $0 -- "$@"`
 eval set -- "${OPTIONS}"
 
 
@@ -17,22 +26,26 @@ function usage() {
     echo " "
     echo "options:"
     echo -e "--help \t Show options for this script"
-    echo -e "--kubeconfig \t Pass in the environment variable containing the kubernetes config."
+    echo -e "--kubeconfig_base64 \t Pass in the environment variable containing the base64 contents of your kube config."
     echo -e "--terraform-directory \t The directory for the terraform deployment"
+    echo -e "--helm-charts-directory \t The directory containing your helm charts. Use only if charts are in alternate location."
     echo -e "--cluster-name \t The name of the EKS Cluster. Needed when EKS is created with Terraform. Should match the name in Terraform."
     echo -e "--environment \t  The environment to use: qa or prod"
-    echo -e "--terraform-plan \t  Run Terraform plan"
-    echo -e "--terraform-apply \t Deploy terraform"
-    echo -e "--terraform-destroy \t Destroy terraform stack"
-    echo -e "--helm-charts \t The folder containing the helm charts"
+    echo -e "--terraform-plan \t  Run Terraform plan: true or false"
+    echo -e "--terraform-apply \t Deploy terraform: true or false"
+    echo -e "--terraform-destroy \t Destroy terraform stack: true or false"
+    echo -e "--helm-charts \t Deploy helm charts: true or false"
     echo -e "--external-helm-charts \t specify external helm charts separated by a space. The arguments for each repo should be separated a comma.\n 
                Use the form: <NAME>,<REPO_KEY>,<REPO_URL>. To add additional args, please use the bitops-config.yaml file."
-    echo -e "--ansible-directory \t The directory containing your ansible playbooks"
+    echo -e "--ansible-playbooks \t Deploy Ansible playbooks: true or false"
+    echo -e "--ansible-directory \t Directory containing your Ansible playbooks."
 }
 
 function create_aws_profile() {
 #!/usr/bin/env bash
-
+echo "#!/usr/bin/env bash" > ~/.bashrc
+echo "" >> ~/.bashrc
+echo "PATH=/root/.local/bin:$PATH" >> ~/.bashrc
 mkdir -p /root/.aws /root/.kube
 cat <<EOF > /root/.aws/credentials
 [default]
@@ -126,8 +139,9 @@ function get_context() {
 function terraform_plan() {
     if [ -z "$TERRAFORM_DIRECTORY" ]
     then 
-        echo "Terraform directory not set."
-        return 1
+        echo "Terraform directory not set. Using default directory."
+        cd $CURRENT_ENVIRONMENT/$DEPLOYMENT_DIR
+        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
     else
        #Run Terraform Plan
        cd $CURRENT_ENVIRONMENT/$TERRAFORM_DIRECTORY
@@ -138,8 +152,9 @@ function terraform_plan() {
 function terraform_apply() {
     if [ -z "$TERRAFORM_DIRECTORY" ]
     then 
-        echo "Terraform directory not set."
-        return 1
+        echo "Terraform directory not set. Using default directory."
+        cd $CURRENT_ENVIRONMENT/$DEPLOYMENT_DIR
+        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
     else
        #launch terraform to create EKS cluster
        cd $CURRENT_ENVIRONMENT/$TERRAFORM_DIRECTORY
@@ -151,8 +166,9 @@ function terraform_apply() {
 function terraform_destroy() {
     if [ -z "$TERRAFORM_DIRECTORY" ]
     then 
-        echo "Terraform directory not set."
-        return 1
+        echo "Terraform directory not set. Using default directory."
+        cd $CURRENT_ENVIRONMENT/$DEPLOYMENT_DIR
+        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
     else
        #Destroying EKS cluster
        cd $CURRENT_ENVIRONMENT/$TERRAFORM_DIRECTORY
@@ -181,29 +197,28 @@ function helm_deploy_external_charts() {
 }
 
 function helm_deploy_charts() {
-    echo "Installing charts in $CURRENT_ENVIRONMENT/$HELM_CHARTS"
+    echo "Installing helm charts"
+    path=""
 
-    # Get Kubernetes context
-
-    path=$HELM_CHARTS
-    cd $path
-    if [ -e requirements.yaml ]; then
-        for subDir in $(awk -F'repository: file://' '{print $2}' requirements.yaml)
-        do
-            echo "Updating dependencies in "$(pwd)"/"$subDir" ..."
-            rm -rf "$(pwd)"/"$subDir"/charts
-            helm dep up "$(pwd)"/"$subDir"
-            echo
-        done
-        echo "Updating dependencies in "$(pwd)" ..."
-        rm -rf "$(pwd)"/charts
-        helm dep up "$(pwd)"
-        helm list --all
+    if [ -z "$HELM_CHARTS_DIRECTORY" ]
+    then 
+        echo "Helm directory not set. Using default directory."
+        path=$DEPLOYMENT_DIR/$CURRENT_ENVIRONMENT/
     else
-        echo "Can't find requirement.yaml in $HELM_CHARTS/requirement.yaml."
+        echo "Using provided Helm directory: $HELM_CHARTS_DIRECTORY"
+        path=$HELM_CHARTS_DIRECTORY/$CURRENT_ENVIRONMENT/
+    fi
+    
+    cd $path/helm
+    chart_name=$(grep name Chart.yaml | head -1 | awk -F\: {'print $2'} | sed 's/^ //')
+    if [ -e requirements.yaml ]; then
+        helm dependency update
+        cd ../
+        helm install $chart_name ./helm/
+    else
+        echo "Can't find requirement.yaml"
         return 1
     fi
-
 }
 
 function install_grafana() {
@@ -213,13 +228,17 @@ function install_grafana() {
 }
 
 function run_ansible_playbooks() {
-    if [ -z "$ANSIBLE_PLAYBOOKS" ]
-    then
-        echo "Ansible Playbook is empty"
-        return 1
+    path=""
+
+    if [ -z "$ANSIBLE_DIRECTORY" ]
+    then 
+        echo "Helm directory not set. Using default directory."
+        path=$DEPLOYMENT_DIR/$CURRENT_ENVIRONMENT/ansible
     else
-        /root/.local/bin/ansible-playbook $ANSIBLE_PLAYBOOKS
+        echo "Using provided Ansible directory: $ANSIBLE_DIRECTORY"
+        path=$CURRENT_ENVIRONMENT/$ANSIBLE_DIRECTORY/
     fi
+    /root/.local/bin/ansible-playbook $path
 }
 
 
@@ -230,7 +249,7 @@ while true; do
             usage
             exit 1
             ;;
-        --kubeconfig)
+        --kubeconfig_base64)
             KUBECONFIG_BASE64="$2";
             shift 2
             ;;
@@ -262,12 +281,20 @@ while true; do
             HELM_CHARTS="$2";
             shift 2
             ;;
+        --helm-charts-directory)
+            HELM_CHARTS_DIRECTORY="$2";
+            shift 2
+            ;;
         --external-helm-charts)
             EXTERNAL_HELM_CHARTS="$2";
             shift 2
             ;;          
-        --ansible-directory)
+        --ansible-playbooks)
             ANSIBLE_PLAYBOOKS="$2";
+            shift 2
+            ;;
+        --ansible-directory)
+            ANSIBLE_DIRECTORY="$2";
             shift 2
             ;;
         --install-default-charts)
@@ -309,10 +336,7 @@ if [[ ${DESTROY} == "true" ]];then
     terraform_destroy
 fi
 
-if [ -z "$HELM_CHARTS" ]
-then 
-    echo "Helm directory not set."
-else
+if [[ ${HELM_CHARTS} == "true" ]];then
     echo "Installing Helm Charts"
     helm_deploy_charts
 fi 
@@ -325,10 +349,7 @@ else
     helm_deploy_external_charts
 fi
 
-if [ -z "$ANSIBLE_PLAYBOOKS" ]
-then 
-    echo "Ansible Playbooks directory not set."
-else
+if [[ ${ANSIBLE_PLAYBOOKS} == "true" ]];then
     echo "Running Ansible Playbooks"
     run_ansible_playbooks
 fi 

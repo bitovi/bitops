@@ -1,7 +1,0 @@
----
-  - hosts: tag_Name_SquadHost
-    sudo: yes
-    roles:
-      - update
-      - ansible-netdata
-      - buildsquad

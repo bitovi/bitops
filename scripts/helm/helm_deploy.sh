@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
-#Setup kubernetes config and context
+export AWS_ACCESS_KEY_ID=$1
+export AWS_SECRET_ACCESS_KEY=$2
+export PATH=/root/.local/bin:$PATH
+
+ls /opt/deploy/qa
+
 mkdir -p ~/.kube
-#aws eks --region us-east-2 update-kubeconfig --name BitOps --profile default
+/root/.local/bin/aws sts get-caller-identity
+/root/.local/bin/aws eks update-kubeconfig --name BitOps 
+cd scripts/helm/
 
-export PROJECT_ROOT="../.."
-export CURRENT_ENVIRONMENT=$(cat ../../config.yml | shyaml get-value environment.default)
+export PROJECT_ROOT="/opt/deploy"
+export CURRENT_ENVIRONMENT=$(cat /opt/deploy/config.yml | shyaml get-value environment.default)
 
 if [ -z "$CURRENT_ENVIRONMENT" ]; then
     echo "Deploying all environments"
@@ -23,7 +30,7 @@ if [ -z "$CURRENT_ENVIRONMENT" ]; then
 
             # TODO: Add helm update fuctionality
 
-            helm install -n $env $chart --generate-name
+            helm install $chart --generate-name
             ls $chart
             echo "deployed $chart"
           else
@@ -32,16 +39,17 @@ if [ -z "$CURRENT_ENVIRONMENT" ]; then
       done
     done
 else
+    echo "location: $PROJECT_ROOT/$CURRENT_ENVIRONMENT"
+
     CHARTS=$(ls $PROJECT_ROOT/$CURRENT_ENVIRONMENT)
     for chart in $CHARTS
     do
       echo $chart
       echo "Deploying $chart in $CURRENT_ENVIRONMENT environment"
-      helm install -n $CURRENT_ENVIRONMENT $PROJECT_ROOT/$CURRENT_ENVIRONMENT
       if [ -e $PROJECT_ROOT/$CURRENT_ENVIRONMENT/$chart/requirements.yaml ]; then
           cd $PROJECT_ROOT/$CURRENT_ENVIRONMENT
-          helm install -n $CURRENT_ENVIRONMENT $chart --generate-name
-          ls $chart
+          kubectl config current-context
+          helm install $chart --generate-name
           echo "deployed $chart"
       else
           "Can't find requirements.yaml at: $PROJECT_ROOT/$env/$chart/requirements.yaml"
