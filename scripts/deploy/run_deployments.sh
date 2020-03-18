@@ -14,7 +14,7 @@ else
 fi
 
 # Read the options from cli input
-OPTIONS=`getopt -o h --longoptions help,kubeconfig_base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory: -n $0 -- "$@"`
+OPTIONS=`getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory: -n $0 -- "$@"`
 eval set -- "${OPTIONS}"
 
 
@@ -26,7 +26,7 @@ function usage() {
     echo " "
     echo "options:"
     echo -e "--help \t Show options for this script"
-    echo -e "--kubeconfig_base64 \t Pass in the environment variable containing the base64 contents of your kube config."
+    echo -e "--kubeconfig-base64 \t Pass in the environment variable containing the base64 contents of your kube config."
     echo -e "--terraform-directory \t The directory for the terraform deployment"
     echo -e "--helm-charts-directory \t The directory containing your helm charts. Use only if charts are in alternate location."
     echo -e "--cluster-name \t The name of the EKS Cluster. Needed when EKS is created with Terraform. Should match the name in Terraform."
@@ -211,12 +211,14 @@ function helm_deploy_charts() {
     
     cd $path/helm
     chart_name=$(grep name Chart.yaml | head -1 | awk -F\: {'print $2'} | sed 's/^ //')
-    if [ -e requirements.yaml ]; then
+    current_dir=$(pwd)
+    echo "Current Dir: $current_dir"
+    if [ -e "Chart.yaml" ]; then
         helm dependency update
         cd ../
         helm install $chart_name ./helm/
     else
-        echo "Can't find requirement.yaml"
+        echo "Can't find Chart.yaml"
         return 1
     fi
 }
@@ -249,7 +251,7 @@ while true; do
             usage
             exit 1
             ;;
-        --kubeconfig_base64)
+        --kubeconfig-base64)
             KUBECONFIG_BASE64="$2";
             shift 2
             ;;

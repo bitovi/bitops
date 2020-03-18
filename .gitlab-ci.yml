@@ -10,6 +10,6 @@ build:
     - pip install docker-compose
     - echo "Look at - $AWS_DEFAULT_REGION"
     - docker-compose up -d --build
-    - docker-compose exec -T bitops /bin/bash -cx "scripts/deploy/run_deployments.sh --environment qa --ansible-directory /opt/deploy/ansible/hello-ansible.yml --external-helm-charts grafana:https://grafana.helm.com loki:https://loki.helm.com"
+    - docker-compose exec -T bitops /bin/bash -cx "scripts/deploy/run_deployments.sh --environment qa --ansible-directory /opt/deploy/ansible/hello-ansible.yml --external-helm-charts loki,loki-stack,https://grafana.github.io/loki/charts"
     - docker-compose down
 
