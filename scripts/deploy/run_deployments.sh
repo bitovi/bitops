@@ -14,7 +14,7 @@ else
 fi
 
 # Read the options from cli input
-OPTIONS=`getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory: -n $0 -- "$@"`
+OPTIONS=`getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory:,helm-charts-s3: -n $0 -- "$@"`
 eval set -- "${OPTIONS}"
 
 
@@ -29,6 +29,7 @@ function usage() {
     echo -e "--kubeconfig-base64 \t Pass in the environment variable containing the base64 contents of your kube config."
     echo -e "--terraform-directory \t The directory for the terraform deployment"
     echo -e "--helm-charts-directory \t The directory containing your helm charts. Use only if charts are in alternate location."
+    echo -e "--helm-charts-s3 \t The S3 Bucket containing the helm charts. Use the format: <NAME>,<URL>."
     echo -e "--cluster-name \t The name of the EKS Cluster. Needed when EKS is created with Terraform. Should match the name in Terraform."
     echo -e "--environment \t  The environment to use: qa or prod"
     echo -e "--terraform-plan \t  Run Terraform plan: true or false"
@@ -243,6 +244,14 @@ function run_ansible_playbooks() {
     /root/.local/bin/ansible-playbook $path
 }
 
+function install_from_s3() {
+    helm plugin install https://github.com/hypnoglow/helm-s3.git
+    CHART_NAME=$(echo $HELM_CHARTS_S3 | awk -F\, {'print $1'})
+    S3_BUCKET=$(echo $HELM_CHARTS_S3 | awk -F\, {'print $2'})
+    helm repo add $CHART_NAME $S3_BUCKET
+    helm repo list
+}
+
 
 # extract options and their arguments into variables.
 while true; do
@@ -285,6 +294,10 @@ while true; do
             ;;
         --helm-charts-directory)
             HELM_CHARTS_DIRECTORY="$2";
+            shift 2
+            ;;
+        --helm-charts-s3)
+            HELM_CHARTS_S3="$2";
             shift 2
             ;;
         --external-helm-charts)
@@ -356,3 +369,10 @@ if [[ ${ANSIBLE_PLAYBOOKS} == "true" ]];then
     run_ansible_playbooks
 fi 
 
+if [ -z "$HELM_CHARTS_S3" ]
+then
+    echo "HELM_CHARTS_S3 not set."
+else
+    echo "Adding S3 Helm Repo."
+    install_from_s3
+fi
