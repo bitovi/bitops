@@ -5,6 +5,22 @@ set -e
 export PATH=/root/.local/bin:$PATH
 export TERRAFORM_APPLIED=0
 export DEPLOYMENT_DIR=""
+export SECRETS_MGR=""
+export IMG_REPO=""
+export CURRENT_ENVIRONMENT=""
+export CLOUD_PLATFORM=""
+export CI_PLATFORM=""
+export CLOUD_PLATFORM=""
+export TF_APPLY=""
+export TF_PLAN=""
+export TF_DESTROY=""
+export TEMPDIR=/tmp/bitops_deployment
+export ENVROOT=$TEMPDIR
+export KUBECONFIG=$TEMPDIR/kube/config
+export VALUES_FILE_PATH=""
+export VALUES_SECRETS_FILE_PATH=""
+export VALUES_VERSIONS_FILE_PATH=""
+export DEFAULT_VALUES_FILE_PATH=""
 
 if [ -e /opt/our_deployment ];
 then
@@ -14,7 +30,7 @@ else
 fi
 
 # Read the options from cli input
-OPTIONS=`getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory:,helm-charts-s3: -n $0 -- "$@"`
+OPTIONS=`getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory:,helm-s3-repo: -n $0 -- "$@"`
 eval set -- "${OPTIONS}"
 
 
@@ -29,7 +45,7 @@ function usage() {
     echo -e "--kubeconfig-base64 \t Pass in the environment variable containing the base64 contents of your kube config."
     echo -e "--terraform-directory \t The directory for the terraform deployment"
     echo -e "--helm-charts-directory \t The directory containing your helm charts. Use only if charts are in alternate location."
-    echo -e "--helm-charts-s3 \t The S3 Bucket containing the helm charts. Use the format: <NAME>,<URL>."
+    echo -e "--helm-s3-repo \t The S3 Bucket containing the helm charts. Use the format: <NAME>,<URL>."
     echo -e "--cluster-name \t The name of the EKS Cluster. Needed when EKS is created with Terraform. Should match the name in Terraform."
     echo -e "--environment \t  The environment to use: qa or prod"
     echo -e "--terraform-plan \t  Run Terraform plan: true or false"
@@ -252,6 +268,154 @@ function install_from_s3() {
     helm repo list
 }
 
+function config_root_values() {
+    echo "Running config root values."
+    SECRETS_MGR=$(cat bitops.config.default.yaml| shyaml get-value secrets_manager.value)
+    IMG_REPO=$(cat bitops.config.default.yaml| shyaml get-value image_repository.value)
+    CURRENT_ENVIRONMENT=$(cat bitops.config.default.yaml| shyaml get-value environment.default)
+    echo "SECRETS_MGR: $SECRETS_MGR, IMG_REPO: $IMG_REPO, CURRENT_ENVIRONMENT: $CURRENT_ENVIRONMENT"
+}
+
+# Check Cloud Platform
+
+function config_cloud_platform() {
+    echo "Running cloud config."
+    count=$(cat bitops.config.default.yaml| shyaml get-value cloud_platform | grep  '^- ' | wc -l)
+    i=0
+    while [ $i -lt $count ]
+    do
+      CP_ENABLED=$(cat bitops.config.default.yaml| shyaml get-value cloud_platform.$i.enabled)
+      CLOUD_PLATFORM=$(cat bitops.config.default.yaml| shyaml get-value cloud_platform.$i.name)
+      if [ "$CP_ENABLED" == True ]
+      then
+          echo "Cloud Platform: $CLOUD_PLATFORM set"
+          echo "CP: $CLOUD_PLATFORM SET TO $CP_ENABLED"
+          echo ""
+      fi
+      i=$(($i+1))
+    done
+}
+
+function config_ci_platform() {
+    count=$(cat bitops.config.default.yaml| shyaml get-value ci_platform | grep  '^- ' | wc -l)
+    i=0
+    while [ $i -lt $count ]
+    do
+      CI_ENABLED=$(cat bitops.config.default.yaml| shyaml get-value ci_platform.$i.enabled)
+      CI_PLATFORM=$(cat bitops.config.default.yaml| shyaml get-value ci_platform.$i.name)
+      if [ "$CI_ENABLED" == True ]
+      then
+          echo "CI Platform: $CI_PLATFORM is set"
+          echo "$CI_PLATFORM IS SET TO $CI_ENABLED"
+          echo ""
+      fi
+      i=$(($i+1))
+    done
+}
+
+function config_terraform() {
+    echo "Running terraform config"
+    count=$(cat bitops.config.default.yaml| shyaml get-value terraform.actions | grep  '^- ' | wc -l)
+    i=0
+    while [ $i -lt $count ]
+    do
+      TF_ACTION=$(cat bitops.config.default.yaml| shyaml get-value terraform.actions.$i.enabled)
+      TF_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value terraform.actions.$i.name)
+      if [ "$TF_ACTION" == True ]
+      then
+          if [ $TF_ACTION_NAME == "terraform_plan" ]
+          then
+              echo "Setting TF_PLAN to true"
+              TF_PLAN="true"
+          fi
+
+          if [ $TF_ACTION_NAME == "terraform_apply" ]
+          then
+              echo "Setting TF_APPLY to true"
+              TF_APPLY="true"
+          fi 
+
+          if [ $TF_ACTION_NAME == "terraform_destroy" ]
+          then
+              TF_DESTROY="true"
+          fi
+          echo "Debug"
+          echo "TF_ACTION_NAME: $TF_ACTION_NAME, action set to: $TF_ACTION"
+          echo ""
+      fi
+      i=$(($i+1))
+    done
+}
+
+function config_helm() {
+    echo "Running helm config"
+    count=$(cat bitops.config.default.yaml| shyaml get-value helm | grep  '^- ' | wc -l)
+    i=0
+    while [ $i -lt $count ]
+    do
+      HELM_ACTION=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.enabled)
+      HELM_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.name)
+      if [ "$HELM_ACTION" == True ]
+      then
+          if [ $HELM_ACTION_NAME == "deploy_charts" ]
+          then
+              echo "Setting DEPLOY_HELM to true"
+              DEPLOY_HELM="true"
+          fi
+
+          if [ $HELM_ACTION_NAME == "external_helm_charts" ]
+          then
+              echo "Setting EXTERNAL_HELM_CHARTS to true"
+              EXTERNAL_HELM_CHARTS="true"
+          fi 
+
+          if [ $HELM_ACTION_NAME == "helm_s3_repo" ]
+          then
+              URL=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.url)
+              CHART_NAME=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.chart_name)
+              HELM_S3_REPO=$CHART_NAME,$URL
+              echo "Setting HELM_S3_REPO to: $HELM_S3_REPO"
+              echo ""
+          fi 
+
+          if [ $HELM_ACTION_NAME == "override_default" ]
+          then
+              HELM_CHARTS_DIRECTORY=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.helm_directory)
+              echo "OVERRIDE_HELM_DIRECTORY set to: $HELM_CHARTS_DIRECTORY"
+              echo ""
+          fi
+      fi
+      i=$(($i+1))
+    done
+}
+
+function config_ansible() {
+    echo "Running anisble config"
+    count=$(cat bitops.config.default.yaml| shyaml get-value ansible | grep  '^- ' | wc -l)
+    i=0
+    while [ $i -lt $count ]
+    do
+      ANSIBLE_ACTION=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.enabled)
+      ANSIBLE_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.name)
+      if [ "$ANSIBLE_ACTION" == True ]
+      then
+          if [ $ANSIBLE_ACTION_NAME == "deploy_playbooks" ]
+          then
+              echo "Setting DEPLOY_ANSIBLE to true"
+              echo ""
+              DEPLOY_ANSIBLE="true"
+          fi
+
+          if [ $ANSIBLE_ACTION_NAME == "override_default" ]
+          then
+              ANSIBLE_DIRECTORY=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.ansible_directory)
+              echo "OVERRIDE_ANSIBLE_DIRECTORY set to: $ANSIBLE_DIRECTORY"
+              echo ""
+          fi
+      fi
+      i=$(($i+1))
+    done
+}
 
 # extract options and their arguments into variables.
 while true; do
@@ -296,7 +460,7 @@ while true; do
             HELM_CHARTS_DIRECTORY="$2";
             shift 2
             ;;
-        --helm-charts-s3)
+        --helm-s3-repo)
             HELM_CHARTS_S3="$2";
             shift 2
             ;;
