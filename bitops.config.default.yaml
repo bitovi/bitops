@@ -1,51 +1,91 @@
-# Secrets Manager (for holding sensitive data) - Options are: Vault and AWS SSM
+# Secrets Manager (for holding sensitive data) - Options are: vault, ssm or none
 secrets_manager:
-  value: vault
+  value: none
 
 # Image Repository - Options: ecr, docker, quay, gcr
 image_repository:
   value: ecr
-
-
-# Options are: AWS and GCP
-cloud_platform:
-  # name: gcp:
-  # enabled: no
-  # project_id: zinbabel
-  # region: us-east-1
-  # credentials: some-gcp-role
-  name: AWS
-  region: us-east-1
-
-# Options are: Travis, Gitlab, Jenkins
-ci_platform:
-  name: travis
-  # name: gitlab:
-  # name: jenkins:
-
+  
+# Specify Kubernetes version: Options: Kubernetes 1.11, 1.12, 1.13, and 1.14
+kubectl:
+  version: 1.13.7
 
 # Options are: prod, qa
 environment:
   default: qa
 
+# Options are: AWS and GCP
+cloud_platform:
+  - gcp:
+    name: gcp
+    enabled: false
+    project_id: zinbabel
+    region: us-east-2
+    credentials: some-gcp-role
+  - aws:
+    name: aws
+    enabled: true
+    region: us-east-2
+  - az:
+    name: az
+    enabled: false
+    region: us-east-2
+
+# Options are: Travis, Gitlab, Jenkins
+ci_platform:
+  - travis:
+    name: travis
+    enabled: false
+  - gitlab:
+    name: gitlab
+    enabled: true
+  - jenkins:
+    name: jenkins
+    enabled: false
+
 # Specify Terraform version. Options: Terraform 0.11.14 or 0.12.21
 terraform:
   version: 0.11.14
-
-travis_cli:
-  version: 0.1.0
-
-# Specify Kubernetes version: Options: Kubernetes 1.11, 1.12, 1.13, and 1.14
-kubectl:
-  version: 1.13.7
+  actions:
+    - terraform_plan:
+      name: terraform_plan
+      enabled: true
+    - terraform_apply: 
+      name: terraform_apply
+      enabled: false
+    - terraform_destroy:
+      name: terraform_destroy
+      enabled: false
 
 # Specify Helm version. Options: 2 or 3
 helm:
   version: 3.1.1
-  
+  actions: 
+    - deploy_charts:
+      name: deploy_charts
+      enabled: true
+    - external_helm_charts:
+      name: external_helm_charts
+      enabled: false
+      chart_name: <CHART_NAME>
+      url: <URL>
+    - helm_s3_repo:
+      name: helm_s3_repo
+      enabled: false
+      chart_name: <CHART_NAME>
+      url: <URL>      
+    - override_default:
+      name: override_default
+      enabled: false
+      helm_directory: <DIRECTORY_NAME>
 
-  
-
-
-
-    
+ansible:
+  version: 2.5
+  actions:
+    - deploy_playbooks: 
+      name: deploy_playbooks
+      enabled: true
+    - override_default:
+      name: override_default
+      enabled: false
+      ansible_directory: <DIRECTORY_NAME>
