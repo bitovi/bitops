@@ -42,11 +42,11 @@ function install_kubectl() {
 function install_helm() {
     if [[ "$HELM_VERSION" == '3.1.1' ]]
     then
-        curl -LO https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz ./
+        wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
         tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
         mv linux-amd64/helm /usr/local/bin/
     else
-        curl -LO https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz ./
+        wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
         tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
         mv linux-amd64/helm /usr/local/bin/
         bash -x scripts/helm/install_tiller.sh
@@ -64,7 +64,7 @@ function configure_cloud_platorm() {
     if [[ "$CLOUD_PLATORM" -eq "AWS" ]]
     then
     echo "Configuring AWS"
-mkdir /root/.aws
+mkdir /root/.aws /root/spec
 cat <<EOF > /root/.aws/credentials
 [default]
 aws_access_key_id = "${AWS_ACCESS_KEY_ID}"
@@ -75,6 +75,13 @@ cat <<EOF > /root/.aws/config
 [default]
 region = "$AWS_DEFAULT_REGION"
 output = json
+EOF
+
+# Configure AWSpec
+cat <<EOF > spec/secrets.yml
+region: "$AWS_DEFAULT_REGION"
+aws_access_key_id: "${AWS_ACCESS_KEY_ID}"
+aws_secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
 EOF
     else
     # Configure GCE

@@ -1,14 +1,15 @@
 FROM python:latest
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y \
-    && apt-get install -y software-properties-common \
-    # && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get install -y software-properties-common libsodium-dev \
     && apt-get install -y inetutils-ping vim wget unzip curl git jq awscli ruby-full \
     && rm -rf /var/lib/apt/lists/* \
-    && gem install travis \
+    && gem install travis --no-rdoc --no-ri \
+    && gem install rbnacl --no-rdoc --no-ri \
+    && gem install awspec --no-rdoc --no-ri  \
+    && gem install kitchen-terraform --version 5.3.0 --no-rdoc --no-ri \
+    && gem install kitchen-verifier-awspec --no-rdoc --no-ri \
     && mkdir -p /opt/deploy
-#RUN gem install travis
-#RUN 
 WORKDIR /opt/deploy
 COPY . .
 COPY entrypoint.sh /opt/deploy/
