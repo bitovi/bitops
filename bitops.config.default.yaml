@@ -45,11 +45,10 @@ ci_platform:
 
 # Specify Terraform version. Options: Terraform 0.11.14 or 0.12.21
 terraform:
-  version: 0.11.14
   actions:
     - terraform_plan:
       name: terraform_plan
-      enabled: true
+      enabled: false
     - terraform_apply: 
       name: terraform_apply
       enabled: false
@@ -59,7 +58,7 @@ terraform:
 
 # Specify Helm version. Options: 2 or 3
 helm:
-  version: 3.1.1
+  namespace: default
   actions: 
     - deploy_charts:
       name: deploy_charts
@@ -80,11 +79,10 @@ helm:
       helm_directory: <DIRECTORY_NAME>
 
 ansible:
-  version: 2.5
   actions:
     - deploy_playbooks: 
       name: deploy_playbooks
-      enabled: true
+      enabled: false
     - override_default:
       name: override_default
       enabled: false

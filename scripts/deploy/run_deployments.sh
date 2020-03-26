@@ -4,33 +4,61 @@ set -e
 
 export PATH=/root/.local/bin:$PATH
 export TERRAFORM_APPLIED=0
-export DEPLOYMENT_DIR=""
+export TEMPDIR="/tmp/bitops_deployment"
 export SECRETS_MGR=""
 export IMG_REPO=""
-export CURRENT_ENVIRONMENT=""
+export CURRENT_ENVIRONMENT=$(shyaml get-value environment.default < bitops.config.default.yaml)
 export CLOUD_PLATFORM=""
 export CI_PLATFORM=""
 export CLOUD_PLATFORM=""
-export TF_APPLY=""
-export TF_PLAN=""
-export TF_DESTROY=""
-export TEMPDIR=/tmp/bitops_deployment
-export ENVROOT=$TEMPDIR
-export KUBECONFIG=$TEMPDIR/kube/config
-export VALUES_FILE_PATH=""
-export VALUES_SECRETS_FILE_PATH=""
-export VALUES_VERSIONS_FILE_PATH=""
-export DEFAULT_VALUES_FILE_PATH=""
+export DEPLOYMENT_DIR="$TEMPDIR"
+export ENVROOT="$TEMPDIR"
+export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
+export NAMESPACE=$(shyaml get-value helm.namespace < bitops.config.default.yaml)
+export HELM_RELEASE_NAME=""
+export APPLY=""
+export PLAN=""
+export DESTROY=""
 
-if [ -e /opt/our_deployment ];
+
+
+if [ -e /opt/bitops_deployment ];
 then
-    DEPLOYMENT_DIR=/opt/our_deployment
+    echo "Creating temp directory: $TEMPDIR"
+    if ! mkdir -p /tmp/bitops_deployment/.kube
+    then 
+        echo "failed to create: $TEMPDIR"
+    else 
+        echo "Successfully created $TEMPDIR "
+    fi
+
+    if ! cp -rf /opt/bitops_deployment/* /tmp/bitops_deployment/
+    then 
+        echo "failed to copy repo to: $TEMPDIR"
+    else 
+        echo "Successfully Copied repo to $TEMPDIR "
+    fi
 else
-    DEPLOYMENT_DIR=/opt/deploy/
+    echo "running locally"
+    
+    if ! mkdir -p /tmp/bitops_deployment/.kube;
+    then 
+        echo "failed to create: $TEMPDIR"
+    else 
+        echo "Successfully Created $TEMPDIR "
+    fi
+
+    if ! cp -rf /opt/deploy/* /tmp/bitops_deployment/
+    then 
+        echo "failed to copy repo to: $TEMPDIR"
+    else 
+        echo "Successfully Copied repo to $TEMPDIR "
+    fi
 fi
 
+
 # Read the options from cli input
-OPTIONS=`getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory:,helm-s3-repo: -n $0 -- "$@"`
+OPTIONS=$(getopt -o h --longoptions help,kubeconfig-base64:,terraform-directory:,environment:,terraform-plan:,terraform-apply:,terraform-destroy:,helm-charts:,ansible-directory:,ansible-playbooks:,external-helm-charts:,helm-charts-directory:,helm-s3-repo:,use-config-file: -n $0 -- "$@")
 eval set -- "${OPTIONS}"
 
 
@@ -56,6 +84,7 @@ function usage() {
                Use the form: <NAME>,<REPO_KEY>,<REPO_URL>. To add additional args, please use the bitops-config.yaml file."
     echo -e "--ansible-playbooks \t Deploy Ansible playbooks: true or false"
     echo -e "--ansible-directory \t Directory containing your Ansible playbooks."
+    echo -e "--use-config-file \t Use the configuration file: true or false"
 }
 
 function create_aws_profile() {
@@ -75,7 +104,7 @@ cat <<EOF > /root/.aws/config
 region = "$AWS_DEFAULT_REGION"
 output = json
 EOF
-> /root/.kube/config 
+echo "#kubeconfig" > "$TEMPDIR"/.kube/config 
 get_context
 }
 
@@ -91,20 +120,6 @@ function create_config_map() {
 }
 
 function get_context() {
-    CONTEXT=$(grep name ~/.kube/config | head -1 | awk {'print $2'})
-    if [ -z "$CONTEXT" ]
-    then
-        echo "Context not set"
-    else
-        kubectl config use-context $CONTEXT
-        kubectl config current-context
-        if [ "$?" -eq 0 ]
-        then
-           echo "Kubernetes context set."
-           exit 0
-        fi       
-    fi
-
     if [ -z "$KUBECONFIG_BASE64" ]
     then 
        echo "Unable to find KUBECONFIG_BASE64. Attempting to retrieve from Terraform..."
@@ -118,8 +133,8 @@ function get_context() {
             then
                 terraform_apply 
                 TERRAFORM_APPLIED=1
-                mkdir -p ~/.kube
-                touch ~/.kube/config
+                mkdir -p "$TEMPDIR"/.kube
+                touch "$TEMPDIR"/.kube/config
                 /root/.local/bin/aws sts get-caller-identity
                 /root/.local/bin/aws eks update-kubeconfig --name "$CLUSTER_NAME"
                 create_config_map
@@ -132,132 +147,85 @@ function get_context() {
     else
         #create config file
         echo "Creating kubeconfig file"
-        mkdir -p ~/.kube
-        echo ${KUBECONFIG_BASE64} | base64 -d > config
-        mv config ~/.kube/config
+        mkdir -p "$TMPDIR"/.kube
+        echo "${KUBECONFIG_BASE64}" | base64 -d > config
+        mv config "$TEMPDIR"/.kube/config
         echo "Getting Kube Context"
-        CONTEXT=$(grep name ~/.kube/config | head -1 | awk {'print $2'})
-        kubectl config use-context $CONTEXT
-        kubectl config current-context
-        echo "Testing config:"
-        kubectl --v=4 get nodes 
-        kubectl --v=4 get pods --all-namespaces
-        if [ "$?" -eq 0 ]
-        then
-           echo "Kubernetes context is configured."
-        else
-           echo "Context not set, attempting to set context explicitly."
-           kubectl config set-context $CONTEXT
-        fi
+        CONTEXT=$(grep name "$TEMPDIR"/.kube/config | head -1 | awk {'print $2'})
 
     fi
-}
-
-function terraform_plan() {
-    if [ -z "$TERRAFORM_DIRECTORY" ]
-    then 
-        echo "Terraform directory not set. Using default directory."
-        cd $CURRENT_ENVIRONMENT/$DEPLOYMENT_DIR
-        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
-    else
-       #Run Terraform Plan
-       cd $CURRENT_ENVIRONMENT/$TERRAFORM_DIRECTORY
-       /usr/local/bin/terraform init && /usr/local/bin/terraform plan
-    fi
-}
-
-function terraform_apply() {
-    if [ -z "$TERRAFORM_DIRECTORY" ]
-    then 
-        echo "Terraform directory not set. Using default directory."
-        cd $CURRENT_ENVIRONMENT/$DEPLOYMENT_DIR
-        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
-    else
-       #launch terraform to create EKS cluster
-       cd $CURRENT_ENVIRONMENT/$TERRAFORM_DIRECTORY
-       /usr/local/bin/terraform init && /usr/local/bin/terraform plan
-       /usr/local/bin/terraform apply -auto-approve
-    fi  
-}
-
-function terraform_destroy() {
-    if [ -z "$TERRAFORM_DIRECTORY" ]
-    then 
-        echo "Terraform directory not set. Using default directory."
-        cd $CURRENT_ENVIRONMENT/$DEPLOYMENT_DIR
-        /usr/local/bin/terraform init && /usr/local/bin/terraform plan
-    else
-       #Destroying EKS cluster
-       cd $CURRENT_ENVIRONMENT/$TERRAFORM_DIRECTORY
-       /usr/local/bin/terraform init
-       /usr/local/bin/terraform destroy -auto-approve
-    fi     
 }
 
 function helm_deploy_external_charts() {
     echo "Installing external helm charts"
     echo "REPOS: $CURRENT_ENVIRONMENT $EXTERNAL_HELM_CHARTS"
 
-    for chart in $EXTERNAL_HELM_CHARTS
+    for chart in "$EXTERNAL_HELM_CHARTS"
     do
       echo "Processing Charts: $chart"
       CHART_NAME=$(echo $chart | awk -F\, {'print $1'})
       REPO_KEY=$(echo $chart | awk -F\, {'print $2'})
       URL=$(echo $chart | awk -F\, {'print $3'})
-      echo "NAME: $CHART_NAME, CHART_NAME: $REPO_KEY, URL: $URL"
-      echo "helm repo command: helm repo add $NAME $URL"
-      echo "helm install command: helm upgrade --install $CHART_NAME/$REPO_KEY"
       helm repo add $CHART_NAME $URL
       helm repo update
-      helm upgrade --install $CHART_NAME $CHART_NAME/$REPO_KEY
+      helm upgrade --install "$CHART_NAME $CHART_NAME/$REPO_KEY"
     done
 }
 
-function helm_deploy_charts() {
-    echo "Installing helm charts"
+function helm_deploy_custom_charts() {
+    echo "Installing charts..."
     path=""
 
     if [ -z "$HELM_CHARTS_DIRECTORY" ]
     then 
         echo "Helm directory not set. Using default directory."
-        path=$DEPLOYMENT_DIR/$CURRENT_ENVIRONMENT/
+        path=$ENVROOT/$CURRENT_ENVIRONMENT/helm
     else
         echo "Using provided Helm directory: $HELM_CHARTS_DIRECTORY"
-        path=$HELM_CHARTS_DIRECTORY/$CURRENT_ENVIRONMENT/
+        cp -rf "$HELM_CHARTS_DIRECTORY $ENVROOT/"
+        path="$ENVROOT/$HELM_CHARTS_DIRECTORY/$CURRENT_ENVIRONMENT/helm"
     fi
-    
-    cd $path/helm
-    chart_name=$(grep name Chart.yaml | head -1 | awk -F\: {'print $2'} | sed 's/^ //')
-    current_dir=$(pwd)
-    echo "Current Dir: $current_dir"
-    if [ -e "Chart.yaml" ]; then
-        helm dependency update
-        cd ../
-        helm install $chart_name ./helm/
-    else
-        echo "Can't find Chart.yaml"
-        return 1
-    fi
-}
 
-function install_grafana() {
-    helm repo add loki https://grafana.github.io/loki/charts
-    helm repo update
-    helm install --name grafana stable/grafana --set=ingress.enabled=True,ingress.hosts={grafana} --set rbac.create=true
-}
+    cd $path
+    for subDir in `ls`
+    do
+            # initialize values files
+            VALUES_FILE_PATH="./$subDir/values.yaml"
+            VALUES_SECRETS_FILE_PATH="./$subDir/values-secrets.yaml"
+            VALUES_VERSIONS_FILE_PATH="./$subDir/values-versions.yaml"
+            DEFAULT_VALUES_FILE_PATH="$ENVROOT/default/helm/$subDir/values.yaml"
+            ADDITIONAL_VALUES_FILES_PATH="$ENVROOT/default/helm/$subDir/values-files"
+            echo "Updating dependencies in "$(pwd)"/"$subDir" ..."
+            rm -rf "$subDir/charts"
+            helm dep up "$(pwd)"/"$subDir"
 
-function run_ansible_playbooks() {
-    path=""
+            # initialize values command
+            VALUES_FILES_COMMAND=""
+            if [ -d "$ADDITIONAL_VALUES_FILES_PATH" ]; then
+                echo "Additional values directory exists."
+                for values_file in `ls "$ADDITIONAL_VALUES_FILES_PATH"`
+                do
+                    echo "processing values-file: $values_file"
+                    VALUES_FILES_COMMAND="$VALUES_FILES_COMMAND -f $values_file "
+                done
+            else 
+                echo "No values file directory. Skipping..."
+            fi
+            HELM_RELEASE_NAME="$subDir"
+            CHART="$subDir"
+            echo "Installing release name: $HELM_RELEASE_NAME, for chart: $CHART, in namespace: $NAMESPACE"
+            echo "Command: helm upgrade $HELM_RELEASE_NAME $CHART --install --timeout=500s --cleanup-on-fail --kubeconfig=$KUBE_CONFIG_FILE --namespace=$NAMESPACE --kube-context=$CONTEXT -f $DEFAULT_VALUES_FILE_PATH -f $VALUES_FILE_PATH -f $VALUES_VERSIONS_PATH -f $VALUES_SECRETS_FILE_PATH $VALUES_FILES_COMMAND --dry-run"
+            helm upgrade $HELM_RELEASE_NAME $CHART --install --timeout=500s \
+            --cleanup-on-fail \
+            --kubeconfig="$KUBE_CONFIG_FILE" \
+            --namespace="$NAMESPACE" \
+            -f "$DEFAULT_VALUES_FILE_PATH" \
+            -f "$VALUES_FILE_PATH" \
+            -f "$VALUES_SECRETS_FILE_PATH" \
+            -f "$VALUES_VERSIONS_FILE_PATH" \
+            $VALUES_FILES_COMMAND
+    done
 
-    if [ -z "$ANSIBLE_DIRECTORY" ]
-    then 
-        echo "Helm directory not set. Using default directory."
-        path=$DEPLOYMENT_DIR/$CURRENT_ENVIRONMENT/ansible
-    else
-        echo "Using provided Ansible directory: $ANSIBLE_DIRECTORY"
-        path=$CURRENT_ENVIRONMENT/$ANSIBLE_DIRECTORY/
-    fi
-    /root/.local/bin/ansible-playbook $path
 }
 
 function install_from_s3() {
@@ -268,153 +236,8 @@ function install_from_s3() {
     helm repo list
 }
 
-function config_root_values() {
-    echo "Running config root values."
-    SECRETS_MGR=$(cat bitops.config.default.yaml| shyaml get-value secrets_manager.value)
-    IMG_REPO=$(cat bitops.config.default.yaml| shyaml get-value image_repository.value)
-    CURRENT_ENVIRONMENT=$(cat bitops.config.default.yaml| shyaml get-value environment.default)
-    echo "SECRETS_MGR: $SECRETS_MGR, IMG_REPO: $IMG_REPO, CURRENT_ENVIRONMENT: $CURRENT_ENVIRONMENT"
-}
-
-# Check Cloud Platform
-
-function config_cloud_platform() {
-    echo "Running cloud config."
-    count=$(cat bitops.config.default.yaml| shyaml get-value cloud_platform | grep  '^- ' | wc -l)
-    i=0
-    while [ $i -lt $count ]
-    do
-      CP_ENABLED=$(cat bitops.config.default.yaml| shyaml get-value cloud_platform.$i.enabled)
-      CLOUD_PLATFORM=$(cat bitops.config.default.yaml| shyaml get-value cloud_platform.$i.name)
-      if [ "$CP_ENABLED" == True ]
-      then
-          echo "Cloud Platform: $CLOUD_PLATFORM set"
-          echo "CP: $CLOUD_PLATFORM SET TO $CP_ENABLED"
-          echo ""
-      fi
-      i=$(($i+1))
-    done
-}
-
-function config_ci_platform() {
-    count=$(cat bitops.config.default.yaml| shyaml get-value ci_platform | grep  '^- ' | wc -l)
-    i=0
-    while [ $i -lt $count ]
-    do
-      CI_ENABLED=$(cat bitops.config.default.yaml| shyaml get-value ci_platform.$i.enabled)
-      CI_PLATFORM=$(cat bitops.config.default.yaml| shyaml get-value ci_platform.$i.name)
-      if [ "$CI_ENABLED" == True ]
-      then
-          echo "CI Platform: $CI_PLATFORM is set"
-          echo "$CI_PLATFORM IS SET TO $CI_ENABLED"
-          echo ""
-      fi
-      i=$(($i+1))
-    done
-}
-
-function config_terraform() {
-    echo "Running terraform config"
-    count=$(cat bitops.config.default.yaml| shyaml get-value terraform.actions | grep  '^- ' | wc -l)
-    i=0
-    while [ $i -lt $count ]
-    do
-      TF_ACTION=$(cat bitops.config.default.yaml| shyaml get-value terraform.actions.$i.enabled)
-      TF_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value terraform.actions.$i.name)
-      if [ "$TF_ACTION" == True ]
-      then
-          if [ $TF_ACTION_NAME == "terraform_plan" ]
-          then
-              echo "Setting TF_PLAN to true"
-              TF_PLAN="true"
-          fi
-
-          if [ $TF_ACTION_NAME == "terraform_apply" ]
-          then
-              echo "Setting TF_APPLY to true"
-              TF_APPLY="true"
-          fi 
-
-          if [ $TF_ACTION_NAME == "terraform_destroy" ]
-          then
-              TF_DESTROY="true"
-          fi
-          echo "Debug"
-          echo "TF_ACTION_NAME: $TF_ACTION_NAME, action set to: $TF_ACTION"
-          echo ""
-      fi
-      i=$(($i+1))
-    done
-}
-
-function config_helm() {
-    echo "Running helm config"
-    count=$(cat bitops.config.default.yaml| shyaml get-value helm | grep  '^- ' | wc -l)
-    i=0
-    while [ $i -lt $count ]
-    do
-      HELM_ACTION=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.enabled)
-      HELM_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.name)
-      if [ "$HELM_ACTION" == True ]
-      then
-          if [ $HELM_ACTION_NAME == "deploy_charts" ]
-          then
-              echo "Setting DEPLOY_HELM to true"
-              DEPLOY_HELM="true"
-          fi
-
-          if [ $HELM_ACTION_NAME == "external_helm_charts" ]
-          then
-              echo "Setting EXTERNAL_HELM_CHARTS to true"
-              EXTERNAL_HELM_CHARTS="true"
-          fi 
-
-          if [ $HELM_ACTION_NAME == "helm_s3_repo" ]
-          then
-              URL=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.url)
-              CHART_NAME=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.chart_name)
-              HELM_S3_REPO=$CHART_NAME,$URL
-              echo "Setting HELM_S3_REPO to: $HELM_S3_REPO"
-              echo ""
-          fi 
-
-          if [ $HELM_ACTION_NAME == "override_default" ]
-          then
-              HELM_CHARTS_DIRECTORY=$(cat bitops.config.default.yaml| shyaml get-value helm.actions.$i.helm_directory)
-              echo "OVERRIDE_HELM_DIRECTORY set to: $HELM_CHARTS_DIRECTORY"
-              echo ""
-          fi
-      fi
-      i=$(($i+1))
-    done
-}
-
-function config_ansible() {
-    echo "Running anisble config"
-    count=$(cat bitops.config.default.yaml| shyaml get-value ansible | grep  '^- ' | wc -l)
-    i=0
-    while [ $i -lt $count ]
-    do
-      ANSIBLE_ACTION=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.enabled)
-      ANSIBLE_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.name)
-      if [ "$ANSIBLE_ACTION" == True ]
-      then
-          if [ $ANSIBLE_ACTION_NAME == "deploy_playbooks" ]
-          then
-              echo "Setting DEPLOY_ANSIBLE to true"
-              echo ""
-              DEPLOY_ANSIBLE="true"
-          fi
-
-          if [ $ANSIBLE_ACTION_NAME == "override_default" ]
-          then
-              ANSIBLE_DIRECTORY=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.ansible_directory)
-              echo "OVERRIDE_ANSIBLE_DIRECTORY set to: $ANSIBLE_DIRECTORY"
-              echo ""
-          fi
-      fi
-      i=$(($i+1))
-    done
+function clean_workspace() {
+    rm -rf "$TEMPDIR"
 }
 
 # extract options and their arguments into variables.
@@ -441,7 +264,7 @@ while true; do
             shift 2
             ;;
         --terraform-destroy)
-            APPLY="$2";
+            DESTROY="$2";
             shift 2
             ;;
         --environment)
@@ -480,6 +303,10 @@ while true; do
             DEFAULT_CHARTS="$2";
             shift 2
             ;;
+        --use-config-file)
+            USE_CONFIG_FILE="$2"
+            shift 2
+            ;;
         --)
             break
             ;;
@@ -490,7 +317,6 @@ while true; do
 done
  
 echo "Running deployments"
-echo "${PLAN} ${TERRAFORM_DIRECTORY} ${HELM_CHARTS} ${CURRENT_ENVIRONMENT}"
 
 if [ -z "${AWS_ACCESS_KEY_ID}" ] || [ -z "${AWS_SECRET_ACCESS_KEY}" ]
 then
@@ -501,23 +327,41 @@ else
     create_aws_profile
 fi
 
+if [ -z "$USE_CONFIG_FILE" ]
+then
+    echo "USE_CONFIG_FILE not set."
+else
+    echo "Reading config file."
+        # Read config files
+        ANSIBLE_PLAYBOOKS=$(scripts/deploy/config_ansible.sh)
+        CLOUD_PLATFORM=$(scripts/deploy/config_cloud.sh)
+        EXTERNAL_HELM_CHARTS=$(scripts/deploy/config_external_helm_charts.sh)
+        HELM_CHARTS=$(scripts/deploy/config_helm.sh)
+        # HELM_CHARTS_S3=$(scripts/deploy/config_helm_s3.sh)
+        # APPLY=$(scripts/deploy/config_terraform_apply.sh)
+        # PLAN=$(scripts/deploy/config_terraform_plan.sh)
+        # DESTROY=$(scripts/deploy/config_terraform_destroy.sh)
+        # HELM_CHARTS_DIRECTORY=$(scripts/deploy/config_helm_directory.sh)
+        # ANSIBLE_DIRECTORY=$(scripts/deploy/config_ansible_directory.sh)
+fi
+
 if [[ ${PLAN} == "true" ]];then
-    terraform_plan
+    scripts/deploy/terraform_apply.sh
 fi
 
 if [[ ${APPLY} == "true" ]];then
     echo "Running Terraform Apply"
-    terraform_apply
+    scripts/deploy/terraform_apply.sh
 fi
 
 if [[ ${DESTROY} == "true" ]];then
     echo "Destroying EKS Cluster"
-    terraform_destroy
+    scripts/deploy/terraform_destroy.sh
 fi
 
 if [[ ${HELM_CHARTS} == "true" ]];then
     echo "Installing Helm Charts"
-    helm_deploy_charts
+    helm_deploy_custom_charts
 fi 
 
 if [ -z "$EXTERNAL_HELM_CHARTS" ]
@@ -530,7 +374,7 @@ fi
 
 if [[ ${ANSIBLE_PLAYBOOKS} == "true" ]];then
     echo "Running Ansible Playbooks"
-    run_ansible_playbooks
+    scripts/deploy/ansible_install_playbooks.sh
 fi 
 
 if [ -z "$HELM_CHARTS_S3" ]
@@ -540,3 +384,6 @@ else
     echo "Adding S3 Helm Repo."
     install_from_s3
 fi
+
+# Cleanup Workspace
+clean_workspace
