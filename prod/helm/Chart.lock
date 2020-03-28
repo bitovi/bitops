@@ -1,0 +1,12 @@
+dependencies:
+- name: wordpress
+  repository: https://charts.bitnami.com/bitnami
+  version: 9.0.3
+- name: grafana
+  repository: https://charts.bitnami.com/bitnami
+  version: 1.2.12
+- name: prometheus
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 11.0.2
+digest: sha256:d754402ee241c1f943e4461abaf72a3834dbe521beff2a60ae1b34264441f106
+generated: "2020-03-17T09:51:57.677729-04:00"

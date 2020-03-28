@@ -15,7 +15,7 @@ function config_ansible() {
     echo "Running anisble config"
     count=$(cat bitops.config.default.yaml| shyaml get-value ansible | grep  '^- ' | wc -l)
     i=0
-    while [ $i -lt $count ]
+    while [ $i -lt $(cat bitops.config.default.yaml| shyaml get-value ansible | grep  '^- ' | wc -l) ]
     do
       ANSIBLE_ACTION=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.enabled)
       ANSIBLE_ACTION_NAME=$(cat bitops.config.default.yaml| shyaml get-value ansible.actions.$i.name)

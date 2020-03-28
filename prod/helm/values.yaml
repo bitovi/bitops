@@ -1,0 +1,11 @@
+prometheus:
+  enabled: true
+
+grafana:
+  enabled: true
+  sidecar:
+    datasources:
+      enabled: true
+
+wordpress:
+  enabled: true

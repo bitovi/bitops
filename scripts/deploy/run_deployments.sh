@@ -200,6 +200,17 @@ function helm_deploy_custom_charts() {
             helm dep up "$(pwd)"/"$subDir"
 
             # initialize values command
+            MAIN_VALUES_FILES_COMMAND=""
+            for values_file in $VALUES_FILE_PATH $VALUES_SECRETS_FILE_PATH $VALUES_VERSIONS_FILE_PATH $DEFAULT_VALUES_FILE_PATH
+            do
+                if [ -e "$values_file" ];
+                then
+                    MAIN_VALUES_FILES_COMMAND="$MAIN_VALUES_FILES_COMMAND -f $values_file "
+                else
+                    echo "echo values file not found."
+                fi
+            done
+
             VALUES_FILES_COMMAND=""
             if [ -d "$ADDITIONAL_VALUES_FILES_PATH" ]; then
                 echo "Additional values directory exists."
@@ -211,18 +222,42 @@ function helm_deploy_custom_charts() {
             else 
                 echo "No values file directory. Skipping..."
             fi
+
+            echo "Setting Helm release and chart variables."
             HELM_RELEASE_NAME="$subDir"
             CHART="$subDir"
-            echo "Installing release name: $HELM_RELEASE_NAME, for chart: $CHART, in namespace: $NAMESPACE"
+            NAMESPACE=$(shyaml get-value namespace < $ENVROOT/$CURRENT_ENVIRONMENT/helm/$subDir/bitops.config.yaml | sed 's/^ //' | sed 's/\s$//')
+            CHECK_NS=$(kubectl get namespaces --kubeconfig $KUBE_CONFIG_FILE | grep "$NAMESPACE" | awk {'print $1'} | grep ^"$NAMESPACE"$)
+            # Check if namespace exists and create it if it doesn't.
+            echo "Checking NAMESPACE: $NAMESPACE:"
+            echo "Checking NS in System: $CHECK_NS:"
+            if [ -n "$CHECK_NS" ];
+            then
+                echo "The namespace $NAMESPACE exists. Skipping creation..."
+            else
+                echo "The namespace $NAMESPACE does not exists. Creating..."
+                kubectl --kubeconfig $KUBE_CONFIG_FILE create namespace $NAMESPACE
+            fi
+            pwd
+            ls -ltr
+            echo "Main Values Files: $MAIN_VALUES_FILES_COMMAND"
             echo "Command: helm upgrade $HELM_RELEASE_NAME $CHART --install --timeout=500s --cleanup-on-fail --kubeconfig=$KUBE_CONFIG_FILE --namespace=$NAMESPACE --kube-context=$CONTEXT -f $DEFAULT_VALUES_FILE_PATH -f $VALUES_FILE_PATH -f $VALUES_VERSIONS_PATH -f $VALUES_SECRETS_FILE_PATH $VALUES_FILES_COMMAND --dry-run"
-            helm upgrade $HELM_RELEASE_NAME $CHART --install --timeout=500s \
+            helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
             --cleanup-on-fail \
+            --atomic \
+            --kubeconfig="$KUBE_CONFIG_FILE" \
+            --debug \
+            --dry-run \
+            --namespace="$NAMESPACE" \
+            $MAIN_VALUES_FILES_COMMAND \
+            $VALUES_FILES_COMMAND
+
+            helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
+            --cleanup-on-fail \
+            --atomic \
             --kubeconfig="$KUBE_CONFIG_FILE" \
             --namespace="$NAMESPACE" \
-            -f "$DEFAULT_VALUES_FILE_PATH" \
-            -f "$VALUES_FILE_PATH" \
-            -f "$VALUES_SECRETS_FILE_PATH" \
-            -f "$VALUES_VERSIONS_FILE_PATH" \
+            $MAIN_VALUES_FILES_COMMAND \
             $VALUES_FILES_COMMAND
     done
 
@@ -237,6 +272,7 @@ function install_from_s3() {
 }
 
 function clean_workspace() {
+    echo "Running cleanup..."
     rm -rf "$TEMPDIR"
 }
 
