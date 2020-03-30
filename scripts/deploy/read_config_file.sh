@@ -13,7 +13,6 @@ function config_root_values() {
 
 function config_ansible() {
     echo "Running anisble config"
-    count=$(cat bitops.config.default.yaml| shyaml get-value ansible | grep  '^- ' | wc -l)
     i=0
     while [ $i -lt $(cat bitops.config.default.yaml| shyaml get-value ansible | grep  '^- ' | wc -l) ]
     do

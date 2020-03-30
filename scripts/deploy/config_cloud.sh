@@ -1,7 +1,6 @@
 function config_cloud_platform() {
-    count=$(shyaml get-value cloud_platform < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l)
     i=0
-    while [ $i -lt $count ]
+    while [ $i -lt $(shyaml get-value cloud_platform < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]
     do
       CP_ENABLED=$(shyaml get-value cloud_platform.$i.enabled < "$TEMPDIR/bitops.config.default.yaml")
       CLOUD_PLATFORM=$(shyaml get-value cloud_platform.$i.name < "$TEMPDIR/bitops.config.default.yaml")

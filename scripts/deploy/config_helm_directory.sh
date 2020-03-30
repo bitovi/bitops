@@ -1,7 +1,6 @@
 function config_override_default_helm() {
-:    count=$(shyaml get-value helm < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l)
     i=0
-    while [ $i -lt $count ]
+    while [ $i -lt $(shyaml get-value helm < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]
     do
       HELM_ACTION=$(shyaml get-value helm.actions.$i.enabled < "$TEMPDIR/bitops.config.default.yaml")
       HELM_ACTION_NAME=$(shyaml get-value helm.actions.$i.name < "$TEMPDIR/bitops.config.default.yaml")

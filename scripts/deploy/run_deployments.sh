@@ -217,7 +217,7 @@ function helm_deploy_custom_charts() {
                 for values_file in `ls "$ADDITIONAL_VALUES_FILES_PATH"`
                 do
                     echo "processing values-file: $values_file"
-                    VALUES_FILES_COMMAND="$VALUES_FILES_COMMAND -f $values_file "
+                    VALUES_FILES_COMMAND="$VALUES_FILES_COMMAND -f $ADDITIONAL_VALUES_FILES_PATH/$values_file "
                 done
             else 
                 echo "No values file directory. Skipping..."
@@ -238,19 +238,6 @@ function helm_deploy_custom_charts() {
                 echo "The namespace $NAMESPACE does not exists. Creating..."
                 kubectl --kubeconfig $KUBE_CONFIG_FILE create namespace $NAMESPACE
             fi
-            pwd
-            ls -ltr
-            echo "Main Values Files: $MAIN_VALUES_FILES_COMMAND"
-            echo "Command: helm upgrade $HELM_RELEASE_NAME $CHART --install --timeout=500s --cleanup-on-fail --kubeconfig=$KUBE_CONFIG_FILE --namespace=$NAMESPACE --kube-context=$CONTEXT -f $DEFAULT_VALUES_FILE_PATH -f $VALUES_FILE_PATH -f $VALUES_VERSIONS_PATH -f $VALUES_SECRETS_FILE_PATH $VALUES_FILES_COMMAND --dry-run"
-            helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
-            --cleanup-on-fail \
-            --atomic \
-            --kubeconfig="$KUBE_CONFIG_FILE" \
-            --debug \
-            --dry-run \
-            --namespace="$NAMESPACE" \
-            $MAIN_VALUES_FILES_COMMAND \
-            $VALUES_FILES_COMMAND
 
             helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
             --cleanup-on-fail \
@@ -260,6 +247,7 @@ function helm_deploy_custom_charts() {
             $MAIN_VALUES_FILES_COMMAND \
             $VALUES_FILES_COMMAND
     done
+    cd $ENVROOT
 
 }
 
@@ -373,12 +361,12 @@ else
         CLOUD_PLATFORM=$(scripts/deploy/config_cloud.sh)
         EXTERNAL_HELM_CHARTS=$(scripts/deploy/config_external_helm_charts.sh)
         HELM_CHARTS=$(scripts/deploy/config_helm.sh)
-        # HELM_CHARTS_S3=$(scripts/deploy/config_helm_s3.sh)
-        # APPLY=$(scripts/deploy/config_terraform_apply.sh)
-        # PLAN=$(scripts/deploy/config_terraform_plan.sh)
-        # DESTROY=$(scripts/deploy/config_terraform_destroy.sh)
-        # HELM_CHARTS_DIRECTORY=$(scripts/deploy/config_helm_directory.sh)
-        # ANSIBLE_DIRECTORY=$(scripts/deploy/config_ansible_directory.sh)
+        HELM_CHARTS_S3=$(scripts/deploy/config_helm_s3.sh)
+        APPLY=$(scripts/deploy/config_terraform_apply.sh)
+        PLAN=$(scripts/deploy/config_terraform_plan.sh)
+        DESTROY=$(scripts/deploy/config_terraform_destroy.sh)
+        HELM_CHARTS_DIRECTORY=$(scripts/deploy/config_helm_directory.sh)
+        ANSIBLE_DIRECTORY=$(scripts/deploy/config_ansible_directory.sh)
 fi
 
 if [[ ${PLAN} == "true" ]];then

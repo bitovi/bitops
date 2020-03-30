@@ -3,7 +3,6 @@
 set -e 
 
 function config_terraform_apply() {
-    count=$(shyaml get-value terraform.actions < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l)
     i=0
     while [ $i -lt $(shyaml get-value terraform.actions < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]
     do

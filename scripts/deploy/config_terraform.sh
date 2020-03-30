@@ -4,7 +4,6 @@ set -e
 
 function config_terraform() {
     echo "Running terraform config"
-    count=$(shyaml get-value terraform.actions < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l)
     i=0
     while [ $i -lt $(shyaml get-value terraform.actions < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]
     do

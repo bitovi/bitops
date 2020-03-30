@@ -3,7 +3,6 @@
 set -e 
 
 function config_external_helm_charts() {
-    count=$(shyaml get-value helm < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l)
     i=0
     while [ $i -lt $(shyaml get-value helm < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]
     do
