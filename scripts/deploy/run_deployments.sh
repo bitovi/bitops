@@ -231,6 +231,7 @@ function helm_deploy_custom_charts() {
             # Check if namespace exists and create it if it doesn't.
             echo "Checking NAMESPACE: $NAMESPACE:"
             echo "Checking NS in System: $CHECK_NS:"
+            echo "Helm Command: helm upgrade $HELM_RELEASE_NAME ./$CHART --cleanup-on-fail --atomic --install --timeout=600s $MAIN_VALUES_FILES_COMMAND  $VALUES_FILES_COMMAND"
             if [ -n "$CHECK_NS" ];
             then
                 echo "The namespace $NAMESPACE exists. Skipping creation..."
@@ -238,14 +239,33 @@ function helm_deploy_custom_charts() {
                 echo "The namespace $NAMESPACE does not exists. Creating..."
                 kubectl --kubeconfig $KUBE_CONFIG_FILE create namespace $NAMESPACE
             fi
-
-            helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
-            --cleanup-on-fail \
-            --atomic \
-            --kubeconfig="$KUBE_CONFIG_FILE" \
-            --namespace="$NAMESPACE" \
-            $MAIN_VALUES_FILES_COMMAND \
-            $VALUES_FILES_COMMAND
+ 
+            RESULT="$(helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE" | tail -1 | awk '{print $11}')"
+            if [ "$RESULT" == "complete" ] || [ "$RESULT" == "successfully" ];
+            then
+                helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
+                --cleanup-on-fail \
+                --atomic \
+                --kubeconfig="$KUBE_CONFIG_FILE" \
+                --namespace="$NAMESPACE" \
+                $MAIN_VALUES_FILES_COMMAND \
+                $VALUES_FILES_COMMAND
+            else
+                if [ "$RESULT" == "" ];
+                then
+                    echo 'New install...'
+                    helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" \
+                    $MAIN_VALUES_FILES_COMMAND \
+                    $VALUES_FILES_COMMAND
+                else
+                    echo "The previous instalation failed."
+                    helm delete $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
+                    sleep 5
+                    helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" \
+                    $MAIN_VALUES_FILES_COMMAND \
+                    $VALUES_FILES_COMMAND
+                fi
+            fi
     done
     cd $ENVROOT
 
