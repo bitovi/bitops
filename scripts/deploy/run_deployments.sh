@@ -203,7 +203,7 @@ function helm_deploy_custom_charts() {
             MAIN_VALUES_FILES_COMMAND=""
             for values_file in $VALUES_FILE_PATH $VALUES_SECRETS_FILE_PATH $VALUES_VERSIONS_FILE_PATH $DEFAULT_VALUES_FILE_PATH
             do
-                if [ -e "$values_file" ];
+                if [ -e "$values_file" ] && [[ -s "$values_file" ]];
                 then
                     MAIN_VALUES_FILES_COMMAND="$MAIN_VALUES_FILES_COMMAND -f $values_file "
                 else
@@ -239,10 +239,23 @@ function helm_deploy_custom_charts() {
                 echo "The namespace $NAMESPACE does not exists. Creating..."
                 kubectl --kubeconfig $KUBE_CONFIG_FILE create namespace $NAMESPACE
             fi
- 
-            RESULT="$(helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE" | tail -1 | awk '{print $11}')"
+
+            RESULT=""
+            helm list --all --all-namespaces --kubeconfig="$KUBE_CONFIG_FILE" > /tmp/check_release.txt
+	    
+	        if [ -n "$(grep "$HELM_RELEASE_NAME" /tmp/check_release.txt)" ];
+            then 
+                echo "Checking last deployment status"
+                helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
+                RESULT="$(helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE" | tail -1 | awk '{print $11}')"
+                echo "Helm deployment status: $RESULT "
+            else
+                echo "No history"
+            fi
+
             if [ "$RESULT" == "complete" ] || [ "$RESULT" == "successfully" ];
             then
+                echo "Upgrading Release: $HELM_RELEASE_NAME"
                 helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout=600s \
                 --cleanup-on-fail \
                 --atomic \
@@ -251,16 +264,16 @@ function helm_deploy_custom_charts() {
                 $MAIN_VALUES_FILES_COMMAND \
                 $VALUES_FILES_COMMAND
             else
-                if [ "$RESULT" == "" ];
+                if [ -z "$RESULT" ];
                 then
-                    echo 'New install...'
+                    echo 'New installation...'
                     helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" \
                     $MAIN_VALUES_FILES_COMMAND \
                     $VALUES_FILES_COMMAND
                 else
                     echo "The previous instalation failed."
                     helm delete $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
-                    sleep 5
+                    sleep 10
                     helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" \
                     $MAIN_VALUES_FILES_COMMAND \
                     $VALUES_FILES_COMMAND
