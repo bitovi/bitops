@@ -271,12 +271,8 @@ function helm_deploy_custom_charts() {
                     $MAIN_VALUES_FILES_COMMAND \
                     $VALUES_FILES_COMMAND
                 else
-                    echo "The previous instalation failed."
-                    helm delete $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
-                    sleep 10
-                    helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" \
-                    $MAIN_VALUES_FILES_COMMAND \
-                    $VALUES_FILES_COMMAND
+                    echo "The previous instalation failed. Rolling back to last successful release."
+                    helm rollback $HELM_RELEASE_NAME 0 --kubeconfig="$KUBE_CONFIG_FILE" --namespace $NAMESPACE
                 fi
             fi
     done
