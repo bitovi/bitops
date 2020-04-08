@@ -125,18 +125,25 @@ function get_context() {
        echo "Unable to find KUBECONFIG_BASE64. Attempting to retrieve from Terraform..."
        if [ -z "$TERRAFORM_DIRECTORY" ]
        then
-            echo "Error: Unable to extract kubeconfig from Terraform. Exiting..."
-            return 1
+            echo "Using default terraform directory."
+            scripts/deploy/terraform_apply.sh 
+            TERRAFORM_APPLIED=1
+            mkdir -p "$TEMPDIR"/.kube
+            touch "$TEMPDIR"/.kube/config
+            /root/.local/bin/aws sts get-caller-identity
+            /root/.local/bin/aws eks update-kubeconfig --name "$CURRENT_ENVIRONMENT-$CLUSTER_NAME" --region $AWS_DEFAULT_REGION
+            create_config_map
+            return 0
         else
-            terraform_plan
+            scripts/deploy/terraform_plan.sh
             if [ "$APPLY" == "true" ] && [ -n "$CLUSTER_NAME" ]
             then
-                terraform_apply 
+                scripts/deploy/terraform_apply.sh 
                 TERRAFORM_APPLIED=1
                 mkdir -p "$TEMPDIR"/.kube
                 touch "$TEMPDIR"/.kube/config
                 /root/.local/bin/aws sts get-caller-identity
-                /root/.local/bin/aws eks update-kubeconfig --name "$CLUSTER_NAME"
+                /root/.local/bin/aws eks update-kubeconfig --name "$CURRENT_ENVIRONMENT-$CLUSTER_NAME" --region $AWS_DEFAULT_REGION
                 create_config_map
             else
                 echo "Error: CLUSTER_NAME is empty or TERRAFORM_APPLY not set to true"
@@ -272,7 +279,7 @@ function helm_deploy_custom_charts() {
                     $VALUES_FILES_COMMAND
                 else
                     echo "The previous instalation failed. Rolling back to last successful release."
-                    helm rollback $HELM_RELEASE_NAME 0 --kubeconfig="$KUBE_CONFIG_FILE" --namespace $NAMESPACE
+                    helm rollback $HELM_RELEASE_NAME 0 --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
                 fi
             fi
     done
