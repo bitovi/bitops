@@ -9,12 +9,11 @@ RUN apt-get update -y \
     && gem install awspec --no-rdoc --no-ri  \
     && gem install kitchen-terraform --version 5.3.0 --no-rdoc --no-ri \
     && gem install kitchen-verifier-awspec --no-rdoc --no-ri \
-    && mkdir -p /opt/deploy
-WORKDIR /opt/deploy
+    && mkdir -p /opt/bitops
+WORKDIR /opt/bitops
 COPY . .
-COPY entrypoint.sh /opt/deploy/
+COPY entrypoint.sh /opt/bitops/
 RUN pip3 install -r requirements.txt
 RUN bash -x scripts/setup/install_tools.sh
 
-#CMD ["ping", "8.8.8.8"]
-ENTRYPOINT [ "/opt/deploy/entrypoint.sh" ]
+ENTRYPOINT [ "/opt/bitops/scripts/deploy.sh" ]
