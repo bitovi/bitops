@@ -11,41 +11,51 @@ BitOps is a docker container, built as a boiler plate devops engine for deployin
 
 ## Configuration Options
 
-To customize the defaults in the docker 
-
 ```bash
 
-./scripts/deploy/run_deployments.sh --help
+- Required Environment Variables:
+  AWS_ACCESS_KEY_ID - Your AWS Access Key.
+  AWS_SECRET_ACCESS_KEY - Your AWS Secret Access Key.
+  AWS_DEFAULT_REGION - The AWS Region where you want to launch your resources.
+  ENVIRONMENT - The environment to use: qa or prod etc.
+  KUBECONFIG_BASE64 - The Base 64 value of the contents of your ./kube/config
 
-options:
---help 	 Show options for this script
---kubeconfig 	 Pass in the environment variable containing the kubernetes config. If left empty, terraform will create a new kubernetes cluster.
---terraform-directory 	 The directory for the terraform deployment.
---environment 	  The environment to use: qa or prod
---terraform-plan 	  Run Terraform plan. Expected values: true or false.
---terraform-apply 	 Deploy terraform. Expected values: true or false.
---terraform-destroy 	 Destroy terraform stack. Expected values: true or false.
---helm-charts 	 The directory containing the helm charts.
---ansible-directory 	 The directory containing your ansible playbooks.
---install-prometheus 	 Install Prometheus on the cluster. Expected values: true or false
---install-grafana 	 Install Grafana on the cluster. Expected values: true or false.
---install-loki 	 Install Loki on the cluster. Expected values: true or false.
---domain-name 	 Set the domain name. Required for Prometheus and Grafana.
---namespace 	 Set the namespace to be used by Prometheus and Grafana.
---install-default-charts 	 Install Prometheus, Grafana and Loki on the cluster. Expected values: true or false.
+
+- Optional Environment variables:
+  ANSIBLE_DIRECTORY - The directory containing your ansible playbooks.
+  ANSIBLE_PLAYBOOKS - The name of your ansible playbook.
+  DEBUG - Set this option to 1 to enable debugging your Helm Stack.
+  EXTERNAL_HELM_CHARTS - External Helm chart you need to install. The arguments for each repo should be separated a comma. Use the form: <NAME>,<REPO_KEY>,<REPO_URL>.
+  TERRAFORM_DIRECTORY - Location of the terraform directory.
+  TF_APPLY - Set this option to true to deploy your Terraform stack. 
+  NAMESPACE - The namespace for the helm chart.
+
 
 ```
 
-## Examples
+## AWS Examples.
 
 - Using the runner to deploy a Helm Chart.
 
 ```bash
-docker-compose exec -T bitops /bin/bash -cx "scripts/deploy/run_deployments.sh --helm-charts /opt/deploy/qa/microservices/helm-chart --environment qa"
+docker run --rm --name qa-bitops \
+  -e KUBECONFIG_BASE64=$(cat /tmp/cluster.yaml | base64) \
+  -e TF_APPLY=true -e CLUSTER_NAME=qa-bitops \
+  -e ENVIRONMENT=qa -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> \
+  -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
+  -e AWS_DEFAULT_REGION=<REGION> -e HELM_CHARTS=true \
+  -v $(pwd):/opt/bitops_deployment qa-bitops:latest
 ```
 
 - Using the runner to deploy Terraform.
 
 ```bash
-docker-compose exec -T bitops /bin/bash -cx "scripts/deploy/run_deployments.sh --terraform-directory /opt/deploy/terraform --terraform-apply true"
+docker run --rm --name qa-bitops \
+  -e KUBECONFIG_BASE64=$(cat /tmp/cluster.yaml | base64) \
+  -e TF_APPLY=true -e CLUSTER_NAME=qa-bitops \
+  -e ENVIRONMENT=qa -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> \
+  -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
+  -e AWS_DEFAULT_REGION=<REGION> \
+  -v $(pwd):/opt/bitops_deployment qa-bitops:latest \
+  --entrypoint="/bin/sh" /opt/bitops/scripts/terraform/terraform_apply.sh
 ```

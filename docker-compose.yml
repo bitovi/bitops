@@ -8,6 +8,6 @@ services:
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
       - KUBECONFIG_BASE64=${KUBECONFIG_BASE64}
     volumes:
-      - .:/opt/deploy
-    entrypoint: /opt/deploy/entrypoint.sh
+      - .:/opt/bitops
+    entrypoint: /opt/bitops/entrypoint.sh
 
