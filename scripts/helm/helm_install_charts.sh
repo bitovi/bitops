@@ -86,6 +86,10 @@ else
     path="$ENVROOT/$HELM_CHARTS_DIRECTORY/$ENVIRONMENT/helm"
 fi
 
+#Check if nodes are available
+
+kubectl get nodes --kubeconfig=$KUBE_CONFIG_FILE
+
 cd $path
 for subDir in `ls`
 do
@@ -212,13 +216,13 @@ do
     then 
         echo "Checking last deployment status"
         helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
-        RESULT="$(helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE" | tail -1 | awk '{print $11}')"
+        RESULT="$(helm history $HELM_RELEASE_NAME --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE" --output yaml | shyaml get-value -1 | shyaml get-value status)"
         echo "Helm deployment status: $RESULT "
     else
         echo "No history"
     fi
 
-    if [ "$RESULT" == "complete" ] || [ "$RESULT" == "successfully" ];
+    if [ "$RESULT" == "complete" ] || [ "$RESULT" == "deployed" ];
     then
         echo "Upgrading Release: $HELM_RELEASE_NAME"
         helm upgrade $HELM_RELEASE_NAME ./$CHART --install --timeout="$TIMEOUT" \
@@ -226,18 +230,20 @@ do
         --atomic \
         --kubeconfig="$KUBE_CONFIG_FILE" \
         --namespace="$NAMESPACE" \
+        $HELM_DEBUG_COMMAND \
         $MAIN_VALUES_FILES_COMMAND \
         $VALUES_FILES_COMMAND
     else
         if [ -z "$RESULT" ];
         then
             echo 'New installation...'
-            helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" --timeout="$TIMEOUT" \
+            helm install $HELM_RELEASE_NAME ./$CHART --kubeconfig="$KUBE_CONFIG_FILE" --namespace="$NAMESPACE" --atomic --timeout="$TIMEOUT" \
+            $HELM_DEBUG_COMMAND \
             $MAIN_VALUES_FILES_COMMAND \
             $VALUES_FILES_COMMAND
         else
             echo "The previous instalation failed. Rolling back to last successful release."
-            helm rollback $HELM_RELEASE_NAME 0 --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE"
+            helm rollback $HELM_RELEASE_NAME 0 --namespace $NAMESPACE --kubeconfig="$KUBE_CONFIG_FILE" --cleanup-on-fail $HELM_DEBUG_COMMAND
         fi
     fi
 

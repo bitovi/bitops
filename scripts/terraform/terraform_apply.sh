@@ -22,8 +22,10 @@ fi
 if [ -n "$TERRAFORM_DIRECTORY" ]; then
     TERRAFORM_ROOT=$TERRAFORM_DIRECTORY
 else
-    TERRAFORM_ROOT=$DEPLOYMENT_DIR/$ENVIRONMENT/terraform/
+    TERRAFORM_ROOT=$TEMPDIR/$ENVIRONMENT/terraform/
 fi
+
+echo "Terraform Root: $TERRAFORM_ROOT"
 
 # Check for Before Deploy Scripts
 
@@ -33,7 +35,7 @@ if [ -d "$TERRAFORM_ROOT/bitops-before-deploy.d/" ];then
         echo "Running Before Deploy Scripts"
         END=$(ls $TERRAFORM_ROOT/bitops-before-deploy.d/*.sh | wc -l)
         for ((i=1;i<=END;i++)); do
-            if [ -x "$i" ]; then
+            if [[ -x "$i" ]]; then
                 /bin/bash -x $TERRAFORM_ROOT/bitops-before-deploy.d/$i.sh
             else
                 echo "Before deploy script is not executible. Skipping..."
@@ -56,13 +58,13 @@ fi
 
 # Check for After Deploy Scripts
 
-if [ -d "$DEPLOYMENT_DIR/$ENVIRONMENT/terraform/bitops-after-deploy.d/" ];then
+if [ -d "$TERRAFORM_ROOT/bitops-after-deploy.d/" ];then
     AFTER_DEPLOY=$(ls $TERRAFORM_ROOT/bitops-after-deploy.d/)
     if [[ -n ${AFTER_DEPLOY} ]];then
         echo "Running After Deploy Scripts"
         END=$(ls $TERRAFORM_ROOT/bitops-after-deploy.d/*.sh | wc -l)
         for ((i=1;i<=END;i++)); do
-            if [ -x "$i" ]; then
+            if [[ -x "$i" ]]; then
                 /bin/bash -x $TERRAFORM_ROOT/bitops-after-deploy.d/$i.sh
             else
                 echo "After deploy script is not executible. Skipping..."

@@ -22,7 +22,7 @@ fi
 if [ -n "$TERRAFORM_DIRECTORY" ]; then
     TERRAFORM_ROOT=$TERRAFORM_DIRECTORY
 else
-    TERRAFORM_ROOT=$DEPLOYMENT_DIR/$ENVIRONMENT/terraform/
+    TERRAFORM_ROOT=$TEMPDIR/$ENVIRONMENT/terraform/
 fi
 
 # Run Before Deploy Scripts.

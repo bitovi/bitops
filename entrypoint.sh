@@ -108,14 +108,16 @@ get_context
 }
 
 function create_config_map() {
+    echo "Creating config map."
     curl -o aws-auth-cm.yaml https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/aws-auth-cm.yaml
-    #TMP_WORKER_ROLE=$(terraform output | grep role | awk -F\rolearn: {'print $2'} | sed 's/^ //')
-    TMP_WORKER_ROLE=$(shyaml get-value data.mapRoles < $TEMPDIR/config_map_aws_auth.yaml | grep rolearn | sed 's/- rolearn: //')
+    TMP_WORKER_ROLE=$(shyaml get-value role < $TEMPDIR/opscruise-test/terraform/bitops.config.yaml)
     AWS_ROLE_PREFIX=$(echo $TMP_WORKER_ROLE | awk -F\/ {'print $1'})
     ROLE_NAME=$(echo $TMP_WORKER_ROLE | awk -F\/ {'print $2'})
     WORKER_ROLE=$AWS_ROLE_PREFIX'\/'$ROLE_NAME
-    cat aws-auth-cm.yaml   | sed 's/\<ARN of instance role (not instance profile)\>/'"$WORKER_ROLE"'/'g > aws-auth-cm.yaml-tmp
+    cat aws-auth-cm.yaml | sed 's/ARN of instance role (not instance profile)//g' | sed 's/[<]/'"$ROLE"'/g' | sed 's/[>]//g' > aws-auth-cm.yaml-tmp
+    rm -rf aws-auth-cm.yaml
     mv aws-auth-cm.yaml-tmp aws-auth-cm.yaml
+
     kubectl apply --kubeconfig="$KUBE_CONFIG_FILE" -f aws-auth-cm.yaml
 }
 
@@ -127,23 +129,32 @@ function get_context() {
        then
             echo "Using default terraform directory."
             /root/.local/bin/aws sts get-caller-identity
-            $SCRIPTS_DIR/terraform/terraform_apply.sh
+            bash -x $SCRIPTS_DIR/terraform/terraform_apply.sh
             mkdir -p "$TEMPDIR"/.kube
             touch "$TEMPDIR"/.kube/config
             /root/.local/bin/aws eks update-kubeconfig --name "$CLUSTER_NAME" --region $AWS_DEFAULT_REGION --kubeconfig "$TEMPDIR"/.kube/config
-            create_config_map
+            #create_config_map
             export KUBECONFIG_BASE64=$(cat "$TEMPDIR"/.kube/config | base64)
             return 0
         else
             $SCRIPTS_DIR/deploy/terraform_plan.sh
             if [ "$APPLY" == "true" ] && [ -n "$CLUSTER_NAME" ]
             then
-                $SCRIPTS_DIR/deploy/terraform_apply.sh 
+                bash -x $SCRIPTS_DIR/deploy/terraform_apply.sh 
                 mkdir -p "$TEMPDIR"/.kube
                 touch "$TEMPDIR"/.kube/config
                 /root/.local/bin/aws sts get-caller-identity
                 /root/.local/bin/aws eks update-kubeconfig --name "$CLUSTER_NAME" --region $AWS_DEFAULT_REGION --kubeconfig "$TEMPDIR"/.kube/config
-                create_config_map
+                echo "Creating config map."
+                curl -o aws-auth-cm.yaml https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/aws-auth-cm.yaml
+                TMP_WORKER_ROLE=$(shyaml get-value role < $TEMPDIR/opscruise-test/terraform/bitops.config.yaml)
+                AWS_ROLE_PREFIX=$(echo $TMP_WORKER_ROLE | awk -F\/ {'print $1'})
+                ROLE_NAME=$(echo $TMP_WORKER_ROLE | awk -F\/ {'print $2'})
+                WORKER_ROLE=$AWS_ROLE_PREFIX'\/'$ROLE_NAME
+                cat aws-auth-cm.yaml | sed 's/ARN of instance role (not instance profile)//g' | sed 's/[<]/'"$ROLE"'/g' | sed 's/[>]//g' > aws-auth-cm.yaml-tmp
+                rm -rf aws-auth-cm.yaml
+                mv aws-auth-cm.yaml-tmp aws-auth-cm.yaml
+                kubectl apply --kubeconfig="$KUBE_CONFIG_FILE" -f aws-auth-cm.yaml
             else
                 echo "Error: CLUSTER_NAME is empty"
                 usage
@@ -180,17 +191,17 @@ fi
 
 if [[ ${TF_PLAN} == "true" ]];then
     echo "Running Terraform Plan"
-    $SCRIPTS_DIR/terraform/terraform_plan.sh
+    bash -x $SCRIPTS_DIR/terraform/terraform_plan.sh
 fi
 
 if [[ ${TF_APPLY} == "true" ]];then
     echo "Running Terraform Apply"
-    $SCRIPTS_DIR/terraform/terraform_apply.sh
+    bash -x $SCRIPTS_DIR/terraform/terraform_apply.sh
 fi
 
 if [[ ${TF_DESTROY} == "true" ]];then
     echo "Destroying Cluster"
-    $SCRIPTS_DIR/terraform/terraform_destroy.sh
+    bash -x $SCRIPTS_DIR/terraform/terraform_destroy.sh
 fi
 
 if [[ ${HELM_CHARTS} == "true" ]];then
@@ -203,7 +214,7 @@ then
     echo "EXTERNAL_HELM_CHARTS directory not set."
 else
     echo "Running External Helm Charts."
-    $SCRIPTS_DIR/helm/helm_install_external_charts.sh
+    bash -x $SCRIPTS_DIR/helm/helm_install_external_charts.sh
 fi
 
 if [ -z "$HELM_CHARTS_S3" ]
@@ -211,12 +222,12 @@ then
     echo "HELM_CHARTS_S3 not set."
 else
     echo "Adding S3 Helm Repo."
-    $SCRIPTS_DIR/helm/helm_install_charts_from_s3.sh 
+    bash -x $SCRIPTS_DIR/helm/helm_install_charts_from_s3.sh 
 fi
 
 if [[ ${ANSIBLE_PLAYBOOKS} == "true" ]];then
     echo "Running Ansible Playbooks"
-    $SCRIPTS_DIR/ansible/ansible_install_playbooks.sh
+    bash -x $SCRIPTS_DIR/ansible/ansible_install_playbooks.sh
 fi 
 
 # Cleanup Workspace

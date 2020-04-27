@@ -40,7 +40,7 @@ function install_kubectl() {
 
 
 function install_helm() {
-    if [[ "$HELM_VERSION" == '3.1.1' ]]
+    if [[ "$HELM_VERSION" == '3.2.0' ]]
     then
         wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
         tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
