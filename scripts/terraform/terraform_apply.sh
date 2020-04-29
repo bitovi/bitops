@@ -44,7 +44,9 @@ if [ -d "$TERRAFORM_ROOT" ]
 then 
     echo "Terraform directory not set. Using default directory."
     /root/.local/bin/aws sts get-caller-identity
-    cd "$TERRAFORM_ROOT"
+    # Copy Default Terraform values
+    echo "Copying TFVARS"
+    $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
     /usr/local/bin/terraform init -input=false
     /usr/local/bin/terraform apply -auto-approve
     terraform output config_map_aws_auth > $TEMPDIR/config_map_aws_auth.yaml

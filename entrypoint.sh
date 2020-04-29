@@ -14,7 +14,6 @@ export SCRIPTS_DIR="$BITOPS_DIR/scripts"
 export ERROR='\033[0;31m'
 export SUCCESS='\033[0;32m'
 export NC='\033[0m'
-export CLUSTER_NAME=""
 export CREATE_KUBECONFIG_BASE64="false"
 
 # ops repo paths
@@ -148,7 +147,7 @@ function get_context() {
         CREATE_KUBECONFIG_BASE64=true
         bash $SCRIPTS_DIR/terraform/terraform_apply.sh
         export KUBECONFIG_BASE64=$(cat "$TEMPDIR"/.kube/config | base64)
-    elif [ -z "$KUBECONFIG_BASE64" && "$TF_APPLY" == "false" ]; then
+    elif [ -z "$KUBECONFIG_BASE64" && "$TF_APPLY" == "false" && "$TEST" == "false" ]; then
         printf "${ERROR} You did not supply KUBECONFIG_BASE64 and you have chosen not to create a cluster.\n To create a cluster, set the environment variable TF_APPLY to true.${NC} "
         return 1
     elif [ -n "$KUBECONFIG_BASE64" ]; then
@@ -178,6 +177,13 @@ then
     printf "${ERROR}Your AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY is not set."
     return 1
 else
+    # Run Tests
+    if [ -n "$TEST" ]; then
+      printf "${SUCCESS} all arguments parsed successfully. Exiting... ${NC}" 
+      # Todo: Add more tests.
+      
+      exit 0
+    fi
     echo "Creating AWS Profile"
     create_aws_profile
 fi

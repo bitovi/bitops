@@ -23,4 +23,4 @@ build:
 - docker push 832297766686.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/bitovi/bitops:latest
 
 script: 
-- docker run --rm --name bitops bitops:latest
+- docker run --rm --name bitops -e CLUSTER_NAME=qa-bitops -e AWS_ACCESS_KEY_ID="${BITOPS_AWS_ACCESS_KEY_ID}" -e AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}" -e AWS_DEFAULT_REGION="${BITOPS_AWS_DEFAULT_REGION}" -e TEST=true -e ENVIRONMENT=qa bitops:latest

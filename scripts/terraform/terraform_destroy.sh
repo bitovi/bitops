@@ -33,6 +33,9 @@ fi
 
 if [ -d "$TERRAFORM_ROOT" ]
 then 
+    # Copy Default Terraform values
+    echo "Copying TFVARS"
+    $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
     echo "Terraform directory not set. Using default directory."
     /root/.local/bin/aws sts get-caller-identity
     cd "$TERRAFORM_ROOT"
