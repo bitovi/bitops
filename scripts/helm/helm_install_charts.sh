@@ -19,14 +19,14 @@ then
     echo "Creating temp directory: $TEMPDIR"
     if ! mkdir -p /tmp/bitops_deployment/.kube
     then 
-        echo "failed to create: $TEMPDIR"
+        printf "${ERROR}failed to create: $TEMPDIR"
     else 
         echo "Successfully created $TEMPDIR "
     fi
 
     if ! cp -rf /opt/bitops_deployment/* /tmp/bitops_deployment/
     then 
-        echo "failed to copy repo to: $TEMPDIR"
+        printf "${ERROR}failed to copy repo to: $TEMPDIR"
     else 
         echo "Successfully Copied repo to $TEMPDIR "
     fi
@@ -35,19 +35,19 @@ fi
 echo "Installing charts..."
 
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-  echo "environment variable (AWS_ACCESS_KEY_ID) not set"
+  printf "${ERROR}environment variable (AWS_ACCESS_KEY_ID) not set"
   exit 1
 fi
 if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-  echo "environment variable (AWS_SECRET_ACCESS_KEY) not set"
+  printf "${ERROR}environment variable (AWS_SECRET_ACCESS_KEY) not set"
   exit 1
 fi
 if [ -z "$AWS_DEFAULT_REGION" ]; then
-  echo "environment variable (AWS_DEFAULT_REGION) not set"
+  printf "${ERROR}environment variable (AWS_DEFAULT_REGION) not set"
   exit 1
 fi
 if [ -z "$ENVIRONMENT" ]; then
-  echo "environment variable (ENVIRONMENT) not set"
+  printf "${ERROR}environment variable (ENVIRONMENT) not set"
   exit 1
 fi
 if [ -n "$DEBUG" ]; then
@@ -55,15 +55,15 @@ if [ -n "$DEBUG" ]; then
   export HELM_DEBUG_COMMAND="--debug"
   echo "DEBUG ARGS: $HELM_DEBUG_COMMAND"
 fi
+if [ -n "$HELM_SECRETS_FILE_BASE64" ]; then
+    echo "$HELM_SECRETS_FILE_BASE64" | base64 -d > $TEMPDIR/default/values-secrets.yaml
+fi
 if [ -z "$NAMESPACE" ]; then
-  echo "environment variable (NAMESPACE) not set"
+  printf "${ERROR}environment variable (NAMESPACE) not set"
   exit 1
 fi
-if [ -z "$COPY_DEFAULT_CRDS" ]; then 
-  echo "environment variable (COPY_DEFAULT_CRDS) not set. Skipping "
-fi
 if [ -z "$KUBECONFIG_BASE64" ]; then
-  echo "environment variable (KUBECONFIG_BASE64) not set"
+  printf "${ERROR}environment variable (KUBECONFIG_BASE64) not set"
   exit 1
 else
   if [ -e "$TEMPDIR"/.kube/config ]; then
@@ -95,20 +95,12 @@ for subDir in `ls`
 do
 
     # Check for Before Deploy Scripts
-
-    if [ -d "$CHART_ROOT/bitops-before-deploy.d/" ];then
-        BEFORE_DEPLOY=$(ls $CHART_ROOT/bitops-before-deploy.d/)
-        if [[ -n ${BEFORE_DEPLOY} ]];then
-            echo "Running Before Deploy Scripts"
-            END=$(ls $CHART_ROOT/bitops-before-deploy.d/*.sh | wc -l)
-            for ((i=1;i<=END;i++)); do
-                if [ -x "$i" ]; then
-                    /bin/bash -x $CHART_ROOT/bitops-before-deploy.d/$i.sh
-                else
-                    echo "Before deploy script is not executible. Skipping..."
-                    # Should we exit with an error?
-                fi
-            done
+    bash -x $SCRIPTS_DIR/deploy/before-deploy.sh $path/$subDir
+    
+    # Check if we should copy CRDs
+    if [ -n "$COPY_DEFAULT_CRDS" ]; then 
+        if [ -d "$COPY_DEFAULT_CRDS/$subDir/crd"]; then
+            echo "Copying CRDs"
         fi
     fi
 
@@ -152,19 +144,63 @@ do
 
     # Copy default CRDs.
 
-    # crds/ directory from default directory
-    # echo "  crds/ ($DEFAULT_CHART_ROOT/crds): $COPY_DEFAULT_CRDS"
-    if [ -n "$COPY_DEFAULT_CRDS" ]; then
+    if [ "$(shyaml get-value copy_defaults.crds < ./$subDir/bitops-config.yaml)" == 'True' ]; then
         echo "COPY_DEFAULT_CRDS set"
-        if [ -d $DEFAULT_CHART_ROOT/crds ]; then
-            echo "    default crds/ exist"
+        if [ -d $DEFAULT_CHART_ROOT/$subDir/crds ]; then
+            echo "default crds/ exist"
             # TODO: handle if $CHART_ROOT/crds already exists (merge vs overwrite)?
-            cp -rf $DEFAULT_CHART_ROOT/crds $CHART_ROOT
+            cp -rf $DEFAULT_CHART_ROOT/crds/*.yaml ./$subDir/crds/
         else
-            echo "    crds/ does not exist"
+            printf "${ERROR} crds/ does not exist...${NC}"
         fi
     else
         echo "COPY_DEFAULT_CRDS not set"
+    fi
+
+    # Copy default Charts.
+
+    if [ "$(shyaml get-value copy_defaults.charts < ./$subDir/bitops-config.yaml)" == 'True' ]; then
+        echo "COPY_DEFAULT_CHARTS set"
+        if [ -d $DEFAULT_CHART_ROOT/$subDir/charts ]; then
+            echo "default crds/ exist"
+            # TODO: handle if $CHART_ROOT/crds already exists (merge vs overwrite)?
+            cp -rf $DEFAULT_CHART_ROOT/charts/*.yaml ./$subDir/charts/
+        else
+            printf "${ERROR} charts/ does not exist...${NC}"
+        fi
+    else
+        echo "COPY_DEFAULT_CHARTS not set"
+        printf "${SUCCESS} Helm deployment was successful...${NC}"
+    fi
+
+    # Copy default Templates.
+
+    if [ "$(shyaml get-value copy_defaults.templates < ./$subDir/bitops-config.yaml)" == 'True' ]; then
+        echo "COPY_DEFAULT_TEMPLATES set"
+        if [ -d $DEFAULT_CHART_ROOT/$subDir/templates ]; then
+            echo "default crds/ exist"
+            # TODO: handle if $CHART_ROOT/crds already exists (merge vs overwrite)?
+            cp -rf $DEFAULT_CHART_ROOT/templates/*.yaml ./$subDir/templates/
+        else
+            printf "${ERROR}  templates/ does not exist...${NC}"
+        fi
+    else
+        echo "COPY_DEFAULT_TEMPLATES not set"
+    fi
+
+    # Copy default Schema.
+
+    if [ "$(shyaml get-value copy_defaults.schema < ./$subDir/bitops-config.yaml)" == 'True' ]; then
+        echo "COPY_DEFAULT_SCHEMA set"
+        if [ -d $DEFAULT_CHART_ROOT/$subDir/schema ]; then
+            echo "default crds/ exist"
+            # TODO: handle if $CHART_ROOT/crds already exists (merge vs overwrite)?
+            cp -rf $DEFAULT_CHART_ROOT/templates/*.yaml ./$subDir/templates/
+        else
+            printf "${ERROR}  schema/ does not exist...${NC}"
+        fi
+    else
+        echo "COPY_DEFAULT_SCHEMA not set"
     fi
 
     # Handle versions files.
@@ -249,29 +285,17 @@ do
 
     # Run After Deploy Scripts if any.
 
-    if [ -d "$CHART_ROOT/bitops-after-deploy.d/" ];then
-        AFTER_DEPLOY=$(ls $CHART_ROOT/bitops-after-deploy.d/)
-        if [[ -n ${AFTER_DEPLOY} ]];then
-            echo "Running After Deploy Scripts"
-            END=$(ls $CHART_ROOT/bitops-after-deploy.d/*.sh | wc -l)
-            for ((i=1;i<=END;i++)); do
-                if [ -x "$i" ]; then
-                    /bin/bash -x $CHART_ROOT/bitops-after-deploy.d/$i.sh
-                else
-                    echo "After deploy script is not executible. Skipping..."
-                    # Should we exit with an error?
-                fi
-            done
-        fi
-    fi
+    bash -x $SCRIPTS_DIR/deploy/after-deploy.sh $path/$subDir
 
 done
 cd $ENVROOT
+printf "${SUCCESS} Helm deployment was successful...${NC}"
 
 
-# TODO: decode $HELM_SECRETS_FILE_BASE64 into $TEMPDIR/values-secrets.yaml
+
 # TODO: charts/
 # TODO: templates/
 # TODO: values.schema.json
-# TODO: namespace.yaml
 # TODO: kubefiles/
+#  - Additional configuration
+#  - Example: Grafana dashboards.

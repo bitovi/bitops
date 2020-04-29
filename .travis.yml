@@ -1,7 +1,5 @@
 language: python3
 
-env:
-    DOCKER_COMPOSE_VERSION: 1.25.4
 services:
 - docker
 
@@ -14,22 +12,15 @@ before_install:
 - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 - sudo apt-get update -y
 - sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-- curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-- chmod +x docker-compose
-- sudo mv docker-compose /usr/local/bin/
-- docker-compose --version
 - pip install awscli
 - which aws
 - export PATH=$PATH:$HOME/.local/bin
 
 build:
-- eval $(aws ecr get-login-password | docker login --username AWS --password-stdin 552429036204.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/bitops/terraform-mgr)
-- docker build -t bitops/terraform-mgr .
-- docker tag bitops/terraform-mgr:latest 552429036204.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/bitops/terraform-mgr:latest
-- docker push 552429036204.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/bitops/terraform-mgr:latest
+- eval $(aws ecr get-login-password | docker login --username AWS --password-stdin 832297766686.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/bitovi/bitops:latest)
+- docker build -t bitovi/bitops .
+- docker tag bitovi/bitops:latest 832297766686.dkr.ecr.$AWS_DEFAULT_REGION..amazonaws.com/bitovi/bitops:latest
+- docker push 832297766686.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/bitovi/bitops:latest
 
 script: 
-- docker-compose up -d --build && sleep 5
-- docker-compose exec bitops /bin/bash -c "ls -ltr /usr/local/bin"
-- docker-compose exec bitops /bin/bash -c "cd ./terraform && /usr/local/bin/terraform init && /usr/local/bin/terraform plan"
-- docker-compose down
+- docker run --rm --name bitops bitops:latest
