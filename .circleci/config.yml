@@ -13,8 +13,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --no-cache \
-              py-pip=9.0.0-r1
+            apt-get update -y && \
+            add-apt-repository ppa:deadsnakes/ppa && \
+            apt-get update && \
+            apt-get install -y software-properties-common libsodium-dev curl jq python3.7
             pip install \
               docker-compose==1.12.0 \
               awscli==1.17.7
