@@ -6,8 +6,8 @@ workflows:
           context: bitops
 jobs:
   build:
-    docker:
-      - image: docker:17.05.0-ce-git
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
       - run:
