@@ -47,7 +47,9 @@ then
     # Copy Default Terraform values
     echo "Copying TFVARS"
     $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
+    cd "$TERRAFORM_ROOT"
     /usr/local/bin/terraform init -input=false
+    /usr/local/bin/terraform plan
     /usr/local/bin/terraform apply -auto-approve
     terraform output config_map_aws_auth > $TEMPDIR/config_map_aws_auth.yaml
     if [ "$CREATE_KUBECONFIG_BASE64" == "true" && -z "$KUBECONFIG_BASE64" ]; then
