@@ -6,12 +6,10 @@ workflows:
           context: bitops
 jobs:
   build:
-    working_directory: .
     docker:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Install dependencies
           command: |
@@ -20,19 +18,13 @@ jobs:
             pip install \
               docker-compose==1.12.0 \
               awscli==1.17.7
-
       - run:
           name: Run tests
           command: |
-            docker run --rm --name bitops -e CLUSTER_NAME=qa-bitops -e AWS_ACCESS_KEY_ID="${BITOPS_AWS_ACCESS_KEY_ID}" -e AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}" -e AWS_DEFAULT_REGION="${BITOPS_AWS_DEFAULT_REGION}" -e TEST=true -e ENVIRONMENT=opscruise-test3 bitops:latest
-
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -t bitops .
-
+              docker build -t bitops .
+              docker run --rm --name bitops -e CLUSTER_NAME=qa-bitops -e AWS_ACCESS_KEY_ID="${BITOPS_AWS_ACCESS_KEY_ID}" -e AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}" -e AWS_DEFAULT_REGION="${BITOPS_AWS_DEFAULT_REGION}" -e TEST=true -e ENVIRONMENT=opscruise-test3 bitops:latest
       - deploy:
-          name: Push application Docker image
+          name: Push docker image to ECR
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               login="$(aws ecr get-login-password | docker login --username AWS --password-stdin ${ECR_ENDPOINT}/bitovi/bitops:latest)"
