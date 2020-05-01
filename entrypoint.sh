@@ -9,12 +9,14 @@ export ENVROOT="$TEMPDIR/$ENVIRONMENT"
 export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
 export HELM_RELEASE_NAME=""
 export HELM_DEBUG_COMMAND=""
+export HELM_DEPLOY=${HELM_CHARTS:=false}
 export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
 export ERROR='\033[0;31m'
 export SUCCESS='\033[0;32m'
 export NC='\033[0m'
 export CREATE_KUBECONFIG_BASE64="false"
+export TERRAFORM_APPLIED="false"
 
 # ops repo paths
 ROOT_DIR="/opt/bitops_deployment"
@@ -131,38 +133,58 @@ function create_config_map() {
 }
 
 function get_context() {
+    printf "${ERROR}HELM_DEPLOY: $HELM_DEPLOY...... ${NC}"
     if [ -n "$CLUSTER_NAME" ]; then
         echo "Using $CLUSTER_NAME cluster..."
     else
         CLUSTER_NAME=$(shyaml get-value cluster < "$TEMPDIR/$ENVIRONMENT"/terraform/bitops.config.yaml || true)
         CLUSTER_NAME=$(echo $CLUSTER_NAME | sed 's/true//g')
         if [ -z "$CLUSTER_NAME" ]; then
-            printf "${ERROR} If you already have a cluster. please set the CLUSTER_NAME environment variable.${NC} "
+            printf "${ERROR} Please set the CLUSTER_NAME environment variable. If you do not have a cluster set the TERRAFORM_APPLY to true .${NC} "
             return 1 
         fi
     fi
-    if [ -z "$KUBECONFIG_BASE64" && -z "$TF_APPLY" ] || [ -z "$KUBECONFIG_BASE64" && "$TF_APPLY" == "true" ]
+
+    if [ -z "$KUBECONFIG_BASE64" ]
     then 
-        echo "Unable to find KUBECONFIG_BASE64. Attempting to retrieve KUBECONFIG from Terraform..."
-        CREATE_KUBECONFIG_BASE64=true
-        bash $SCRIPTS_DIR/terraform/terraform_apply.sh
-        export KUBECONFIG_BASE64=$(cat "$TEMPDIR"/.kube/config | base64)
-    elif [ -z "$KUBECONFIG_BASE64" && "$TF_APPLY" == "false" && "$TEST" == "false" ]; then
-        printf "${ERROR} You did not supply KUBECONFIG_BASE64 and you have chosen not to create a cluster.\n To create a cluster, set the environment variable TF_APPLY to true.${NC} "
-        return 1
-    elif [ -n "$KUBECONFIG_BASE64" ]; then
-        #create config file
-        echo "Creating kubeconfig file"
-        mkdir -p "$TMPDIR"/.kube
-        echo "${KUBECONFIG_BASE64}" | base64 -d > config
-        mv config "$TEMPDIR"/.kube/config
-        export KUBE_CONFIG_FILE="$TEMPDIR"/.kube/config
+        echo "${ERROR}KUBECONFIG is empty${NC}"
+        if [ -z "$TERRAFORM_APPLY" ] || [ "$TERRAFORM_APPLY" == "true" ]; then
+          echo "${ERROR}TERRAFORM_APPLY is empty or TERRAFORM_APPLY=false${NC}"
+          echo "Unable to find KUBECONFIG_BASE64. Attempting to retrieve KUBECONFIG from Terraform..."
+          echo "This will create an EKS Cluster in AWS. Charges may will apply."
+          CREATE_KUBECONFIG_BASE64=true
+          bash $SCRIPTS_DIR/terraform/terraform_apply.sh
+          export KUBECONFIG_BASE64=$(cat "$TEMPDIR"/.kube/config | base64)
+        fi
     else
+        if [[ "${TERRAFORM_APPLY}" == "true" ]]; then
+          echo "${ERROR}KUBECONFIG is set and TERRAFORM_APPLY=true${NC}"
+          #create config file
+          HELM_DEPLOY=true
+          create_kubeconfig
+          bash $SCRIPTS_DIR/terraform/terraform_apply.sh
+        else
+           echo "${ERROR}KUBECONFIG is set and TERRAFORM_APPLY=false${NC}"
+          #create config file
+          HELM_DEPLOY=true
+          create_kubeconfig
+        fi
+    fi
+     printf "${ERROR}HELM_DEPLOY: $HELM_DEPLOY...... ${NC}"
+    if  [ -z "$KUBECONFIG_BASE64" ] && [[ ${TERRAFORM_APPLY} == "false" ]] && [[ ${TEST} == "false" ]]; then
         printf "${ERROR} You did not supply KUBECONFIG_BASE64 and you have chosen not to create a cluster.\n
-        To create a cluster, set the environment variable TF_APPLY to true.${NC} "
+        To create a cluster, set the environment variable TERRAFORM_APPLY to true.${NC} "
         return 1
     fi
 
+}
+
+function create_kubeconfig() {
+          echo "Creating kubeconfig file"
+          mkdir -p "$TMPDIR"/.kube
+          echo "${KUBECONFIG_BASE64}" | base64 -d > config
+          mv config "$TEMPDIR"/.kube/config
+          export KUBE_CONFIG_FILE="$TEMPDIR"/.kube/config
 }
 
 function clean_workspace() {
@@ -181,29 +203,24 @@ else
     if [ -n "$TEST" ]; then
       printf "${SUCCESS} all arguments parsed successfully. Exiting... ${NC}" 
       # Todo: Add more tests.
-      
+
       exit 0
     fi
     echo "Creating AWS Profile"
     create_aws_profile
 fi
 
-if [[ ${TF_PLAN} == "true" ]];then
+if [[ ${TERRAFORM_PLAN} == "true" ]];then
     echo "Running Terraform Plan"
     bash $SCRIPTS_DIR/terraform/terraform_plan.sh
 fi
 
-if [[ ${TF_APPLY} == "true" ]];then
-    echo "Running Terraform Apply"
-    bash $SCRIPTS_DIR/terraform/terraform_apply.sh
-fi
-
-if [[ ${TF_DESTROY} == "true" ]];then
+if [[ ${TERRAFORM_DESTROY} == "true" ]];then
     echo "Destroying Cluster"
     bash $SCRIPTS_DIR/terraform/terraform_destroy.sh
 fi
 
-if [[ ${HELM_CHARTS} == "true" ]];then
+if [[ ${HELM_DEPLOY} == "true" ]];then
     echo "Installing Helm Charts"
     /bin/bash $SCRIPTS_DIR/helm/helm_install_charts.sh
 fi 

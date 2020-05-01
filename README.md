@@ -27,7 +27,7 @@ BitOps is a docker container, built as a boiler plate devops engine for deployin
   DEBUG - Set this option to 1 to enable debugging your Helm Stack.
   EXTERNAL_HELM_CHARTS - External Helm chart you need to install. The arguments for each repo should be separated a comma. Use the form: <NAME>,<REPO_KEY>,<REPO_URL>.
   TERRAFORM_DIRECTORY - Location of the terraform directory.
-  TF_APPLY - Set this option to true to deploy your Terraform stack. 
+  TERRAFORM_APPLY - Set this option to true to deploy your Terraform stack. 
   NAMESPACE - The namespace for the helm chart.
 
 
@@ -40,7 +40,7 @@ BitOps is a docker container, built as a boiler plate devops engine for deployin
 ```bash
 docker run --rm --name qa-bitops \
   -e KUBECONFIG_BASE64=$(cat /tmp/cluster.yaml | base64) \
-  -e TF_APPLY=true -e CLUSTER_NAME=qa-bitops \
+  -e TERRAFORM_APPLY=true -e CLUSTER_NAME=qa-bitops \
   -e ENVIRONMENT=qa -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> \
   -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
   -e AWS_DEFAULT_REGION=<REGION> -e HELM_CHARTS=true \
@@ -52,7 +52,7 @@ docker run --rm --name qa-bitops \
 ```bash
 docker run --rm --name qa-bitops \
   -e KUBECONFIG_BASE64=$(cat /tmp/cluster.yaml | base64) \
-  -e TF_APPLY=true -e CLUSTER_NAME=qa-bitops \
+  -e TERRAFORM_APPLY=true -e CLUSTER_NAME=qa-bitops \
   -e ENVIRONMENT=qa -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> \
   -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
   -e AWS_DEFAULT_REGION=<REGION> \

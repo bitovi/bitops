@@ -4,6 +4,7 @@ RUN apt-get update -y \
     && apt-get install -y software-properties-common libsodium-dev \
     && apt-get install -y inetutils-ping vim wget unzip curl git jq awscli ruby-full \
     && rm -rf /var/lib/apt/lists/* \
+    # Enable the options below for Terraform Tests.
     # && gem install travis --no-rdoc --no-ri \
     # && gem install rbnacl --no-rdoc --no-ri \
     # && gem install awspec --no-rdoc --no-ri  \

@@ -39,9 +39,15 @@ then
     $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
     echo "Terraform directory not set. Using default directory."
     /root/.local/bin/aws sts get-caller-identity
+
     cd "$TERRAFORM_ROOT"
-    /usr/local/bin/terraform init -input=false
-    /usr/local/bin/terraform plan
+    if [ "${TERRAFORM_PLAN_ALTERNATE_COMMAND}" == "true" ]; then
+        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < bitops.config.yaml || true)
+        exec "${TERRAFORM_COMMAND}"
+    else
+        /usr/local/bin/terraform init -input=false
+        /usr/local/bin/terraform plan
+    fi
 fi  
 
 

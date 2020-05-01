@@ -6,8 +6,8 @@ BITOPS_DIR="/opt/bitops"
 SCRIPTS_DIR="$BITOPS_DIR/scripts"
 export ERROR='\033[0;31m'
 export SUCCESS='\033[0;32m'
-export TERRAFORM_ROOT=""
-export TF_LOG="INFO"
+export TERRAFORM_ROOT="" 
+export TF_LOG=""
 
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
   printf "${ERROR}environment variable (AWS_ACCESS_KEY_ID) not set."
@@ -48,9 +48,17 @@ then
     echo "Copying TFVARS"
     $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
     cd "$TERRAFORM_ROOT"
-    /usr/local/bin/terraform init -input=false
-    /usr/local/bin/terraform plan
-    /usr/local/bin/terraform apply -auto-approve
+    TERRAFORM_APPLIED=true
+
+    if [ "${TERRAFORM_APPLY_ALTERNATE_COMMAND}" == "true" ]; then
+        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_apply.command < bitops.config.yaml || true)
+        exec "${TERRAFORM_COMMAND}"
+    else
+        /usr/local/bin/terraform init -input=false
+        /usr/local/bin/terraform plan
+        /usr/local/bin/terraform apply -auto-approve
+    fi
+
     terraform output config_map_aws_auth > $TEMPDIR/config_map_aws_auth.yaml
     if [ "$CREATE_KUBECONFIG_BASE64" == "true" && -z "$KUBECONFIG_BASE64" ]; then
         mkdir -p "$TEMPDIR"/.kube
