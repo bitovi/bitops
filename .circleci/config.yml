@@ -38,4 +38,6 @@ jobs:
               eval $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION}) 
               docker tag bitops:latest 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:${CIRCLE_SHA1}
               docker push 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:${CIRCLE_SHA1}
+              docker tag bitops:latest 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:latest
+              docker push 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:latest
             fi
