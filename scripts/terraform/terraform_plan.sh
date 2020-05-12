@@ -43,7 +43,7 @@ then
     cd "$TERRAFORM_ROOT"
     if [ "${TERRAFORM_PLAN_ALTERNATE_COMMAND}" == "true" ]; then
         TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < bitops.config.yaml || true)
-        exec "${TERRAFORM_COMMAND}"
+        ${TERRAFORM_COMMAND}
     else
         /usr/local/bin/terraform init -input=false
         /usr/local/bin/terraform plan

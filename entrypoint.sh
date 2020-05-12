@@ -14,6 +14,7 @@ export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
 export ERROR='\033[0;31m'
 export SUCCESS='\033[0;32m'
+export WARN='\033[1;33m'
 export NC='\033[0m'
 export CREATE_KUBECONFIG_BASE64="false"
 export TERRAFORM_APPLIED="false"
@@ -147,30 +148,41 @@ function get_context() {
 
     if [ -z "$KUBECONFIG_BASE64" ]
     then 
-        echo "${ERROR}KUBECONFIG is empty${NC}"
-        if [ -z "$TERRAFORM_APPLY" ] || [ "$TERRAFORM_APPLY" == "true" ]; then
-          echo "${ERROR}TERRAFORM_APPLY is empty or TERRAFORM_APPLY=false${NC}"
+        echo "${WARN}KUBECONFIG is empty${NC}"
+        if [ "$TERRAFORM_APPLY" == "true" ]; then
           echo "Unable to find KUBECONFIG_BASE64. Attempting to retrieve KUBECONFIG from Terraform..."
-          echo "This will create an EKS Cluster in AWS. Charges may will apply."
+          echo "This will create an EKS Cluster in AWS. Charges may apply."
           CREATE_KUBECONFIG_BASE64=true
           bash $SCRIPTS_DIR/terraform/terraform_apply.sh
           export KUBECONFIG_BASE64=$(cat "$TEMPDIR"/.kube/config | base64)
         fi
+
+        if [ "${TERRAFORM_PLAN_ALTERNATE_COMMAND}" == "true" ]; then
+            printf "${WARN}Running Alternate Terraform command.${NC}"
+            bash $SCRIPTS_DIR/terraform/terraform_plan.sh
+        fi
+
+        if [ "${TERRAFORM_APPLY_ALTERNATE_COMMAND}" == "true" ]; then
+            printf "${WARN}Running Alternate Terraform command.${NC}"
+            bash $SCRIPTS_DIR/terraform/terraform_apply.sh
+        fi
+
+        if [ -z "$TERRAFORM_APPLY" ]; then
+            printf "${WARN}TERRAFORM_APPLY and KUBECONFIG is empty...
+            Either supply KUBECONFIG_BASE64 or set TERRAFORM_APPLY to true...${NC}"
+        fi
     else
         if [[ "${TERRAFORM_APPLY}" == "true" ]]; then
-          echo "${ERROR}KUBECONFIG is set and TERRAFORM_APPLY=true${NC}"
           #create config file
           HELM_DEPLOY=true
           create_kubeconfig
           bash $SCRIPTS_DIR/terraform/terraform_apply.sh
         else
-           echo "${ERROR}KUBECONFIG is set and TERRAFORM_APPLY=false${NC}"
           #create config file
           HELM_DEPLOY=true
           create_kubeconfig
         fi
     fi
-     printf "${ERROR}HELM_DEPLOY: $HELM_DEPLOY...... ${NC}"
     if  [ -z "$KUBECONFIG_BASE64" ] && [[ ${TERRAFORM_APPLY} == "false" ]] && [[ ${TEST} == "false" ]]; then
         printf "${ERROR} You did not supply KUBECONFIG_BASE64 and you have chosen not to create a cluster.\n
         To create a cluster, set the environment variable TERRAFORM_APPLY to true.${NC} "

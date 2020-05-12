@@ -32,7 +32,7 @@ else
 fi
 
 echo "Terraform Root: $TERRAFORM_ROOT"
-if [ "$(shyaml debug < "$TERRAFORM_ROOT"/bitops-config.yaml)" == 'True' ];
+if [ "$(shyaml debug < "$TERRAFORM_ROOT"/bitops.config.yaml)" == 'True' ];
 then
     echo "Setting Terraform logging to debug mode..."
     TF_LOG="DEBUG"
@@ -51,8 +51,8 @@ then
     TERRAFORM_APPLIED=true
 
     if [ "${TERRAFORM_APPLY_ALTERNATE_COMMAND}" == "true" ]; then
-        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_apply.command < bitops.config.yaml || true)
-        exec "${TERRAFORM_COMMAND}"
+        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < bitops.config.yaml || true)
+        bash -x "${TERRAFORM_COMMAND}"
     else
         /usr/local/bin/terraform init -input=false
         /usr/local/bin/terraform plan
@@ -70,11 +70,11 @@ then
     fi
 
     if [[ "No resources found." == "$(kubectl get nodes --kubeconfig="$KUBE_CONFIG_FILE")" || "$CREATE_CLUSTER" == "true" ]]; then
-        GET_CLUSTER_NAME=$(get-value cluster < "$TERRAFORM_ROOT"/bitops-config.yaml || true)
+        GET_CLUSTER_NAME=$(get-value cluster < "$TERRAFORM_ROOT"/bitops.config.yaml || true)
         echo "CLUSTER_NAME: $GET_CLUSTER_NAME"
-        get-value cluster < "$TERRAFORM_ROOT"/bitops-config.yaml
+        get-value cluster < "$TERRAFORM_ROOT"/bitops.config.yaml
         if [ "$GET_CLUSTER_NAME" != "true" ]; then
-          CLUSTER_NAME=$(get-value cluster < "$TERRAFORM_ROOT"/bitops-config.yaml)
+          CLUSTER_NAME=$(get-value cluster < "$TERRAFORM_ROOT"/bitops.config.yaml)
           /root/.local/bin/aws eks update-kubeconfig --name "$CLUSTER_NAME" --region $AWS_DEFAULT_REGION --kubeconfig "$TEMPDIR"/.kube/config
           curl -o aws-auth-cm.yaml https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/aws-auth-cm.yaml
           TMP_WORKER_ROLE=$(shyaml get-value role < $TEMPDIR/opscruise-test/terraform/bitops.config.yaml)
