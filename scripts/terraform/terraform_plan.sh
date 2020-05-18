@@ -26,31 +26,35 @@ if [ -z "$ENVIRONMENT" ]; then
   exit 1
 fi
 if [ -n "$TERRAFORM_DIRECTORY" ]; then
-    TERRAFORM_ROOT=$TERRAFORM_DIRECTORY
+    TERRAFORM_ROOT=$TEMPDIR/$TERRAFORM_DIRECTORY
 else
     TERRAFORM_ROOT=$TEMPDIR/$ENVIRONMENT/terraform/
 fi
 
+if [ -f "$TERRAFORM_ROOT/bitops.config.yaml" ]; then
+    echo "Found Bitops config"
+else
+    printf "${ERROR} Error: Bitops config not found!${NC}"
+    exit 1
+fi
 
 if [ -d "$TERRAFORM_ROOT" ]
 then 
     # Copy Default Terraform values
     echo "Copying TFVARS"
     $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
-    echo "Terraform directory not set. Using default directory."
-    /root/.local/bin/aws sts get-caller-identity
 
     cd "$TERRAFORM_ROOT"
     if [ "${TERRAFORM_PLAN_ALTERNATE_COMMAND}" == "true" ]; then
-        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < bitops.config.yaml || true)
-        ${TERRAFORM_COMMAND}
+        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < "$TERRAFORM_ROOT"/bitops.config.yaml || true)
+        echo "#!/bin/bash" >> $TERRAFORM_ROOT/alt_script.sh
+        echo ${TERRAFORM_COMMAND} >> $TERRAFORM_ROOT/alt_script.sh
+        chmod u+x $TERRAFORM_ROOT/alt_script.sh
+        bash -x $TERRAFORM_ROOT/alt_script.sh
+        rm -rf $TERRAFORM_ROOT/alt_script.sh
     else
         /usr/local/bin/terraform init -input=false
         /usr/local/bin/terraform plan
     fi
 fi  
-
-
-
-
 

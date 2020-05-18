@@ -26,9 +26,16 @@ if [ -z "$ENVIRONMENT" ]; then
   exit 1
 fi
 if [ -n "$TERRAFORM_DIRECTORY" ]; then
-    TERRAFORM_ROOT=$TERRAFORM_DIRECTORY
+    TERRAFORM_ROOT=$TEMPDIR/$TERRAFORM_DIRECTORY
 else
     TERRAFORM_ROOT=$TEMPDIR/$ENVIRONMENT/terraform
+fi
+
+if [ -f "$TERRAFORM_ROOT/bitops.config.yaml" ]; then
+    echo "Found Bitops config"
+else
+    printf "${ERROR} Error: Bitops config not found!${NC}"
+    exit 1
 fi
 
 echo "Terraform Root: $TERRAFORM_ROOT"
@@ -51,8 +58,12 @@ then
     TERRAFORM_APPLIED=true
 
     if [ "${TERRAFORM_APPLY_ALTERNATE_COMMAND}" == "true" ]; then
-        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < bitops.config.yaml || true)
-        bash -x "${TERRAFORM_COMMAND}"
+        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < "$TERRAFORM_ROOT"/bitops.config.yaml || true)
+        echo "#!/bin/bash" >> $TERRAFORM_ROOT/alt_script.sh
+        echo ${TERRAFORM_COMMAND} >> $TERRAFORM_ROOT/alt_script.sh
+        chmod u+x $TERRAFORM_ROOT/alt_script.sh
+        bash -x $TERRAFORM_ROOT/alt_script.sh
+        rm -rf $TERRAFORM_ROOT/alt_script.sh
     else
         /usr/local/bin/terraform init -input=false
         /usr/local/bin/terraform plan
@@ -95,4 +106,5 @@ fi
 
 bash -x $SCRIPTS_DIR/deploy/after-deploy.sh $TERRAFORM_ROOT
 printf "${SUCCESS} Terraform deployment was successful...${NC}"
+
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
+TMPDIR=/tmp/bitops_deployment
 TERRAFORM_ROOT=$1
 
 if [ -d "$TMPDIR/default/terraform/values" ];then
