@@ -23,7 +23,7 @@ cloud_platform:
 
 # Specify Terraform version. Options: Terraform 0.11.14 or 0.12.21
 terraform:
-  version: 0.11.14
+  version: 0.12.24
 
 # Specify Helm version. Options: 2 or 3
 helm:
