@@ -233,7 +233,8 @@ do
     CHART="$subDir"
     NAMESPACE=$(shyaml get-value namespace < $ENVROOT/helm/$subDir/bitops.config.yaml | sed 's/^ //' | sed 's/\s$//')
     echo "Checking NAMESPACE2: $NAMESPACE:"
-    TIMEOUT=$(shyaml get-value timeout < $ENVROOT/helm/$subDir/bitops.config.yaml)
+    DEFAULT_TIMEOUT="5m"
+    TIMEOUT=$(shyaml get-value timeout "$DEFAULT_TIMEOUT" < $ENVROOT/helm/$subDir/bitops.config.yaml)
 
     # Check if namespace exists and create it if it doesn't.
     echo "Helm Command: helm upgrade $HELM_RELEASE_NAME ./$CHART --cleanup-on-fail --atomic --install --timeout="$TIMEOUT" $MAIN_VALUES_FILES_COMMAND  $VALUES_FILES_COMMAND"
