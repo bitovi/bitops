@@ -4,7 +4,8 @@ set -xe
 
 export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
-
+export ROOT_DIR="/opt/bitops_deployment"
+export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
 
 if [ -z "$ENVIRONMENT" ]; then
   printf "${ERROR}environment variable (ENVIRONMENT) not set"
@@ -12,6 +13,6 @@ if [ -z "$ENVIRONMENT" ]; then
 fi
 
 
-if [ -d "$ENVIRONMENT/ansbile" ];
+if [ -d "$ENVIRONMENT/ansible" ];
   /bin/bash $SCRIPTS_DIR/ansible/ansible_install_playbooks.sh
 then
