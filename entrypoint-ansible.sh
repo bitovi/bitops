@@ -13,6 +13,6 @@ if [ -z "$ENVIRONMENT" ]; then
 fi
 
 
-if [ -d "$ENVIRONMENT/ansible" ]; then
+if [ -d "$ENVROOT/ansible" ]; then
   /bin/bash $SCRIPTS_DIR/ansible/ansible_install_playbooks.sh
 fi
