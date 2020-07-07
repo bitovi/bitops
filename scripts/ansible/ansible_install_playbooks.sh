@@ -4,7 +4,7 @@ set -e
 
 echo "Running ansible_install_playbook.sh"
 
-path="$ENVROOT/ansible/playbooks"
+path="$ENVROOT/ansible"
 echo "Using Ansible Path: $path"
 for playbook in $(ls $path/*.yaml || ls $path/*.yml)
 do
