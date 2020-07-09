@@ -6,7 +6,7 @@ cli_flag="$2"
 terminal="$3"
 
 if [ -n "$DEBUG" ]; then
-    echo "converters/boolean.sh"
+    echo "converters/string.sh"
     echo "  value: $value"
     echo "  cli_flag: $cli_flag"
     echo "  terminal: $terminal"

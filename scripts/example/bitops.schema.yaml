@@ -1,0 +1,28 @@
+foo-bool:
+  type: boolean
+  parameter: foobool
+foo-exists:
+  type: exists
+  parameter: fooexists
+bar:
+  type: string
+  parameter: bar
+some-string:
+  type: string
+  parameter: somestring
+terminal-if-true:
+  type: boolean
+  terminal: true
+  parameter: terminaliftrue
+nested:
+  type: object
+  properties:
+    foo:
+      type: boolean
+      parameter: nested-foo
+    bar:
+      type: object
+      properties:
+        foo:
+          type: boolean
+          parameter: super-nested-foo
