@@ -4,40 +4,31 @@ workflows:
     jobs:
       - build:
           context: bitops
+          filters:
+            branches:
+              only:
+                - cleanup-scripts
 jobs:
   build:
     machine:
       image: ubuntu-1604:201903-01
+    environment:
+      BITOPS_PUBLISH_ECR: "1"
+      REGISTRY_URL: "$ECR_ENDPOINT/bitovi/bitops"
+      BITOPS_DOCKER_IMAGE_PUBLISH_TAG: "cleanup-scripts"
+      BITOPS_DOCKER_IMAGE_PUBLISH_SKIP_SHA: "1"
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apt-get update -y && \
-            add-apt-repository ppa:deadsnakes/ppa && \
-            add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
-            apt-get update && \
-            apt-get install -y software-properties-common libsodium-dev curl jq python3.7
-            pip install \
-              docker-compose==1.12.0 \
-              awscli==1.17.7
+            ./scripts/ci/install.sh
       - run:
           name: Run tests
           command: |
-              docker build -t bitops .
-              docker run --rm --name bitops -e CLUSTER_NAME=qa-bitops -e KUBECONFIG_BASE64=${KUBECONFIG_BASE64} -e AWS_ACCESS_KEY_ID="${BITOPS_AWS_ACCESS_KEY_ID}" -e AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}" -e AWS_DEFAULT_REGION="${BITOPS_AWS_DEFAULT_REGION}" -e TEST=true -e ENVIRONMENT=opscruise-test3 bitops:latest
+            ./scripts/ci/test.sh
       - deploy:
-          name: Push docker image to ECR
+          name: Publish docker image
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              export AWS_ACCESS_KEY_ID=${BITOPS_AWS_ACCESS_KEY_ID}
-              export AWS_SECRET_ACCESS_KEY=${BITOPS_AWS_SECRET_ACCESS_KEY}
-              export KUBECONFIG_BASE64=${KUBECONFIG_BASE64}
-              export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-              export ECR_ENDPOINT=${ECR_ENDPOINT}
-              eval $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION}) 
-              docker tag bitops:latest 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:${CIRCLE_SHA1}
-              docker push 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:${CIRCLE_SHA1}
-              docker tag bitops:latest 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:latest
-              docker push 832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops:latest
-            fi
+            ./scripts/ci/publish.sh
+
