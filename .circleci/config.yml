@@ -51,7 +51,7 @@ jobs:
 
             # registry setup
             export BITOPS_PUBLISH_ECR="1"
-            export REGISTRY_URL="${ECR_ENDPOINT}/bitovi/bitops"
+            export REGISTRY_URL="832297766686.dkr.ecr.us-east-2.amazonaws.com/bitovi/bitops"
             export AWS_ACCESS_KEY_ID="${BITOPS_AWS_ACCESS_KEY_ID}"
             export AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}"
 
