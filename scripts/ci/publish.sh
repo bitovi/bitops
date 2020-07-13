@@ -1,14 +1,33 @@
 #!/usr/bin/env bash
 set -xe
 
+
+####
+#### validation
+####
 if [ -z "$REGISTRY_URL" ]; then
   >&2 echo "{\"script\":\"scripts/ci/publish.sh\", \"error\":\"REGISTRY_URL required\"}"
   exit 1
 fi
 
+
+
+
+####
+#### docker login
+####
 if [ -n "$BITOPS_PUBLISH_ECR" ]; then
   ./scripts/ci/docker-login-ecr.sh
+
+else
+  >&2 echo "{\"script\":\"scripts/ci/publish.sh\", \"error\":\"TODO: docker login\"}"
+  exit 1
 fi
+
+####
+#### docker build
+####
+docker build -t ${BITOPS_DOCKER_IMAGE_NAME} .
 
 
 ####
