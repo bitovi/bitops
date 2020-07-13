@@ -21,8 +21,8 @@ if [ -z "$ECR_ENDPOINT" ]; then
 fi
 
 echo "{${output_script}, \"message\":\"Logging into AWS ECR\"}"
-export AWS_ACCESS_KEY_ID=${BITOPS_AWS_ACCESS_KEY_ID}
-export AWS_SECRET_ACCESS_KEY=${BITOPS_AWS_SECRET_ACCESS_KEY}
+export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 export ECR_ENDPOINT=${ECR_ENDPOINT}
 eval $(aws ecr get-login --no-include-email --region ${AWS_DEFAULT_REGION}) 
