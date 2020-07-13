@@ -7,7 +7,7 @@ workflows:
           filters:
             branches:
               only:
-                - cleanup-scripts
+                - master
 jobs:
   build:
     machine:
@@ -16,22 +16,11 @@ jobs:
     ###
     ### TODO: this would be ideal, but circleci apparently doesn't
     ###       resolve env vars in the environment key..
+    ###       so, just do it in the command block for now...
     ###
     # environment:
-    #   # registry setup
-    #   BITOPS_PUBLISH_ECR: "1"
-    #   REGISTRY_URL: "${ECR_ENDPOINT}/bitovi/bitops"
     #   AWS_ACCESS_KEY_ID: "${BITOPS_AWS_ACCESS_KEY_ID}"
     #   AWS_SECRET_ACCESS_KEY: "${BITOPS_AWS_SECRET_ACCESS_KEY}"
-
-    #   # publish setup
-    #   BITOPS_DOCKER_IMAGE_PUBLISH_TAG: "cleanup-scripts"
-    #   BITOPS_DOCKER_IMAGE_PUBLISH_SKIP_SHA: "1"
-    #   BITOPS_DOCKER_IMAGE_NAME: "${CIRCLE_PROJECT_REPONAME}"
-    #   BITOPS_GIT_TAG: "${CIRCLE_TAG}"
-    #   BITOPS_GIT_SHA: "${CIRCLE_SHA1}"
-    #   BITOPS_GIT_BRANCH: "${CIRCLE_BRANCH}"
-    #   BITOPS_GIT_BASE_BRANCH: "master"
     steps:
       - checkout
       - run:
@@ -56,7 +45,7 @@ jobs:
             export AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}"
 
             # publish setup
-            export BITOPS_DOCKER_IMAGE_PUBLISH_TAG="cleanup-scripts"
+            export BITOPS_DOCKER_IMAGE_PUBLISH_TAG="latest-refactor" # use a different
             export BITOPS_DOCKER_IMAGE_PUBLISH_SKIP_SHA="1"
             export BITOPS_DOCKER_IMAGE_NAME="${CIRCLE_PROJECT_REPONAME}"
             export BITOPS_GIT_TAG="${CIRCLE_TAG}"
