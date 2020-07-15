@@ -11,7 +11,7 @@ if [ -d "$PLUGIN_DIR/bitops.before-deploy.d/" ];then
         echo "Running Before Deploy Scripts"
         for script in $BEFORE_DEPLOY ; do
             if [[ -x "$PLUGIN_DIR/bitops.before-deploy.d/$script" ]]; then
-                /bin/bash -x $PLUGIN_DIR/bitops.before-deploy.d/$script.sh
+                /bin/bash -x $PLUGIN_DIR/bitops.before-deploy.d/$script
             else
                 echo "Before deploy script is not executible. Skipping..."
             fi
