@@ -4,7 +4,7 @@ set -ex
 
 PLUGIN_DIR="$ENVROOT/ansible"
 
-if [ -d "$PLUGIN_DIR/bitops.before-deploy.d/" ];then
+#if [ -d "$PLUGIN_DIR/bitops.before-deploy.d/" ];then
     BEFORE_DEPLOY=$(ls $PLUGIN_DIR/bitops.before-deploy.d/)
     echo $BEFORE_DEPLOY
     if [[ -n ${BEFORE_DEPLOY} ]];then
@@ -18,7 +18,7 @@ if [ -d "$PLUGIN_DIR/bitops.before-deploy.d/" ];then
             fi
         done
     fi
-fi
+#fi
 
 echo "Running ansible_install_playbook.sh"
 
