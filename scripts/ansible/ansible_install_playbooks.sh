@@ -2,8 +2,6 @@
 
 set -ex
 
-apt-get install mysql-client
-
 PLUGIN_DIR="$ENVROOT/ansible"
 
 if [ -d "$PLUGIN_DIR/bitops.before-deploy.d/" ];then
