@@ -1,12 +1,28 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
+
+PLUGIN_DIR="$ENVROOT/ansible"
+
+if [ -d "$PLUGIN_DIR/bitops.before-deploy.d/" ];then
+    BEFORE_DEPLOY=$(ls $PLUGIN_DIR/bitops.before-deploy.d/)
+    echo $BEFORE_DEPLOY
+    if [[ -n ${BEFORE_DEPLOY} ]];then
+        echo "Running Before Deploy Scripts"
+        for script in $BEFORE_DEPLOY ; do
+            if [[ -x "$PLUGIN_DIR/bitops.before-deploy.d/$script" ]]; then
+                /bin/bash -x $PLUGIN_DIR/bitops.before-deploy.d/$script.sh
+            else
+                echo "Before deploy script is not executible. Skipping..."
+            fi
+        done
+    fi
+fi
 
 echo "Running ansible_install_playbook.sh"
 
-path="$ENVROOT/ansible"
-echo "Using Ansible Path: $path"
-for playbook in $(ls $path/*.yaml || ls $path/*.yml)
+echo "Using Ansible Path: $PLUGIN_DIR"
+for playbook in $(ls $PLUGIN_DIR/*.yaml || ls $PLUGIN_DIR/*.yml)
 do
     echo "Executing playbook: $playbook"
     /root/.local/bin/ansible-playbook $playbook
