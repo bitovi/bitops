@@ -72,11 +72,8 @@ then
 
     terraform output config_map_aws_auth > $TEMPDIR/config_map_aws_auth.yaml
     if [ "$CREATE_KUBECONFIG_BASE64" == "true" && -z "$KUBECONFIG_BASE64" ]; then
-        mkdir -p "$TEMPDIR"/.kube
-        touch "$TEMPDIR"/.kube/config
-        KUBE_CONFIG_FILE=$("$TEMPDIR"/.kube/config)
-        terraform output kubeconfig > "$TEMPDIR"/.kube/config
-        KUBECONFIG_BASE64=$(cat "$TEMPDIR"/.kube/config | base64)
+        terraform output kubeconfig > "$KUBE_CONFIG_FILE"
+        export KUBECONFIG_BASE64=$(cat "$KUBE_CONFIG_FILE" | base64)
         KUBE_CONFIG_FILE="$TEMPDIR"/.kube/config
     fi
 

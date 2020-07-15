@@ -16,4 +16,4 @@ COPY . .
 COPY entrypoint.sh /opt/bitops/scripts/entrypoint.sh
 RUN pip3 install -r requirements.txt
 RUN bash -x scripts/setup/install_tools.sh
-ENTRYPOINT [ "/opt/bitops/scripts/entrypoint.sh" ]
+ENTRYPOINT [ "/opt/bitops/scripts/deploy.sh" ]
