@@ -63,7 +63,7 @@ function install_mysqlclient() {
     curl -LO https://dev.mysql.com/get/mysql-apt-config_0.8.15-1_all.deb
     dpkg -i mysql-apt-config*
     apt-get update
-    apt-get install mysql-client
+    apt-get -y install mysql-client
 }
 
 
