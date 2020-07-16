@@ -2,6 +2,10 @@
 set -xe
 
 echo "TODO: add more tests"
+
+echo "MySQL?"
+mysql -V
+
 exit 0
 
 
