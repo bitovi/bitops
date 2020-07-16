@@ -8,5 +8,4 @@ apt-get update && \
 apt-get install -y software-properties-common libsodium-dev curl jq python3.7 ython3-dev default-libmysqlclient-dev build-essential
 pip install \
   docker-compose==1.12.0 \
-  awscli==1.17.7 \
-  mysqlclient
+  awscli==1.17.7
