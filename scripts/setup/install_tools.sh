@@ -14,14 +14,14 @@ export AWS_REGION=$(cat build.config.yaml | shyaml get-value cloud_platform.regi
 export CURRENT_ENVIRONMENT=$(cat build.config.yaml | shyaml get-value environment.default)
 
 
-mkdir -p /opt/download 
+mkdir -p /opt/download
 cd /opt/download
 
 function install_terraform() {
     export TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
     echo $TERRAFORM_DOWNLOAD_URL
     curl -LO ${TERRAFORM_DOWNLOAD_URL} && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d ./
-    mv terraform /usr/local/bin/    
+    mv terraform /usr/local/bin/
 }
 
 
@@ -56,9 +56,12 @@ function install_helm() {
 
 
 function install_ansible() {
-    pip3 install --user ansible  
+    pip3 install --user ansible
 }
 
+function install_mysqlclient() {
+    pip3 install mysqlclient
+}
 
 function configure_cloud_platorm() {
     if [[ "$CLOUD_PLATORM" -eq "AWS" ]]
@@ -96,7 +99,7 @@ install_aws_iam_authenticator
 install_kubectl
 install_helm
 install_ansible
+install_mysqlclient
 
 # Cleanup
 rm -rf /opt/download
-
