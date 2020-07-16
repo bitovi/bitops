@@ -59,10 +59,6 @@ function install_ansible() {
     pip3 install --user ansible
 }
 
-function install_mysqlclient() {
-    pip3 install mysqlclient
-}
-
 function configure_cloud_platorm() {
     if [[ "$CLOUD_PLATORM" -eq "AWS" ]]
     then
