@@ -26,15 +26,6 @@ if [ -z "$DEBUG" ]; then
   export DEBUG=0
 fi
 
-# TODO: these should be put in their proper 'plugin' folders
-if [ -z "$CLUSTER_NAME" ]; then
-  echo "environment variable (CLUSTER_NAME) not set "
-  CREATE_CLUSTER=true
-fi
-if [ -z "$KUBECONFIG_BASE64" ]; then
-  echo "environment variable (KUBECONFIG_BASE64) not set"
-fi
-
 
 
 
@@ -72,9 +63,14 @@ else
   echo "Successfully Copied repo to $TEMPDIR "
 fi
 
+if [ -z "$DEFAULT_FOLDER_NAME" ]; then
+  DEFAULT_FOLDER_NAME="default"
+fi
+
 # ops repo paths
 export ROOT_DIR="$TEMPDIR"
 export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
+export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
 
 
 
@@ -87,7 +83,8 @@ fi
 echo "$PATH" >> ~/.bashrc
 
 
-# Setup AWS profile
+# Setup cloud provider profile
+# TODO: check which cloudprovider
 /bin/bash $SCRIPTS_DIR/aws/setup.sh
 
 # Setup kubeconfig
