@@ -10,4 +10,3 @@ echo ${SCRIPT} >> $DIR/alt_script.sh
 chmod u+x $DIR/alt_script.sh
 bash -x $DIR/alt_script.sh
 rm -rf $DIR/alt_script.sh
-

@@ -8,11 +8,8 @@ if [ -z "$KUBECONFIG_BASE64" ]; then
   exit 0
 fi
 
-kubeconfig_root="$TEMPDIR/.kube"
-kubeconfig_path="$kubeconfig_root/config"
 
-mkdir -p "$kubeconfig_root"
-echo "${KUBECONFIG_BASE64}" | base64 -d > "$kubeconfig_path"
+echo "${KUBECONFIG_BASE64}" | base64 -d > "$KUBE_CONFIG_FILE"
 
 
-echo "kubeconfig created from KUBECONFIG_BASE64: $kubeconfig_path (TMPDIR/.kube/config)"
+echo "kubeconfig created from KUBECONFIG_BASE64: $KUBE_CONFIG_FILE"

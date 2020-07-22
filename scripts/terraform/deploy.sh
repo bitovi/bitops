@@ -53,18 +53,44 @@ echo "Terraform auth cloud provider"
 bash $SCRIPTS_DIR/aws/sts.get-caller-identity.sh
 
 
+# always init first
+echo "Running terraform init"
+terraform init -input=false
 
-if [[ "${TERRAFORM_PLAN}" == "true" ]];then
-  echo "Running Terraform Plan"
-  bash $SCRIPTS_DIR/terraform/terraform_plan.sh
-fi
+# always plan first
+echo "Running Terraform Plan"
+bash $SCRIPTS_DIR/terraform/terraform_plan.sh
+
 
 if [[ "${TERRAFORM_APPLY}" == "true" ]]; then
   echo "Running Terraform Apply"
   bash $SCRIPTS_DIR/terraform/terraform_apply.sh
 fi
 
-if [[ "${TERRAFORM_DESTROY}" == "true" ]];then
+if [[ "${TERRAFORM_DESTROY}" == "true" ]]; then
   echo "Destroying Cluster"
   bash $SCRIPTS_DIR/terraform/terraform_destroy.sh
+  exit 0
 fi
+
+# always get the kubeconfig (whether or not we applied)
+if [ ! -f "$KUBE_CONFIG_FILE" ]; then 
+  echo "${WARN}KUBE_CONFIG_FILE is empty ($KUBE_CONFIG_FILE)${NC}"
+  echo "Attempting to retrieve KUBECONFIG from Terraform..."
+  bash $SCRIPTS_DIR/terraform/generate_kubeconfig.sh
+fi
+
+
+# validate nodes exist
+if [[ "No resources found." == "$(kubectl get nodes --kubeconfig="$KUBE_CONFIG_FILE")" ]]; then
+  CLUSTER_NAME="$CLUSTER_NAME" \
+  KUBECONFIG="$KUBE_CONFIG_FILE" \
+  bash $SCRIPTS_DIR/aws/eks.update-kubeconfig.sh
+
+  bash $SCRIPTS_DIR/aws/eks.create_config_map.sh
+fi 
+
+
+
+
+

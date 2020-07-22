@@ -6,6 +6,7 @@ export PATH=/root/.local/bin:$PATH
 export ENVROOT="$TEMPDIR/$ENVIRONMENT"
 export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
+export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
 
 # Logging
 export ERROR='\033[0;31m'
@@ -87,9 +88,10 @@ echo "$PATH" >> ~/.bashrc
 # TODO: check which cloudprovider
 /bin/bash $SCRIPTS_DIR/aws/setup.sh
 
-# Setup kubeconfig
-bash $SCRIPTS_DIR/kubectl/kubeconfig_base64_decode.sh
-export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
+# Setup kubeconfig from base64
+if [ ! -f "$KUBE_CONFIG_FILE" ]; then
+  bash $SCRIPTS_DIR/kubectl/kubeconfig_base64_decode.sh
+fi
 
 
 
