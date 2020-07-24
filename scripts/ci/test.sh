@@ -2,6 +2,7 @@
 set -xe
 
 echo "TODO: add more tests"
+
 exit 0
 
 
