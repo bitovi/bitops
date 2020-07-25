@@ -1,33 +1,12 @@
 #!/usr/bin/env bash
 set -xe
 
-# Global vars
-export PATH=/root/.local/bin:$PATH
-export ENVROOT="$TEMPDIR/$ENVIRONMENT"
-export BITOPS_DIR="/opt/bitops"
-export SCRIPTS_DIR="$BITOPS_DIR/scripts"
-export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
 
 # Logging
 export ERROR='\033[0;31m'
 export SUCCESS='\033[0;32m'
 export WARN='\033[1;33m'
 export NC='\033[0m'
-
-
-###
-### Global Validation
-###
-if [ -z "$ENVIRONMENT" ]; then
-  printf "${ERROR}environment variable (ENVIRONMENT) not set ${NC}"
-  exit 1
-fi
-if [ -z "$DEBUG" ]; then
-  echo "environment variable (DEBUG) not set"
-  export DEBUG=0
-fi
-
-
 
 
 ###
@@ -55,6 +34,28 @@ cleanup () {
   printf "BitOps Completed.${NC}"
 }
 trap "{ cleanup $TEMPDIR; }" EXIT
+
+
+# Global vars
+export PATH=/root/.local/bin:$PATH
+export ENVROOT="$TEMPDIR/$ENVIRONMENT"
+export BITOPS_DIR="/opt/bitops"
+export SCRIPTS_DIR="$BITOPS_DIR/scripts"
+export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
+
+
+###
+### Global Validation
+###
+if [ -z "$ENVIRONMENT" ]; then
+  printf "${ERROR}environment variable (ENVIRONMENT) not set ${NC}"
+  exit 1
+fi
+if [ -z "$DEBUG" ]; then
+  echo "environment variable (DEBUG) not set"
+  export DEBUG=0
+fi
+
 
 
 # put everything in the temp directory

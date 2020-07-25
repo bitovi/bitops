@@ -11,6 +11,7 @@ PLUGIN_DIR=$1
 BEFORE_SCRIPTS_DIR="bitops-before-deploy.d"
 echo "Checking before scripts ($BEFORE_SCRIPTS_DIR)"
 if [ -d "$PLUGIN_DIR/$BEFORE_SCRIPTS_DIR/" ];then
+    echo "DEPRECATED NOTICE: 'bitops-before-deploy.d' is deprecated. Please use 'bitops.before-deploy.d'"
     BEFORE_DEPLOY=$(ls $PLUGIN_DIR/$BEFORE_SCRIPTS_DIR/)
     if [[ -n ${BEFORE_DEPLOY} ]];then
         echo "Running Before Deploy Scripts"
@@ -24,6 +25,8 @@ if [ -d "$PLUGIN_DIR/$BEFORE_SCRIPTS_DIR/" ];then
         done
     fi
 fi
+
+
 
 BEFORE_SCRIPTS_DIR="bitops.before-deploy.d"
 echo "Checking before scripts ($BEFORE_SCRIPTS_DIR)"
@@ -41,3 +44,5 @@ if [ -d "$PLUGIN_DIR/$BEFORE_SCRIPTS_DIR/" ];then
         done
     fi
 fi
+
+

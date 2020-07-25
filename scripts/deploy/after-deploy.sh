@@ -12,6 +12,7 @@ PLUGIN_DIR=$1
 AFTER_SCRIPTS_DIR="bitops-after-deploy.d"
 echo "Checking after scripts ($AFTER_SCRIPTS_DIR)"
 if [ -d "$PLUGIN_DIR/$AFTER_SCRIPTS_DIR/" ];then
+    echo "DEPRECATED NOTICE: 'bitops-after-deploy.d' is deprecated. Please use 'bitops.after-deploy.d'"
     deploy_script=$(ls $PLUGIN_DIR/$AFTER_SCRIPTS_DIR/)
     if [[ -n ${deploy_script} ]];then
         echo "Running After Deploy Scripts"

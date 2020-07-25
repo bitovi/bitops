@@ -4,7 +4,7 @@ set -ex
 
 # terraform vars
 export TERRAFORM_ROOT="$ENVROOT/terraform" 
-export TERRAFORM_BITOPS_CONFIG="$TERRAFORM_ROOT/bitops.config.yaml" 
+export TERRAFORM_TERRAFORM_BITOPS_CONFIG="$TERRAFORM_ROOT/bitops.config.yaml" 
 
 if [ ! -d "$TERRAFORM_ROOT" ]; then
   echo "No terraform directory.  Skipping."
@@ -14,16 +14,13 @@ else
 fi
 
 
-if [ -f "$BITOPS_CONFIG" ]; then
+if [ -f "$TERRAFORM_BITOPS_CONFIG" ]; then
   echo "Terraform - Found Bitops config"
 else
   echo "Terraform - No Bitops config"
 fi
 
 CREATE_CLUSTER=false
-
-
-bash $SCRIPTS_DIR/terraform/validate_env.sh
 
 
 if [ -n "$CLUSTER_NAME" ]; then
@@ -33,12 +30,9 @@ else
   CLUSTER_NAME=$(echo $CLUSTER_NAME | sed 's/true//g')
 fi
 
-if [ -z "$CLUSTER_NAME" ]; then
-    printf "
-${ERROR} Please set the CLUSTER_NAME environment variable or the cluster option in <env>/terraform/bitops.config.yaml.${NC}
-"
-    return 1 
-fi
+CLUSTER_NAME="$CLUSTER_NAME" \
+bash $SCRIPTS_DIR/terraform/validate_env.sh
+
 
 # Copy Default Terraform values
 echo "Copying defaults"

@@ -6,35 +6,20 @@ set -ex
 export HELM_RELEASE_NAME=""
 export HELM_DEBUG_COMMAND=""
 export HELM_DEPLOY=${HELM_CHARTS:=false}
+export HELM_ROOT="$ENVROOT/helm" 
+export DEFAULT_HELM_ROOT="$DEFAULT_ENVROOT/helm" 
 
-
-# validation and defaults
-if [ -z "$NAMESPACE" ]; then
-  echo "environment variable (NAMESPACE) not set"
-  export NAMESPACE="default"
-fi
-if [ -z "$TIMEOUT" ]; then
-  echo "environment variable (TIMEOUT) not set"
-  export TIMEOUT="500s"
-fi
-
-
-
-if [[ ${HELM_DEPLOY} == "true" ]];then
-    echo "Installing Helm Charts"
-    bash $SCRIPTS_DIR/helm/helm_install_charts.sh
-fi 
-
-if [ -z "$EXTERNAL_HELM_CHARTS" ]; then 
-    echo "EXTERNAL_HELM_CHARTS directory not set."
+# if subdirectory is not provided, iterate subdirectories
+if [ -z "$ENVIRONMENT_HELM_SUBDIRECTORY" ]; then
+  echo "ENVIRONMENT_HELM_SUBDIRECTORY not provided, iterate all helm charts in $ENV_DIR/helm"
+  for helm_chart_dir in $HELM_ROOT/*/; do
+    helm_chart_dir=${helm_chart_dir%*/}      # remove the trailing "/"
+    helm_chart_dir=${helm_chart_dir##*/}    # get everything after the final "/"
+    echo "Deploy $helm_chart_dir for $ENVIRONMENT"
+    $SCRIPTS_DIR/helm/deploy-chart.sh $helm_chart_dir
+  done
 else
-    echo "Running External Helm Charts."
-    bash -x $SCRIPTS_DIR/helm/helm_install_external_charts.sh
+  echo "ENVIRONMENT_HELM_SUBDIRECTORY: $ENV_DIR/helm/$ENVIRONMENT_HELM_SUBDIRECTORY"
+  $SCRIPTS_DIR/helm/deploy-chart.sh $ENVIRONMENT_HELM_SUBDIRECTORY
 fi
 
-if [ -z "$HELM_CHARTS_S3" ]; then
-    echo "HELM_CHARTS_S3 not set."
-else
-    echo "Adding S3 Helm Repo."
-    bash -x $SCRIPTS_DIR/helm/helm_install_charts_from_s3.sh 
-fi
