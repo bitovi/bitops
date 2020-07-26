@@ -187,16 +187,6 @@ bash -x $SCRIPTS_DIR/deploy/after-deploy.sh $path/$subDir
 printf "${SUCCESS} Helm deployment was successful...${NC}"
 
 
-
-# TODO: charts/
-# TODO: templates/
-# TODO: values.schema.json
-# TODO: kubefiles/
-#  - Additional configuration
-#  - Example: Grafana dashboards.
-
-
-
 # TODO: do we need this?
 # if [ -z "$EXTERNAL_HELM_CHARTS" ]; then 
 #     echo "EXTERNAL_HELM_CHARTS directory not set."
