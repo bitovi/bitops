@@ -115,30 +115,30 @@ echo "Running deployments"
 # run terraform (should be first)
 if [ -d "$ENVROOT/terraform" ]; then
   if [ -n "$SKIP_DEPLOY_TERRAFORM" ]; then
+    echo "SKIP_DEPLOY_TERRAFORM set..."
+  else
     echo "calling terraform/deploy ..."
     bash $SCRIPTS_DIR/terraform/deploy.sh
-  else
-    echo "SKIP_DEPLOY_TERRAFORM set..."
   fi
 fi
 
 # run ansible (should be after terraform and before helm)
 if [ -d "$ENVROOT/ansible" ]; then
   if [ -n "$SKIP_DEPLOY_ANSIBLE" ]; then
+    echo "SKIP_DEPLOY_ANSIBLE set..."
+  else
     echo "calling ansible/deploy ..."
     bash $SCRIPTS_DIR/ansible/deploy.sh
-  else
-    echo "SKIP_DEPLOY_ANSIBLE set..."
   fi
 fi
 
 # run helm (should be after terraform and ansible)
 if [ -d "$ENVROOT/helm" ]; then
   if [ -n "$SKIP_DEPLOY_HELM" ]; then
+    echo "SKIP_DEPLOY_HELM set..."
+  else
     echo "calling helm/deploy ..."
     bash $SCRIPTS_DIR/helm/deploy.sh
-  else
-    echo "SKIP_DEPLOY_HELM set..."
   fi
 fi
 

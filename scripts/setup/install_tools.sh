@@ -40,8 +40,7 @@ function install_kubectl() {
 
 
 function install_helm() {
-    if [[ "$HELM_VERSION" == '3.2.0' ]]
-    then
+    if [[ "$HELM_VERSION" == '3.2.0' ]]; then
         wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
         tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
         mv linux-amd64/helm /usr/local/bin/
@@ -51,7 +50,9 @@ function install_helm() {
         mv linux-amd64/helm /usr/local/bin/
         bash -x scripts/helm/install_tiller.sh
     fi
-
+}
+function install_helm_s3() {
+    helm plugin install https://github.com/hypnoglow/helm-s3.git
 }
 
 function install_ansible() {
@@ -102,6 +103,7 @@ install_terraform
 install_aws_iam_authenticator
 install_kubectl
 install_helm
+install_helm_s3
 install_ansible
 install_mysqlclient
 

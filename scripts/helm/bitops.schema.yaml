@@ -1,0 +1,51 @@
+helm:
+  type: object
+  properties:
+    cli:
+      type: object
+      properties:
+        namespace:
+          type: string
+          parameter: namespace
+          export_env: NAMESPACE
+          required: true
+        timeout:
+          type: string
+          parameter: timeout
+          export_env: TIMEOUT
+          default: "500s"
+        debug:
+          type: boolean
+          parameter: debug
+        atomic:
+          type: boolean
+          parameter: atomic
+        force:
+          type: boolean
+          parameter: force
+        dry-run:
+          type: boolean
+          parameter: dry-run
+    options:
+      type: object
+      properties:
+        skip-deploy:
+          type: boolean
+          terminal: true
+          parameter: skip-deploy
+          export_env: SKIP_DEPLOY
+        release-name:
+          type: string
+          export_env: HELM_RELEASE_NAME
+    plugins:
+      type: object
+      properties:
+        s3:
+          type: object
+          properties:
+            region:
+              type: string
+              export_env: HELM_PLUGIN_S3_REGION
+            bucket:
+              type: string
+              export_env: HELM_CHARTS_S3_BUCKET

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# set -ex
+set -e
 
 value="$1"
 cli_flag="$2"
@@ -22,6 +22,7 @@ elif [ "$value" == "True" ]; then
         if [ -n "$DEBUG" ]; then
             echo "boolean terminal: true - exit 1"
         fi
+        echo "boolean terminal true - exit 1" 1>&2
         exit 1
     fi
 else

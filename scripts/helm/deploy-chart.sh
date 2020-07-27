@@ -5,33 +5,28 @@ set -ex
 HELM_CHART="$1"
 HELM_CHART_DIRECTORY="$HELM_ROOT/$HELM_CHART"
 DEFAULT_HELM_CHART_DIRECTORY="$DEFAULT_HELM_ROOT/$HELM_CHART"
-HELM_BITOPS_CONFIG="$HELM_ROOT/bitops.config.yaml" 
+HELM_BITOPS_CONFIG="$HELM_CHART_DIRECTORY/bitops.config.yaml" 
+BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/helm/bitops.schema.yaml"
+BITOPS_SCHEMA_ENV_FILE="$HELM_CHART_DIRECTORY/ENV_FILE"
 IMG_REPO=""
 
 echo "Installing charts..."
 
+output_schema_env () {
+    echo "Schema ENV"
+    cat "$BITOPS_SCHEMA_ENV_FILE"
+}
+on_exit () {
+    output_schema_env
+}
+trap "{ on_exit; }" EXIT
 
-# TODO: move to bitops.config.yaml
-# validation and defaults
-if [ -z "$TIMEOUT" ]; then
-  echo "environment variable (TIMEOUT) not set"
-  export TIMEOUT="500s"
-fi
+BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $HELM_BITOPS_CONFIG)"
+echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 
-if [ -n "$DEBUG" ]; then
-  echo "environment variable (DEBUG) set"
-  export HELM_DEBUG_COMMAND="--debug"
-  echo "DEBUG ARGS: $HELM_DEBUG_COMMAND"
-fi
-if [ -z "$NAMESPACE" ]; then
-  echo "environment variable (NAMESPACE) not set"
-  export NAMESPACE="default"
-fi
-
-NAMESPACE=$(shyaml get-value namespace < $HELM_BITOPS_CONFIG | sed 's/^ //' | sed 's/\s$//')
-echo "Checking NAMESPACE: $NAMESPACE"
-TIMEOUT=$(shyaml get-value timeout "$TIMEOUT" < $HELM_BITOPS_CONFIG)
-
+source $BITOPS_SCHEMA_ENV_FILE
+output_schema_env
+exit 0
 
 NAMESPACE="$NAMESPACE" \
 bash $SCRIPTS_DIR/helm/validate_env.sh
@@ -112,9 +107,9 @@ echo "Updating dependencies in '$HELM_CHART_DIRECTORY' ..."
 helm dep up "$HELM_CHART_DIRECTORY"
 
 
-
-HELM_RELEASE_NAME="$HELM_CHART"
-CHART="$subDir"
+if [ -n "HELM_RELEASE_NAME" ]; then
+    HELM_RELEASE_NAME="$HELM_CHART"
+fi
 k="kubectl --kubeconfig=$KUBE_CONFIG_FILE"
 h="helm --kubeconfig=$KUBE_CONFIG_FILE"
 

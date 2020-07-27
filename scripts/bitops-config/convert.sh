@@ -3,7 +3,7 @@
 export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
 
-# set -ex
+set -e
 
 value="$1"
 key_type="$2"
@@ -19,6 +19,11 @@ if [ -n "$DEBUG" ]; then
 fi
 
 converter_script="$SCRIPTS_DIR/bitops-config/converters/${key_type}.sh"
+
+if [ -z "$cli_flag" ]; then
+  echo ""
+  exit 0
+fi
 
 if [ -f "$converter_script" ]; then
     OUTPUT="$(bash "$converter_script" "$value" "$cli_flag" "$terminal" || exit)"
