@@ -24,10 +24,8 @@ trap "{ on_exit; }" EXIT
 BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $HELM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 
-source $BITOPS_SCHEMA_ENV_FILE
-output_schema_env
-exit 0
-
+source "$BITOPS_SCHEMA_ENV_FILE"
+echo "call validate_env with NAMESPACE: $NAMESPACE"
 NAMESPACE="$NAMESPACE" \
 bash $SCRIPTS_DIR/helm/validate_env.sh
 
@@ -145,12 +143,9 @@ if [ "$RESULT" == "complete" ] || [ "$RESULT" == "deployed" ]; then
     $h upgrade \
     $HELM_RELEASE_NAME \
     $HELM_CHART_DIRECTORY \
-    --install \
-    --timeout="$TIMEOUT" \
     --cleanup-on-fail \
-    --atomic \
-    --namespace="$NAMESPACE" \
-    $HELM_DEBUG_COMMAND \
+    --install \
+    $BITOPS_CONFIG_COMMAND \
     $MAIN_VALUES_FILES_COMMAND \
     $VALUES_FILES_COMMAND
 else
@@ -158,14 +153,18 @@ else
         echo 'New installation...'
         $h install \
         $HELM_RELEASE_NAME \
-        $HELM_CHART_DIRECTORY \ \
-        --namespace="$NAMESPACE" \
-        --atomic \
-        --timeout="$TIMEOUT" \
-        $HELM_DEBUG_COMMAND \
+        $HELM_CHART_DIRECTORY \
+        $BITOPS_CONFIG_COMMAND \
         $MAIN_VALUES_FILES_COMMAND \
         $VALUES_FILES_COMMAND
     else
+        # TODO: build this into bitops.schema.yaml
+        HELM_DEBUG_COMMAND=""
+        if [ -n "$HELM_DEBUG" ]; then
+            HELM_DEBUG_COMMAND="--debug"
+        fi
+
+
         echo "The previous instalation failed. Rolling back to last successful release."
         $h rollback \
         $HELM_RELEASE_NAME 0 \
@@ -177,7 +176,7 @@ fi
 
 # Run After Deploy Scripts if any.
 
-bash -x $SCRIPTS_DIR/deploy/after-deploy.sh $path/$subDir
+bash -x $SCRIPTS_DIR/deploy/after-deploy.sh $HELM_CHART_DIRECTORY
 
 printf "${SUCCESS} Helm deployment was successful...${NC}"
 

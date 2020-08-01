@@ -17,6 +17,7 @@ helm:
         debug:
           type: boolean
           parameter: debug
+          export_env: HELM_DEBUG
         atomic:
           type: boolean
           parameter: atomic

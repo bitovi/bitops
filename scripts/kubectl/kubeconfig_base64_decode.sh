@@ -8,6 +8,11 @@ if [ -z "$KUBECONFIG_BASE64" ]; then
   exit 0
 fi
 
+# ensure dir exists
+KUBE_CONFIG_DIR="$(dirname "$KUBE_CONFIG_FILE")"
+if [ ! -d "$KUBE_CONFIG_DIR" ]; then
+  mkdir -p "$KUBE_CONFIG_DIR"
+fi
 
 echo "${KUBECONFIG_BASE64}" | base64 -d > "$KUBE_CONFIG_FILE"
 
