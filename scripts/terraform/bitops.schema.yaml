@@ -1,12 +1,6 @@
 terraform:
   type: object
   properties:
-    cli:
-      type: object
-      properties:
-        target:
-          type: string
-          parameter: target
     options:
       type: object
       properties:
