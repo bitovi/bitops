@@ -5,6 +5,9 @@ set -ex
 # terraform vars
 export TERRAFORM_ROOT="$ENVROOT/terraform" 
 export TERRAFORM_BITOPS_CONFIG="$TERRAFORM_ROOT/bitops.config.yaml" 
+export BITOPS_SCHEMA_ENV_FILE="$TERRAFORM_ROOT/ENV_FILE"
+export BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/terraform/bitops.schema.yaml"
+
 
 if [ ! -d "$TERRAFORM_ROOT" ]; then
   echo "No terraform directory.  Skipping."
@@ -20,16 +23,18 @@ else
   echo "Terraform - No Bitops config"
 fi
 
-CREATE_CLUSTER=false
+export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $TERRAFORM_BITOPS_CONFIG)"
+echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
+echo "BITOPS_SCHEMA_ENV_FILE: $(cat $BITOPS_SCHEMA_ENV_FILE)"
+source "$BITOPS_SCHEMA_ENV_FILE"
 
-
+## TODO - This should be added to bitops.schema.yaml
 if [ -n "$CLUSTER_NAME" ]; then
   echo "Using $CLUSTER_NAME cluster..."
 else
   CLUSTER_NAME=$(shyaml get-value cluster < "$TERRAFORM_BITOPS_CONFIG" || true)
   CLUSTER_NAME=$(echo $CLUSTER_NAME | sed 's/true//g')
 fi
-
 CLUSTER_NAME="$CLUSTER_NAME" \
 bash $SCRIPTS_DIR/terraform/validate_env.sh
 
