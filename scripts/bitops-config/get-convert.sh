@@ -34,8 +34,7 @@ on_exit () {
 }
 trap '{ on_exit; }' EXIT
 
-v="$default"
-v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$config_file" "$key")"
+v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$config_file" "$key" "$default")"
 
 OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/convert.sh" "$v" "$key_type" "$cli_flag" "$terminal")"
 
