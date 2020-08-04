@@ -4,7 +4,7 @@ set -ex
 
 # terraform vars
 export TERRAFORM_ROOT="$ENVROOT/terraform" 
-export TERRAFORM_TERRAFORM_BITOPS_CONFIG="$TERRAFORM_ROOT/bitops.config.yaml" 
+export TERRAFORM_BITOPS_CONFIG="$TERRAFORM_ROOT/bitops.config.yaml" 
 
 if [ ! -d "$TERRAFORM_ROOT" ]; then
   echo "No terraform directory.  Skipping."
