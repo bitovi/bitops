@@ -7,7 +7,6 @@ terraform:
         target:
           type: string
           parameter: target
-          required: false
     options:
       type: object
       properties:
