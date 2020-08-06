@@ -56,9 +56,9 @@ bash $SCRIPTS_DIR/aws/sts.get-caller-identity.sh
 echo "Running terraform init"
 terraform init -input=false
 
-if [ -n "${TERRAFORM_WORKSPACE}" ]; then
+if [ -n "$TERRAFORM_WORKSPACE" ]; then
   echo "Running Terraform Workspace"
-  bash $SCRIPTS_DIR/terraform/terraform_workspace.sh
+  bash $SCRIPTS_DIR/terraform/terraform_workspace.sh $TERRAFORM_WORKSPACE
 fi
 
 # always plan first
