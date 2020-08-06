@@ -8,3 +8,6 @@ terraform:
           type: boolean
           export_env: FETCH_KUBECONFIG
           default: true
+        workspace:
+          type: string
+          export_env: TERRAFORM_WORKSPACE
