@@ -19,6 +19,8 @@ else
   echo "Ansible - No Bitops config"
 fi
 
+echo "cd Ansible Root: $ANSIBLE_ROOT"
+cd $ANSIBLE_ROOT
 
 bash $SCRIPTS_DIR/ansible/validate_env.sh
 
