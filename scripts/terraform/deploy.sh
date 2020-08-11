@@ -28,16 +28,7 @@ echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 echo "BITOPS_SCHEMA_ENV_FILE: $(cat $BITOPS_SCHEMA_ENV_FILE)"
 source "$BITOPS_SCHEMA_ENV_FILE"
 
-## TODO - This should be added to bitops.schema.yaml
-if [ -n "$CLUSTER_NAME" ]; then
-  echo "Using $CLUSTER_NAME cluster..."
-else
-  CLUSTER_NAME=$(shyaml get-value cluster < "$TERRAFORM_BITOPS_CONFIG" || true)
-  CLUSTER_NAME=$(echo $CLUSTER_NAME | sed 's/true//g')
-fi
-CLUSTER_NAME="$CLUSTER_NAME" \
 bash $SCRIPTS_DIR/terraform/validate_env.sh
-
 
 # Copy Default Terraform values
 echo "Copying defaults"

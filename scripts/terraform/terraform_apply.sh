@@ -5,10 +5,9 @@ set -e
 BITOPS_CONFIG="$TERRAFORM_BITOPS_CONFIG" 
 
 echo "Running terraform apply..."
-printf "${WARN}This will create an EKS Cluster in AWS. Charges may apply.${NC}"
 
 TF_LOG=""
-if [ "$(shyaml debug < "$BITOPS_CONFIG")" == 'True' ]; then
+if [ "${DEBUG}" == 'True' ]; then
     echo "Setting Terraform logging to debug mode..."
     TF_LOG="DEBUG"
 fi

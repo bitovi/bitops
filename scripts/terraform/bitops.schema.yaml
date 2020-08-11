@@ -4,6 +4,9 @@ terraform:
     options:
       type: object
       properties:
+        cluster-name:
+          type: string
+          export_env: CLUSTER_NAME
         fetch-kubeconfig:
           type: boolean
           export_env: FETCH_KUBECONFIG
