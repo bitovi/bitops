@@ -18,7 +18,7 @@ terraform:
         command:
           type: string
           export_env: TERRAFORM_COMMAND
-          default: "apply"
+          default: "plan"
         workspace:
           type: string
           export_env: TERRAFORM_WORKSPACE

@@ -49,6 +49,11 @@ if [ -n "$TERRAFORM_WORKSPACE" ]; then
   bash $SCRIPTS_DIR/terraform/terraform_workspace.sh $TERRAFORM_WORKSPACE
 fi
 
+if [ "${TERRAFORM_COMMAND}" == "plan" ]; then
+  echo "Running Terraform Plan"
+  bash $SCRIPTS_DIR/terraform/terraform_plan.sh "$BITOPS_CONFIG_COMMAND"
+fi
+
 if [ "${TERRAFORM_COMMAND}" == "apply" ] || [ "${TERRAFORM_APPLY}" == "true" ]; then
   # always plan first
   echo "Running Terraform Plan"
