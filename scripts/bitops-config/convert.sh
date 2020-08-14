@@ -20,7 +20,7 @@ fi
 
 converter_script="$SCRIPTS_DIR/bitops-config/converters/${key_type}.sh"
 
-if [ -z "$cli_flag" ]; then
+if [ -z "$cli_flag" ] || [ -z "$value" ]; then
   echo ""
   exit 0
 fi
