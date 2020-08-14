@@ -15,6 +15,10 @@ terraform:
     options:
       type: object
       properties:
+        version:
+          type: string
+          export_env: TERRAFORM_VERSION
+          default: "0.12.29"
         command:
           type: string
           export_env: TERRAFORM_COMMAND

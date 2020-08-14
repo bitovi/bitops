@@ -14,17 +14,10 @@ else
   printf "Deploying terraform... ${NC}"
 fi
 
-
-if [ -f "$TERRAFORM_BITOPS_CONFIG" ]; then
-  echo "Terraform - Found Bitops config"
-  export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $TERRAFORM_BITOPS_CONFIG)"
-  echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
-  echo "BITOPS_SCHEMA_ENV_FILE: $(cat $BITOPS_SCHEMA_ENV_FILE)"
-  source "$BITOPS_SCHEMA_ENV_FILE"
-else
-  echo "Terraform - No Bitops config"
-fi
-
+export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $TERRAFORM_BITOPS_CONFIG)"
+echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
+echo "BITOPS_SCHEMA_ENV_FILE: $(cat $BITOPS_SCHEMA_ENV_FILE)"
+source "$BITOPS_SCHEMA_ENV_FILE"
 
 bash $SCRIPTS_DIR/terraform/validate_env.sh
 
@@ -38,6 +31,10 @@ cd $TERRAFORM_ROOT
 # cloud provider auth
 echo "Terraform auth cloud provider"
 bash $SCRIPTS_DIR/aws/sts.get-caller-identity.sh
+
+# Set terraform version
+echo "Using terraform version $TERRAFORM_VERSION"
+ln -s /usr/local/bin/terraform-$TERRAFORM_VERSION /usr/local/bin/terraform
 
 # always init first
 echo "Running terraform init"
