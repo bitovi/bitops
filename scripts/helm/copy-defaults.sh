@@ -12,7 +12,9 @@ HELM_CHART="$1"
 # TODO: handle if we should merge vs overwrite
 
 # Copy default CRDs.
-if [ "$(shyaml get-value copy_defaults.crds < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
+
+if [ "1" == "1" ]; then
+# if [ "$(shyaml get-value copy_defaults.crds < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
     echo "COPY_DEFAULT_CRDS set"
     if [ -d "$DEFAULT_HELM_CHART_DIRECTORY/crds" ]; then
         echo "default crds/ exist"
@@ -26,7 +28,8 @@ fi
 
 # Copy default Charts.
 
-if [ "$(shyaml get-value copy_defaults.charts < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
+if [ "1" == "1" ]; then
+# if [ "$(shyaml get-value copy_defaults.charts < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
     echo "COPY_DEFAULT_CHARTS set"
     if [ -d "$DEFAULT_HELM_CHART_DIRECTORY/charts" ]; then
         echo "default charts/ exist"
@@ -41,7 +44,8 @@ fi
 
 # Copy default Templates.
 
-if [ "$(shyaml get-value copy_defaults.templates < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
+if [ "1" == "1" ]; then
+# if [ "$(shyaml get-value copy_defaults.templates < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
     echo "COPY_DEFAULT_TEMPLATES set"
     if [ -d "$DEFAULT_HELM_CHART_DIRECTORY/templates" ]; then
         echo "default templates/ exist"
@@ -55,7 +59,9 @@ fi
 
 # TODO: what's the schema?
 # Copy default Schema.
-if [ "$(shyaml get-value copy_defaults.schema < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
+
+if [ "1" == "1" ]; then
+# if [ "$(shyaml get-value copy_defaults.schema < "$HELM_BITOPS_CONFIG")" == 'True' ]; then
     echo "COPY_DEFAULT_SCHEMA set"
     if [ -d "$DEFAULT_HELM_CHART_DIRECTORY/schema" ]; then
         echo "default schema/ exists"

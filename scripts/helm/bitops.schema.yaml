@@ -38,6 +38,13 @@ helm:
         release-name:
           type: string
           export_env: HELM_RELEASE_NAME
+        cluster-name:
+          type: string
+          export_env: CLUSTER_NAME
+        fetch-kubeconfig:
+          type: boolean
+          export_env: FETCH_KUBECONFIG
+          default: true
     plugins:
       type: object
       properties:

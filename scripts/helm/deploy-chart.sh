@@ -23,8 +23,26 @@ trap "{ on_exit; }" EXIT
 
 BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $HELM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
-
 source "$BITOPS_SCHEMA_ENV_FILE"
+
+# set kube config
+if [[ "${FETCH_KUBECONFIG}" == "True" ]]; then
+  if [[ "${CLUSTER_NAME}" == "None" ]]; then
+    >&2 echo "{\"error\":\"CLUSTER_NAME variable is required\"}"
+    exit 1
+  else
+        # always get the kubeconfig (whether or not we applied)
+        echo "Attempting to fetch KUBECONFIG from cloud provider..."
+        CLUSTER_NAME="$CLUSTER_NAME" \
+        KUBECONFIG="$KUBE_CONFIG_FILE" \
+        bash $SCRIPTS_DIR/aws/eks.update-kubeconfig.sh
+        export KUBECONFIG=$KUBECONFIG:$KUBE_CONFIG_FILE
+  fi
+else
+    >&2 echo "{\"error\":\"FETCH_KUBECONFIG variable mandatory in bitops.config.yaml\"}"
+    exit 1
+fi
+
 echo "call validate_env with NAMESPACE: $NAMESPACE"
 NAMESPACE="$NAMESPACE" \
 bash $SCRIPTS_DIR/helm/validate_env.sh
@@ -100,6 +118,7 @@ else
     echo "No values file directory. Skipping..."
 fi
 
+
 # Deploy Chart.
 echo "Updating dependencies in '$HELM_CHART_DIRECTORY' ..."
 helm dep up "$HELM_CHART_DIRECTORY"
@@ -132,7 +151,7 @@ if [ -n "$(grep "$HELM_RELEASE_NAME" /tmp/check_release.txt)" ]; then
     $HELM_RELEASE_NAME \
     --namespace $NAMESPACE
 
-    RESULT="$($h history $HELM_RELEASE_NAME --namespace --output yaml | shyaml get-value -1 | shyaml get-value status)"
+    RESULT="$($h history $HELM_RELEASE_NAME --namespace $NAMESPACE --output yaml | shyaml get-value -1 | shyaml get-value status)"
     echo "Helm deployment status: $RESULT "
 else
     echo "No history"

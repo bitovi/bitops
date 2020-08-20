@@ -26,10 +26,3 @@ terraform:
         workspace:
           type: string
           export_env: TERRAFORM_WORKSPACE
-        cluster-name:
-          type: string
-          export_env: CLUSTER_NAME
-        fetch-kubeconfig:
-          type: boolean
-          export_env: FETCH_KUBECONFIG
-          default: true
