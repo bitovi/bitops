@@ -26,21 +26,35 @@ echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 source "$BITOPS_SCHEMA_ENV_FILE"
 
 # set kube config
-if [[ "${FETCH_KUBECONFIG}" == "True" ]]; then
-  if [[ "${CLUSTER_NAME}" == "None" ]]; then
-    >&2 echo "{\"error\":\"CLUSTER_NAME variable is required\"}"
-    exit 1
-  else
-        # always get the kubeconfig (whether or not we applied)
-        echo "Attempting to fetch KUBECONFIG from cloud provider..."
-        CLUSTER_NAME="$CLUSTER_NAME" \
-        KUBECONFIG="$KUBE_CONFIG_FILE" \
-        bash $SCRIPTS_DIR/aws/eks.update-kubeconfig.sh
-        export KUBECONFIG=$KUBECONFIG:$KUBE_CONFIG_FILE
-  fi
+if [[ "${KUBE_CONFIG_PATH}" == "" ]] || [[ "${KUBE_CONFIG_PATH}" == "''" ]] || [[ "${KUBE_CONFIG_PATH}" == "None" ]]; then
+    if [[ "${FETCH_KUBECONFIG}" == "True" ]]; then
+        if [[ "${CLUSTER_NAME}" == "" ]] || [[ "${CLUSTER_NAME}" == "''" ]] || [[ "${CLUSTER_NAME}" == "None" ]]; then
+            >&2 echo "{\"error\":\"CLUSTER_NAME config is required.Exiting...\"}"
+            exit 1
+        else
+            # always get the kubeconfig (whether or not we applied)
+            echo "Attempting to fetch KUBECONFIG from cloud provider..."
+            CLUSTER_NAME="$CLUSTER_NAME" \
+            KUBECONFIG="$KUBE_CONFIG_FILE" \
+            bash $SCRIPTS_DIR/aws/eks.update-kubeconfig.sh
+            export KUBECONFIG=$KUBECONFIG:$KUBE_CONFIG_FILE
+        fi   
+    else
+        if [[ "${FETCH_KUBECONFIG}" == "False" ]]; then
+            >&2 echo "{\"error\":\"one or more 'kubeconfig' variables are undefined in bitops.config.yaml.Exiting...\"}"
+            exit 1
+        fi
+    fi
 else
-    >&2 echo "{\"error\":\"FETCH_KUBECONFIG variable mandatory in bitops.config.yaml\"}"
-    exit 1
+    if [[ -f "$KUBE_CONFIG_PATH" ]]; then
+        echo "$KUBE_CONFIG_PATH exists."
+        KUBE_CONFIG_FILE="$KUBE_CONFIG_PATH" \
+        KUBECONFIG="$KUBE_CONFIG_FILE" \
+        export KUBECONFIG=$KUBECONFIG:$KUBE_CONFIG_FILE
+    else
+        >&2 echo "{\"error\":\"kubeconfig path variable wrong in bitops.config.yaml.Exiting...\"}"
+        exit 1
+    fi
 fi
 
 echo "call validate_env with NAMESPACE: $NAMESPACE"
