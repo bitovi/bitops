@@ -47,7 +47,7 @@ helm:
             fetch:
               type: object
               properties:
-                fetch_kubeconfig: 
+                enabled: 
                   type: boolean
                   default: true
                   export_env: FETCH_KUBECONFIG
