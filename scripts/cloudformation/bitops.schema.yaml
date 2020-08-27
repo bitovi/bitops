@@ -1,0 +1,39 @@
+cloudformation:
+  type: object
+  properties:
+    cli:
+      type: object
+      properties:
+        validate-cfn:
+          type: boolean
+          export_env: CFN_TEMPLATE_VALIDATION
+          default: true
+        cfn-stack-action:
+          type: string
+          export_env: CFN_STACK_ACTION
+          default: deploy
+    options:
+      type: object
+      properties:
+        cfn-stack-name:
+          type: string
+          export_env: CFN_STACK_NAME
+        capabilities:
+          type: string
+          export_env: CFN_CAPABILITY
+        cfn-files:
+          type: object
+          properties:
+            template-file:
+              type: string
+              export_env: CFN_TEMPLATE_FILENAME
+            parameters:
+              type: object
+              properties:
+                enabled: 
+                  type: boolean
+                  default: true
+                  export_env: CFN_PARAMS_FLAG
+                template-param-file:
+                  type: string
+                  export_env: CFN_TEMPLATE_PARAMS_FILENAME

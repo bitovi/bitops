@@ -75,8 +75,6 @@ export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
 export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
 
 
-
-
 # Setup bashrc
 if [ ! -f !/.bashrc ]; then
   echo "#!/usr/bin/env bash" > ~/.bashrc
@@ -110,8 +108,6 @@ fi
 echo "Running deployments"
 
 
-
-
 # run terraform (should be first)
 if [ -d "$ENVROOT/terraform" ]; then
   if [ -n "$SKIP_DEPLOY_TERRAFORM" ]; then
@@ -142,6 +138,14 @@ if [ -d "$ENVROOT/helm" ]; then
   fi
 fi
 
-
+# run cloudformation (should be after terraform, ansible and helm)
+if [ -d "$ENVROOT/cloudformation" ]; then
+  if [ -n "$SKIP_DEPLOY_CLOUDFORMATION" ]; then
+    echo "SKIP_DEPLOY_CLOUDFORMATION set..."
+  else
+    echo "calling cloudformation/deploy ..."
+    bash $SCRIPTS_DIR/cloudformation/deploy.sh
+  fi
+fi
 
 

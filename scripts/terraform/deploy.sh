@@ -74,24 +74,6 @@ if [ "${TERRAFORM_COMMAND}" == "destroy" ] || [ "${TERRAFORM_DESTROY}" == "true"
   fi
 fi
 
-# if [[ "${FETCH_KUBECONFIG}" == "true" ]]; then
-#   # always get the kubeconfig (whether or not we applied)
-#   if [ ! -f "$KUBE_CONFIG_FILE" ]; then 
-#     echo "${WARN}KUBE_CONFIG_FILE is empty ($KUBE_CONFIG_FILE)${NC}"
-#     echo "Attempting to retrieve KUBECONFIG from Terraform..."
-#     bash $SCRIPTS_DIR/terraform/generate_kubeconfig.sh
-#   fi
-
-#   # validate nodes exist
-#   if [[ "No resources found." == "$(kubectl get nodes --kubeconfig="$KUBE_CONFIG_FILE")" ]]; then
-#     CLUSTER_NAME="$CLUSTER_NAME" \
-#     KUBECONFIG="$KUBE_CONFIG_FILE" \
-#     bash $SCRIPTS_DIR/aws/eks.update-kubeconfig.sh
-
-#     bash $SCRIPTS_DIR/aws/eks.create_config_map.sh
-#   fi 
-# fi
-
 
 
 
