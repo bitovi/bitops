@@ -25,12 +25,13 @@ cloud_platform:
 terraform:
   versions:
   - 0.12.24
-  - 0.12.25
+  - 0.12.25 
   - 0.12.26
   - 0.12.27
   - 0.12.28  
   - 0.12.29
   - 0.13.0
+  - 0.13.1
 
 # Specify Helm version. Options: 2 or 3
 helm:
