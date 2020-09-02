@@ -14,6 +14,10 @@ helm:
           parameter: timeout
           export_env: TIMEOUT
           default: "500s"
+        set:
+          type: list
+          parameter: set
+          export_env: HELM_SET_FLAG
         debug:
           type: boolean
           parameter: debug
@@ -54,13 +58,6 @@ helm:
                 cluster-name:
                   type: string
                   export_env: CLUSTER_NAME
-        # cluster-name:
-        #   type: string
-        #   export_env: CLUSTER_NAME
-        # fetch-kubeconfig:
-        #   type: boolean
-        #   export_env: FETCH_KUBECONFIG
-        #   default: true
     plugins:
       type: object
       properties:
