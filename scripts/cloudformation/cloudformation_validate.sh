@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -ex 
+set -e
 
 CFN_TEMPLATE_FILENAME=$1
 

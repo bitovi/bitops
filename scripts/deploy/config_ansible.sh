@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
 # TODO: use $SCRIPTS_DIR/bitops-config/* instead
 function config_ansible() {
     i=0

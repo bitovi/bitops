@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # terraform vars
 export TERRAFORM_ROOT="$ENVROOT/terraform" 

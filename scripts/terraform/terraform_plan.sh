@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# No set -e here because we want to return the terraform plan exit code to the calling script
 
 echo "Running terraform plan..."
 TF_ARGS=$1

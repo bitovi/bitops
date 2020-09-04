@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-# set -ex 
+set -e
 
 # cloudformation vars
 export CLOUDFORMATION_ROOT="$ENVROOT/cloudformation" 

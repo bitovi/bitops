@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e 
 
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then

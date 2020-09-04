@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 
 rm -rf /root/.aws

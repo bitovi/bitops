@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
+set -e
 
 export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
-
-# set -ex
-set -e
 
 SCHEMA_FILE="$1"
 BITOPS_CONFIG_FILE="$2"

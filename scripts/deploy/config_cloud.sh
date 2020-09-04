@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
 function config_cloud_platform() {
     i=0
     while [ $i -lt $(shyaml get-value cloud_platform < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]

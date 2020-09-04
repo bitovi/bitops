@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
+set -e
 
 export BITOPS_DIR="/opt/bitops"
 export SCRIPTS_DIR="$BITOPS_DIR/scripts"
-
-set -e
 
 value="$1"
 key_type="$2"

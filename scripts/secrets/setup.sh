@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 
 # secrets vars
 export SECRETS_MGR=""

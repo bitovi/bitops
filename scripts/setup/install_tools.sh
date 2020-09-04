@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -x
 
 python3 --version
 find / -name pip3

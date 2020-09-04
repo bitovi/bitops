@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 CFN_STACK_NAME=$1
 

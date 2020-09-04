@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -ex
+set -e
 
 PLUGIN_DIR=$1
 

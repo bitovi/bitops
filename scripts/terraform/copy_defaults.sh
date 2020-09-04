@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 TERRAFORM_ROOT=$1
 DEFAULT_TERRAFORM_ROOT="$DEFAULT_ENVROOT/terraform"

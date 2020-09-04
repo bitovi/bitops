@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -e 
+set -e
 
 echo "Running terraform destroy..."
 TF_ARGS=$1

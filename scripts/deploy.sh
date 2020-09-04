@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-set -xe
-
+set -e
+if [ "$DEBUG" = true ]; then
+  set -x
+fi
 
 # Logging
 export ERROR='\033[0;31m'

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 
 
 echo "KUBECONFIG_BASE64 - checking if set"

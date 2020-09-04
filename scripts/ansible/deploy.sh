@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e
 
 export ANSIBLE_ROOT="$ENVROOT/ansible" 

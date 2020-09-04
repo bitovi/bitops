@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -ex 
+set -e
 
 echo "Terraform - Creating config map..."
 

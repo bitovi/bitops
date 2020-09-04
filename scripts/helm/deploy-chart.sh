@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -ex
+set -e
 
 HELM_CHART="$1"
 HELM_CHART_DIRECTORY="$HELM_ROOT/$HELM_CHART"

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -ex
+set -e
 
 # helm vars
 export HELM_RELEASE_NAME=""
