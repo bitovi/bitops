@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+# No set -e here because we want to get a non-zero exit code from terraform_plan.sh
 
 # terraform vars
 export TERRAFORM_ROOT="$ENVROOT/terraform" 
