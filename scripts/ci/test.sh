@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 
 echo "TODO: add more tests"
+
 exit 0
 
 

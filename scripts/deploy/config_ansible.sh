@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+# TODO: use $SCRIPTS_DIR/bitops-config/* instead
 function config_ansible() {
     i=0
     while [ $i -lt $(shyaml get-value ansible < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]

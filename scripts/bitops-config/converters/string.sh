@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 
 value="$1"
 cli_flag="$2"
@@ -12,7 +12,7 @@ if [ -n "$DEBUG" ]; then
     echo "  terminal: $terminal"
 fi
 
-OUTPUT="--${cli_flag}='$value'"
+OUTPUT="--${cli_flag}=$value"
 
 echo "$OUTPUT"
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 
 apt-get update -y && \
 add-apt-repository ppa:deadsnakes/ppa && \

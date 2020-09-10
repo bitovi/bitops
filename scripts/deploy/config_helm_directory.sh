@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
 function config_override_default_helm() {
     i=0
     while [ $i -lt $(shyaml get-value helm < "$TEMPDIR/bitops.config.default.yaml" | grep  '^- ' | wc -l) ]

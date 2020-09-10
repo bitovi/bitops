@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e 
 
 function config_terraform_plan() {

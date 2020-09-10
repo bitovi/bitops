@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 
 value="$1"
 cli_flag="$2"

@@ -1,58 +1,16 @@
 #!/usr/bin/env bash
+set -e
 
-set -e 
+echo "Running terraform destroy..."
+TF_ARGS=$1
 
-export TERRAFORM_ROOT=""
-BITOPS_DIR="/opt/bitops"
-SCRIPTS_DIR="$BITOPS_DIR/scripts"
-export ERROR='\033[0;31m'
-export SUCCESS='\033[0;32m'
+if [ "${TERRAFORM_DESTROY_ALTERNATE_COMMAND}" == "true" ]; then
+  printf "${WARN}Running Alternate Terraform command.${NC}"
 
-if [ -z "$AWS_ACCESS_KEY_ID" ]; then
-  echo "environment variable (AWS_ACCESS_KEY_ID) not set"
-  exit 1
-fi
-if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-  echo "environment variable (AWS_ACCESS_KEY_ID) not set"
-  exit 1
-fi
-if [ -z "$AWS_DEFAULT_REGION" ]; then
-  echo "environment variable (AWS_DEFAULT_REGION) not set"
-  exit 1
-fi
-if [ -z "$ENVIRONMENT" ]; then
-  echo "environment variable (ENVIRONMENT) not set"
-  exit 1
-fi
-if [ -n "$TERRAFORM_DIRECTORY" ]; then
-    TERRAFORM_ROOT=$TERRAFORM_DIRECTORY
+  TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_destroy.command < "$TERRAFORM_BITOPS_CONFIG" || true)
+  bash $SCRIPTS_DIR/util/run-text-as-script.sh "$TERRAFORM_ROOT" "$TERRAFORM_COMMAND"
 else
-    TERRAFORM_ROOT=$TEMPDIR/$ENVIRONMENT/terraform/
+  terraform destroy -auto-approve $TF_ARGS
 fi
-
-
-if [ -d "$TERRAFORM_ROOT" ]
-then 
-    # Copy Default Terraform values
-    echo "Copying TFVARS"
-    $SCRIPTS_DIR/terraform/terraform_copy_tfvars.sh "$TERRAFORM_ROOT"
-    echo "Terraform directory not set. Using default directory."
-    /root/.local/bin/aws sts get-caller-identity
-    cd "$TERRAFORM_ROOT"
-    if [ "${TERRAFORM_DESTROY_ALTERNATE_COMMAND}" == "true" ]; then
-        TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_apply.command < bitops.config.yaml || true)
-        exec "${TERRAFORM_COMMAND}"
-    else
-        /usr/local/bin/terraform init -input=false
-        /usr/local/bin/terraform plan
-        /usr/local/bin/terraform destroy -auto-approve
-    fi
-fi  
 
 printf "${SUCCESS} Successfully destroyed Terraform deployment..."
-
-
-
-
-
-

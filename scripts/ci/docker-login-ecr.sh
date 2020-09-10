@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xe
+set -e
 
 output_script="\"script\":\"scripts/ci/docker-login-ecr.sh\""
 

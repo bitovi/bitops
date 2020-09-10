@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-set -ex
+set -e
 
 
 echo "Installing charts from S3 Bucket..."
