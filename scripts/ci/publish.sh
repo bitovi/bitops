@@ -20,8 +20,8 @@ if [ -n "$BITOPS_PUBLISH_ECR" ]; then
   ./scripts/ci/docker-login-ecr.sh
 
 else
-  >&2 echo "{\"script\":\"scripts/ci/publish.sh\", \"error\":\"TODO: docker login\"}"
-  exit 1
+  echo "$DOCKER_PASS" | docker login --username="$DOCKER_USER" --password-stdin
+  echo "logged into dockerhub registry"
 fi
 
 ####
