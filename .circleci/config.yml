@@ -8,12 +8,9 @@ workflows:
             branches:
               only:
                 - master
-      - build:
-          context: bitops
-          filters:
             tags:
               only:
-                - "*"
+                - "/.*/"
 jobs:
   build:
     machine:
