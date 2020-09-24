@@ -48,22 +48,9 @@ docker run bitovi/bitops -v .:/opt/bitops_deployment
 * Microsoft Azure Cloud (Azure) - TODO - https://github.com/bitovi/bitops/issues/13
 * Google Cloud Engine (GCE) - TODO - https://github.com/bitovi/bitops/issues/14
 
-## Configuration Options
+## Examples
 
-```bash
-- Optional Environment variables:
-  ANSIBLE_DIRECTORY - The directory containing your ansible playbooks.
-  ANSIBLE_PLAYBOOKS - The name of your ansible playbook.
-  DEBUG - Set this option to 1 to enable debugging your Helm Stack.
-  EXTERNAL_HELM_CHARTS - External Helm chart you need to install. The arguments for each repo should be separated a comma. Use the form: <NAME>,<REPO_KEY>,<REPO_URL>.
-  TERRAFORM_DIRECTORY - Location of the terraform directory.
-  TERRAFORM_APPLY - Set this option to true to deploy your Terraform stack. 
-  NAMESPACE - The namespace for the helm chart.
-
-
-```
-
-## AWS Examples.
+See [/docs/examples/](/docs/examples/) for various use cases and pipeline examples
 
 - Using the runner to deploy a Helm Chart.
 
@@ -89,7 +76,6 @@ docker run --rm --name qa-bitops \
   -v $(pwd):/opt/bitops_deployment qa-bitops:latest \
   --entrypoint="/bin/sh" /opt/bitops/scripts/terraform/terraform_apply.sh
 ```
-
 
 ## Support / Contributing
 
