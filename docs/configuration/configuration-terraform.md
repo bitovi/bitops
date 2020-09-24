@@ -1,6 +1,18 @@
 # Terraform
 Terraform will always run `terraform init` and `terraform plan` on every execution.
 
+## Example bitops.config.yml
+```
+terraform:
+    cli:
+        var-file: my-vars.tfvars
+        target: terraform.module.resource
+    options:
+        command: apply
+        version: "0.13.2"
+        workspace: test
+```
+
 ## CLI Configuration
 
 -------------------
@@ -41,14 +53,3 @@ Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 
 -------------------
-## Example bitops.config.yml
-```
-terraform:
-    cli:
-        var-file: my-vars.tfvars
-        target: terraform.module.resource
-    options:
-        command: apply
-        version: "0.13.2"
-        workspace: test
-```
