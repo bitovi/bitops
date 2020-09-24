@@ -73,7 +73,9 @@ Additional parameters.
 -------------------
 
 ## Additional Environment Variable Configuration
+
 Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
 -------------------
 ### SKIP_DEPLOY_CLOUDFORMATION
+
 Will skill all cloudformation executions. This superseeds all other configuration

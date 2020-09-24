@@ -12,7 +12,7 @@ Bitops is an opnionated deployment tool that bundles [supported devops tools](#s
 
 ## Features
 
-* **[Configurable](/docs/configuration/configuration.md):** Configure how you want bitops to deploy your application with environment variables or yaml
+* **[Configurable](/docs/configuration/configuration-common.md):** Configure how you want bitops to deploy your application with environment variables or yaml
 * **[Event Hooks](/docs/operations-repo.md#lifecycle-directories):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops'
 
 ## How it works
@@ -34,7 +34,7 @@ docker run bitovi/bitops -v .:/opt/bitops_deployment
 ```
 
 ## Configure Bitops
-[Docs](/docs/configuration/configuration.md)
+[Docs](/docs/configuration/configuration-common.md)
 
 ## Supported Tools
 * [Provision infrastructure with CloudFormation](/docs/configuration/configuration-cloudformation.md)

@@ -55,14 +55,18 @@ Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 -------------------
 
 ## Additional Environment Variable Configuration
+
 Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
 -------------------
 ### SKIP_DEPLOY_TERRAFORM
+
 Will skill all terraform executions. This superseeds all other configuration
 -------------------
 ### TERRAFORM_APPLY
+
 Will force call `terraform apply`
 -------------------
 ### TERRAFORM_DESTROY
+
 Will force call `terraform destroy`
 -------------------
