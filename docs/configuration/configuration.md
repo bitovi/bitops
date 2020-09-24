@@ -19,6 +19,13 @@ Each bitops run is done against a single environment. This property tells bitops
 
 Base64 encodd .kubeconfig file. Allows deployment tools to interact with a kubernetes cluster
 -------------------
+### debug
+* **Environment Variable:** `DEBUG`
+* **default:** `""`
+* **required:** no
+
+If true, will enable verbose logging
+-------------------
 
 ## Common schema
 All `bitops.config.yml` files share the following structure

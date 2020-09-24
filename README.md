@@ -37,6 +37,7 @@ docker run bitovi/bitops -v .:/opt/bitops_deployment
 [Docs](/docs/configuration/configuration.md)
 
 ## Supported Tools
+* [Provision infrastructure with CloudFormation](/docs/configuration/configuration-cloudformation.md)
 * [Provision infrastructure with Terraform](/docs/configuration/configuration-terraform.md)
 * [Configure infrastructure with Ansible](/docs/configuration/configuration-ansible.md)
 * [Deploy to kubernetes with Helm](/docs/configuration/configuration-helm.md)
