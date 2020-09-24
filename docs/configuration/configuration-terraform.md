@@ -17,39 +17,39 @@ terraform:
 
 -------------------
 ### var-file
-* **Bitops Property**: `var-file`
-* **CLI Argument**: `--var-file`
-* **Environment Variable**: `TF_VAR_FILE`
-* **default**: `""`
+* **Bitops Property:** `var-file`
+* **CLI Argument:** `--var-file`
+* **Environment Variable:** `TF_VAR_FILE`
+* **default:** `""`
 -------------------
 ### target
-* **Bitops Property**: `target`
-* **CLI Argument**: `--target`
-* **Environment Variable**: `TF_TARGET`
-* **default**: `""`
+* **Bitops Property:** `target`
+* **CLI Argument:** `--target`
+* **Environment Variable:** `TF_TARGET`
+* **default:** `""`
 -------------------
 
 ## Options Configuration
 
 -------------------
 ### version
-* **Bitops Property**: `version`
-* **Environment Variable**: `TERRAFORM_VERSION`
-* **default**: `"0.12.29"`
-Allows customziation of which version of terraform to run
+* **Bitops Property:** `version`
+* **Environment Variable:** `TERRAFORM_VERSION`
+* **default:** `"0.12.29"`
 
+Allows customziation of which version of terraform to run
 -------------------
 ### command
-* **Bitops Property**: `command`
-* **Environment Variable**: `TERRAFORM_COMMAND`
-* **default**: `"plan"`
-Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
+* **Bitops Property:** `command`
+* **Environment Variable:** `TERRAFORM_COMMAND`
+* **default:** `"plan"`
 
+Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 -------------------
 ### workspace
-* **Bitops Property**: `workspace`
-* **Environment Variable**: `TERRAFORM_WORKSPACE`
-* **default**: `""`
-Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
+* **Bitops Property:** `workspace`
+* **Environment Variable:** `TERRAFORM_WORKSPACE`
+* **default:** `""`
 
+Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 -------------------

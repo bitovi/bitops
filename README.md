@@ -5,16 +5,16 @@
 ![LICENSE](https://img.shields.io/github/license/bitovi/bitops)
 ![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)
 
-Bitops is an opnionated deployment tool that bundles popular devops tools along with a built in understanding of an operations repository structure. The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
+Bitops is an opnionated deployment tool that bundles [supported devops tools](#supported-tools) along with a built in understanding of an [operations repository structure](/docs/operations-repo.md). The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
 
 ---------------------
 
 ## Features
 
-* Configurable: Configure how you want bitops to deploy your application with environment variables or yaml
-* Event Hooks: If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops' [lifecycle]()
+* **[Configurable](/docs/configuration/configuration.md):** Configure how you want bitops to deploy your application with environment variables or yaml
+* **[Event Hooks](/docs/operations-repo.md#lifecycle-directories):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops'
 
-## How it works.
+## How it works
 
 BitOps is a boiler plate docker image for traditional DevOps work. An operations repository is mounted to the bitops image's `/opt/bitops_deployment` directory.  Bitops will
 * Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
@@ -31,6 +31,10 @@ docker pull bitovi/bitops
 cd $YOUR_OPERATIONS_REPO
 docker run bitovi/bitops -v .:/opt/bitops_deployment
 ```
+
+## Configure Bitops
+[Docs](/docs/configuration/configuration.md)
+
 
 ## Supported Tools
 * Provision infrastructure with [Terraform](https://www.terraform.io/)
