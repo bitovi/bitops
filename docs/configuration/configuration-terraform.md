@@ -38,6 +38,7 @@ terraform:
 * **default:** `"0.12.29"`
 
 Allows customziation of which version of terraform to run
+
 -------------------
 ### command
 * **Bitops Property:** `command`
@@ -45,6 +46,7 @@ Allows customziation of which version of terraform to run
 * **default:** `"plan"`
 
 Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
+
 -------------------
 ### workspace
 * **Bitops Property:** `workspace`
@@ -52,6 +54,7 @@ Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 * **default:** `""`
 
 Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
+
 -------------------
 
 ## Additional Environment Variable Configuration

@@ -25,6 +25,7 @@ cloudformation:
 * **default:** `true`
 
 Calls `aws cloudformation validate-template` 
+
 -------------------
 ### cfn-stack-action
 * **Bitops Property:** `cfn-stack-action`
@@ -32,6 +33,7 @@ Calls `aws cloudformation validate-template`
 * **default:** `deploy`
 
 Controls what cloudformation action to apply on the stack
+
 -------------------
 
 ## Options Configuration
@@ -43,6 +45,7 @@ Controls what cloudformation action to apply on the stack
 * **default:** `""`
 
 Cloudformation stack name
+
 -------------------
 ### cfn-stack-action
 * **Bitops Property:** `cfn-stack-name`
@@ -50,6 +53,7 @@ Cloudformation stack name
 * **default:** `""`
 
 Cloudformation stack name
+
 -------------------
 ### capabilities
 * **Bitops Property:** `capabilities`
@@ -57,6 +61,7 @@ Cloudformation stack name
 * **default:** `""`
 
 Cloudformation capabilities
+
 -------------------
 ### cfn-files
 * **Bitops Property:** `cfn-files`
@@ -78,6 +83,7 @@ Additional parameters.
 * **Bitops Property:** `cfn-files.parameters.template-param-file`
 * **Environment Variable:** `CFN_TEMPLATE_PARAMS_FILENAME`
 * **default:** `""`
+
 -------------------
 
 ## Additional Environment Variable Configuration
