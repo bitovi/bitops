@@ -1,13 +1,47 @@
-# Bitovi CI/CD Runner
+# Bitops
 
-The Bitovi CI/CD Runner is deployment tool for Kubernetes Deployments. We support the big three Cloud Platorms: Amazon Web Services (AWS), Microsoft Azure Cloud (Azure) and Google Cloud Engine (GCE). The Bitovi runner will deploy your application as a Helm Chart on either platform. Simply pass the appropriate options to our deployment script to select Cloud Provider - (AWS, AC, GCE) or CI/CD Provider (Jenkins, AWS, GitLab, Travis). See our configuration section below.
+---------------------
+
+![LICENSE](https://img.shields.io/github/license/bitovi/bitops)
+![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)
+
+Bitops is an opnionated deployment tool that bundles popular devops tools along with a built in understanding of an operations repository structure. The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
+
+---------------------
+
+## Features
+
+* Configurable: Configure how you want bitops to deploy your application with environment variables or yaml
+* Event Hooks: If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops' [lifecycle]()
 
 ## How it works.
 
-The Bitovi CI/CD Runner is a boiler plate docker image for traditional DevOps 
-work. It can handle Amazon AWS, Microsoft Azure.
+BitOps is a boiler plate docker image for traditional DevOps work. An operations repository is mounted to the bitops image's `/opt/bitops_deployment` directory.  Bitops will
+* Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
+* Loop through each tool and
+  * Run any pre-execute hooks
+  * Read in `yml` configuration
+  * Execute the tool
+  * Run any post-execute hooks
 
-BitOps is a docker container, built as a boiler plate devops engine for deploying kubernetes applications from a cloud native/agnostic point of view.
+## Install BitOps
+Bitops is packaged as a docker image and is available on dockerhub.
+```
+docker pull bitovi/bitops
+cd $YOUR_OPERATIONS_REPO
+docker run bitovi/bitops -v .:/opt/bitops_deployment
+```
+
+## Supported Tools
+* Provision infrastructure with [Terraform](https://www.terraform.io/)
+* Configure infrastructure with [Ansible](https://www.ansible.com/)
+* Deploy to kubernetes with [Helm](https://helm.sh/)
+
+## Supported Cloud Providers
+
+* Amazon Web Services (AWS)
+* Microsoft Azure Cloud (Azure) - TODO - https://github.com/bitovi/bitops/issues/13
+* Google Cloud Engine (GCE) - TODO - https://github.com/bitovi/bitops/issues/14
 
 ## Configuration Options
 
