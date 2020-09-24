@@ -48,3 +48,4 @@ $tool
 * [Ansible](/docs/configuration/configuration-ansible.md)
 * [Helm](/docs/configuration/configuration-helm.md)
 * [Terraform](/docs/configuration/configuration-terraform.md)
+* [Cloudformation](/docs/configuration/configuration-cloudformation.md)
