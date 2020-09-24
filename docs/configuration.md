@@ -1,6 +1,6 @@
 Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool.
 
-## Common schema
+# Common schema
 All `bitops.config.yml` files share the following structure
 ```
 $tool
@@ -11,83 +11,77 @@ $tool
 * `cli` - object that contains cli arguments
 * `options` - object that offers additional control over how a tool executes
 
-## Cloud Providers
+# Cloud Providers
 TODO
 
-## Tool Configuration
+# Tool Configuration
 
-### Ansible
+## Ansible
 
-#### Schema
-
-##### CLI Configuration
+### CLI Configuration
 TODO
 
-##### Options Configuration
+### Options Configuration
 TODO
 
-##### Example bitops.config.yml
+### Example bitops.config.yml
 TODO
 
-### Helm
+## Helm
 
-#### Schema
-
-##### CLI Configuration
+### CLI Configuration
 TODO
 
-##### Options Configuration
+### Options Configuration
 TODO
 
-##### Example bitops.config.yml
+### Example bitops.config.yml
 TODO
 
-### Terraform
+## Terraform
 Terraform will always run `terraform init` and `terraform plan` on every execution.
 
-#### Schema
-
-##### CLI Configuration
+### CLI Configuration
 
 -------------------
-##### var-file
+#### var-file
 * **Bitops Property**: `var-file`
 * **CLI Argument**: `--var-file`
 * **Environment Variable**: `TF_VAR_FILE`
 * **default**: `""`
 -------------------
-##### target
+#### target
 * **Bitops Property**: `target`
 * **CLI Argument**: `--target`
 * **Environment Variable**: `TF_TARGET`
 * **default**: `""`
 -------------------
 
-##### Options Configuration
+### Options Configuration
 
 -------------------
-##### version
+#### version
 * **Bitops Property**: `version`
 * **Environment Variable**: `TERRAFORM_VERSION`
 * **default**: `"0.12.29"`
 Allows customziation of which version of terraform to run
 
 -------------------
-##### command
+#### command
 * **Bitops Property**: `command`
 * **Environment Variable**: `TERRAFORM_COMMAND`
 * **default**: `"plan"`
 Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 
 -------------------
-##### workspace
+#### workspace
 * **Bitops Property**: `workspace`
 * **Environment Variable**: `TERRAFORM_WORKSPACE`
 * **default**: `""`
 Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 
 -------------------
-##### Example bitops.config.yml
+### Example bitops.config.yml
 ```
 terraform:
     cli:
