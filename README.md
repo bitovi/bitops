@@ -4,6 +4,7 @@
 
 ![LICENSE](https://img.shields.io/github/license/bitovi/bitops)
 ![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)
+[![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Bitops is an opnionated deployment tool that bundles [supported devops tools](#supported-tools) along with a built in understanding of an [operations repository structure](/docs/operations-repo.md). The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
 
@@ -35,30 +36,20 @@ docker run bitovi/bitops -v .:/opt/bitops_deployment
 ## Configure Bitops
 [Docs](/docs/configuration/configuration.md)
 
-
 ## Supported Tools
-* Provision infrastructure with [Terraform](https://www.terraform.io/)
-* Configure infrastructure with [Ansible](https://www.ansible.com/)
-* Deploy to kubernetes with [Helm](https://helm.sh/)
+* [Provision infrastructure with Terraform](/docs/configuration/configuration-terraform.md)
+* [Configure infrastructure with Ansible](/docs/configuration/configuration-ansible.md)
+* [Deploy to kubernetes with Helm](/docs/configuration/configuration-helm.md)
 
 ## Supported Cloud Providers
 
-* Amazon Web Services (AWS)
+* [Amazon Web Services (AWS)](/docs/configuration/configuration-aws.md)
 * Microsoft Azure Cloud (Azure) - TODO - https://github.com/bitovi/bitops/issues/13
 * Google Cloud Engine (GCE) - TODO - https://github.com/bitovi/bitops/issues/14
 
 ## Configuration Options
 
 ```bash
-
-- Required Environment Variables:
-  AWS_ACCESS_KEY_ID - Your AWS Access Key.
-  AWS_SECRET_ACCESS_KEY - Your AWS Secret Access Key.
-  AWS_DEFAULT_REGION - The AWS Region where you want to launch your resources.
-  ENVIRONMENT - The environment to use: qa or prod etc.
-  KUBECONFIG_BASE64 - The Base 64 value of the contents of your ./kube/config
-
-
 - Optional Environment variables:
   ANSIBLE_DIRECTORY - The directory containing your ansible playbooks.
   ANSIBLE_PLAYBOOKS - The name of your ansible playbook.
@@ -97,3 +88,18 @@ docker run --rm --name qa-bitops \
   -v $(pwd):/opt/bitops_deployment qa-bitops:latest \
   --entrypoint="/bin/sh" /opt/bitops/scripts/terraform/terraform_apply.sh
 ```
+
+
+## Support / Contributing
+
+We welcome any contributions from the community with open arms. Take a look at our [Contributing](/CONTRIBUTING.md) guide.
+
+Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
+
+## Release History
+
+See [Releases](https://github.com/bitovi/bitops/releases).
+
+## License
+
+[MIT License](license.md).
