@@ -53,7 +53,7 @@ Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
 * **Environment Variable:** `TERRAFORM_WORKSPACE`
 * **default:** `""`
 
-Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
+Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE || terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands.
 
 -------------------
 
