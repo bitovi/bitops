@@ -68,7 +68,7 @@ jobs:
   
   deploy-docs:
     machine:
-      image: cimg/python:3.8.5
+      image: cimg/python:3.7
     steps:
     - checkout
     - run:
