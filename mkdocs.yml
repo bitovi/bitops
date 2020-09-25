@@ -1,11 +1,15 @@
 site_name: Bitops
 theme:
   name: material
+  palette:
+    primary: red
+    accent: red
+    scheme: preference
+  icon:
+    repo: fontawesome/regular/heart
 
-repo_name: bitovi/bitops
-repo_url: https://github.com/bitovi/bitops
-edit_uri: "docs/"
-
+repo_name: By Bitovi
+repo_url: https://www.bitovi.com/devops
 
 nav:
   - Home: index.md
@@ -27,44 +31,12 @@ nav:
     - DCO: contributing/DCO.md
     - Open Issues: https://github.com/bitovi/bitops/issues
   - License: license.md
-  # - Getting started:
-  #   - Installation: getting-started.md
-  #   - Creating your site: creating-your-site.md
-  #   - Publishing your site: publishing-your-site.md
-  #   - Customization: customization.md
-  #   - Troubleshooting: troubleshooting.md
-  #   - Data privacy: data-privacy.md
-  #   - Insiders: insiders.md
-  #   - License: license.md
-  # - Setup:
-  #   - Changing the colors: setup/changing-the-colors.md
-  #   - Changing the fonts: setup/changing-the-fonts.md
-  #   - Changing the language: setup/changing-the-language.md
-  #   - Changing the logo and icons: setup/changing-the-logo-and-icons.md
-  #   - Setting up navigation: setup/setting-up-navigation.md
-  #   - Setting up site search: setup/setting-up-site-search.md
-  #   - Setting up site analytics: setup/setting-up-site-analytics.md
-  #   - Setting up the header: setup/setting-up-the-header.md
-  #   - Adding social links: setup/adding-social-links.md
-  #   - Adding a git repository: setup/adding-a-git-repository.md
-  #   - Adding a comment system: setup/adding-a-comment-system.md
-  #   #- Adding a landing page: setup/adding-a-landing-page.md
-  # - Reference:
-  #   - Abbreviations: reference/abbreviations.md
-  #   - Admonitions: reference/admonitions.md
-  #   - Buttons: reference/buttons.md
-  #   - Code blocks: reference/code-blocks.md
-  #   - Content tabs: reference/content-tabs.md
-  #   - Data tables: reference/data-tables.md
-  #   - Footnotes: reference/footnotes.md
-  #   - Formatting: reference/formatting.md
-  #   - Icons + Emojis: reference/icons-emojis.md
-  #   - Images: reference/images.md
-  #   - Lists: reference/lists.md
-  #   - MathJax: reference/mathjax.md
-  #   - Meta tags: reference/meta-tags.md
-  #   - Variables: reference/variables.md
-  # - Changelog:
-  #   - Release notes: changelog.md
-  #   - Upgrading: upgrading.md
-  #   - Deprecations: deprecations.md
+
+extra:
+  social:
+  - icon: fontawesome/brands/docker
+    link: https://hub.docker.com/repository/docker/bitovi/bitops
+  - icon: fontawesome/brands/github
+    link: https://github.com/bitovi/bitops
+  - icon: fontawesome/brands/slack
+    link: https://www.bitovi.com/community/slack
