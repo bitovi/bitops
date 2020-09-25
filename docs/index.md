@@ -43,7 +43,7 @@ Bitops is configured in 3 steps:
 2. Configure aceess to your cloud provider
 3. Configure how you want your deployment tools to execute
 
-[Docs](/docs/configuration/configuration-common.md)
+[Docs](/configuration-base)
 
 ## Supported Tools
 * [Provision infrastructure with CloudFormation](/tool-configuration/configuration-cloudformation)
@@ -54,8 +54,8 @@ Bitops is configured in 3 steps:
 ## Supported Cloud Providers
 
 * [Amazon Web Services (AWS)](/cloud-configuration/configuration-aws)
-* Microsoft Azure Cloud (Azure) - TODO - https://github.com/bitovi/bitops/issues/13
-* Google Cloud Engine (GCE) - TODO - https://github.com/bitovi/bitops/issues/14
+* Microsoft Azure Cloud (Azure) - [TODO](https://github.com/bitovi/bitops/issues/13)
+* Google Cloud Engine (GCE) - [TODO](https://github.com/bitovi/bitops/issues/14)
 
 ## Support / Contributing
 

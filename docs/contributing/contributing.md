@@ -1,7 +1,8 @@
-How to Contribute
+# How to Contribute
+
 We'd love to accept your patches and contributions to this project. There are just a few small guidelines you need to follow.
 
-When you are ready to get started developing, see [development.md](/docs/development.md) for how to get started!
+When you are ready to get started developing, see our [development guide](/contributing/development) for how to get started!
 
 ## Developer Certificate of Origin ##
 
@@ -9,7 +10,7 @@ To contribute to this project, you must agree to the Developer Certificate of
 Origin (DCO) for each commit you make. The DCO is a simple statement that you,
 as a contributor, have the legal right to make the contribution.
 
-See the [DCO](DCO) file for the full text of what you must agree to.
+See the [DCO](/contributing/DCO) file for the full text of what you must agree to.
 
 To signify that you agree to the DCO for a commit, you add a line to the git
 commit message:

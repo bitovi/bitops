@@ -117,7 +117,7 @@ relative file path to .kubeconfig file
 #### fetch
 * **Bitops Property:** `kubeconfig.fetch`
 
-fetch kubeconfig from cluster? TODO @mick
+fetch kubeconfig using cloud provider auth
 
 ##### enabled
 * **Bitops Property:** `kubeconfig.fetch.enabled`
@@ -131,7 +131,7 @@ enables/disables kubeconfig.fetch
 * **Environment Variable:** `CLUSTER_NAME`
 * **default:** `""`
 
-cluster to operation against? TODO @mick
+cloud kubernetes cluster name for kubeconfig fetching.
 
 -------------------
 ## Plugin Configuration
