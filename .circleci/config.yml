@@ -67,8 +67,8 @@ jobs:
             ./scripts/ci/publish.sh
   
   deploy-docs:
-    machine:
-      image: circleci/python:3.6.4
+    docker:
+      - image: cimg/python:3.8.5
     steps:
     - checkout
     - run: sudo pip install -q mkdocs mkdocs-material
