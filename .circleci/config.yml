@@ -22,15 +22,6 @@ jobs:
   build:
     machine:
       image: ubuntu-1604:201903-01
-
-    ###
-    ### TODO: this would be ideal, but circleci apparently doesn't
-    ###       resolve env vars in the environment key..
-    ###       so, just do it in the command block for now...
-    ###
-    # environment:
-    #   AWS_ACCESS_KEY_ID: "${BITOPS_AWS_ACCESS_KEY_ID}"
-    #   AWS_SECRET_ACCESS_KEY: "${BITOPS_AWS_SECRET_ACCESS_KEY}"
     steps:
       - checkout
       - run:
