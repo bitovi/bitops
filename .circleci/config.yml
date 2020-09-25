@@ -70,8 +70,11 @@ jobs:
     docker:
       - image: cimg/python:3.7
     steps:
+    - add_ssh_keys:
+          fingerprints:
+            - "0a:83:f3:84:67:25:97:33:af:42:38:77:dc:29:60:8f"
     - checkout
-    - run: pip install -q mkdocs mkdocs-material
+    - run: pip install mkdocs mkdocs-material
     - deploy:
         name: Deploy docs
         command: mkdocs gh-deploy -t material
