@@ -1,4 +1,6 @@
 site_name: Bitops
+site_url: http://localhost:8000/docs/
+
 theme:
   name: material
   palette:
@@ -6,9 +8,10 @@ theme:
     accent: red
     scheme: preference
   icon:
+    logo: fontawesome/solid/space-shuttle
     repo: fontawesome/regular/heart
 
-repo_name: By Bitovi
+repo_name: Built By Bitovi
 repo_url: https://www.bitovi.com/devops
 
 nav:
@@ -34,9 +37,9 @@ nav:
 
 extra:
   social:
-  - icon: fontawesome/brands/docker
-    link: https://hub.docker.com/repository/docker/bitovi/bitops
   - icon: fontawesome/brands/github
     link: https://github.com/bitovi/bitops
+  - icon: fontawesome/brands/docker
+    link: https://hub.docker.com/repository/docker/bitovi/bitops
   - icon: fontawesome/brands/slack
     link: https://www.bitovi.com/community/slack

@@ -12,9 +12,9 @@ Bitops is an opinionated deployment tool that bundles [supported devops tools](#
 
 ## Features
 
-* **[Configurable](/docs/configuration/configuration-common.md):** Configure how you want bitops to deploy your application with environment variables or yaml
-* **[Event Hooks](/docs/operations-repo.md#lifecycle-directories):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops' lifecycle.
-* **Pipeline Agnostic:** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your CI. You can even run bitops locally!
+* **[Configurable](/configuration-base):** Configure how you want bitops to deploy your application with environment variables or yaml
+* **[Event Hooks](/lifecycle):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops' lifecycle.
+* **[Pipeline Agnostic](/examples):** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your CI. You can even run bitops locally!
 
 ## How it works
 
