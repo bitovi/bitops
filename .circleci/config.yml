@@ -69,14 +69,14 @@ jobs:
   deploy-docs:
     machine:
       image: ubuntu-1604:201903-01
-      steps:
-      - checkout
-      - run:
-          name: Install mkdocs
+    steps:
+    - checkout
+    - run:
+        name: Install mkdocs
           command: |
             pip install mkdocs
             pip install mkdocs-material
-      - deploy:
-          name: Deploy docs
+    - deploy:
+        name: Deploy docs
           command: |
             mkdocs gh-deploy -t material
