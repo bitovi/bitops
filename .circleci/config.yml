@@ -71,7 +71,7 @@ jobs:
       - image: cimg/python:3.8.5
     steps:
     - checkout
-    - run: sudo pip install -q mkdocs mkdocs-material
+    - run: sudo pip3 install -q mkdocs mkdocs-material
     - deploy:
         name: Deploy docs
         command: mkdocs gh-pages -t material
