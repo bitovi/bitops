@@ -21,12 +21,14 @@ terraform:
 * **CLI Argument:** `--var-file`
 * **Environment Variable:** `TF_VAR_FILE`
 * **default:** `""`
+
 -------------------
 ### target
 * **Bitops Property:** `target`
 * **CLI Argument:** `--target`
 * **Environment Variable:** `TF_TARGET`
 * **default:** `""`
+
 -------------------
 
 ## Options Configuration

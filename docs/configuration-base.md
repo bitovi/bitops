@@ -32,7 +32,7 @@ Each bitops run is done against a single environment. This property tells bitops
 * **default:** `""`
 * **required:** no
 
-Base64 encodd .kubeconfig file. Allows deployment tools to interact with a kubernetes cluster
+Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a kubernetes cluster
 
 -------------------
 ### debug
@@ -42,7 +42,14 @@ Base64 encodd .kubeconfig file. Allows deployment tools to interact with a kuber
 
 If true, will enable verbose logging
 
+-------------------
+### default_replace
+* **Environment Variable:** `BITOPS_DEFAULT_REPLACE`
+* **default:** `false`
 
+If true, [file mergers](/default-environment) will replace instead of create a copy during a merge
+
+-------------------
 ## Cloud Providers
 * [AWS](/cloud-configuration/configuration-aws)
 

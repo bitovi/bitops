@@ -1,5 +1,5 @@
 site_name: Bitops
-site_url: http://localhost:8000/docs/
+site_url: http://bitops.works/docs/
 
 theme:
   name: material
@@ -8,7 +8,7 @@ theme:
     accent: red
     scheme: preference
   icon:
-    logo: fontawesome/solid/space-shuttle
+    logo: material/pipe
     repo: fontawesome/regular/heart
 
 repo_name: Built By Bitovi
@@ -32,7 +32,7 @@ nav:
     - Contributing Guide: contributing/contributing.md
     - Development Guide: contributing/development.md
     - DCO: contributing/DCO.md
-    - Open Issues: https://github.com/bitovi/bitops/issues
+    - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
   - License: license.md
 
 extra:

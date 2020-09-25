@@ -141,21 +141,21 @@ This section of `bitops.config.yml` is unique to helm and allows the customizati
 ### S3 Plugin
 * **Bitops Property:** `s3`
 
-Configure https://github.com/hypnoglow/helm-s3 with the following properties
+Configure [helm s3 plugin](https://github.com/hypnoglow/helm-s3) with the following properties
 
 -------------------
 #### region
 * **Bitops Property:** `s3.region`
 * **Environment Variable:** `HELM_PLUGIN_S3_REGION`
 
-AWS region
+AWS region containing s3 bucket
 
 -------------------
 #### bucket
 * **Bitops Property:** `s3.bucket`
 * **Environment Variable:** `HELM_CHARTS_S3_BUCKET`
 
-AWS s3 bucket
+AWS s3 bucket name
 
 -------------------
 ## Additional Environment Variable Configuration
