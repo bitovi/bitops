@@ -21,7 +21,11 @@ fi
 echo "cd Ansible Root: $ANSIBLE_ROOT"
 cd $ANSIBLE_ROOT
 
+bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$ANSIBLE_ROOT"
+
 bash $SCRIPTS_DIR/ansible/validate_env.sh
 
 echo "Running Ansible Playbooks"
 bash -x $SCRIPTS_DIR/ansible/ansible_install_playbooks.sh
+
+bash -x $SCRIPTS_DIR/deploy/after-deploy.sh "$ANSIBLE_ROOT"

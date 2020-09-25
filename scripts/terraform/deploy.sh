@@ -15,6 +15,9 @@ else
   printf "Deploying terraform... ${NC}"
 fi
 
+# Check for Before Deploy Scripts
+bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$TERRAFORM_ROOT"
+
 export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $TERRAFORM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 echo "BITOPS_SCHEMA_ENV_FILE: $(cat $BITOPS_SCHEMA_ENV_FILE)"
@@ -75,6 +78,8 @@ if [ "${TERRAFORM_COMMAND}" == "destroy" ] || [ "${TERRAFORM_DESTROY}" == "true"
   fi
 fi
 
+# Check for After Deploy Scripts
+bash -x $SCRIPTS_DIR/deploy/after-deploy.sh "$TERRAFORM_ROOT"
 
 
 
