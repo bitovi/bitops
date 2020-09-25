@@ -77,4 +77,4 @@ jobs:
     - run: pip install mkdocs mkdocs-material
     - deploy:
         name: Deploy docs
-        command: mkdocs gh-deploy -t material
+        command: mkdocs gh-deploy -c -m "[ci skip]"
