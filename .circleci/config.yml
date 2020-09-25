@@ -73,10 +73,10 @@ jobs:
     - checkout
     - run:
         name: Install mkdocs
-          command: |
+        command: |
             pip install mkdocs
             pip install mkdocs-material
     - deploy:
         name: Deploy docs
-          command: |
+        command: |
             mkdocs gh-deploy -t material
