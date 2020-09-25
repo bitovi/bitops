@@ -68,10 +68,10 @@ jobs:
   
   deploy-docs:
     docker:
-      - image: cimg/python:3.8.5
+      - image: cimg/python:3.7
     steps:
     - checkout
-    - run: sudo pip3 install -q mkdocs mkdocs-material
+    - run: pip install -q mkdocs mkdocs-material
     - deploy:
         name: Deploy docs
         command: mkdocs gh-pages -t material
