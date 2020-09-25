@@ -68,15 +68,10 @@ jobs:
   
   deploy-docs:
     machine:
-      image: cimg/python:3.7
+      image: circleci/python:latest
     steps:
     - checkout
-    - run:
-        name: Install mkdocs
-        command: |
-            pip3 install mkdocs
-            pip3 install mkdocs-material
+    - run: sudo pip install -q mkdocs mkdocs-material
     - deploy:
         name: Deploy docs
-        command: |
-            mkdocs gh-deploy -t material
+        command: mkdocs gh-pages -t material
