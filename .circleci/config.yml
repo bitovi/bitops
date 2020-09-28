@@ -17,7 +17,7 @@ workflows:
         filters:
           branches:
             only:
-            - docs
+            - master
 jobs:
   build:
     machine:
