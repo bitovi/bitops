@@ -13,7 +13,7 @@ A single run of Bitops will
 3. If a `terraform/` directory exists within the selected environment
     * Run any `bitops.before-deploy.d/*.sh` scripts - [TODO](https://github.com/bitovi/bitops/issues/17) 
     * Load `bitops.config.yml` and set environment
-    * Merge contents with [Default environment](/default-environment) - [TODO](https://github.com/bitovi/bitops/issues/18)
+    * Merge contents with [Default environment](default-environment.md) - [TODO](https://github.com/bitovi/bitops/issues/18)
     * Select terraform version
     * Run `terraform init`
     * Select `terraform workspace`
@@ -23,14 +23,14 @@ A single run of Bitops will
 4. If a `ansible/` directory exists within the selected environment
     * Run any `bitops.before-deploy.d/*.sh` scripts - [TODO](https://github.com/bitovi/bitops/issues/17)
     * Load `bitops.config.yml` and set environment - [TODO](https://github.com/bitovi/bitops/issues/17)
-    * Merge contents with [Default environment](/default-environment) - [TODO](https://github.com/bitovi/bitops/issues/18)
+    * Merge contents with [Default environment](default-environment.md) - [TODO](https://github.com/bitovi/bitops/issues/18)
     * Run `ansible-playbook $playbook` for each `*.yaml` or `*.yml` file in `$env/ansible/` 
     * Run any `bitops.after-deploy.d/*.sh` scripts - [TODO](https://github.com/bitovi/bitops/issues/17)
 4. If a `helm/` directory exists within the selected environment
     * Run the following for `$env/helm/$ENVIRONMENT_HELM_SUBDIRECTORY/` or for all charts in `$env/helm/`
         * Run any `bitops.before-deploy.d/*.sh` scripts - [TODO](https://github.com/bitovi/bitops/issues/17)
         * Load `bitops.config.yml` and set environment
-        * Merge contents with [Default environment](/default-environment)
+        * Merge contents with [Default environment](default-environment.md)
         * Use `$KUBE_CONFIG_PATH` if defined, if not use aws cli to build .kubeconfig
         * Gather all values files - TODO document
         * Run `helm dep up`
@@ -41,7 +41,7 @@ A single run of Bitops will
 4. If a `cloudformation/` directory exists within the selected environment
     * Run any `bitops.before-deploy.d/*.sh` scripts - [TODO](https://github.com/bitovi/bitops/issues/17)
     * Load `bitops.config.yml` and set environment
-    * Merge contents with [Default environment](/default-environment) - [TODO](https://github.com/bitovi/bitops/issues/18)
+    * Merge contents with [Default environment](default-environment.md) - [TODO](https://github.com/bitovi/bitops/issues/18)
     * Run cfn template validation
     * Create or delete cfn stack. Wait for completion
     * Run any `bitops.after-deploy.d/*.sh` scripts - [TODO](https://github.com/bitovi/bitops/issues/17)

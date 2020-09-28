@@ -24,7 +24,7 @@ There are some global configuration options that are shared among all tools and 
 * **default:** `""`
 * **required:** yes
 
-Each bitops run is done against a single environment. This property tells bitops which environment to run. For more information on environments, see [Operations Repo Structure](/operations-repo-structure#environment-directories).
+Each bitops run is done against a single environment. This property tells bitops which environment to run. For more information on environments, see [Operations Repo Structure](operations-repo-structure.md#environment-directories).
 
 -------------------
 ### kubeconfig_base64
@@ -47,14 +47,14 @@ If true, will enable verbose logging
 * **Environment Variable:** `BITOPS_DEFAULT_REPLACE`
 * **default:** `false`
 
-If true, [file mergers](/default-environment) will replace instead of create a copy during a merge
+If true, [file mergers](default-environment.md) will replace instead of create a copy during a merge
 
 -------------------
 ## Cloud Providers
-* [AWS](/cloud-configuration/configuration-aws)
+* [AWS](cloud-configuration/configuration-aws.md)
 
 ## Tool Configuration
-* [Ansible](tool-configuration/configuration-ansible)
-* [Helm](/tool-configuration/configuration-helm)
-* [Terraform](/tool-configuration/configuration-terraform)
-* [Cloudformation](/tool-configuration/configuration-cloudformation)
+* [Ansible](tool-configuration/configuration-ansible.md)
+* [Helm](tool-configuration/configuration-helm.md)
+* [Terraform](tool-configuration/configuration-terraform.md)
+* [Cloudformation](tool-configuration/configuration-cloudformation.md)

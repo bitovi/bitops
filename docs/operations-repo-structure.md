@@ -48,7 +48,7 @@ Within an environment directory are directories grouping supported tools by name
 This directory is also where you put your infrastructure code associated with the respective tool.
 
 #### Lifecycle directories
-Within a tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. You can put arbitrary `*.sh` scripts in here and they will be run before or after the tool executes. More for information see [lifecycle](/lifecycle) docs.
+Within a tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. You can put arbitrary `*.sh` scripts in here and they will be run before or after the tool executes. More for information see [lifecycle](lifecycle.md) docs.
 
 If bitops is reporting it can't find your scripts, make sure the scripts have execute permissions.
 ```
@@ -57,6 +57,6 @@ chmod +x bitops.after-deploy.d/*
 ```
 
 #### bitops.config.yml
-Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool. See [Bitops Configuration](/configuration-base) for details.
+Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool. See [Bitops Configuration](configuration-base.md) for details.
 
 
