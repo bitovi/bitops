@@ -106,7 +106,7 @@ After default merge
 ### General .yaml/.yml
 Files that only exist in the `default` environment will be copied over.
 
-TODO ytt
+Files from the `default` environment that share its name and path will be merged.
 
 ### values.yaml (Helm)
 helm has built in support for merging multiple `values.yaml` files. Bitops will look for files in the following locations and pass them in to helm with with the `-f` in the same order they are found
@@ -118,7 +118,7 @@ helm has built in support for merging multiple `values.yaml` files. Bitops will 
 5. Any yaml in active environment's `$chart/values-files/` directory
 6. Any yaml in default environment's `$chart/values-files/` directory
 
-### Example
+#### Example
 The following operations repo structure
 ```
 ├── default
@@ -148,5 +148,5 @@ my-first-chart/
 -f test/helm/my-first-chart/values-versions.yaml \
 -f default/helm/my-first-chart/values-versions.yaml \
 -f test/helm/my-first-chart/values-files/my-first-chart-values.yaml \
--f default/helm/my-first-chart/values-files/my-first-chart-default-values.yaml \
+-f default/helm/my-first-chart/values-files/my-first-chart-default-values.yaml
 ```
