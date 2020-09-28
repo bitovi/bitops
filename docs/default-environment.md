@@ -81,10 +81,10 @@ Files that only exist in the `default` environment will be copied over.
 #### Example
 Before default merge
 ```
-└── default
-|   └── terraform
-|       ├── bitops.after-deploy.d
-|       │   └── default-after-script.sh
+├── default
+│   └── terraform
+│       ├── bitops.after-deploy.d
+│       │   └── default-after-script.sh
 └── test
     └── terraform
         └── bitops.config.yml
@@ -92,10 +92,10 @@ Before default merge
 ```
 After default merge
 ```
-└── default
-|   └── terraform
-|       ├── bitops.after-deploy.d
-|       │   └── default-after-script.sh
+├── default
+│   └── terraform
+│       ├── bitops.after-deploy.d
+│       │   └── default-after-script.sh
 └── test
     └── terraform
         ├── bitops.after-deploy.d
