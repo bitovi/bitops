@@ -11,9 +11,11 @@ Bitops expects an operations repo to be in the following structure
 │   │   ├── bitops.before-deploy.d
 │   │   └── bitops.config.yml
 │   ├── helm
-│   │   ├── bitops.after-deploy.d
-│   │   ├── bitops.before-deploy.d
-│   │   └── bitops.config.yml
+│   │   ├── chartA
+│   │   │   └── bitops.config.yml
+│   │   └── chartB
+│   │       └── bitops.config.yml
+│   │   └── bitops.config.yml
 │   └── terraform
 │       ├── bitops.after-deploy.d
 │       ├── bitops.before-deploy.d
@@ -27,16 +29,17 @@ Bitops expects an operations repo to be in the following structure
     │   ├── bitops.after-deploy.d
     │   ├── bitops.before-deploy.d
     │   └── bitops.config.yml
-    ├── helm
-    │   ├── bitops.after-deploy.d
-    │   ├── bitops.before-deploy.d
+    ├── helm
+    │   ├── chartA
+    │   │   └── bitops.config.yml
+    │   └── chartB
+    │       └── bitops.config.yml
     │   └── bitops.config.yml
     └── terraform
         ├── bitops.after-deploy.d
         ├── bitops.before-deploy.d
         └── bitops.config.yml
 ```
-
 #### Environment Directories
 These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your usecase, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services. This pattern is preferential to having a branch for each environment as this allows the state of all your infrastructure to be managed from one location without merging potentially breaking an environment.
 
@@ -46,6 +49,8 @@ When running bitops, you provide the environment variable `ENVIRONMENT`. This te
 Within an environment directory are directories grouping supported tools by name. Each of these directories is optional. For example, if your application only requires `terraform/` to execute, you do not need an `ansible/`, `cloudformation/` or `helm/` directory in your environment.
 
 This directory is also where you put your infrastructure code associated with the respective tool.
+
+Helm has additional capabilities here. You can nest multiple charts within the `helm/` directory of a given environment. Bitops will auto-detect and install these charts in alphabetical order.
 
 #### Lifecycle directories
 Within a tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. You can put arbitrary `*.sh` scripts in here and they will be run before or after the tool executes. More for information see [lifecycle](lifecycle.md) docs.
