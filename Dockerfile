@@ -5,20 +5,18 @@ RUN apk add --no-cache bash
 RUN apk update
 
 RUN apk add \
-    # software-properties-common \
+    ansible \
     libsodium-dev \
-    # inetutils-ping \
-    vim \
     wget \
     unzip \
     git \
-    jq 
+    jq \
+    curl
     
 # install glibc compatibility for alpine
 ENV GLIBC_VER=2.31-r0
 RUN apk --no-cache add \
         binutils \
-        curl \
     && curl -sL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub \
     && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VER}/glibc-${GLIBC_VER}.apk \
     && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VER}/glibc-bin-${GLIBC_VER}.apk \
@@ -36,7 +34,6 @@ RUN apk --no-cache add \
         /usr/local/aws-cli/v2/*/dist/awscli/examples \
     && apk --no-cache del \
         binutils \
-        curl \
     && rm glibc-${GLIBC_VER}.apk \
     && rm glibc-bin-${GLIBC_VER}.apk \
     && rm -rf /var/cache/apk/*
@@ -46,7 +43,8 @@ RUN mkdir -p /opt/bitops
 
 WORKDIR /opt/bitops
 COPY . .
-# COPY entrypoint.sh /opt/bitops/scripts/entrypoint.sh
+
 RUN pip3 install -r requirements.txt
 RUN bash -x scripts/setup/install_tools.sh
+
 ENTRYPOINT [ "/opt/bitops/scripts/deploy.sh" ]

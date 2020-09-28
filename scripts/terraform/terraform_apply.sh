@@ -12,10 +12,6 @@ if [ "${DEBUG}" == 'True' ]; then
     TF_LOG="DEBUG"
 fi
 
-# Check for Before Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$(pwd)"
-
-
 if [ "${TERRAFORM_APPLY_ALTERNATE_COMMAND}" == "true" ]; then
   printf "${WARN}Running Alternate Terraform command.${NC}"
 
@@ -25,8 +21,6 @@ else
   terraform apply -auto-approve $TF_ARGS
 fi
 
-# Check for After Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/after-deploy.sh "$(pwd)"
 printf "${SUCCESS} Terraform deployment was successful...${NC}"
 
 
