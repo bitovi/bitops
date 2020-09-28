@@ -8,7 +8,7 @@ docker run \
 -e AWS_SECRET_ACCESS_KEY=skip \
 -e AWS_DEFAULT_REGION="us-east-1" \
 -v $(pwd):/opt/bitops_deployment \
-connor:test
+bitovi/bitops:latest
 ```
 
 In the logs you will see:
