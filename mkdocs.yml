@@ -1,0 +1,45 @@
+site_name: Bitops
+site_url: http://bitops.works/docs/
+
+theme:
+  name: material
+  palette:
+    primary: red
+    accent: red
+    scheme: preference
+  icon:
+    logo: material/pipe
+    repo: fontawesome/regular/heart
+
+repo_name: Built By Bitovi
+repo_url: https://www.bitovi.com/devops
+
+nav:
+  - Home: index.md
+  - Operations Repo Structure: operations-repo-structure.md
+  - Base Configuration: configuration-base.md
+  - Cloud Configuration: 
+    - AWS: cloud-configuration/configuration-aws.md
+  - Tool Configuration: 
+    - Terraform: tool-configuration/configuration-terraform.md
+    - Ansible: tool-configuration/configuration-ansible.md
+    - Helm: tool-configuration/configuration-helm.md
+    - Cloudformation: tool-configuration/configuration-cloudformation.md
+  - Lifecycle: lifecycle.md
+  - Default Environment: default-environment.md
+  - Examples: examples.md
+  - Contributing:
+    - Contributing Guide: contributing/contributing.md
+    - Development Guide: contributing/development.md
+    - DCO: contributing/DCO.md
+    - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
+  - License: license.md
+
+extra:
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/bitovi/bitops
+  - icon: fontawesome/brands/docker
+    link: https://hub.docker.com/repository/docker/bitovi/bitops
+  - icon: fontawesome/brands/slack
+    link: https://www.bitovi.com/community/slack
