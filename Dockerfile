@@ -1,16 +1,49 @@
-FROM python:latest
+## Using alpine fails on awscli install
+FROM python:3.8.6-alpine
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -y \
-    && apt-get install -y software-properties-common libsodium-dev \
-    && apt-get install -y inetutils-ping vim wget unzip curl git jq awscli ruby-full \
-    && rm -rf /var/lib/apt/lists/* \
-    # Enable the options below for Terraform Tests.
-    # && gem install travis --no-rdoc --no-ri \
-    # && gem install rbnacl --no-rdoc --no-ri \
-    # && gem install awspec --no-rdoc --no-ri  \
-    # && gem install kitchen-terraform --version 5.3.0 --no-rdoc --no-ri \
-    # && gem install kitchen-verifier-awspec --no-rdoc --no-ri \
-    && mkdir -p /opt/bitops
+RUN apk add --no-cache bash
+RUN apk update
+
+RUN apk add \
+    # software-properties-common \
+    libsodium-dev \
+    # inetutils-ping \
+    vim \
+    wget \
+    unzip \
+    git \
+    jq 
+    
+# install glibc compatibility for alpine
+ENV GLIBC_VER=2.31-r0
+RUN apk --no-cache add \
+        binutils \
+        curl \
+    && curl -sL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub \
+    && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VER}/glibc-${GLIBC_VER}.apk \
+    && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VER}/glibc-bin-${GLIBC_VER}.apk \
+    && apk add --no-cache \
+        glibc-${GLIBC_VER}.apk \
+        glibc-bin-${GLIBC_VER}.apk \
+    && curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
+    && unzip -q awscliv2.zip \
+    && aws/install \
+    && rm -rf \
+        awscliv2.zip \
+        aws \
+        /usr/local/aws-cli/v2/*/dist/aws_completer \
+        /usr/local/aws-cli/v2/*/dist/awscli/data/ac.index \
+        /usr/local/aws-cli/v2/*/dist/awscli/examples \
+    && apk --no-cache del \
+        binutils \
+        curl \
+    && rm glibc-${GLIBC_VER}.apk \
+    && rm glibc-bin-${GLIBC_VER}.apk \
+    && rm -rf /var/cache/apk/*
+    
+
+RUN mkdir -p /opt/bitops
+
 WORKDIR /opt/bitops
 COPY . .
 # COPY entrypoint.sh /opt/bitops/scripts/entrypoint.sh
