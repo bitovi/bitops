@@ -1,7 +1,7 @@
 # Execution Lifecycle
 
 ## Lifecycle hooks
-Within each tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. As shown above, if any shell scripts exist within these directories, bitops will execute them first.
+Within each tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. If any shell scripts exist within these directories, bitops will execute them first.
 
 This is a useful way to extend the functionality of bitops. A popular usecase we've seen is loading secrets or dynamically editing `bitops.config.yml`
 
