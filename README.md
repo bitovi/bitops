@@ -6,7 +6,9 @@
 ![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Bitops is an opinionated deployment tool that bundles [supported devops tools](#supported-tools) along with a built in understanding of an [operations repository structure](/operations-repo-structure). The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
+Bitops is an opinionated deployment tool that bundles supported devops tools along with a built in understanding of an operations repository structure. The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
+
+https://bitovi.github.io/bitops/
 
 ---------------------
 

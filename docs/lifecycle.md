@@ -6,6 +6,9 @@ Within each tool directory, you can optionally have a `bitops.before-deploy.d/` 
 This is a useful way to extend the functionality of bitops. A popular usecase we've seen is loading secrets or dynamically editing `bitops.config.yml`
 
 ## Detailed Execution Flow
+
+![lifecycle diagram](assets/images/lifecycle.png)
+
 A single run of Bitops will
 
 1. Copy the contents of `/opt/bitops_deployment` to a temporary working directory

@@ -38,7 +38,7 @@ Bitops expects an operations repo to be in the following structure
 ```
 
 #### Environment Directories
-These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your usecase, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services. This pattern is preferential to having a branch for each environment as this allows the state of all your infrastructure to be managed from one location.
+These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your usecase, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services. This pattern is preferential to having a branch for each environment as this allows the state of all your infrastructure to be managed from one location without merging potentially breaking an environment.
 
 When running bitops, you provide the environment variable `ENVIRONMENT`. This tells bitops what environment to work in for that run. A full CI/CD pipeline may call bitops multiple times if it requires one environment to run as a pre-requisite for another.
 
