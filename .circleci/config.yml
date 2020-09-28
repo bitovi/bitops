@@ -11,19 +11,17 @@ workflows:
             tags:
               only:
                 - "/.*/"
+  docs:
+    jobs:
+    - deploy-docs:
+        filters:
+          branches:
+            only:
+            - master
 jobs:
   build:
     machine:
       image: ubuntu-1604:201903-01
-
-    ###
-    ### TODO: this would be ideal, but circleci apparently doesn't
-    ###       resolve env vars in the environment key..
-    ###       so, just do it in the command block for now...
-    ###
-    # environment:
-    #   AWS_ACCESS_KEY_ID: "${BITOPS_AWS_ACCESS_KEY_ID}"
-    #   AWS_SECRET_ACCESS_KEY: "${BITOPS_AWS_SECRET_ACCESS_KEY}"
     steps:
       - checkout
       - run:
@@ -58,3 +56,16 @@ jobs:
             ### PUBLISH
             ###
             ./scripts/ci/publish.sh
+  
+  deploy-docs:
+    docker:
+      - image: cimg/python:3.7
+    steps:
+    - add_ssh_keys:
+          fingerprints:
+            - "0a:83:f3:84:67:25:97:33:af:42:38:77:dc:29:60:8f"
+    - checkout
+    - run: pip install mkdocs mkdocs-material
+    - deploy:
+        name: Deploy docs
+        command: mkdocs gh-deploy -c -m "[ci skip]"

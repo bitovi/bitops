@@ -18,7 +18,7 @@ terraform:
         version:
           type: string
           export_env: TERRAFORM_VERSION
-          default: "0.12.29"
+          default: "0.13.2"
         command:
           type: string
           export_env: TERRAFORM_COMMAND

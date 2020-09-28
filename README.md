@@ -1,61 +1,74 @@
-# Bitovi CI/CD Runner
+# Bitops
 
-The Bitovi CI/CD Runner is deployment tool for Kubernetes Deployments. We support the big three Cloud Platorms: Amazon Web Services (AWS), Microsoft Azure Cloud (Azure) and Google Cloud Engine (GCE). The Bitovi runner will deploy your application as a Helm Chart on either platform. Simply pass the appropriate options to our deployment script to select Cloud Provider - (AWS, AC, GCE) or CI/CD Provider (Jenkins, AWS, GitLab, Travis). See our configuration section below.
+---------------------
 
-## How it works.
+![LICENSE](https://img.shields.io/github/license/bitovi/bitops)
+![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)
+[![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-The Bitovi CI/CD Runner is a boiler plate docker image for traditional DevOps 
-work. It can handle Amazon AWS, Microsoft Azure.
+Bitops is an opinionated deployment tool that bundles supported devops tools along with a built in understanding of an operations repository structure. The combination of these two things makes it easy to automate the provisionning and configuration of cloud infrastructure from basic VMs to complex kubernetes deployments.
 
-BitOps is a docker container, built as a boiler plate devops engine for deploying kubernetes applications from a cloud native/agnostic point of view.
+https://bitovi.github.io/bitops/
 
-## Configuration Options
+---------------------
 
-```bash
+## Features
 
-- Required Environment Variables:
-  AWS_ACCESS_KEY_ID - Your AWS Access Key.
-  AWS_SECRET_ACCESS_KEY - Your AWS Secret Access Key.
-  AWS_DEFAULT_REGION - The AWS Region where you want to launch your resources.
-  ENVIRONMENT - The environment to use: qa or prod etc.
-  KUBECONFIG_BASE64 - The Base 64 value of the contents of your ./kube/config
+* **[Configurable](/docs/configuration/configuration-common.md):** Configure how you want bitops to deploy your application with environment variables or yaml
+* **[Event Hooks](/docs/operations-repo.md#lifecycle-directories):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops' lifecycle.
+* **Pipeline Agnostic:** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your CI. You can even run bitops locally!
 
+## How it works
 
-- Optional Environment variables:
-  ANSIBLE_DIRECTORY - The directory containing your ansible playbooks.
-  ANSIBLE_PLAYBOOKS - The name of your ansible playbook.
-  DEBUG - Set this option to 1 to enable debugging your Helm Stack.
-  EXTERNAL_HELM_CHARTS - External Helm chart you need to install. The arguments for each repo should be separated a comma. Use the form: <NAME>,<REPO_KEY>,<REPO_URL>.
-  TERRAFORM_DIRECTORY - Location of the terraform directory.
-  TERRAFORM_APPLY - Set this option to true to deploy your Terraform stack. 
-  NAMESPACE - The namespace for the helm chart.
+Bitops is a boiler plate docker image for DevOps work. An operations repository is mounted to a bitops image's `/opt/bitops_deployment` directory. Bitops will
 
+* Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
+* Loop through each tool and
+  * Run any pre-execute hooks
+  * Read in `yml` configuration
+  * Execute the tool
+  * Run any post-execute hooks
 
+## Run BitOps
+Bitops is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/repository/docker/bitovi/bitops).
+```
+docker pull bitovi/bitops
+cd $YOUR_OPERATIONS_REPO
+docker run bitovi/bitops -v .:/opt/bitops_deployment
 ```
 
-## AWS Examples.
+## Configure Bitops
 
-- Using the runner to deploy a Helm Chart.
+Bitops is configured in 3 steps:
 
-```bash
-docker run --rm --name qa-bitops \
-  -e KUBECONFIG_BASE64=$(cat /tmp/cluster.yaml | base64) \
-  -e TERRAFORM_APPLY=true -e CLUSTER_NAME=qa-bitops \
-  -e ENVIRONMENT=qa -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> \
-  -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
-  -e AWS_DEFAULT_REGION=<REGION> -e HELM_CHARTS=true \
-  -v $(pwd):/opt/bitops_deployment qa-bitops:latest
-```
+1. Select your environment
+2. Configure aceess to your cloud provider
+3. Configure how you want your deployment tools to execute
 
-- Using the runner to deploy Terraform.
+[Docs](/docs/configuration/configuration-common.md)
 
-```bash
-docker run --rm --name qa-bitops \
-  -e KUBECONFIG_BASE64=$(cat /tmp/cluster.yaml | base64) \
-  -e TERRAFORM_APPLY=true -e CLUSTER_NAME=qa-bitops \
-  -e ENVIRONMENT=qa -e AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID> \
-  -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
-  -e AWS_DEFAULT_REGION=<REGION> \
-  -v $(pwd):/opt/bitops_deployment qa-bitops:latest \
-  --entrypoint="/bin/sh" /opt/bitops/scripts/terraform/terraform_apply.sh
-```
+## Supported Tools
+* [Provision infrastructure with CloudFormation](/tool-configuration/configuration-cloudformation)
+* [Provision infrastructure with Terraform](/tool-configuration/configuration-terraform)
+* [Configure infrastructure with Ansible](tool-configuration/configuration-ansible)
+* [Deploy to kubernetes with Helm](/tool-configuration/configuration-helm)
+
+## Supported Cloud Providers
+
+* [Amazon Web Services (AWS)](/cloud-configuration/configuration-aws)
+* Microsoft Azure Cloud (Azure) - TODO - https://github.com/bitovi/bitops/issues/13
+* Google Cloud Engine (GCE) - TODO - https://github.com/bitovi/bitops/issues/14
+
+## Support / Contributing
+
+We welcome any contributions from the community with open arms. Take a look at our [Contributing](/contributing/contributing) guide.
+
+Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
+
+## Release History
+
+See [Releases](https://github.com/bitovi/bitops/releases).
+
+## License
+
+[MIT License](/license).
