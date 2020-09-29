@@ -1,5 +1,6 @@
 site_name: Bitops
-site_url: http://bitops.works/docs/
+# Set site_url when we have a real domain
+# site_url: http://bitops.works/
 
 theme:
   name: material

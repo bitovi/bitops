@@ -66,6 +66,10 @@ We welcome any contributions from the community with open arms. Take a look at o
 
 Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
 
+### Updating Documentation
+
+https://bitovi.github.io/bitops/ is auto-generated using [MKDocs](https://www.mkdocs.org/). Updating markdown in `docs/*` and ensuring the page is defined in `mkdocs.yml` will auto update the site when pushed to the `master` branch.
+
 ## Release History
 
 See [Releases](https://github.com/bitovi/bitops/releases).
