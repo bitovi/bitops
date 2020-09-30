@@ -25,7 +25,7 @@ BitOps expects an operations repo to be in the following structure
     │   ├── bitops.after-deploy.d
     │   ├── bitops.before-deploy.d
     │   └── bitops.config.yml
-    │   ├── cloudformation
+    ├── cloudformation
     │   ├── bitops.after-deploy.d
     │   ├── bitops.before-deploy.d
     │   └── bitops.config.yml
