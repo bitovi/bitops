@@ -6,7 +6,7 @@
 
 -------------------
 ### aws_access_key_id
-* **Bitops Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
+* **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
 * **Environment Variable:** `AWS_ACCESS_KEY_ID`
 * **default:** `""`
 * **required:** yes
@@ -15,7 +15,7 @@ AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general
 
 -------------------
 ### aws_secret_access_key
-* **Bitops Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
+* **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
 * **Environment Variable:** `AWS_SECRET_ACCESS_KEY`
 * **default:** `""`
 * **required:** yes
@@ -24,7 +24,7 @@ AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general
 
 -------------------
 ### aws_default_region
-* **Bitops Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
+* **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
 * **Environment Variable:** `AWS_DEFAULT_REGION`
 * **default:** `""`
 * **required:** yes

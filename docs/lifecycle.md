@@ -9,7 +9,7 @@ This is a useful way to extend the functionality of bitops. A popular usecase we
 
 ![lifecycle diagram](assets/images/lifecycle.png)
 
-A single run of Bitops will
+A single run of BitOps will
 
 1. Copy the contents of `/opt/bitops_deployment` to a temporary working directory
 2. Attempt to setup a cloud provider

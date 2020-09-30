@@ -109,7 +109,7 @@ Files that only exist in the `default` environment will be copied over.
 Files from the `default` environment that share its name and path will be merged.
 
 ### values.yaml (Helm)
-helm has built in support for merging multiple `values.yaml` files. Bitops will look for files in the following locations and pass them in to helm with with the `-f` in the same order they are found
+helm has built in support for merging multiple `values.yaml` files. BitOps will look for files in the following locations and pass them in to helm with with the `-f` in the same order they are found
 
 1. Active environment's `values.yaml`
 2. Default environment's `values.yaml`

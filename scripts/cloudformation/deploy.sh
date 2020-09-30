@@ -17,9 +17,9 @@ fi
 
 
 if [ -f "$CLOUDFORMATION_BITOPS_CONFIG" ]; then
-  echo "cloudformation - Found Bitops config"
+  echo "cloudformation - Found BitOps config"
 else
-  echo "cloudformation - No Bitops config"
+  echo "cloudformation - No BitOps config"
 fi
 
 # Check for Before Deploy Scripts

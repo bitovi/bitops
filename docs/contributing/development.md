@@ -4,7 +4,7 @@ TODO
 
 ## Requirements
 
-## Building Bitops
+## Building BitOps
 
 ## Testing
 

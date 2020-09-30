@@ -17,9 +17,9 @@ fi
 
 
 if [ -f "$ANSIBLE_BITOPS_CONFIG" ]; then
-  echo "Ansible - Found Bitops config"
+  echo "Ansible - Found BitOps config"
 else
-  echo "Ansible - No Bitops config"
+  echo "Ansible - No BitOps config"
 fi
 
 echo "cd Ansible Root: $ANSIBLE_ROOT"

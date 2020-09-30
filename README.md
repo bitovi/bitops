@@ -1,4 +1,4 @@
-# Bitops
+# BitOps
 
 ---------------------
 
@@ -20,7 +20,7 @@ https://bitovi.github.io/bitops/
 
 ## How it works
 
-Bitops is a boiler plate docker image for DevOps work. An operations repository is mounted to a bitops image's `/opt/bitops_deployment` directory. Bitops will
+BitOps is a boiler plate docker image for DevOps work. An operations repository is mounted to a bitops image's `/opt/bitops_deployment` directory. BitOps will
 
 * Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
 * Loop through each tool and
@@ -30,16 +30,16 @@ Bitops is a boiler plate docker image for DevOps work. An operations repository 
   * Run any post-execute hooks
 
 ## Run BitOps
-Bitops is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/repository/docker/bitovi/bitops).
+BitOps is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/repository/docker/bitovi/bitops).
 ```
 docker pull bitovi/bitops
 cd $YOUR_OPERATIONS_REPO
 docker run bitovi/bitops -v .:/opt/bitops_deployment
 ```
 
-## Configure Bitops
+## Configure BitOps
 
-Bitops is configured in 3 steps:
+BitOps is configured in 3 steps:
 
 1. Select your environment
 2. Configure aceess to your cloud provider

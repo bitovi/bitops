@@ -18,42 +18,42 @@ ansible:
 
 -------------------
 ### flush-cache
-* **Bitops Property:** `flush-cache`
+* **BitOps Property:** `flush-cache`
 * **Environment Variable:** `BITOS_ANSIBLE_FLUSH_CACHE`
 
 clear the fact cache for every host in inventory
 
 -------------------
 ### force-handlers
-* **Bitops Property:** `force-handlers`
+* **BitOps Property:** `force-handlers`
 * **Environment Variable:** `BITOPS_ANSIBLE_FORCE_HANDLERS`
 
 clear the fact cache for every host in inventory
 
 -------------------
 ### skip-tags
-* **Bitops Property:** `skip-tags`
+* **BitOps Property:** `skip-tags`
 * **Environment Variable:** `BITOPS_ANSIBLE_SKIP_TAGS`
 
 only run plays and tasks whose tags do not match these values
 
 -------------------
 ### forks
-* **Bitops Property:** `forks`
+* **BitOps Property:** `forks`
 * **Environment Variable:** `BITOPS_ANSIBLE_FORKS`
 
 specify number of parallel processes to use (default=5)
 
 -------------------
 ### inventory
-* **Bitops Property:** `inventory`
+* **BitOps Property:** `inventory`
 * **Environment Variable:** `BITOPS_ANSIBLE_INVENTORY`
 
 specify inventory host path or comma separated host list.
 
 -------------------
 ### tags
-* **Bitops Property:** `tags`
+* **BitOps Property:** `tags`
 * **Environment Variable:** `BITOPS_ANSIBLE_TAGS`
 
 only run plays and tasks tagged with these values
@@ -62,7 +62,7 @@ only run plays and tasks tagged with these values
 
 -------------------
 ### dryrun
-* **Bitops Property:** `dryrun`
+* **BitOps Property:** `dryrun`
 * **Environment Variable:** `BITOPS_ANSIBLE_DRYRUN`
 * **default:** `false`
 
