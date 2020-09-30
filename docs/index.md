@@ -2,8 +2,8 @@
 
 ---------------------
 
-![LICENSE](https://img.shields.io/github/license/bitovi/bitops)
-![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)
+[![LICENSE](https://img.shields.io/github/license/bitovi/bitops)](license.md)
+[![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](operations-repo-structure.md).
