@@ -2,7 +2,7 @@
 
 ---------------------
 
-[![LICENSE](https://img.shields.io/github/license/bitovi/bitops)](license.md)
+[![LICENSE](https://img.shields.io/badge/license-MIT-green)](license.md)
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -28,7 +28,7 @@ BitOps is a boiler plate docker image for DevOps work. An operations repository 
     * Run any post-execute hooks
 
 ## Run BitOps
-BitOps is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/repository/docker/bitovi/bitops).
+BitOps is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/r/bitovi/bitops).
 ```
 docker pull bitovi/bitops
 cd $YOUR_OPERATIONS_REPO

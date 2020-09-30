@@ -41,6 +41,6 @@ extra:
   - icon: fontawesome/brands/github
     link: https://github.com/bitovi/bitops
   - icon: fontawesome/brands/docker
-    link: https://hub.docker.com/repository/docker/bitovi/bitops
+    link: https://hub.docker.com/r/bitovi/bitops
   - icon: fontawesome/brands/slack
     link: https://www.bitovi.com/community/slack
