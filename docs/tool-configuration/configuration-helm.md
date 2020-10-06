@@ -7,7 +7,8 @@ helm:
     namespace: bitops
     timeout: 60s
     set:
-      key1: value1
+     - "key1=value1"
+     - "key2=value2"
     debug: false
     atomic: true
     force: true
@@ -48,7 +49,7 @@ time to wait for any individual Kubernetes operation (like Jobs for hooks)
 * **Environment Variable:** `HELM_SET_FLAG`
 * **default:** `{}`
 
-key/value pairs to pass in to `helm` via `--set`
+list of "key=value" strings to pass in to `helm` via `--set`
 
 -------------------
 ### debug
