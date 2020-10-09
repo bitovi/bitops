@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # No set -e here because we want to get a non-zero exit code from terraform_plan.sh
+set -e
 
 # terraform vars
 export TERRAFORM_ROOT="$ENVROOT/terraform" 
@@ -16,7 +17,7 @@ else
 fi
 
 # Check for Before Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$TERRAFORM_ROOT"
+bash $SCRIPTS_DIR/deploy/before-deploy.sh "$TERRAFORM_ROOT"
 
 export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $TERRAFORM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
@@ -60,10 +61,8 @@ if [ "${TERRAFORM_COMMAND}" == "apply" ] || [ "${TERRAFORM_APPLY}" == "true" ]; 
   echo "Running Terraform Plan"
   bash $SCRIPTS_DIR/terraform/terraform_plan.sh "$BITOPS_CONFIG_COMMAND"
 
-  # Only run terraform apply if there are changes in the plan
-  if [ $? -eq 2 ]; then
-    echo "Running Terraform Apply"
-    bash $SCRIPTS_DIR/terraform/terraform_apply.sh "$BITOPS_CONFIG_COMMAND"
+  echo "Running Terraform Apply"
+  bash $SCRIPTS_DIR/terraform/terraform_apply.sh "$BITOPS_CONFIG_COMMAND"
   fi
 fi
 
@@ -72,14 +71,13 @@ if [ "${TERRAFORM_COMMAND}" == "destroy" ] || [ "${TERRAFORM_DESTROY}" == "true"
   echo "Running Terraform Plan"
   bash $SCRIPTS_DIR/terraform/terraform_plan.sh "-destroy $BITOPS_CONFIG_COMMAND"
   
-  # Only run terraform destroy if there are changes in the plan
-  if [ $? -eq 2 ]; then
-      bash $SCRIPTS_DIR/terraform/terraform_destroy.sh "$BITOPS_CONFIG_COMMAND"
+  echo "Running Terraform Destroy"
+  bash $SCRIPTS_DIR/terraform/terraform_destroy.sh "$BITOPS_CONFIG_COMMAND"
   fi
 fi
 
 # Check for After Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/after-deploy.sh "$TERRAFORM_ROOT"
+bash $SCRIPTS_DIR/deploy/after-deploy.sh "$TERRAFORM_ROOT"
 
 
 

@@ -21,7 +21,7 @@ on_exit () {
 trap "{ on_exit; }" EXIT
 
 # Check for Before Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$HELM_CHART_DIRECTORY"
+bash $SCRIPTS_DIR/deploy/before-deploy.sh "$HELM_CHART_DIRECTORY"
 
 BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $HELM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
@@ -216,7 +216,7 @@ fi
 
 # Run After Deploy Scripts if any.
 
-bash -x $SCRIPTS_DIR/deploy/after-deploy.sh $HELM_CHART_DIRECTORY
+bash $SCRIPTS_DIR/deploy/after-deploy.sh $HELM_CHART_DIRECTORY
 
 printf "${SUCCESS} Helm deployment was successful...${NC}"
 

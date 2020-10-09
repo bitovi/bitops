@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# No set -e here because we want to return the terraform plan exit code to the calling script
+set -e
 
 echo "Running terraform plan..."
 TF_ARGS=$1
@@ -9,9 +9,7 @@ if [ "${TERRAFORM_PLAN_ALTERNATE_COMMAND}" == "true" ]; then
 
   TERRAFORM_COMMAND=$(shyaml get-value terraform_options.terraform_plan.command < "$TERRAFORM_BITOPS_CONFIG" || true)
   bash $SCRIPTS_DIR/util/run-text-as-script.sh "$TERRAFORM_ROOT" "$TERRAFORM_COMMAND"
-  exit 2
 else
   terraform plan $TF_ARGS -detailed-exitcode
-  exit $?
 fi
 

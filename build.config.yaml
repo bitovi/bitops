@@ -27,6 +27,7 @@ terraform:
   - 0.13.0
   - 0.13.1
   - 0.13.2
+  - 0.13.4
 
 # Specify Helm version. Options: 2 or 3
 helm:

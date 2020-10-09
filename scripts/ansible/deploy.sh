@@ -25,7 +25,7 @@ fi
 echo "cd Ansible Root: $ANSIBLE_ROOT"
 cd $ANSIBLE_ROOT
 
-bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$ANSIBLE_ROOT"
+bash $SCRIPTS_DIR/deploy/before-deploy.sh "$ANSIBLE_ROOT"
 
 export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $ANSIBLE_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
@@ -38,4 +38,4 @@ bash $SCRIPTS_DIR/ansible/validate_env.sh
 echo "Running Ansible Playbooks"
 bash -x $SCRIPTS_DIR/ansible/ansible_install_playbooks.sh "$BITOPS_CONFIG_COMMAND"
 
-bash -x $SCRIPTS_DIR/deploy/after-deploy.sh "$ANSIBLE_ROOT"
+bash $SCRIPTS_DIR/deploy/after-deploy.sh "$ANSIBLE_ROOT"
