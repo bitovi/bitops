@@ -23,7 +23,7 @@ else
 fi
 
 # Check for Before Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/before-deploy.sh "$CLOUDFORMATION_ROOT"
+bash $SCRIPTS_DIR/deploy/before-deploy.sh "$CLOUDFORMATION_ROOT"
 
 export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $CLOUDFORMATION_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
@@ -74,4 +74,4 @@ if [[ "${CFN_STACK_ACTION}" == "delete" ]] || [[ "${CFN_STACK_ACTION}" == "Delet
 fi
 
 # Check for After Deploy Scripts
-bash -x $SCRIPTS_DIR/deploy/after-deploy.sh "$CLOUDFORMATION_ROOT"
+bash $SCRIPTS_DIR/deploy/after-deploy.sh "$CLOUDFORMATION_ROOT"
