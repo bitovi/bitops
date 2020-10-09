@@ -63,7 +63,6 @@ if [ "${TERRAFORM_COMMAND}" == "apply" ] || [ "${TERRAFORM_APPLY}" == "true" ]; 
 
   echo "Running Terraform Apply"
   bash $SCRIPTS_DIR/terraform/terraform_apply.sh "$BITOPS_CONFIG_COMMAND"
-  fi
 fi
 
 if [ "${TERRAFORM_COMMAND}" == "destroy" ] || [ "${TERRAFORM_DESTROY}" == "true" ]; then
@@ -73,7 +72,6 @@ if [ "${TERRAFORM_COMMAND}" == "destroy" ] || [ "${TERRAFORM_DESTROY}" == "true"
   
   echo "Running Terraform Destroy"
   bash $SCRIPTS_DIR/terraform/terraform_destroy.sh "$BITOPS_CONFIG_COMMAND"
-  fi
 fi
 
 # Check for After Deploy Scripts
