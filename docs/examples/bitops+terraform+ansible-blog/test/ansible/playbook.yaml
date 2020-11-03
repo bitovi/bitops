@@ -1,0 +1,4 @@
+- hosts: my-servers
+  tasks:
+  - debug: 
+      msg: "Hello from Ansible!"
