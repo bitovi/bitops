@@ -63,7 +63,7 @@ export h="helm --kubeconfig=$KUBE_CONFIG_FILE"
 
 echo "call validate_env with NAMESPACE: $NAMESPACE"
 if [ -n "$HELM_RELEASE_NAME" ]; then
-    HELM_RELEASE_NAME="$HELM_CHART"
+    export HELM_RELEASE_NAME="$HELM_CHART"
 fi
 bash $SCRIPTS_DIR/helm/validate_env.sh
 
@@ -73,20 +73,27 @@ DEFAULT_HELM_CHART_DIRECTORY="$DEFAULT_HELM_CHART_DIRECTORY" \
 HELM_BITOPS_CONFIG="$HELM_BITOPS_CONFIG" \
 bash -x $SCRIPTS_DIR/helm/copy-defaults.sh "$HELM_CHART"
 
-# TODO Check for HELM_UNINSTALL env flag
+# Check if chart is flagged for removal
+UNINSTALL_CHART=false
+IFS=',' read -ra CHART_ARRAY <<< "$HELM_UNINSTALL_CHARTS"
+for CHART in "${CHART_ARRAY[@]}"; do
+    if [ "$HELM_RELEASE_NAME" = "$CHART" ]; then UNINSTALL_CHART=true; break; fi
+done
 
-# Deploy Chart.
-echo "Updating dependencies in '$HELM_CHART_DIRECTORY' ..."
-helm dep up "$HELM_CHART_DIRECTORY"
-bash $SCRIPTS_DIR/helm/helm_deploy_chart.sh
-
-# TODO Uninstall Chart
-
+if [ "$UNINSTALL_CHART" = true ]; then
+    # Uninstall Chart
+    bash $SCRIPTS_DIR/helm/helm_uninstall_chart.sh
+else
+    # Deploy Chart.
+    echo "Updating dependencies in '$HELM_CHART_DIRECTORY' ..."
+    helm dep up "$HELM_CHART_DIRECTORY"
+    bash $SCRIPTS_DIR/helm/helm_deploy_chart.sh
+fi
 
 # Run After Deploy Scripts if any.
 bash $SCRIPTS_DIR/deploy/after-deploy.sh $HELM_CHART_DIRECTORY
 
-printf "${SUCCESS} Helm deployment was successful...${NC}"
+printf "${SUCCESS}Helm operation was successful...${NC}\n"
 
 
 # TODO: do we need this?
