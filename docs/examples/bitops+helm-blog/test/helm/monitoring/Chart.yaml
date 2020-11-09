@@ -1,0 +1,16 @@
+apiVersion: v2
+name: monitoring
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+dependencies:
+- name: prometheus
+  version: 11.12.1
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name: grafana
+  version: 6.1.2
+  repository: https://grafana.github.io/helm-charts/
+  alias: grafana
+- name: metrics-server
+  version: 2.11.2
+  repository: https://kubernetes-charts.storage.googleapis.com/
