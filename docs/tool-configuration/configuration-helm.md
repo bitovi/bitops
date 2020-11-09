@@ -16,6 +16,7 @@ helm:
   options:
     skip-deploy: false
     release-name: bitops-release
+    uninstall-charts: "chart1,chart2"
     kubeconfig:
       path: ./path/to/kubeconfig
       fetch:
@@ -101,6 +102,14 @@ will skip helm execution
 * **default:** `""`
 
 sets helm release name
+
+-------------------
+### uninstall-charts
+* **BitOps Property:** `uninstall-charts`
+* **Environment Variable:** `HELM_UNINSTALL_CHARTS`
+* **default:** `""`
+
+Comma separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded.
 
 -------------------
 ### kubeconfig
