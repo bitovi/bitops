@@ -42,9 +42,9 @@ helm:
         release-name:
           type: string
           export_env: HELM_RELEASE_NAME
-        uninstall-charts:
+        uninstall:
           type: string
-          export_env: HELM_UNINSTALL_CHARTS
+          export_env: HELM_UNINSTALL
         kubeconfig:
           type: object
           properties:

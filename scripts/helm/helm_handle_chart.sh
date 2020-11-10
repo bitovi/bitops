@@ -74,13 +74,13 @@ HELM_BITOPS_CONFIG="$HELM_BITOPS_CONFIG" \
 bash -x $SCRIPTS_DIR/helm/copy-defaults.sh "$HELM_CHART"
 
 # Check if chart is flagged for removal
-UNINSTALL_CHART=false
+CHART_IN_UNINSTALL_LIST=false
 IFS=',' read -ra CHART_ARRAY <<< "$HELM_UNINSTALL_CHARTS"
 for CHART in "${CHART_ARRAY[@]}"; do
-    if [ "$HELM_RELEASE_NAME" = "$CHART" ]; then UNINSTALL_CHART=true; break; fi
+    if [ "$HELM_RELEASE_NAME" = "$CHART" ]; then CHART_IN_UNINSTALL_LIST=true; break; fi
 done
 
-if [ "$UNINSTALL_CHART" = true ]; then
+if [ "$HELM_UNINSTALL" = true ] || [ "$CHART_IN_UNINSTALL_LIST" = true ]; then
     # Uninstall Chart
     bash $SCRIPTS_DIR/helm/helm_uninstall_chart.sh
 else
