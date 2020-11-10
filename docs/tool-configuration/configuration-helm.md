@@ -104,12 +104,12 @@ will skip helm execution
 sets helm release name
 
 -------------------
-### uninstall-charts
-* **BitOps Property:** `uninstall-charts`
-* **Environment Variable:** `HELM_UNINSTALL_CHARTS`
+### uninstall
+* **BitOps Property:** `uninstall`
+* **Environment Variable:** `HELM_UNINSTALL`
 * **default:** `""`
 
-Comma separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded.
+If true, this chart will be uninstalled instead of deployed/upgraded. If the environment variable `HELM_UNINSTALL` is passed in to the container, all BitOps managed charts for a given environment will be uninstalled.
 
 -------------------
 ### kubeconfig
@@ -174,3 +174,7 @@ Although not captured in `bitops.config.yml`, the following environment variable
 -------------------
 ### SKIP_DEPLOY_HELM
 Will skill all helm executions. This superseeds all other configuration
+
+-------------------
+### HELM_UNINSTALL_CHARTS
+Comma separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded.
