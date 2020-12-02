@@ -12,4 +12,4 @@ helm:
     kubeconfig:
       fetch:
         enabled: true
-        cluster-name: bitops-test-opscruise-ekscluster
+        cluster-name: bitops-eks

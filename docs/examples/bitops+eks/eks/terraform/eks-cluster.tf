@@ -17,4 +17,9 @@ module "eks" {
       additional_security_group_ids = [aws_security_group.worker_nodes.id]
     },
   ]
+  node_groups = {
+    test = {
+      instance_type = "t3.small"
+    }
+  }
 }
