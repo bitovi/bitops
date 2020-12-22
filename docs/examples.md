@@ -1,6 +1,6 @@
 # Examples
 
-For complete code samples see [https://github.com/bitovi/bitops/docs/examples/](https://github.com/bitovi/bitops/docs/examples/)
+For complete code samples see [https://github.com/bitovi/bitops/tree/master/docs/examples](https://github.com/bitovi/bitops/tree/master/docs/examples)
 
 ## Docker Run Examples
 ### Selecting Environment
