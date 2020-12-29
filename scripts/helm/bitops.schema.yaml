@@ -36,9 +36,8 @@ helm:
       properties:
         skip-deploy:
           type: boolean
-          terminal: true
           parameter: skip-deploy
-          export_env: SKIP_DEPLOY
+          export_env: HELM_SKIP_DEPLOY
         release-name:
           type: string
           export_env: HELM_RELEASE_NAME

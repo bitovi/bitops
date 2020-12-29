@@ -19,13 +19,19 @@ on_exit () {
 }
 trap "{ on_exit; }" EXIT
 
-# Check for Before Deploy Scripts
-bash $SCRIPTS_DIR/deploy/before-deploy.sh "$HELM_CHART_DIRECTORY"
 
 # Load bitops.config.yaml
 export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $HELM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 source "$BITOPS_SCHEMA_ENV_FILE"
+
+if [ -n "$HELM_SKIP_DEPLOY" ]; then
+    echo "helm.options.skip-deploy (HELM_SKIP_DEPLOY) set.  Skipping deployment for $ENVIRONMENT/helm/$HELM_CHART"
+    exit 0
+fi
+
+# Check for Before Deploy Scripts
+bash $SCRIPTS_DIR/deploy/before-deploy.sh "$HELM_CHART_DIRECTORY"
 
 # set kube config
 if [[ "${KUBE_CONFIG_PATH}" == "" ]] || [[ "${KUBE_CONFIG_PATH}" == "''" ]] || [[ "${KUBE_CONFIG_PATH}" == "None" ]]; then
