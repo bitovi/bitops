@@ -19,13 +19,12 @@ on_exit () {
 }
 trap "{ on_exit; }" EXIT
 
-
 # Load bitops.config.yaml
 export BITOPS_CONFIG_COMMAND="$(ENV_FILE="$BITOPS_SCHEMA_ENV_FILE" DEBUG="" bash $SCRIPTS_DIR/bitops-config/convert-schema.sh $BITOPS_CONFIG_SCHEMA $HELM_BITOPS_CONFIG)"
 echo "BITOPS_CONFIG_COMMAND: $BITOPS_CONFIG_COMMAND"
 source "$BITOPS_SCHEMA_ENV_FILE"
 
-if [ -n "$HELM_SKIP_DEPLOY" ]; then
+if [ "$HELM_SKIP_DEPLOY" == "True" ]; then
     echo "helm.options.skip-deploy (HELM_SKIP_DEPLOY) set.  Skipping deployment for $ENVIRONMENT/helm/$HELM_CHART"
     exit 0
 fi
@@ -56,8 +55,8 @@ if [[ "${KUBE_CONFIG_PATH}" == "" ]] || [[ "${KUBE_CONFIG_PATH}" == "''" ]] || [
 else
     if [[ -f "$KUBE_CONFIG_PATH" ]]; then
         echo "$KUBE_CONFIG_PATH exists."
-        KUBE_CONFIG_FILE="$KUBE_CONFIG_PATH" \
-        KUBECONFIG="$KUBE_CONFIG_FILE" \
+        KUBE_CONFIG_FILE="$KUBE_CONFIG_PATH"
+        KUBECONFIG="$KUBE_CONFIG_FILE"
         export KUBECONFIG=$KUBECONFIG:$KUBE_CONFIG_FILE
     else
         >&2 echo "{\"error\":\"kubeconfig path variable wrong in bitops.config.yaml.Exiting...\"}"

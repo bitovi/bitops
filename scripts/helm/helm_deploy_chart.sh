@@ -79,11 +79,20 @@ $h list --all --all-namespaces > /tmp/check_release.txt
 
 if [ -n "$(grep "$HELM_RELEASE_NAME" /tmp/check_release.txt)" ]; then 
     echo "Checking last deployment status"
-    $h history \
-    $HELM_RELEASE_NAME \
-    --namespace $NAMESPACE
 
-    RESULT="$($h history $HELM_RELEASE_NAME --namespace $NAMESPACE --output yaml | shyaml get-value -1 | shyaml get-value status)"
+    set +e
+    helm_history_output="$($h history $HELM_RELEASE_NAME --namespace $NAMESPACE 2>&1)"
+    helm_history_output_test="$(echo -e "$helm_history_output" | grep "Error: release: not found")"
+    set -e
+
+    if [ -n "$helm_history_output_test" ]; then
+        echo "release not found"
+        RESULT=""
+    else
+        echo "release found"
+        RESULT="$($h history $HELM_RELEASE_NAME --namespace $NAMESPACE --output yaml | shyaml get-value -1 | shyaml get-value status)"
+    fi
+
     echo "Helm deployment status: $RESULT "
 else
     echo "No history"
