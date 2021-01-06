@@ -1,4 +1,4 @@
-# BitOps
+![Logo](assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
 
 ---------------------
 
