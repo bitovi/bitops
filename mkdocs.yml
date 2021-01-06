@@ -4,12 +4,15 @@ site_name: BitOps
 
 theme:
   name: material
+  font:
+    text: Lato
   palette:
     primary: red
     accent: red
-    scheme: preference
+    scheme: light
+  logo: assets/images/logo/Bitops(RGB)_L2_Icon_4C.png
+  favicon: assets/images/logo/Bitops(RGB)_L2_Icon_4C.png
   icon:
-    logo: material/pipe
     repo: fontawesome/regular/heart
 
 repo_name: Built By Bitovi
