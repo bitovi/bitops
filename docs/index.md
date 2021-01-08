@@ -1,4 +1,4 @@
-![Logo](assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
+![Logo](assets/images/logo/Bitops(RGB)_L2_Full_4C.png){: width=250 }
 
 ---------------------
 

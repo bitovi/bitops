@@ -47,3 +47,7 @@ extra:
     link: https://hub.docker.com/r/bitovi/bitops
   - icon: fontawesome/brands/slack
     link: https://www.bitovi.com/community/slack
+
+markdown_extensions:
+  - attr_list
+  - meta
