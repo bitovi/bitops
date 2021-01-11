@@ -5,6 +5,7 @@ site_name: BitOps
 theme:
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - toc.integrate
   name: material
   font:
@@ -22,7 +23,7 @@ repo_name: Built By Bitovi
 repo_url: https://www.bitovi.com/devops
 
 nav:
-  - Home: index.md
+  - About: about.md
   - Operations Repository: operations-repo-structure.md
   - Configuration:
     - Base Configuration: configuration-base.md
@@ -52,6 +53,9 @@ extra:
   - icon: fontawesome/brands/slack
     link: https://www.bitovi.com/community/slack
 
+extra_css:
+ - stylesheets/custom.css
 markdown_extensions:
   - attr_list
   - meta
+  - pymdownx.extra
