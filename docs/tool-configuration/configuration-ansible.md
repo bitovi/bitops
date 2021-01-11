@@ -58,6 +58,13 @@ specify inventory host path or comma separated host list.
 
 only run plays and tasks tagged with these values
 
+-------------------
+### extra-vars
+* **BitOps Property:** `extra-vars`
+* **Environment Variable:** `BITOPS_ANSIBLE_EXTRA_VARS`
+
+add additional ansible playbook parameters directly or load via JSON/YAML file
+
 ## Options Configuration
 
 -------------------
