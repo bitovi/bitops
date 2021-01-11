@@ -31,14 +31,14 @@ BitOps is a way to describe the infrastructure and things deployed onto that inf
 <div class="bitovi-row">
     <div class="bitovi-column">
         <h3><a href="/configuration-base">Configurable</a><h3>
-        <p>Configure how you want BitOps to deploy your application with environment variables or yaml</p>
+        <p>Tell BitOps what deployment tools and parameters it needs to deploy your application through environment variables or yaml based configuration.</p>
     </div>
    <div class="bitovi-column">
         <h3><a href="/lifecycle">Event Hooks</a><h3>
-        <p>Configure how you want BitOps to deploy your application with environment variables or yaml</p>
+        <p>If BitOps doesn't have built-in support for your usecase, BitOps can execute arbitrary bash scripts at different points in its lifecycle.</p>
     </div>
     <div class="bitovi-column">
         <h3><a href="/examples">Runs Anywhere</a><h3>
-        <p>By bundling all logic in BitOps, you can have the same experience running locally or any pipeline service</p>
+        <p>By bundling all logic in BitOps, you can have the same experience regardless of which pipeline service runs your CI. You can even run BitOps locally!</p>
     </div>
 </div>
