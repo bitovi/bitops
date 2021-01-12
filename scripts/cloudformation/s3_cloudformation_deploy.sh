@@ -28,10 +28,6 @@ if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
     echo "Upload to S3 failed"
   fi
 
-  #Ian - Debug
-  echo "S3_URL: https://$CFN_TEMPLATE_S3_BUCKET.amazonaws.com/$CFN_S3_PREFIX/$CFN_TEMPLATE_FILENAME"
-  echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-
 
   if [[ "${CFN_PARAMS_FLAG}" == "True" ]] || [[ "${CFN_PARAMS_FLAG}" == "true" ]]; then
       echo "Parameters file exist..."
@@ -66,6 +62,5 @@ else
   echo "Please provide s3 bucket name and s3 prefix: ./cf_deploy.sh <CFN_TEMPLATE_FILENAME> <CFN_PARAMS_FLAG> \
   <CFN_TEMPLATE_PARAMS_FILENAME> <CFN_STACK_NAME> <CFN_CAPABILITY> \
   <BUCKET_NAME> <DIRECTORY_NAME> <S3_PREFIX>"
-  printenv
   exit 1
 fi
