@@ -10,6 +10,7 @@ ansible:
     forks: 20
     inventory: beta
     tags: run-this-tag
+    extra-vars: "@extra-vars.json"
   options:
     dryrun: false
 ```
