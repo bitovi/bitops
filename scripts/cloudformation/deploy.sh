@@ -57,12 +57,6 @@ cd $CLOUDFORMATION_ROOT
 echo "cloudformation auth cloud provider"
 bash $SCRIPTS_DIR/aws/sts.get-caller-identity.sh
 
-# check if required to sync with S3 bucket
-if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] || [ -n "$CFN_S3_PREFIX" ]; then
-  echo "Running S3 Cloudformation Deploy Stack"
-  bash $SCRIPTS_DIR/cloudformation/s3_cloudformation_deploy.sh "$CFN_TEMPLATE_FILENAME" "$CFN_PARAMS_FLAG" "$CFN_TEMPLATE_PARAMS_FILENAME" "$CFN_STACK_NAME" "$CFN_CAPABILITY" "$CFN_TEMPLATE_S3_BUCKET" "$CFN_S3_PREFIX"
-fi
-
 # always run cfn template validation first
 if [[ "${CFN_TEMPLATE_VALIDATION}" == "True" ]] || [[ "${CFN_TEMPLATE_VALIDATION}" == "true" ]]; then
   echo "Running Cloudformation Template Validation"
@@ -71,7 +65,12 @@ fi
 
 if [[ "${CFN_STACK_ACTION}" == "deploy" ]] || [[ "${CFN_STACK_ACTION}" == "Deploy" ]]; then
   echo "Running Cloudformation Deploy Stack"
-  bash $SCRIPTS_DIR/cloudformation/cloudformation_deploy.sh "$CFN_TEMPLATE_FILENAME" "$CFN_PARAMS_FLAG" "$CFN_TEMPLATE_PARAMS_FILENAME" "$CFN_STACK_NAME" "$CFN_CAPABILITY"
+  if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; qthen
+    echo "CFN_TEMPLATE_S3_BUCKET is set, syncing operations repo with S3..."
+    bash $SCRIPTS_DIR/cloudformation/cloudformation_deploy.sh "$CFN_TEMPLATE_FILENAME" "$CFN_PARAMS_FLAG" "$CFN_TEMPLATE_PARAMS_FILENAME" "$CFN_STACK_NAME" "$CFN_CAPABILITY" "$CFN_TEMPLATE_S3_BUCKET" "$CFN_S3_PREFIX"
+  else
+    bash $SCRIPTS_DIR/cloudformation/cloudformation_deploy.sh "$CFN_TEMPLATE_FILENAME" "$CFN_PARAMS_FLAG" "$CFN_TEMPLATE_PARAMS_FILENAME" "$CFN_STACK_NAME" "$CFN_CAPABILITY"
+  fi
 fi
 
 if [[ "${CFN_STACK_ACTION}" == "delete" ]] || [[ "${CFN_STACK_ACTION}" == "Delete" ]]; then
