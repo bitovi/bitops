@@ -28,6 +28,10 @@ ansible:
           type: string
           parameter: tags
           export_env: BITOPS_ANSIBLE_TAGS
+        extra-vars:
+          type: string
+          parameter: extra-vars
+          export_env: BITOPS_ANSIBLE_EXTRA_VARS
     options:
       type: object
       properties:

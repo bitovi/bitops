@@ -10,6 +10,7 @@ ansible:
     forks: 20
     inventory: beta
     tags: run-this-tag
+    extra-vars: "@extra-vars.json"
   options:
     dryrun: false
 ```
@@ -57,6 +58,13 @@ specify inventory host path or comma separated host list.
 * **Environment Variable:** `BITOPS_ANSIBLE_TAGS`
 
 only run plays and tasks tagged with these values
+
+-------------------
+### extra-vars
+* **BitOps Property:** `extra-vars`
+* **Environment Variable:** `BITOPS_ANSIBLE_EXTRA_VARS`
+
+add additional ansible playbook parameters directly or load via JSON/YAML file
 
 ## Options Configuration
 
