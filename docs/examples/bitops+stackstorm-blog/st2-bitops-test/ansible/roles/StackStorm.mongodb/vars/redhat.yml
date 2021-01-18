@@ -1,0 +1,5 @@
+mongo_dependencies:
+      - python-urllib3
+      - pyOpenSSL
+      - python-pyasn1
+      - python-ndg_httpsclient

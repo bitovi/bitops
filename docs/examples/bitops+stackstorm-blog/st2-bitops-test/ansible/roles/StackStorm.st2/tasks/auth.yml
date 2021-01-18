@@ -1,0 +1,76 @@
+- name: auth | Install auth pre-reqs (Debian)
+  become: yes
+  apt:
+    name:
+      - python-passlib
+      - apache2-utils
+    state: present
+  register: _task
+  retries: 5
+  delay: 3
+  until: _task is succeeded
+  when: ansible_facts.os_family == 'Debian'
+
+- name: Include RedHat OS-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family | lower }}_{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  ignore_errors: true
+  when: ansible_facts.os_family == 'RedHat'
+
+- name: auth | Install auth pre-reqs (RedHat)
+  become: yes
+  yum:
+    name:
+      - httpd-tools
+      - "{{ passlib }}"
+    state: present
+  register: _task
+  retries: 5
+  delay: 3
+  until: _task is succeeded
+  when: ansible_facts.os_family == 'RedHat'
+
+- name: auth | Create htpasswd file
+  become: true
+  htpasswd:
+    path: /etc/st2/htpasswd
+    name: "{{ st2_auth_username }}"
+    password: "{{ st2_auth_password }}"
+  notify:
+    - restart st2api
+    - restart st2stream
+
+- name: auth | Enable authentication
+  become: yes
+  ini_file:
+    dest: /etc/st2/st2.conf
+    section: auth
+    option: enable
+    value: True
+    backup: yes
+  notify:
+    - restart st2api
+    - restart st2stream
+
+- name: auth | Create root's CLI configuration directory
+  become: yes
+  file:
+    path: /root/.st2
+    state: directory
+  when: st2_save_credentials | bool
+
+- name: auth | Save credentials in CLI configuration file
+  become: yes
+  blockinfile:
+    dest: /root/.st2/config
+    create: yes
+    mode: 0600
+    owner: root
+    group: root
+    block: |
+      [credentials]
+      username = {{ st2_auth_username }}
+      password = {{ st2_auth_password }}
+  when: st2_save_credentials | bool

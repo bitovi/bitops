@@ -1,0 +1,8 @@
+---
+- name: reload st2packconfigs
+  become: yes
+  command: st2ctl reload --register-configs
+
+- name: restart st2sensors
+  become: yes
+  command: st2ctl restart st2sensorcontainer
