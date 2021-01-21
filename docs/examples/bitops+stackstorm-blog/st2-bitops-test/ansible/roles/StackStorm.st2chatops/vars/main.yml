@@ -1,0 +1,13 @@
+---
+supported_hubot_adapters:
+ - slack
+ - botframework
+ - hipchat
+ - xmpp
+ - flowdock
+ - yammer
+ - spark
+ - irc
+ - mattermost
+ - matteruser
+ - shell

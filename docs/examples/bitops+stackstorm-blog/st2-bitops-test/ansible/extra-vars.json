@@ -1,0 +1,6 @@
+{"ansible_python_interpreter":"/usr/bin/python",
+"st2_auth_username":"st2admin",
+"st2_auth_password":"Ch@ngeMe",
+"github_token":"{{ lookup('env','ST2_GITHUB_TOKEN') }}",
+"st2_packs":["st2","https://dylan-bitovi:{{ github_token }}@github.com/dylan-bitovi/my_st2_pack.git","https://dylan-bitovi:{{ github_token }}@github.com/dylan-bitovi/my_st2_jira.git"]
+}

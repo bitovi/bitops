@@ -1,0 +1,3 @@
+---
+# StackStorm PackageCloud repository to install: stable, unstable, staging-stable, staging-unstable.
+st2repo_name: stable
