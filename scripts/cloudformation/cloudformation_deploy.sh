@@ -11,6 +11,7 @@ CFN_S3_PREFIX=$7
 
 CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
 if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
+  echo "CFN_TEMPLATE_S3_BUCKET is set, syncing operations repo with S3..."
   aws s3 sync $CLOUDFORMATION_ROOT s3://$CFN_TEMPLATE_S3_BUCKET/$CFN_S3_PREFIX/
   if [ $? == 0 ]; then
     echo "Upload to S3 successful..."
