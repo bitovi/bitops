@@ -29,16 +29,21 @@ for plugin in plugins_yml.get('plugins'):
         capture_output=True)
     print(result.stdout)
 
-    # Load BitOps config using existing shell scripts
+    # Reconcile BitOps config using existing shell scripts
     print('Loading BitOps Config for ' + plugin_name)
     os.environ['ENV_FILE'] = plugin_dir + '/' + 'ENV_FILE'
     bitops_schema = plugin_dir + '/' + 'bitops.schema.yaml'
     bitops_config = environment_dir + '/' + 'bitops.config.yaml'
     old_debug = os.environ['DEBUG'] 
     os.environ['DEBUG'] = ''
-    subprocess.run(['bash',os.environ['SCRIPTS_DIR']+'/bitops-config/convert-schema.sh', bitops_schema, bitops_config])
+    cli_options = subprocess.run(['bash',os.environ['SCRIPTS_DIR']+'/bitops-config/convert-schema.sh', bitops_schema, bitops_config], 
+        universal_newlines = True,
+        capture_output=True)
     os.environ['DEBUG'] = old_debug
 
+    # Set CLI_OTIONS
+    os.environ['CLI_OPTIONS'] = cli_options.stdout
+    
     # Source envfile
     envbash.load_envbash(os.environ['ENV_FILE'])
 
