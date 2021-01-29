@@ -32,13 +32,27 @@ for plugin in plugins_yml.get('plugins'):
     os.environ['DEBUG'] = ''
     subprocess.run(['bash',os.environ['SCRIPTS_DIR']+'/bitops-config/convert-schema.sh', bitops_schema, bitops_config])
     os.environ['DEBUG'] = old_debug
-    
+
     # Source envfile
     envbash.load_envbash(os.environ['ENV_FILE'])
 
     # Invoke Plugin
+    result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
+
     print('Calling ' + plugin_dir + '/deploy.sh')
     result = subprocess.run(['bash', plugin_dir + '/deploy.sh'], 
         universal_newlines = True,
         capture_output=True)
     print(result.stdout)
+
+    result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', environment_dir], 
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
+
+
+
+
