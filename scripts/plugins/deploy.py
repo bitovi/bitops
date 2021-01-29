@@ -23,6 +23,12 @@ for plugin in plugins_yml.get('plugins'):
     environment_dir = operations_dir + '/' + plugin_name
     os.environ['ENVIRONMENT_DIR'] = environment_dir
 
+    # Before Hooks
+    result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
+
     # Load BitOps config using existing shell scripts
     print('Loading BitOps Config for ' + plugin_name)
     os.environ['ENV_FILE'] = plugin_dir + '/' + 'ENV_FILE'
@@ -37,17 +43,13 @@ for plugin in plugins_yml.get('plugins'):
     envbash.load_envbash(os.environ['ENV_FILE'])
 
     # Invoke Plugin
-    result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
-        universal_newlines = True,
-        capture_output=True)
-    print(result.stdout)
-
     print('Calling ' + plugin_dir + '/deploy.sh')
     result = subprocess.run(['bash', plugin_dir + '/deploy.sh'], 
         universal_newlines = True,
         capture_output=True)
     print(result.stdout)
-
+    
+    # After hooks
     result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', environment_dir], 
         universal_newlines = True,
         capture_output=True)
