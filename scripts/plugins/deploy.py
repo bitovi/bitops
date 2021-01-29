@@ -3,7 +3,7 @@ import os
 import subprocess
 import envbash
 
-# Load plugin config yml
+# Load plugin.config.yml
 bitops_dir=os.environ['BITOPS_DIR']
 with open(bitops_dir+'/plugin.config.yml', 'r') as stream:
     try:
@@ -43,7 +43,7 @@ for plugin in plugins_yml.get('plugins'):
 
     # Set CLI_OTIONS
     os.environ['CLI_OPTIONS'] = cli_options.stdout
-    
+
     # Source envfile
     envbash.load_envbash(os.environ['ENV_FILE'])
 

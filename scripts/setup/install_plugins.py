@@ -2,6 +2,7 @@
 import yaml
 import subprocess
 import glob
+import os.path
 
 def git(*args):
     return subprocess.check_call(['git'] + list(args))
@@ -24,5 +25,3 @@ for plugin in plugins_yml.get("plugins"):
             universal_newlines = True,
             capture_output=True)
         print(result.stdout)
-
-print(glob.glob(plugin_dir+'*'))
