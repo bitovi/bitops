@@ -1,1 +1,3 @@
 shyaml
+pyyaml
+envbash
