@@ -1,1 +1,3 @@
 plugins:
+- name: ansible
+  repo: https://github.com/ConnorGraham/bitops-ansible-plugin.git
