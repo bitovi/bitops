@@ -5,7 +5,6 @@ RUN apk add --no-cache bash
 RUN apk update
 
 RUN apk add \
-    ansible \
     libsodium-dev \
     wget \
     unzip \
