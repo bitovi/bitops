@@ -17,5 +17,12 @@ with open("plugin.config.yml", 'r') as stream:
 plugin_dir = "/opt/bitops/scripts/plugins/"
 for plugin in plugins_yml.get("plugins"):
     git("clone", plugin['repo'], plugin_dir + plugin['name'])
+    # install plugin dependencies (install.sh)
+    install_script = plugin_dir + plugin['name'] + "/install.sh"
+    if os.path.isfile(install_script):
+        result = subprocess.run(['bash', install_script], 
+            universal_newlines = True,
+            capture_output=True)
+        print(result.stdout)
 
 print(glob.glob(plugin_dir+'*'))
