@@ -14,9 +14,13 @@ with open("plugin.config.yml", 'r') as stream:
     except yaml.YAMLError as exc:
         print(exc)
 
-# Loop through plugins and git clone each
 plugin_dir = "/opt/bitops/scripts/plugins/"
-for plugin in plugins_yml.get("plugins"):
+plugins = plugins_yml.get("plugins")
+if plugins is None:
+    quit()
+
+# Loop through plugins and git clone each
+for plugin in plugins:
     git("clone", plugin['repo'], plugin_dir + plugin['name'])
     # install plugin dependencies (install.sh)
     install_script = plugin_dir + plugin['name'] + "/install.sh"

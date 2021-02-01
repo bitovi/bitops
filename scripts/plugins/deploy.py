@@ -11,10 +11,16 @@ with open(bitops_dir+'/plugin.config.yml', 'r') as stream:
     except yaml.YAMLError as exc:
         print(exc)
 
-# Loop through plugins and invoke each
 plugins_dir = bitops_dir + '/scripts/plugins/'
 operations_dir = os.environ['ENVROOT']
-for plugin in plugins_yml.get('plugins'):
+
+plugin_dir = "/opt/bitops/scripts/plugins/"
+plugins = plugins_yml.get("plugins")
+if plugins is None:
+    quit()
+
+# Loop through plugins and invoke each
+for plugin in plugins:
     plugin_name = plugin['name']
 
     # Set ENV vars
