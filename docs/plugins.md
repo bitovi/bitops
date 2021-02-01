@@ -28,12 +28,13 @@ plugins:
 ```
 The repo for each plugin must be a `git clone`-able url. The name can be anything.
 
+The order that plugins appear in the list also dictate their execution order during both installation and runtime.
+
 **Dockerfile**
-Now using `bitops-core`, we will overwrite the default `plugin.config.yaml` without own and force an installation of the plugins
+Now using `bitops-core`, we will overwrite the default `plugin.config.yaml` with our own and force an installation of the plugins
 ```
 FROM bitops-core
 COPY plugin.config.yaml .
-## TODO can we get rid of this RUN statement?
 RUN python scripts/setup/install_plugins.py
 ```
 
@@ -41,7 +42,7 @@ RUN python scripts/setup/install_plugins.py
 Creating a plugin is easy, you only need 3 files:
 * `install.sh` - This script is called during plugin installation (docker build time). It should be used to install any dependencies needed for your plugin to function 
 * `deploy.sh` - The main entrypoint for your plugin
-* `bitops.schema.yaml` - Allows users to pass parameters in to your plugin
+* `bitops.schema.yaml` - Allows users to pass parameters in to your plugin using a `bitops.config.yaml` (https://bitovi.github.io/bitops/configuration-base/)
 For more information, you can look at our sample plugin repo that prints your name and favorite color!
 https://github.com/bitovi/bitops-sample-plugin.git
 
