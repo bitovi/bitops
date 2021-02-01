@@ -18,6 +18,12 @@ cloudformation:
         cfn-stack-name:
           type: string
           export_env: CFN_STACK_NAME
+        s3bucket:
+          type: string
+          export_env: CFN_TEMPLATE_S3_BUCKET
+        s3prefix:
+          type: string
+          export_env: CFN_S3_PREFIX
         capabilities:
           type: string
           export_env: CFN_CAPABILITY
