@@ -60,6 +60,20 @@ Cloudformation stack name
 * **Environment Variable:** `CFN_CAPABILITY`
 * **default:** `""`
 
+Allows you to use CloudFormation nested stacks. Both properties must be set in order to use nested stacks.
+
+-------------------
+
+### cfn-s3-bucket
+* **BitOps Property:** `cfn-s3-bucket`
+* **Environment Variable:** `CFN_TEMPLATE_S3_BUCKET`
+* **default:** `""`
+
+### cfn-s3-prefix
+* **BitOps Property:** `cfn-s3-prefix`
+* **Environment Variable:** `CFN_S3_PREFIX`
+* **default:** `""`
+
 Cloudformation capabilities
 
 -------------------
