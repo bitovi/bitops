@@ -3,9 +3,9 @@ import os
 import subprocess
 import envbash
 
-# Load plugin.config.yml
+# Load plugin.config.yaml
 bitops_dir=os.environ['BITOPS_DIR']
-with open(bitops_dir+'/plugin.config.yml', 'r') as stream:
+with open(bitops_dir+'/plugin.config.yaml', 'r') as stream:
     try:
         plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
     except yaml.YAMLError as exc:

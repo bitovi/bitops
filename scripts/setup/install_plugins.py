@@ -8,7 +8,7 @@ def git(*args):
     return subprocess.check_call(['git'] + list(args))
 
 # Load plugin config yml
-with open("plugin.config.yml", 'r') as stream:
+with open("plugin.config.yaml", 'r') as stream:
     try:
         plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
     except yaml.YAMLError as exc:
