@@ -8,6 +8,7 @@ CFN_STACK_NAME=$4
 CFN_CAPABILITY=$5
 CFN_TEMPLATE_S3_BUCKET=$6
 CFN_S3_PREFIX=$7
+STATUS="UNKNOWN"
 
 CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
 if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
@@ -51,13 +52,31 @@ else
     )
 fi
 
-if [ "$ACTION" == "create-stack" ]; then
-  echo "Waiting on cloudformation stack ${CFN_STACK_NAME} $ACTION completion..."
-  aws cloudformation wait stack-create-complete --stack-name ${CFN_STACK_NAME}
-else
-  echo "Waiting on cloudformation stack ${CFN_STACK_NAME} $ACTION completion..."
-  aws cloudformation wait stack-update-complete --stack-name ${CFN_STACK_NAME}
-fi
+# if [ "$ACTION" == "create-stack" ]; then
+#   echo "Waiting on cloudformation stack ${CFN_STACK_NAME} $ACTION completion..."
+#   aws cloudformation create-stack --stack-name ${CFN_STACK_NAME} --timeout-in-minutes 120
+# else
+#   echo "Waiting on cloudformation stack ${CFN_STACK_NAME} $ACTION completion..."
+#   aws cloudformation stack-update --stack-name ${CFN_STACK_NAME}
+# fi
 
-aws cloudformation describe-stacks --stack-name ${CFN_STACK_NAME} | jq '.Stacks[0]'
-echo "Finished cloudfromation action $ACTION successfully !!!"
+until echo "$STATUS" | egrep -q 'CREATE_COMPLETE|UPDATE_COMPLETE|COMPLETE|FAILED|DELETE_IN_PROGRESS'; 
+do   
+  aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`CREATE_IN_PROGRESS`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
+  aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`FAILED`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
+  sleep 60; 
+  STATUS=$(aws cloudformation describe-stacks --stack-name "${CFN_STACK_NAME}" --query "Stacks[0].StackStatus" --output text);
+done
+
+# get final status
+aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --output text --no-paginate;
+
+#aws cloudformation describe-stacks --stack-name ${CFN_STACK_NAME} | jq '.Stacks[0]'
+echo "$STATUS" | egrep -q "CREATE_COMPLETE|UPDATE_COMPLETE"
+if [ $? == 0 ]; then
+  echo "Finished cloudfromation action $ACTION successfully !!!"
+  exit 0
+else 
+  echo "Failed to perform action $ACTION !!!"
+  exit 1
+fi
