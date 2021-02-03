@@ -46,3 +46,42 @@ Creating a plugin is easy, you only need 3 files:
 For more information, you can look at our sample plugin repo that prints your name and favorite color!
 https://github.com/bitovi/bitops-sample-plugin.git
 
+## Local plugins not from GitHub
+
+If users want to use BitOps with arbitrary plugins, then they need to create their own repo that looks something like:
+```
+my-bitops
+├── Dockerfile
+└── plugin.config.yaml
+```
+
+The Dockerfile looks like:
+```
+FROM bitops-core
+COPY plugin.config.yaml .
+RUN python scripts/setup/install_plugins.py
+```
+
+To add your own local plugins the my-bitops repo should be extended to contain my "local" plugins
+```
+my-bitops
+├── Dockerfile
+├── plugin.config.yaml
+└── plugins
+    └── my-custom-plugin-1
+```
+These local plugins need to be passed in to the docker context by include them in the Dockerfile
+```
+FROM bitops-core
+COPY plugin.config.yaml .
+ADD ./plugins/ /scripts/plugins/
+RUN python scripts/setup/install_plugins.py
+```
+
+Finally, if you wanted to run your custom plugin and then the ansible plugin, `plugin.config.yaml` would look like
+```
+plugins:
+  - name: my-custom-plugin-1
+  - name: ansible
+    repo: https://github.com/bitovi/bitops-ansible-plugin.git
+```
