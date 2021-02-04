@@ -52,13 +52,6 @@ else
     )
 fi
 
-# if [ "$ACTION" == "create-stack" ]; then
-#   echo "Waiting on cloudformation stack ${CFN_STACK_NAME} $ACTION completion..."
-#   aws cloudformation create-stack --stack-name ${CFN_STACK_NAME} --timeout-in-minutes 120
-# else
-#   echo "Waiting on cloudformation stack ${CFN_STACK_NAME} $ACTION completion..."
-#   aws cloudformation stack-update --stack-name ${CFN_STACK_NAME}
-# fi
 
 until echo "$STATUS" | egrep -q 'CREATE_COMPLETE|UPDATE_COMPLETE|COMPLETE|FAILED|DELETE_IN_PROGRESS'; 
 do   
@@ -71,7 +64,6 @@ done
 # get final status
 aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --output text --no-paginate;
 
-#aws cloudformation describe-stacks --stack-name ${CFN_STACK_NAME} | jq '.Stacks[0]'
 echo "$STATUS" | egrep -q "CREATE_COMPLETE|UPDATE_COMPLETE"
 if [ $? == 0 ]; then
   echo "Finished cloudfromation action $ACTION successfully !!!"
