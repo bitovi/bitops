@@ -3,7 +3,7 @@ set -e
 
 ANSIBLE_ARGS=$1
 PLUGIN_DIR="$ENVROOT/ansible"
-EXTRA_ENV="$ENVROOT/ansible/extra_env"
+EXTRA_ENV="$PLUGIN_DIR/extra_env"
 
 if [ -f "$EXTRA_ENV" ]; then
   echo "Ansible - Found extra_env. Exporting additional configuration variables."
