@@ -18,6 +18,13 @@ ansible:
 ## CLI Configuration
 
 -------------------
+### extra-vars
+* **BitOps Property:** `extra-vars`
+* **Environment Variable:** `BITOPS_ANSIBLE_EXTRA_VARS`
+
+add additional ansible playbook parameters directly or load via JSON/YAML file
+
+-------------------
 ### flush-cache
 * **BitOps Property:** `flush-cache`
 * **Environment Variable:** `BITOS_ANSIBLE_FLUSH_CACHE`
@@ -30,13 +37,6 @@ clear the fact cache for every host in inventory
 * **Environment Variable:** `BITOPS_ANSIBLE_FORCE_HANDLERS`
 
 clear the fact cache for every host in inventory
-
--------------------
-### skip-tags
-* **BitOps Property:** `skip-tags`
-* **Environment Variable:** `BITOPS_ANSIBLE_SKIP_TAGS`
-
-only run plays and tasks whose tags do not match these values
 
 -------------------
 ### forks
@@ -53,18 +53,18 @@ specify number of parallel processes to use (default=5)
 specify inventory host path or comma separated host list.
 
 -------------------
+### skip-tags
+* **BitOps Property:** `skip-tags`
+* **Environment Variable:** `BITOPS_ANSIBLE_SKIP_TAGS`
+
+only run plays and tasks whose tags do not match these values
+
+-------------------
 ### tags
 * **BitOps Property:** `tags`
 * **Environment Variable:** `BITOPS_ANSIBLE_TAGS`
 
 only run plays and tasks tagged with these values
-
--------------------
-### extra-vars
-* **BitOps Property:** `extra-vars`
-* **Environment Variable:** `BITOPS_ANSIBLE_EXTRA_VARS`
-
-add additional ansible playbook parameters directly or load via JSON/YAML file
 
 ## Options Configuration
 
@@ -78,6 +78,10 @@ Will run `--list-tasks` but won't actually execute playbook(s)
 
 ## Additional Environment Variable Configuration
 Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+
+-------------------
+### EXTRA_ENV
+Before Ansible playbook execution, BitOps will look for an `extra_env` file containing additional environment parameters (`FOO=val1`) in the Ansible plugin directory. If found, the values will be exported to the BitOps environment.
 
 -------------------
 ### SKIP_DEPLOY_ANSIBLE
