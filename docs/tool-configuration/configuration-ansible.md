@@ -63,11 +63,19 @@ Specify inventory host path or comma separated host list.
 Only run plays and tasks whose tags do not match these values.
 
 -------------------
+### skip-tags
+* **BitOps Property:** `skip-tags`
+* **Environment Variable:** `BITOPS_ANSIBLE_SKIP_TAGS`
+
+only run plays and tasks whose tags do not match these values
+
+-------------------
 ### tags
 * **BitOps Property:** `tags`
 * **Environment Variable:** `BITOPS_ANSIBLE_TAGS`
 
 Only run plays and tasks tagged with these values.
+
 
 -------------------
 ### vault-id
@@ -75,7 +83,7 @@ Only run plays and tasks tagged with these values.
 * **Environment Variable:** `BITOPS_ANSIBLE_VAULT_ID`
 * **type:** `list`
 
-Specify Ansible vault-id `[dev@dev-passwordfile]` or multiple `[dev@dev-passwordfile], [prod@prod-passwordfile]` or password client script `[dev@my-vault-password-client.py]`. Cannot be used with `@prompt` for equivalent `--ask-vault-pass` functionality
+Specify Ansible vault-id `[dev@dev-passwordfile]` or multiple `[dev@dev-passwordfile, prod@prod-passwordfile]` or password client script `[dev@my-vault-password-client.py]`. Cannot be used with `@prompt` for equivalent `--ask-vault-pass` functionality
 
 -------------------
 ### vault-password-file
@@ -104,6 +112,10 @@ Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v`
 
 ## Additional Environment Variable Configuration
 Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour.
+
+-------------------
+### EXTRA_ENV
+Before Ansible playbook execution, BitOps will look for an `extra_env` file containing additional environment parameters (`FOO=val1`) in the Ansible plugin directory. If found, the values will be exported to the BitOps environment.
 
 -------------------
 ### SKIP_DEPLOY_ANSIBLE
