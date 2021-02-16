@@ -15,6 +15,7 @@ ansible:
     vault-password-file: $TEMPDIR/secrets/password_file
   options:
     dryrun: false
+    verbosity: 4
 ```
 
 ## CLI Configuration
@@ -92,6 +93,14 @@ Specify Ansible vault password file for decryption.
 * **default:** `false`
 
 Will run `--list-tasks` but won't actually execute playbook(s)
+
+-------------------
+### verbose
+* **BitOps Property:** `verbosity`
+* **Environment Variable:** `ANSIBLE_VERBOSITY`
+* **default:** `not set`
+
+Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v` flags. Will override a pre-existing `ANSIBLE_VERBOSITY` environmental variable or `[default]` `verbosity=` setting in ansible.cfg.
 
 ## Additional Environment Variable Configuration
 Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour.

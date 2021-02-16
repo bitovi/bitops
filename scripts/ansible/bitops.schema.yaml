@@ -47,4 +47,6 @@ ansible:
           type: boolean
           export_env: BITOPS_ANSIBLE_DRYRUN
           default: false
-          
+        verbosity:
+          type: string
+          export_env: ANSIBLE_VERBOSITY
