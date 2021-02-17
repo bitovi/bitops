@@ -46,10 +46,10 @@ jobs:
 
             # publish setup
             export BITOPS_DOCKER_IMAGE_PUBLISH_SKIP_SHA="1"
-            export BITOPS_DOCKER_IMAGE_NAME="${CIRCLE_PROJECT_REPONAME}" # bitops
+            export BITOPS_DOCKER_IMAGE_NAME="${CIRCLE_PROJECT_REPONAME}-gce" # bitops
             export BITOPS_GIT_TAG="${CIRCLE_TAG}"
             export BITOPS_GIT_SHA="${CIRCLE_SHA1}"
-            export BITOPS_GIT_BRANCH="${CIRCLE_BRANCH}"
+            export BITOPS_GIT_BRANCH="bitops-gcp" #"${CIRCLE_BRANCH}"
             export BITOPS_GIT_BASE_BRANCH="master"
 
             ###

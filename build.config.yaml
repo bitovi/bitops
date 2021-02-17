@@ -17,9 +17,9 @@ environment:
 
 cloud_platform:
   - aws:
-    name: aws
+    name: gcp
     enabled: true
-    region: us-east-2
+    region: us-central1
 
 # Specify Terraform versions
 terraform:

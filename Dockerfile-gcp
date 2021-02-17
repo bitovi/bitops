@@ -1,0 +1,48 @@
+FROM python:3.8.6-alpine
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apk add --no-cache bash
+RUN apk update
+
+RUN apk add \
+    ansible \
+    libsodium-dev \
+    wget \
+    unzip \
+    git \
+    jq \
+    curl \
+    gettext \
+    make \
+    ca-certificates
+    
+# install glibc compatibility for alpine
+ENV GLIBC_VER=2.31-r0
+RUN apk --no-cache add \
+        binutils \
+    && curl -sL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub \
+    && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VER}/glibc-${GLIBC_VER}.apk \
+    && curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VER}/glibc-bin-${GLIBC_VER}.apk \
+    && apk add --no-cache \
+        glibc-${GLIBC_VER}.apk \
+        glibc-bin-${GLIBC_VER}.apk \
+    && curl -sL https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz -o google-cloud-sdk.tar.gz \
+    && tar zxvf google-cloud-sdk.tar.gz \
+    && ./google-cloud-sdk/install.sh --usage-reporting=false --path-update=true
+    && google-cloud-sdk/bin/gcloud --quiet components update
+    && apk --no-cache del \
+        binutils \
+    && rm glibc-${GLIBC_VER}.apk \
+    && rm glibc-bin-${GLIBC_VER}.apk \
+    && rm -rf /var/cache/apk/*
+    
+RUN update-ca-certificates
+RUN mv google-cloud-sdk /usr/local/google-cloud-sdk
+RUN mkdir -p /opt/bitops
+
+WORKDIR /opt/bitops
+COPY . .
+
+RUN pip3 install -r requirements.txt
+RUN bash -x scripts/setup/install_tools.sh
+
+ENTRYPOINT [ "/opt/bitops/scripts/deploy.sh" ]

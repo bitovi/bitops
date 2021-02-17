@@ -23,7 +23,7 @@ echo "TEMPDIR: $TEMPDIR"
 ###
 cleanup () {
   # call all teardown scripts
-  /bin/bash $SCRIPTS_DIR/aws/teardown.sh
+  /bin/bash $SCRIPTS_DIR/gcp/teardown.sh
 
 
   echo "cleaning up..."
@@ -87,7 +87,7 @@ echo "$PATH" >> ~/.bashrc
 
 # Setup cloud provider profile
 # TODO: check which cloudprovider
-/bin/bash $SCRIPTS_DIR/aws/setup.sh
+/bin/bash $SCRIPTS_DIR/gcp/setup.sh
 
 # Setup kubeconfig from base64
 if [ ! -f "$KUBE_CONFIG_FILE" ]; then
