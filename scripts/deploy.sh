@@ -87,7 +87,11 @@ echo "$PATH" >> ~/.bashrc
 
 # Setup cloud provider profile
 # TODO: check which cloudprovider
-/bin/bash $SCRIPTS_DIR/aws/setup.sh
+if [ -z "$PROVIDER_FLAG" ]; then
+  echo "running bitops for non-default provider..."
+else
+  /bin/bash $SCRIPTS_DIR/aws/setup.sh
+fi
 
 # Setup kubeconfig from base64
 if [ ! -f "$KUBE_CONFIG_FILE" ]; then
