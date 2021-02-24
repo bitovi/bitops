@@ -87,9 +87,15 @@ echo "$PATH" >> ~/.bashrc
 
 # Setup cloud provider profile
 # TODO: check which cloudprovider
+# Default provider
+if [-z "$PROVIDERS"]; then
+    PROVIDERS="aws"
+fi
+
+# Provider switch statement
 if [ "$PROVIDERS" == "none" ]; then
-  echo "running bitops for non-default provider..."
-else
+  echo "skipping providers and going straight to deployment tools"
+if [ "$PROVIDERS" == "aws" ]
   /bin/bash $SCRIPTS_DIR/aws/setup.sh
 fi
 
