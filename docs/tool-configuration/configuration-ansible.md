@@ -4,15 +4,18 @@
 ```
 ansible:
   cli:
+    extra-vars: "@extra-vars.json"
     flush-cache: true
     force-handlers: true
-    skip-tags: ignore-this-tag
     forks: 20
     inventory: beta
+    skip-tags: ignore-this-tag
     tags: run-this-tag
-    extra-vars: "@extra-vars.json"
+    vault-id: [dev@dev-passwordfile, prod@prod-passwordfile]
+    vault-password-file: $TEMPDIR/secrets/password_file
   options:
     dryrun: false
+    verbosity: 4
 ```
 
 ## CLI Configuration
@@ -22,35 +25,42 @@ ansible:
 * **BitOps Property:** `extra-vars`
 * **Environment Variable:** `BITOPS_ANSIBLE_EXTRA_VARS`
 
-add additional ansible playbook parameters directly or load via JSON/YAML file
+Add additional ansible playbook parameters directly or load via JSON/YAML file.
 
 -------------------
 ### flush-cache
 * **BitOps Property:** `flush-cache`
 * **Environment Variable:** `BITOS_ANSIBLE_FLUSH_CACHE`
 
-clear the fact cache for every host in inventory
+Clear the fact cache for every host in inventory.
 
 -------------------
 ### force-handlers
 * **BitOps Property:** `force-handlers`
 * **Environment Variable:** `BITOPS_ANSIBLE_FORCE_HANDLERS`
 
-clear the fact cache for every host in inventory
+Clear the fact cache for every host in inventory.
 
 -------------------
 ### forks
 * **BitOps Property:** `forks`
 * **Environment Variable:** `BITOPS_ANSIBLE_FORKS`
 
-specify number of parallel processes to use (default=5)
+Specify number of parallel processes to use (default=5).
 
 -------------------
 ### inventory
 * **BitOps Property:** `inventory`
 * **Environment Variable:** `BITOPS_ANSIBLE_INVENTORY`
 
-specify inventory host path or comma separated host list.
+Specify inventory host path or comma separated host list.
+
+-------------------
+### skip-tags
+* **BitOps Property:** `skip-tags`
+* **Environment Variable:** `BITOPS_ANSIBLE_SKIP_TAGS`
+
+Only run plays and tasks whose tags do not match these values.
 
 -------------------
 ### skip-tags
@@ -64,7 +74,23 @@ only run plays and tasks whose tags do not match these values
 * **BitOps Property:** `tags`
 * **Environment Variable:** `BITOPS_ANSIBLE_TAGS`
 
-only run plays and tasks tagged with these values
+Only run plays and tasks tagged with these values.
+
+
+-------------------
+### vault-id
+* **BitOps Property:** `vault-id`
+* **Environment Variable:** `BITOPS_ANSIBLE_VAULT_ID`
+* **type:** `list`
+
+Specify Ansible vault-id `[dev@dev-passwordfile]` or multiple `[dev@dev-passwordfile, prod@prod-passwordfile]` or password client script `[dev@my-vault-password-client.py]`. Cannot be used with `@prompt` for equivalent `--ask-vault-pass` functionality
+
+-------------------
+### vault-password-file
+* **BitOps Property:** `vault-password-file`
+* **Environment Variable:** `BITOPS_ANSIBLE_VAULT_PASSWORD_FILE`
+
+Specify Ansible vault password file for decryption.
 
 ## Options Configuration
 
@@ -76,8 +102,16 @@ only run plays and tasks tagged with these values
 
 Will run `--list-tasks` but won't actually execute playbook(s)
 
+-------------------
+### verbose
+* **BitOps Property:** `verbosity`
+* **Environment Variable:** `ANSIBLE_VERBOSITY`
+* **default:** `not set`
+
+Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v` flags. Will override a pre-existing `ANSIBLE_VERBOSITY` environmental variable or `[default]` `verbosity=` setting in ansible.cfg.
+
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour.
 
 -------------------
 ### EXTRA_ENV
@@ -85,4 +119,4 @@ Before Ansible playbook execution, BitOps will look for an `extra_env` file cont
 
 -------------------
 ### SKIP_DEPLOY_ANSIBLE
-Will skill all ansible executions. This superseeds all other configuration
+Will skill all ansible executions. This superseeds all other configuration.

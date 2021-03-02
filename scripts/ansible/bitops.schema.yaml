@@ -32,6 +32,14 @@ ansible:
           type: string
           parameter: extra-vars
           export_env: BITOPS_ANSIBLE_EXTRA_VARS
+        vault-password-file:
+          type: string
+          parameter: vault-password-file
+          export_env: BITOPS_ANSIBLE_VAULT_PASSWORD_FILE  
+        vault-id:
+          type: list
+          parameter: vault-id
+          export_env: BITOPS_ANSIBLE_VAULT_ID
     options:
       type: object
       properties:
@@ -39,3 +47,6 @@ ansible:
           type: boolean
           export_env: BITOPS_ANSIBLE_DRYRUN
           default: false
+        verbosity:
+          type: string
+          export_env: ANSIBLE_VERBOSITY
