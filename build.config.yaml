@@ -24,10 +24,6 @@ cloud_platform:
 # Specify Terraform versions
 terraform:
   versions:
-  - 0.13.0
-  - 0.13.1
-  - 0.13.2
-  - 0.13.4
   - 0.12.27
   - 0.12.28  
   - 0.12.29
