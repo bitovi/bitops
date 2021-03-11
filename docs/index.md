@@ -10,7 +10,8 @@ hide:
         <img alt="Logo" float="middle" style="vertical-align: middle;" src="assets/images/logo/Bitops%28RGB%29_L2_Full_4C.png" width="350">
     </div>
     <div class="bitovi-column">
-        <h1>Organize your Infrastructure-as-Code (IAC) optimally and deploy consistently</h1>
+        <h1>Organize your Infrastructure-as-Code (IAC) 
+        <nl>Consistently Deploy.</h1>
         <a class="md-button md-button--primary" href="about">Show me how</a>
         <p>
             <a href="https://github.com/bitovi/bitops/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/bitovi/bitops"></a>
@@ -21,7 +22,7 @@ hide:
 </div>
 ---------------------
 
-BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](operations-repo-structure.md).
+BitOps is a tool to describe an infrastructure and configurations deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](operations-repo-structure.md).
 
 ---------------------
 

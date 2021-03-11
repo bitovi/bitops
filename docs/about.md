@@ -42,6 +42,10 @@ BitOps is configured in 3 steps:
 * Microsoft Azure Cloud (Azure) - [TODO](https://github.com/bitovi/bitops/issues/13)
 * Google Cloud Engine (GCE) - [TODO](https://github.com/bitovi/bitops/issues/14)
 
+## Guides and Other Reources
+
+Bitops already has several guides demonstrating deploying a webserver or a pre-configured application using different combinations of the available Bitops tools. If you're looking for a quick-start, check out some of the options available in the [Examples](examples.md) section.
+
 ## Support / Contributing
 
 We welcome any contributions from the community with open arms. Take a look at our [Contributing](contributing/contributing.md) guide.
