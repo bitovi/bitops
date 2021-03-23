@@ -12,7 +12,7 @@ This is a useful way to extend the functionality of bitops. A popular usecase we
 A single run of BitOps will:
 
 ### 1. Copy contents of bitops_deployment to tempdir
-Copys the contents of `/opt/bitops_deployment` to a temporary working directory.
+Copies the contents of `/opt/bitops_deployment` to a temporary working directory.
 
 ### 2. Setup Cloud Provider
 Attempts to setup a cloud provider (AWS) using the credentials passed in at container execution time.
