@@ -56,7 +56,7 @@ jobs:
             export BITOPS_GIT_BASE_BRANCH="master"
 
             ## TODO: Remove before merge
-            BITOPS_DOCKER_IMAGE_PUBLISH_TAG="32-env-filter"
+            export BITOPS_DOCKER_IMAGE_PUBLISH_TAG="32-env-filter"
 
             ###
             ### PUBLISH
