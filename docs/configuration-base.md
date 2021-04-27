@@ -50,6 +50,14 @@ If true, will enable verbose logging
 If true, [file mergers](default-environment.md) will replace instead of create a copy during a merge
 
 -------------------
+### skip_if_no_environment_changes
+* **Environment Variable:** `SKIP_IF_NO_ENVIRONMENT_CHANGES`
+* **default:** `""`
+* **required:** no
+
+If nonempty, will evaluate the `git diff` to see if there are any changes in the specified `ENVIRONMENT` and will `exit 0` if not.
+
+-------------------
 ## Cloud Providers
 * [AWS](cloud-configuration/configuration-aws.md)
 
