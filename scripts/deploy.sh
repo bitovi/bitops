@@ -58,9 +58,28 @@ if [ -z "$DEBUG" ]; then
   export DEBUG=0
 fi
 
+# put everything in the temp directory
+if ! cp -rf /opt/bitops_deployment/. $TEMPDIR; then 
+  echo "failed to copy repo to: $TEMPDIR"
+else 
+  echo "Successfully Copied repo to $TEMPDIR "
+fi
+
+if [ -z "$DEFAULT_FOLDER_NAME" ]; then
+  DEFAULT_FOLDER_NAME="default"
+fi
+
+# ops repo paths
+export ROOT_DIR="$TEMPDIR"
+export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
+export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
+
+
+
 
 if [ -n "$SKIP_IF_NO_ENVIRONMENT_CHANGES" ]; then
   echo "Ensuring environment ($ENVIRONMENT) has changes..."
+  cd $ROOT_DIR
   # check if the environment matches using `cut -d/ -f1` to get the environment level string (everything before the first /)
   ENVIRONMENT_HAS_CHANGES="$(git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f1|sort -u)"
 
@@ -91,24 +110,9 @@ if [ -n "$SKIP_IF_NO_ENVIRONMENT_CHANGES" ]; then
   else
     echo "    Environment ($ENVIRONMENT) has changes.  Continue"
   fi
+  cd -
 fi
 
-
-# put everything in the temp directory
-if ! cp -rf /opt/bitops_deployment/. $TEMPDIR; then 
-  echo "failed to copy repo to: $TEMPDIR"
-else 
-  echo "Successfully Copied repo to $TEMPDIR "
-fi
-
-if [ -z "$DEFAULT_FOLDER_NAME" ]; then
-  DEFAULT_FOLDER_NAME="default"
-fi
-
-# ops repo paths
-export ROOT_DIR="$TEMPDIR"
-export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
-export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
 
 
 # Setup bashrc
