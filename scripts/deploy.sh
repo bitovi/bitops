@@ -58,8 +58,6 @@ if [ -z "$DEBUG" ]; then
   export DEBUG=0
 fi
 
-
-
 # put everything in the temp directory
 if ! cp -rf /opt/bitops_deployment/. $TEMPDIR; then 
   echo "failed to copy repo to: $TEMPDIR"
@@ -75,6 +73,27 @@ fi
 export ROOT_DIR="$TEMPDIR"
 export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
 export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
+
+
+
+
+if [ -n "$SKIP_IF_NO_ENVIRONMENT_CHANGES" ]; then
+  echo "Ensuring environment ($ENVIRONMENT) has changes..."
+
+  # get into root dir so that we get the right git data
+  cd $ROOT_DIR
+  # check if the environment matches using `cut -d/ -f1` to get the environment level string (everything before the first /)
+  ENVIRONMENT_HAS_CHANGES="$(git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f1|sort -u)"
+
+  if [ -z "$ENVIRONMENT_HAS_CHANGES" ]; then
+    echo "    Environment ($ENVIRONMENT) does not have changes.  Skipping deployment"
+    exit 0
+  else
+    echo "    Environment ($ENVIRONMENT) has changes.  Continue"
+  fi
+  cd -
+fi
+
 
 
 # Setup bashrc

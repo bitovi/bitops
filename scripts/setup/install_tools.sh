@@ -39,15 +39,16 @@ function install_kubectl() {
 
 
 function install_helm() {
-    if [[ "$HELM_VERSION" == '3.2.0' ]]; then
-        wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
-        tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
-        mv linux-amd64/helm /usr/local/bin/
-    else
+    HELM_VERSION_PREFIX=${HELM_VERSION:0:1}
+    if [[ "$HELM_VERSION_PREFIX" == '2' ]]; then
         wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
         tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
         mv linux-amd64/helm /usr/local/bin/
         bash -x scripts/helm/install_tiller.sh
+    else
+        wget https://get.helm.sh/helm-v$HELM_VERSION-linux-amd64.tar.gz
+        tar -xzvf helm-v$HELM_VERSION-linux-amd64.tar.gz
+        mv linux-amd64/helm /usr/local/bin/
     fi
 }
 function install_helm_s3() {
