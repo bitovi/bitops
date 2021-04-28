@@ -79,30 +79,11 @@ export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
 
 if [ -n "$SKIP_IF_NO_ENVIRONMENT_CHANGES" ]; then
   echo "Ensuring environment ($ENVIRONMENT) has changes..."
+
+  # get into root dir so that we get the right git data
   cd $ROOT_DIR
   # check if the environment matches using `cut -d/ -f1` to get the environment level string (everything before the first /)
   ENVIRONMENT_HAS_CHANGES="$(git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f1|sort -u)"
-
-  echo "==========DEBUGGING"
-  echo "ENVIRONMENT"
-  echo "$ENVIRONMENT"
-  echo ""
-  echo "ENVIRONMENT_HAS_CHANGES"
-  echo "$ENVIRONMENT_HAS_CHANGES"
-  echo ""
-  echo "git diff"
-  git diff
-  echo ""
-  echo "git diff --name-only HEAD HEAD^"
-  git diff --name-only HEAD HEAD^
-  echo ""
-  echo 'git diff --name-only HEAD HEAD^|grep $ENVIRONMENT'
-  git diff --name-only HEAD HEAD^|grep $ENVIRONMENT
-  echo ""
-  echo 'git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f1'
-  git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f1
-
-  echo "==========end DEBUGGING"
 
   if [ -z "$ENVIRONMENT_HAS_CHANGES" ]; then
     echo "    Environment ($ENVIRONMENT) does not have changes.  Skipping deployment"
