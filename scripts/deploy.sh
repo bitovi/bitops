@@ -61,7 +61,8 @@ fi
 
 if [ -n "$SKIP_IF_NO_ENVIRONMENT_CHANGES" ]; then
   echo "Ensuring environment ($ENVIRONMENT) has changes..."
-  ENVIRONMENT_HAS_CHANGES="$(git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f3|sort -u)"
+  # check if the environment matches using `cut -d/ -f1` to get the environment level string (everything before the first /)
+  ENVIRONMENT_HAS_CHANGES="$(git diff --name-only HEAD HEAD^|grep $ENVIRONMENT|cut -d/ -f1|sort -u)"
   if [ -z "$ENVIRONMENT_HAS_CHANGES" ]; then
     echo "    Environment ($ENVIRONMENT) does not have changes.  Skipping deployment"
     exit 0
