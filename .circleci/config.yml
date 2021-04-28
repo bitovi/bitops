@@ -6,11 +6,8 @@ workflows:
           context: bitops
           filters:
             branches:
-              # TODO: put back before merge
-              # only:
-              #   - master
               only:
-                - feature/32-only-deploy-files-changed
+                - master
             tags:
               only:
                 - "/.*/"
@@ -54,9 +51,6 @@ jobs:
             export BITOPS_GIT_SHA="${CIRCLE_SHA1}"
             export BITOPS_GIT_BRANCH="${CIRCLE_BRANCH}"
             export BITOPS_GIT_BASE_BRANCH="master"
-
-            ## TODO: Remove before merge
-            export BITOPS_DOCKER_IMAGE_PUBLISH_TAG="32-env-filter"
 
             ###
             ### PUBLISH
