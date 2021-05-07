@@ -28,7 +28,7 @@ BitOps is configured in 3 steps:
 2. Configure aceess to your cloud provider
 3. Configure how you want your deployment tools to execute
 
-[Get Started](configuration-base)
+[Get Started](configuration-base.md)
 
 ## Supported Tools
 * [Provision infrastructure with CloudFormation](tool-configuration/configuration-cloudformation.md)
