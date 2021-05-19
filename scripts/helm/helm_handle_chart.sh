@@ -33,7 +33,7 @@ fi
 bash $SCRIPTS_DIR/deploy/before-deploy.sh "$HELM_CHART_DIRECTORY"
 
 # set kube config
-if [[ "${KUBE_CONFIG_PATH}" == "" ]] || [[ "${KUBE_CONFIG_PATH}" == "''" ]] || [[ "${KUBE_CONFIG_PATH}" == "None" ]]; then
+if [[ ! -f $KUBE_CONFIG_FILE ]] && ([[ "${KUBE_CONFIG_PATH}" == "" ]] || [[ "${KUBE_CONFIG_PATH}" == "''" ]] || [[ "${KUBE_CONFIG_PATH}" == "None" ]]); then
     if [[ "${FETCH_KUBECONFIG}" == "True" ]]; then
         if [[ "${CLUSTER_NAME}" == "" ]] || [[ "${CLUSTER_NAME}" == "''" ]] || [[ "${CLUSTER_NAME}" == "None" ]]; then
             >&2 echo "{\"error\":\"CLUSTER_NAME config is required.Exiting...\"}"
@@ -58,6 +58,9 @@ else
         KUBE_CONFIG_FILE="$KUBE_CONFIG_PATH"
         KUBECONFIG="$KUBE_CONFIG_FILE"
         export KUBECONFIG=$KUBECONFIG:$KUBE_CONFIG_FILE
+    elif [[ -f "$KUBE_CONFIG_FILE" ]]; then
+        echo "KUBE_CONFIG_FILE ($KUBE_CONFIG_FILE) exists."
+        export KUBECONFIG="$KUBE_CONFIG_FILE"
     else
         >&2 echo "{\"error\":\"kubeconfig path variable wrong in bitops.config.yaml.Exiting...\"}"
         exit 1
