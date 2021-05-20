@@ -63,13 +63,6 @@ Specify inventory host path or comma separated host list.
 Only run plays and tasks whose tags do not match these values.
 
 -------------------
-### skip-tags
-* **BitOps Property:** `skip-tags`
-* **Environment Variable:** `BITOPS_ANSIBLE_SKIP_TAGS`
-
-only run plays and tasks whose tags do not match these values
-
--------------------
 ### tags
 * **BitOps Property:** `tags`
 * **Environment Variable:** `BITOPS_ANSIBLE_TAGS`
