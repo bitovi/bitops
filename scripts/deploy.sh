@@ -173,4 +173,5 @@ if [ -d "$ENVROOT/cloudformation" ]; then
   fi
 fi
 
-
+# Run plugins
+python $SCRIPTS_DIR/plugins/deploy.py
