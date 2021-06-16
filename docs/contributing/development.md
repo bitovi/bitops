@@ -14,7 +14,7 @@ When contributing to BitOps, please consider some of the following basic guideli
 
 To submit changes we require that all contributions first have a GitHub issue created where submissions can be discussed and visible to all Contributors and Maintainers.
 
-We require that you have signed the [Developer Certificate of Origin (DCO)](DCO.md) stating that the code being submitted is owned wholly by you.
+By contributing, you agree to the [Developer Certificate of Origin (DCO)](DCO.md) which states that the code being submitted is owned wholly by you.
 
 Contributors and Maintainers are expected to treat other community members with courtesy and respect, be willing and able to accept constructive criticism, and strive for understanding of other's viewpoints in all community channels.
 
@@ -46,7 +46,7 @@ docker build bitops --tag bitovi/bitops:ansible-feature
 
 You can now execute your modified version of BitOps locally to test your changes.
 
-For example, to test your new `ansible-feature` version of BitOps with an Operations Repo named `ansible-operations-repo` containing an Ansible playbook and other data:
+For example, to test your new `ansible-feature` version of BitOps with an Operations Repo environment named `ansible-operations-repo` containing an Ansible playbook and other data:
 
 ```
 export AWS_ACCESS_KEY_ID=ABCDEF012345
@@ -66,7 +66,7 @@ bitovi/bitops:ansible-feature
 
 ## Understanding Bitops
 
-BitOps has several packages and environmental variables readily available which make working with BitOps easy:
+BitOps has several packages and environment variables readily available which make working with BitOps easy:
 
 ### Standard Bitops Environmental Variables:
 
@@ -75,12 +75,13 @@ A `*` denotes a required variable.
 | Variable          | Value                             |  Notes     |
 |   :---            |   :---                            |    :---    |
 | `$BITOPS_DIR`     | `/opt/bitops`                     |   Within the container the default working directory for BitOps        |
-| `$ENVIRONMENT*`   | `YOUR_OPS_REPO`                   |   BitOps requires at least one Ops Repo to be specified at container execution.   |
-| `$ENVROOT`        | `$TEMPDIR/$ENVIRONMENT`           |   e.g `/tmp/tmp.aBcDe/YOUR_OPS_REPO`  |
-| `$PLUGIN`         | `YOUR_PLUGIN`                     |   e.g `ansible`, `terraform`, `your_custom_plugin` |
-| `$PLUGIN_DIR`     | `$ENVROOT/$PLUGIN`                |   e.g `/tmp/tmp.aBcDe/YOUR_OPS_REPO/$PLUGIN`  |
-| `$TEMPDIR`        | `/tmp/tmp.aBcDe`                  |   This is the randomly generated working dir for BitOps.  |
+| `$ENVIRONMENT`*   | `YOUR_OPS_REPO_ENVIRONMENT`                   |   BitOps requires at least one environment folder to be specified at container execution.   |
+| `$ENVROOT`        | `$TEMPDIR/$ENVIRONMENT`           |   e.g `/tmp/tmp.RANDOM/YOUR_OPS_REPO_ENVIRONMENT`  |
+| `$TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
+| `$ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$TEMPDIR` during execution)  |
 
+> For more information about the core variables, see
+> [scripts/deploy.sh](https://github.com/bitovi/bitops/blob/master/scripts/deploy.sh)
 
 ### Standard BitOps Packages and Libraries:
 
@@ -97,6 +98,9 @@ System Packages natively available in a running BitOps container:
 * unzip
 * wget
 
+> For the most up-to-date list, see
+> [Dockerfile](https://github.com/bitovi/bitops/blob/master/Dockerfile)
+
 Python packages natively available in BitOps:
 
 * pip
@@ -104,6 +108,9 @@ Python packages natively available in BitOps:
 * setuptools
 * shyaml
 * wheel
+
+> For the most up-to-date list, see
+> - [requirements.txt](https://github.com/bitovi/bitops/blob/master/requirements.txt)
 
 ### BitOps Code Structure:
 
@@ -121,7 +128,7 @@ This script downloads packages of required tools such as `aws-iam` to the BitOps
 This script orchestrates the order in which BitOps tools are deployed and configured. If you are adding a plugin that will require a specific ordering (e.g `before ansible but after terraform`), `deploy.sh` is where you can add in your plugin's entrypoint into the BitOps lifecycle.
 
 #### `bitops/scripts/deploy/`
-This directory contains plugin scripts which allow for changing how certain commands are executed for your plugin. Your entry point can remain the same in `deploy.sh` but you can customize how commands are executed, e.g `terraform-apply` vs. `terraform-destroy`.
+This directory contains scripts which common to all plugins.
 
 #### `bitops/scripts/bitops-config/`
 This directory contains base scripts that assist with parsing and converting the standard BitOps schema format. Check the included `README.md` within the bitops-config directory for examples.
@@ -129,8 +136,6 @@ This directory contains base scripts that assist with parsing and converting the
 ### Creating a New Plugin
 
 BitOps has additional [functionality being developed](https://github.com/bitovi/bitops/pull/55) to read any plugin folder for BitOps schema, even if it isn't one of the specified tools. BitOps will look for any BitOps schema within the plugin's directory as well as `before` and `after` deploy scripts for each. 
-
-Even if there doesn't exist any current BitOps execution platforms for the plugin in BitOps, the container will attempt to execute each schema in an agnostic way.
 
 ## Creating a PR
 
