@@ -48,4 +48,5 @@ RUN pip3 install -r requirements.txt
 RUN bash -x scripts/setup/install_tools.sh
 RUN python scripts/setup/install_plugins.py
 
-ENTRYPOINT [ "/opt/bitops/scripts/deploy.sh" ]
+# ENTRYPOINT [ "/opt/bitops/scripts/deploy.sh" ]
+CMD [ "ping", "8.8.8.8" ]

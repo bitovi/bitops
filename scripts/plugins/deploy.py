@@ -35,6 +35,12 @@ for plugin in plugins:
         capture_output=True)
     print(result.stdout)
 
+    # cloning repo
+    result = subprocess.run(['git', 'clone', plugin['source'], plugin_dir],
+      universal_newlines = True,
+      capture_output=True)
+    print("Result:", result)
+
     # Reconcile BitOps config using existing shell scripts
     print('Loading BitOps Config for ' + plugin_name)
     os.environ['ENV_FILE'] = plugin_dir + '/' + 'ENV_FILE'
@@ -59,7 +65,13 @@ for plugin in plugins:
         universal_newlines = True,
         capture_output=True)
     print(result.stdout)
-    
+
+    # Invoke plugin install script
+    result = subprocess.run(['bash', plugin_dir + '/install.sh'],
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
+
     # After hooks
     result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', environment_dir], 
         universal_newlines = True,
