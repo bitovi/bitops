@@ -1,11 +1,11 @@
 plugins:
   - name: kubectl
-    source: https://github.com/kamarja/bitops-kubectl-plugin
+    source: https://github.com/bitops-plugins/bitops-kubectl-plugin
   - name: ansible
-    source: https://github.com/kamarja/bitops-ansible-plugin
+    source: https://github.com/bitops-plugins/bitops-ansible-plugin
   - name: cloudformation
-    source: https://github.com/kamarja/bitops-cloudformation-plugin
+    source: https://github.com/bitops-plugins/bitops-cloudformation-plugin
   - name: helm
-    source: https://github.com/kamarja/bitops-helm-plugin
+    source: https://github.com/bitops-plugins/bitops-helm-plugin
   - name: terraform
-    source: https://github.com/kamarja/bitops-terraform-plugin
+    source: https://github.com/bitops-plugins/bitops-terraform-plugin
