@@ -21,8 +21,8 @@ if plugins is None:
 
 # Loop through plugins and git clone each
 for plugin in plugins:
-    if plugin['repo'] is not None:
-        git("clone", plugin['repo'], plugin_dir + plugin['name'])
+    if plugin['source'] is not None:
+        git("clone", plugin['source'], plugin_dir + plugin['name'])
     # install plugin dependencies (install.sh)
     install_script = plugin_dir + plugin['name'] + "/install.sh"
     if os.path.isfile(install_script):

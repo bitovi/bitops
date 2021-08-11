@@ -1,0 +1,5 @@
+FROM bitops-core
+
+ENTRYPOINT [ "/opt/bitops/scripts/plugins/deploy.py" ]
+# CMD [ "ping", "8.8.8.8" ]
+
