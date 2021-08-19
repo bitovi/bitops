@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-export BITOPS_DIR="/opt/bitops"
-export SCRIPTS_DIR="$BITOPS_DIR/scripts"
+if [ -z "$BITOPS_DIR" ];then
+  echo "Using default BitOps Directory"
+  export BITOPS_DIR="/opt/bitops"
+fi
+
+if [ -z "$SCRIPTS_DIR" ];then
+  echo "Using default BitOps Script Directory"
+  export SCRIPTS_DIR="/opt/bitops"
+fi
 
 value="$1"
 key_type="$2"
