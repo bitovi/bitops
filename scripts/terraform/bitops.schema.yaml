@@ -12,6 +12,13 @@ terraform:
           type: string
           parameter: target
           export_env: TF_TARGET
+        backend-config:
+          type: selection-list
+          parameter: cli-flag-type
+          selection-list: 
+            - "-"
+            - "--"
+          
     options:
       type: object
       properties:

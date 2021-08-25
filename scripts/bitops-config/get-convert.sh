@@ -19,6 +19,8 @@ terminal="$5"
 required="$6"
 export_env="$7"
 default="$8"
+schema_path="$9"
+schema_value_path="${10}"
 
 if [ -n "$DEBUG" ]; then
   echo "get-convert.sh"
@@ -27,6 +29,8 @@ if [ -n "$DEBUG" ]; then
   echo "  key_type: $key_type"
   echo "  cli_flag: $cli_flag"
   echo "  terminal: $terminal"
+  echo "  schema_path: $schema_path"
+  echo "  schema_value_path: $schema_value_path"
 fi
 
 on_exit () {
@@ -40,7 +44,7 @@ trap '{ on_exit; }' EXIT
 
 v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$config_file" "$key" "$default")"
 
-OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/convert.sh" "$v" "$key_type" "$cli_flag" "$terminal")"
+OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/convert.sh" "$v" "$key_type" "$cli_flag" "$terminal" "$schema_path" "$schema_value_path" )"
 
 if [ -n "$export_env" ] && [ -n "$ENV_FILE" ] && [ -n "$v" ]; then
   echo "export ${export_env}='$v'" >> "$ENV_FILE"

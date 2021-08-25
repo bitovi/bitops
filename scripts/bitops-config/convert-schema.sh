@@ -65,9 +65,6 @@ function build_keys_list(){
 }
 
 KEYS_LIST="$(build_keys_list $ROOT_KEY)"
-# TODO: DELETE
-# build_keys_list "$ROOT_KEY" "$ROOT_KEY_SCHEMA"
-
 echo "Keys List: [$KEYS_LIST]"
 
 script_options=""
@@ -76,12 +73,12 @@ while IFS= read -r value; do
     continue
   fi
 
-  echo "value: [$value]"
   IFS=',' read -r -a array <<< "$value"
   full_value_path="${array[0]}"
   full_value_path_schema="${array[1]}"
-    echo "array0: [${array[0]}]"
-    echo "array1: [${array[0]}]"
+
+  echo "full_value_path=$full_value_path"
+  echo "full_value_path_schema=$full_value_path_schema"
 
   type="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.type")"
   parameter="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.parameter")"
@@ -90,7 +87,7 @@ while IFS= read -r value; do
   export_env="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.export_env")"
   default="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.default")"
 
-  if [ -z "$DEBUG" ]; then
+  if [ -n "$DEBUG" ]; then
     echo "$full_value_path"
     echo "  type: $type"
     echo "  parameter: $parameter"
@@ -100,18 +97,14 @@ while IFS= read -r value; do
     echo "  default: $default"
     echo "  script_option: $script_option"
   fi
-
-  script_option="$($SCRIPTS_DIR/bitops-config/get-convert.sh $BITOPS_CONFIG_FILE "$full_value_path" "$type" "$parameter" "$terminal" "$required" "$export_env" "$default")"
-
+  script_option="$($SCRIPTS_DIR/bitops-config/get-convert.sh $BITOPS_CONFIG_FILE "$full_value_path" "$type" "$parameter" "$terminal" "$required" "$export_env" "$default" "$SCHEMA_FILE" "$full_value_path_schema")"
   script_options="$script_options $script_option"
 done <<< "$KEYS_LIST"
 
-
 if [ -n "$DEBUG" ]; then
-  echo "script_options:"
+  #echo "script_options: [$script_options]"
+  echo "Done"
 fi
-
-echo "$script_options"
 
 if [ -z "$ENV_FILE" ]; then
   echo "env var not set: ENV_FILE
