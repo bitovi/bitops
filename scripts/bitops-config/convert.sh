@@ -15,10 +15,8 @@ value="$1"
 key_type="$2"
 cli_flag="$3"
 terminal="$4"
-schema_path="$5"
-schema_value_path="$6"
 
-if [ -n "$DEBUG" ]; then
+if [ -n "$DEEP_DEBUG" ]; then
     echo "convert.sh"
     echo "  value: $value"
     echo "  key_type: $key_type"

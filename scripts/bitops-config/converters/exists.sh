@@ -5,7 +5,7 @@ value="$1"
 cli_flag="$2"
 terminal="$3"
 
-if [ -n "$DEBUG" ]; then
+if [ -n "$DEEP_DEBUG" ]; then
     echo "converters/exists.sh"
     echo "  value: $value"
     echo "  cli_flag: $cli_flag"
@@ -15,7 +15,7 @@ fi
 if [ -z "$value" ] || [ "$value" == "" ]; then
     OUTPUT=""
 else
-    OUTPUT="--${cli_flag}"
+    OUTPUT="${cli_flag}"
 fi
 
 echo "$OUTPUT"

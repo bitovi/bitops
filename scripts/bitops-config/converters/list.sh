@@ -12,7 +12,7 @@ do
     if [[ $stringval == "" ]] || [[ $stringval == " " ]]; then
         setval=""
     else
-        setval=$"--${cli_flag}$stringval"
+        setval=$"${cli_flag}$stringval"
         setval=${setval%$'\n'}
         OUTPUT=$OUTPUT$setval$space
     fi

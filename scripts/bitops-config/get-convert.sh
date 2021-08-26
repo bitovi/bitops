@@ -19,18 +19,16 @@ terminal="$5"
 required="$6"
 export_env="$7"
 default="$8"
-schema_path="$9"
-schema_value_path="${10}"
+dash_type="$9"
 
-if [ -n "$DEBUG" ]; then
+if [ -n "$DEEP_DEBUG" ]; then
   echo "get-convert.sh"
   echo "  config_file: $config_file"
   echo "  key: $key"
   echo "  key_type: $key_type"
   echo "  cli_flag: $cli_flag"
   echo "  terminal: $terminal"
-  echo "  schema_path: $schema_path"
-  echo "  schema_value_path: $schema_value_path"
+  echo "  dash_type: $dash_type"
 fi
 
 on_exit () {
@@ -57,4 +55,9 @@ if [ -n "$required" ] && [ -z "$v" ]; then
 fi
 
 
-echo "$OUTPUT"
+# Default to single dash
+if [ -z "$dash_type" ] && [ "$OUTPUT" != "" ] && [ "$OUTPUT" != " " ] && [ -n "$OUTPUT" ]; then
+  dash_type="-"
+fi
+
+echo "$dash_type$OUTPUT"

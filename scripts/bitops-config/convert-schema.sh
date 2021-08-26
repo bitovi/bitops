@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # convert-schema.sh --> get-convert --> get.sh --> shyaml
-#                                 | --> convert.sh --> converters/
+#                                 | --> convert.sh --> converters/ (converter is choosen by the schema.type, defaults to string)                   
 
 set -e
 
@@ -11,11 +11,8 @@ fi
 
 if [ -z "$SCRIPTS_DIR" ];then
   echo "Using default BitOps Script Directory"
-  export SCRIPTS_DIR="/opt/bitops"
+  export SCRIPTS_DIR="/opt/bitops/scripts"
 fi
-
-#export BITOPS_DIR="/opt/bitops"
-#export SCRIPTS_DIR="$BITOPS_DIR/scripts"
 
 SCHEMA_FILE="$1"
 BITOPS_CONFIG_FILE="$2"
@@ -77,8 +74,10 @@ while IFS= read -r value; do
   full_value_path="${array[0]}"
   full_value_path_schema="${array[1]}"
 
-  echo "full_value_path=$full_value_path"
-  echo "full_value_path_schema=$full_value_path_schema"
+  if [ -n "$DEEP_DEBUG" ]; then
+    echo "full_value_path=$full_value_path"
+    echo "full_value_path_schema=$full_value_path_schema"
+  fi 
 
   type="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.type")"
   parameter="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.parameter")"
@@ -86,8 +85,9 @@ while IFS= read -r value; do
   required="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.required")"
   export_env="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.export_env")"
   default="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.default")"
+  dash_type="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.dash_type")"
 
-  if [ -n "$DEBUG" ]; then
+  if [ -n "$DEEP_DEBUG" ]; then
     echo "$full_value_path"
     echo "  type: $type"
     echo "  parameter: $parameter"
@@ -95,14 +95,15 @@ while IFS= read -r value; do
     echo "  required: $required"
     echo "  export_env: $export_env"
     echo "  default: $default"
-    echo "  script_option: $script_option"
+    echo "  dash_type: $dash_type"
   fi
-  script_option="$($SCRIPTS_DIR/bitops-config/get-convert.sh $BITOPS_CONFIG_FILE "$full_value_path" "$type" "$parameter" "$terminal" "$required" "$export_env" "$default" "$SCHEMA_FILE" "$full_value_path_schema")"
+
+  script_option="$($SCRIPTS_DIR/bitops-config/get-convert.sh $BITOPS_CONFIG_FILE "$full_value_path" "$type" "$parameter" "$terminal" "$required" "$export_env" "$default" "$dash_type" )"
   script_options="$script_options $script_option"
 done <<< "$KEYS_LIST"
 
 if [ -n "$DEBUG" ]; then
-  #echo "script_options: [$script_options]"
+  echo "script_options: [$script_options]"
   echo "Done"
 fi
 
