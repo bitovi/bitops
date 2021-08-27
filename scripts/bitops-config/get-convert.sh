@@ -60,4 +60,12 @@ if [ -z "$dash_type" ] && [ "$OUTPUT" != "" ] && [ "$OUTPUT" != " " ] && [ -n "$
   dash_type="--"
 fi
 
+
+#echo "OUTPUT: [$OUTPUT]"
+if [ "$OUTPUT" == "" ] || [ "$OUTPUT" == " " ] || [ -z "$OUTPUT" ]; then
+  # Ignoring empty return values
+  #echo "OUTPUT: [$OUTPUT]"
+  OUTPUT=""
+fi
+
 echo "$dash_type$OUTPUT"

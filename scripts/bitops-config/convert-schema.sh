@@ -99,7 +99,11 @@ while IFS= read -r value; do
   fi
 
   script_option="$($SCRIPTS_DIR/bitops-config/get-convert.sh $BITOPS_CONFIG_FILE "$full_value_path" "$type" "$parameter" "$terminal" "$required" "$export_env" "$default" "$dash_type" )"
-  script_options="$script_options $script_option"
+  
+  if [ -n "$script_option" ]; then
+    script_options="$script_options $script_option"
+  fi
+  #script_options="$script_options $script_option"
 done <<< "$KEYS_LIST"
 
 if [ -n "$DEBUG" ]; then
