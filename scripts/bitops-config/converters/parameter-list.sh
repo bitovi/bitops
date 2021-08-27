@@ -26,7 +26,7 @@ OUTPUT=
 for i in "${values_array[@]}"
 do
     # <dashes><schema_parameter><config value>
-    OUTPUT="$(echo "$dash_type$cli_flag=\"${i}\"") $OUTPUT"
+    OUTPUT="$OUTPUT $(echo "$dash_type$cli_flag=\"${i}\"")"
 done
 # OUTPUT NEEDS TO BE: backend-config="KEY1=VALUE1" backend-config="KEY2=VALUE2"
 # echo $value | tr "\n" " " | tr "\- " " " | xargs

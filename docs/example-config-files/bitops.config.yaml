@@ -3,6 +3,10 @@ helm:
     backend-config:
       - KEY1=value
       - KEY2=value
+      - KEY3=value
+      - KEY4=value
+      - KEY5=value
+      - KEY6=value
     namespace: bitops
     debug: false
     atomic: true
