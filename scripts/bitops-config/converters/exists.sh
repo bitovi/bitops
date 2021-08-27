@@ -4,6 +4,7 @@ set -e
 value="$1"
 cli_flag="$2"
 terminal="$3"
+dash_type="$4"
 
 if [ -n "$DEEP_DEBUG" ]; then
     echo "converters/exists.sh"
@@ -18,5 +19,5 @@ else
     OUTPUT="${cli_flag}"
 fi
 
-echo "$OUTPUT"
+echo "$dash_type$OUTPUT"
 

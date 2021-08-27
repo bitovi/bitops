@@ -40,9 +40,11 @@ on_exit () {
 }
 trap '{ on_exit; }' EXIT
 
+# Gets value within the CONFIG FILE ($key would = helm.cli.namespace as an example)
 v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$config_file" "$key" "$default")"
 
-OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/convert.sh" "$v" "$key_type" "$cli_flag" "$terminal" "$schema_path" "$schema_value_path" )"
+# Convert incoming values (from config file) into normalized CLI options
+OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/convert.sh" "$v" "$key_type" "$cli_flag" "$terminal" "$dash_type" )"
 
 if [ -n "$export_env" ] && [ -n "$ENV_FILE" ] && [ -n "$v" ]; then
   echo "export ${export_env}='$v'" >> "$ENV_FILE"
@@ -54,18 +56,9 @@ if [ -n "$required" ] && [ -z "$v" ]; then
   exit 1
 fi
 
-
-# Default to single dash
-if [ -z "$dash_type" ] && [ "$OUTPUT" != "" ] && [ "$OUTPUT" != " " ] && [ -n "$OUTPUT" ]; then
-  dash_type="--"
-fi
-
-
-#echo "OUTPUT: [$OUTPUT]"
-if [ "$OUTPUT" == "" ] || [ "$OUTPUT" == " " ] || [ -z "$OUTPUT" ]; then
+if [ "$OUTPUT" == "" ] || [ "$OUTPUT" == " " ] || [ -z "$OUTPUT" ] || [ "$OUTPUT" == "$dash_type" ];  then
   # Ignoring empty return values
-  #echo "OUTPUT: [$OUTPUT]"
   OUTPUT=""
 fi
 
-echo "$dash_type$OUTPUT"
+echo "$OUTPUT"

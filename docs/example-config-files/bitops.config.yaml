@@ -1,0 +1,14 @@
+helm:
+  cli:
+    backend-config:
+      - KEY1=value
+      - KEY2=value
+    namespace: bitops
+    debug: false
+    atomic: true
+  options:
+      release-name: bitops-eks
+      kubeconfig:
+        fetch:
+          enabled: true
+          cluster-name: bitops-eks

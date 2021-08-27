@@ -4,6 +4,7 @@ set -e
 value="$1"
 cli_flag="$2"
 terminal="$3"
+dash_type="$4"
 space=" "
 
 value=${value%$'\n'}
@@ -18,5 +19,5 @@ do
     fi
 done
 
-echo "$OUTPUT"
+echo "$dash_type$OUTPUT"
 

@@ -87,6 +87,11 @@ while IFS= read -r value; do
   default="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.default")"
   dash_type="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.dash_type")"
 
+  # Default to single dash
+  if [ -z "$dash_type" ]; then
+    dash_type="--"
+  fi
+
   if [ -n "$DEEP_DEBUG" ]; then
     echo "$full_value_path"
     echo "  type: $type"
@@ -99,16 +104,14 @@ while IFS= read -r value; do
   fi
 
   script_option="$($SCRIPTS_DIR/bitops-config/get-convert.sh $BITOPS_CONFIG_FILE "$full_value_path" "$type" "$parameter" "$terminal" "$required" "$export_env" "$default" "$dash_type" )"
-  
+
   if [ -n "$script_option" ]; then
     script_options="$script_options $script_option"
   fi
-  #script_options="$script_options $script_option"
 done <<< "$KEYS_LIST"
 
 if [ -n "$DEBUG" ]; then
   echo "script_options: [$script_options]"
-  echo "Done"
 fi
 
 if [ -z "$ENV_FILE" ]; then

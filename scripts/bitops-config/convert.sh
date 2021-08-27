@@ -15,6 +15,7 @@ value="$1"
 key_type="$2"
 cli_flag="$3"
 terminal="$4"
+dash_type="$5"
 
 if [ -n "$DEEP_DEBUG" ]; then
     echo "convert.sh"
@@ -22,7 +23,7 @@ if [ -n "$DEEP_DEBUG" ]; then
     echo "  key_type: $key_type"
     echo "  cli_flag: $cli_flag"
     echo "  terminal: $terminal"
-    echo "  schema_path: $schema_path"
+    echo "  dash_type: $dash_type"
 fi
 
 converter_script="$SCRIPTS_DIR/bitops-config/converters/${key_type}.sh"
@@ -33,13 +34,11 @@ if [ -z "$cli_flag" ] || [ -z "$value" ]; then
 fi
 
 if [ -f "$converter_script" ]; then
-  if [ "$key_type" == "selection-list" ]; then
-    OUTPUT="$(bash "$converter_script" "$value" "$cli_flag" "$terminal" "$schema_path" "$schema_value_path"  || exit)"
-  else
-    OUTPUT="$(bash "$converter_script" "$value" "$cli_flag" "$terminal" || exit)"
-  fi
+
+    OUTPUT="$(bash "$converter_script" "$value" "$cli_flag" "$terminal" "$dash_type" || exit)"
+  
 else
-    OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/converters/string.sh" "$value" "$cli_flag" "$terminal" || exit)"
+    OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/converters/string.sh" "$value" "$cli_flag" "$terminal" "$dash_type" || exit)"
 fi
 
 echo "$OUTPUT"

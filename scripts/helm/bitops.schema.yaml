@@ -9,11 +9,13 @@ helm:
           parameter: namespace
           export_env: NAMESPACE
           required: true
+          dash_type: '--'
         timeout:
           type: string
           parameter: timeout
           export_env: TIMEOUT
           default: "500s"
+          dash_type: "---"
         set:
           type: list
           parameter: set
@@ -25,12 +27,16 @@ helm:
         atomic:
           type: boolean
           parameter: atomic
+          dash_type: "-"
         force:
           type: boolean
           parameter: force
         dry-run:
           type: boolean
           parameter: dry-run
+        backend-config:
+          type: parameter-list
+          parameter: backend-config
     options:
       type: object
       properties:

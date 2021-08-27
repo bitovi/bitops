@@ -47,6 +47,12 @@ nested:
   foo: true
 ```
 
+### Sample local scripts
+```
+export DEBUG=true; export DEEP_DEBUG=; export BITOPS_DIR=/Users/Phil/Desktop/BitOps/bitops; export SCRIPTS_DIR=$BITOPS_DIR/scripts; export SCHEMA_FILE=$SCRIPTS_DIR/helm/bitops.schema.yaml; export BITOPS_CONFIG_FILE=$BITOPS_DIR/bitops.config.yaml; /Users/Phil/Desktop/BitOps/bitops/scripts/bitops-config/convert-schema.sh $SCHEMA_FILE $BITOPS_CONFIG_FILE
+```
+
+
 ### Sample convert schema
 ```
 docker run --rm --name bitops-local \
