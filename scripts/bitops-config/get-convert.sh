@@ -48,7 +48,6 @@ OUTPUT="$(bash "$SCRIPTS_DIR/bitops-config/convert.sh" "$v" "$key_type" "$cli_fl
 
 if [ -n "$export_env" ] && [ -n "$ENV_FILE" ] && [ -n "$v" ]; then
   echo "export ${export_env}='$v'" >> "$ENV_FILE"
-  # echo "${export_env}='$v'" >> $ENV_FILE
 fi
 
 if [ -n "$required" ] && [ -z "$v" ]; then
