@@ -57,7 +57,7 @@ fi
 
 # Default to single dash
 if [ -z "$dash_type" ] && [ "$OUTPUT" != "" ] && [ "$OUTPUT" != " " ] && [ -n "$OUTPUT" ]; then
-  dash_type="-"
+  dash_type="--"
 fi
 
 echo "$dash_type$OUTPUT"
