@@ -13,11 +13,9 @@ terraform:
           parameter: target
           export_env: TF_TARGET
         backend-config:
-          type: selection-list
-          parameter: cli-flag-type
-          selection-list: 
-            - "-"
-            - "--"
+          type: parameter-list
+          parameter: backend-config
+          dash_type: "-"
           
     options:
       type: object
