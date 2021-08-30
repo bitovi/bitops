@@ -61,6 +61,9 @@ function build_keys_list(){
   done <<< "$keys"
 }
 
+# OLD USAGE
+# build_keys_list "$ROOT_KEY" "$ROOT_KEY_SCHEMA"
+# This has been changed to the line below
 KEYS_LIST="$(build_keys_list $ROOT_KEY)"
 echo "Keys List: [$KEYS_LIST]"
 
@@ -87,7 +90,7 @@ while IFS= read -r value; do
   default="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.default")"
   dash_type="$($SCRIPTS_DIR/bitops-config/get.sh $SCHEMA_FILE "${full_value_path_schema}.dash_type")"
 
-  # Default to single dash
+  # Default to double dash
   if [ -z "$dash_type" ]; then
     dash_type="--"
   fi
