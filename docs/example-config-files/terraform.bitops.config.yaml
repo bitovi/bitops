@@ -1,0 +1,9 @@
+terraform:
+    cli: 
+      backend-config:
+        - KEY1=value
+        - KEY2=value
+    options:
+        command: apply
+        version: "0.13.2"
+        fetch-kubeconfig: false

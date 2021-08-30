@@ -1,8 +1,5 @@
 helm:
   cli:
-    backend-config:
-      - KEY1=value
-      - KEY2=value
     namespace: bitops
     debug: false
     atomic: true
