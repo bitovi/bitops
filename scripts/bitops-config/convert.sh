@@ -8,7 +8,7 @@ fi
 
 if [ -z "$SCRIPTS_DIR" ];then
   echo "Using default BitOps Script Directory"
-  export SCRIPTS_DIR="/opt/bitops"
+  export SCRIPTS_DIR="/opt/bitops/scripts"
 fi
 
 value="$1"
