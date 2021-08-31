@@ -16,17 +16,17 @@ environment:
 
 # Options are: AWS and GCP
 cloud_platform:
-  - gcp:
+  gcp:
     name: gcp
-    enabled: false
+    enabled: true
     project_id: zinbabel
     region: us-east-2
     credentials: some-gcp-role
-  - aws:
+  aws:
     name: aws
-    enabled: true
+    enabled: false
     region: us-east-2
-  - az:
+  az:
     name: az
     enabled: false
     region: us-east-2

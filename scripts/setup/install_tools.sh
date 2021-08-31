@@ -15,6 +15,9 @@ export CURRENT_ENVIRONMENT=$(cat build.config.yaml | shyaml get-value environmen
 mkdir -p /opt/download
 cd /opt/download
 
+# Refresh plugins directory
+rm -rf /opt/bitops/scripts/plugins/bitops-*-plugin
+
 function install_terraform() {
     while IFS='' read -r version; do
         TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${version}/terraform_${version}_linux_amd64.zip"
@@ -52,6 +55,31 @@ function install_helm() {
 }
 function install_helm_s3() {
     helm plugin install https://github.com/hypnoglow/helm-s3.git
+}
+
+function install_cloud_provider() {
+    AWS=$(shyaml get-value cloud_platform.aws.enabled < ./bitops.config.default.yaml | tr '[:upper:]' '[:lower:]')
+    AZURE=$(shyaml get-value cloud_platform.az.enabled < ./bitops.config.default.yaml | tr '[:upper:]' '[:lower:]')
+    GCP=$(shyaml get-value cloud_platform.gcp.enabled < ./bitops.config.default.yaml | tr '[:upper:]' '[:lower:]')
+
+    if [ "$AWS" = true ]; then
+      echo "AWS Cloud Provider."
+      pip install awscli==1.17.7
+      /bin/bash $SCRIPTS_DIR/aws/setup.sh
+
+    elif [ "$AZURE" = true ]; then
+      echo "AZURE Cloud Provider."
+      curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      /bin/bash $SCRIPTS_DIR/azure-setup.sh
+
+    elif [ "$GCP" = true ]; then
+      echo "GCP Cloud Provider."
+      /bin/bash $SCRIPTS_DIR/gcp-setup.sh
+      
+    else
+      echo "Unable to determine Cloud Provider."
+      exit 1
+    fi 
 }
 
 install_terraform
