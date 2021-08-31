@@ -1,5 +1,7 @@
 FROM bitops-core
-
-ENTRYPOINT [ "/opt/bitops/scripts/plugins/deploy.py" ]
-# CMD [ "ping", "8.8.8.8" ]
+WORKDIR /opt/bitops
+COPY . .
+RUN touch /opt/bitops/scripts/plugins/aws/ENVFILE
+ENTRYPOINT [ "/opt/bitops/scripts/plugins/deploy2.sh" ]
+#CMD [ "ping", "8.8.8.8" ]
 
