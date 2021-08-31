@@ -20,12 +20,14 @@ ROOT_KEY="$3"
 ROOT_KEY_SCHEMA="$4"
 KEYS_LIST=""
 
-echo "BITOPS DIR SET TO: [$BITOPS_DIR]"
-echo "SCRIPTS DIR SET TO: [$SCRIPTS_DIR]"
-echo "SCHEMA_FILE DIR SET TO: [$SCHEMA_FILE]"
-echo "BITOPS_CONFIG_FILE DIR SET TO: [$BITOPS_CONFIG_FILE]"
-echo "ROOT_KEY DIR SET TO: [$ROOT_KEY]"
-echo "ROOT_KEY DIR SET TO: [$ROOT_KEY_SCHEMA]"
+if [ -n "$DEEP_DEBUG" ]; then
+  echo "BITOPS DIR SET TO: [$BITOPS_DIR]"
+  echo "SCRIPTS DIR SET TO: [$SCRIPTS_DIR]"
+  echo "SCHEMA_FILE DIR SET TO: [$SCHEMA_FILE]"
+  echo "BITOPS_CONFIG_FILE DIR SET TO: [$BITOPS_CONFIG_FILE]"
+  echo "ROOT_KEY DIR SET TO: [$ROOT_KEY]"
+  echo "ROOT_KEY DIR SET TO: [$ROOT_KEY_SCHEMA]"
+fi
 
 
 function get_schema_keys(){
@@ -65,7 +67,9 @@ function build_keys_list(){
 # build_keys_list "$ROOT_KEY" "$ROOT_KEY_SCHEMA"
 # This has been changed to the line below
 KEYS_LIST="$(build_keys_list $ROOT_KEY)"
-echo "Keys List: [$KEYS_LIST]"
+if [ -n "$DEEP_DEBUG" ]; then
+  echo "Keys List: [$KEYS_LIST]"
+fi
 
 script_options=""
 while IFS= read -r value; do
@@ -116,6 +120,8 @@ done <<< "$KEYS_LIST"
 if [ -n "$DEBUG" ]; then
   echo "script_options: [$script_options]"
 fi
+
+echo "$script_options"
 
 if [ -z "$ENV_FILE" ]; then
   echo "env var not set: ENV_FILE
