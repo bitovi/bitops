@@ -7,6 +7,9 @@ terraform:
     cli:
         var-file: my-vars.tfvars
         target: terraform.module.resource
+        backend-config:
+            - KEY1=foo
+            - KEY2=bar
     options:
         command: apply
         version: "0.13.2"
