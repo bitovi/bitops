@@ -30,6 +30,13 @@ terraform:
 * **default:** `""`
 
 -------------------
+### backend-config
+* **BitOps Property:** `backend-config`
+* **CLI Argument:** `--KEY1=foo --KEY2=bar`
+* **Environment Variable:** ``
+* **default:** `""`
+
+-------------------
 
 ## Options Configuration
 
