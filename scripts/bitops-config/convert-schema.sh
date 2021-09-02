@@ -14,19 +14,57 @@ if [ -z "$SCRIPTS_DIR" ];then
   export SCRIPTS_DIR="/opt/bitops/scripts"
 fi
 
+
+POSITIONAL=()
+ROOT_KEY=
+ROOT_KEY_SCEHMA=
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+    -r|--root-key)
+      ROOT_KEY=$2
+      shift # Pass over optional arguement
+      shift # Pass over optional arguement value
+      ;;
+      -rs|--root-key-schema)
+      ROOT_KEY_SCHEMA=$2
+      shift # Pass over optional arguement
+      shift # Pass over optional arguement value
+      ;;
+    *)
+      POSITIONAL+=("$1")
+      shift # Add Normal positionals back into place
+      ;;
+  esac
+done
+
+
+set -- "${POSITIONAL[@]}" # Restore positional arguements
+
+# -- #
 SCHEMA_FILE="$1"
 BITOPS_CONFIG_FILE="$2"
-ROOT_KEY="$3"
-ROOT_KEY_SCHEMA="$4"
+# -- #
+if [ -z "$ROOT_KEY" ];then
+  export ROOT_KEY="$3"
+fi
+# -- #
+if [ -z "$ROOT_KEY_SCHEMA" ];then
+  export ROOT_KEY_SCHEMA="$4"
+fi
+# -- #
+
+
 KEYS_LIST=""
 
 if [ -n "$DEEP_DEBUG" ]; then
-  echo "BITOPS DIR SET TO: [$BITOPS_DIR]"
-  echo "SCRIPTS DIR SET TO: [$SCRIPTS_DIR]"
-  echo "SCHEMA_FILE DIR SET TO: [$SCHEMA_FILE]"
-  echo "BITOPS_CONFIG_FILE DIR SET TO: [$BITOPS_CONFIG_FILE]"
-  echo "ROOT_KEY DIR SET TO: [$ROOT_KEY]"
-  echo "ROOT_KEY DIR SET TO: [$ROOT_KEY_SCHEMA]"
+  echo "BITOPS SET TO: [$BITOPS_DIR]"
+  echo "SCRIPTS SET TO: [$SCRIPTS_DIR]"
+  echo "SCHEMA_FILESET TO: [$SCHEMA_FILE]"
+  echo "BITOPS_CONFIG_FILE SET TO: [$BITOPS_CONFIG_FILE]"
+  echo "ROOT_KEY SET TO: [$ROOT_KEY]"
+  echo "ROOT_KEY_SCHEMA SET TO: [$ROOT_KEY_SCHEMA]"
 fi
 
 
@@ -40,6 +78,11 @@ function build_keys_list(){
   local rootkey="$1"
   local rootkey_schema="$2"
   local keys=""
+
+  echo "start [$rootkey][$rootkey_schema]"
+  if [ -z "$rootkey_schema" ];then
+    rootkey_schema=$ROOT_KEY_SCHEMA
+  fi
 
   keys="$(get_schema_keys ${rootkey_schema})"
 
@@ -58,7 +101,8 @@ function build_keys_list(){
     if [ "$type" == "object" ]; then
       build_keys_list "${full_value_path}" "${full_value_path_schema}.properties"
     else
-      echo "$full_value_path,$full_value_path_schema"
+      #echo "$full_value_path,$full_value_path_schema"
+      echo ""
     fi
   done <<< "$keys"
 }
@@ -70,6 +114,8 @@ KEYS_LIST="$(build_keys_list $ROOT_KEY)"
 if [ -n "$DEEP_DEBUG" ]; then
   echo "Keys List: [$KEYS_LIST]"
 fi
+
+exit 42
 
 script_options=""
 while IFS= read -r value; do
