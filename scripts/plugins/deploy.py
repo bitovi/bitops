@@ -1,90 +1,97 @@
-#!/usr/bin/env bash
-set -e
-if [ "$DEBUG" = true ]; then
-  set -x
-fi
+import yaml
+import os
+import subprocess
+import envbash
+from shutil import rmtree
 
-# Logging
-export ERROR='\033[0;31m'
-export SUCCESS='\033[0;32m'
-export WARN='\033[1;33m'
-export NC='\033[0m'
-export PATH=$PATH:/usr/local/bin
-export TIMEOUT="${WAIT_TIMEOUT:-600}"
+# Load plugin.config.yaml
+bitops_dir=os.environ['BITOPS_DIR']
+with open(bitops_dir+'/plugin.config.yaml', 'r') as stream:
+    try:
+        plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
+    except yaml.YAMLError as exc:
+        print(exc)
 
-###
-### Setup
-###
-echo "making a temporary directory"
-export TEMPDIR=$( mktemp -d )
-echo "TEMPDIR: $TEMPDIR"
+plugins_dir = bitops_dir + '/scripts/plugins/'
+operations_dir = os.environ['ENVROOT']
+timeout = 600
+if 'TIMEOUT' in os.environ.keys():
+    timeout = os.environ['TIMEOUT']
 
-###
-### Teardown
-###
-cleanup () {
-  # call all teardown scripts
-  /bin/bash $SCRIPTS_DIR/aws/teardown.sh
+print("TIMEOUT: ", timeout)
+plugin_dir = "/opt/bitops/scripts/plugins/"
+plugins = plugins_yml.get("plugins")
+if plugins is None:
+    quit()
+
+# Loop through plugins and invoke each
+for plugin in plugins:
+    plugin_name = plugin['name']
+
+    # Set ENV vars
+    plugin_dir = plugins_dir + plugin_name
+    os.environ['PLUGIN_DIR'] = plugin_dir
+    environment_dir = operations_dir + '/' + plugin_name
+    os.environ['ENVIRONMENT_DIR'] = environment_dir
+
+    # Before Hooks
+    result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
+
+    # try:
+    #     rmtree(plugin_dir + plugin['name'])
+    # except:
+    #     print("All clean. Cloning...")
+    # # cloning repo
+    # result = subprocess.run(['git', 'clone', plugin['source'], plugin_dir],
+    #   universal_newlines = True,
+    #   capture_output=True)
+    # print("Result:", result)
+
+    # Reconcile BitOps config using existing shell scripts
+    print('Loading BitOps Config for ' + plugin_name)
+    os.environ['ENV_FILE'] = plugin_dir + '/' + 'ENV_FILE'
+    bitops_schema = plugin_dir + '/' + 'bitops.schema.yaml'
+    bitops_config = environment_dir + '/' + 'bitops.config.yaml'
+    old_debug = os.environ['DEBUG'] 
+    os.environ['DEBUG'] = ''
+    cli_options = subprocess.run(['bash',os.environ['SCRIPTS_DIR']+'/bitops-config/convert-schema.sh', bitops_schema, bitops_config], 
+        universal_newlines = True,
+        capture_output=True)
+    os.environ['DEBUG'] = old_debug
+
+    # Set CLI_OTIONS
+    os.environ['CLI_OPTIONS'] = cli_options.stdout
+
+    # Source envfile
+    #envbash.load_envbash(os.environ['ENV_FILE'])
+
+    # Invoke Plugin
+    print('Calling ' + plugin_dir + '/deploy.sh')
+    # Wait for terraform to complete.
+    if plugin_name == 'terraform':
+        result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
+        result.wait(timeout = 600)
+        print(result.stdout)
+    else:
+        result = subprocess.run(['bash', plugin_dir + '/deploy.sh'], 
+            universal_newlines = True,
+            capture_output=True)
+
+    # Invoke plugin install script
+    result = subprocess.run(['bash', plugin_dir + '/install.sh'],
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
+
+    # After hooks
+    result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', environment_dir], 
+        universal_newlines = True,
+        capture_output=True)
+    print(result.stdout)
 
 
-  echo "cleaning up..."
-  local tmpdir=$1
-  echo $TEMPDIR
-
-  echo "removing temporary directory: $TEMPDIR"
-  rm -rf $TEMPDIR
-
-  printf "BitOps Completed.${NC}"
-}
-trap "{ cleanup $TEMPDIR; }" EXIT
 
 
-# Global vars
-export PATH=/root/.local/bin:$PATH
-export ENVROOT="$TEMPDIR/$ENVIRONMENT"
-export BITOPS_DIR="/opt/bitops"
-export SCRIPTS_DIR="$BITOPS_DIR/scripts"
-export KUBE_CONFIG_FILE="$TEMPDIR/.kube/config"
-export PLUGINS_DIR="$BITOPS_DIR/scripts/plugins"
-
-
-###
-### Global Validation
-###
-if [ -z "$ENVIRONMENT" ]; then
-  printf "${ERROR}environment variable (ENVIRONMENT) not set ${NC}"
-  exit 1
-fi
-if [ -z "$DEBUG" ]; then
-  echo "environment variable (DEBUG) not set"
-  export DEBUG=0
-fi
-
-
-
-# put everything in the temp directory
-if ! cp -rf /opt/bitops_deployment/. $TEMPDIR; then 
-  echo "failed to copy repo to: $TEMPDIR"
-else 
-  echo "Successfully Copied repo to $TEMPDIR "
-fi
-
-if [ -z "$DEFAULT_FOLDER_NAME" ]; then
-  DEFAULT_FOLDER_NAME="default"
-fi
-
-# ops repo paths
-export ROOT_DIR="$TEMPDIR"
-export ENVROOT="$ROOT_DIR/$ENVIRONMENT"
-export DEFAULT_ENVROOT="$ROOT_DIR/$DEFAULT_FOLDER_NAME"
-
-
-# Setup bashrc
-if [ ! -f !/.bashrc ]; then
-  echo "#!/usr/bin/env bash" > ~/.bashrc
-  echo "" >> ~/.bashrc
-fi
-echo "$PATH" >> ~/.bashrc
-
-# Run plugins
-python $SCRIPTS_DIR/plugins/deploy.py
