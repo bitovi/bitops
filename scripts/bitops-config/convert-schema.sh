@@ -16,8 +16,6 @@ fi
 
 
 POSITIONAL=()
-ROOT_KEY=
-ROOT_KEY_SCEHMA=
 while [[ $# -gt 0 ]]; do
   key="$1"
 
@@ -56,8 +54,6 @@ fi
 # -- #
 
 
-KEYS_LIST=""
-
 if [ -n "$DEEP_DEBUG" ]; then
   echo "BITOPS SET TO: [$BITOPS_DIR]"
   echo "SCRIPTS SET TO: [$SCRIPTS_DIR]"
@@ -67,6 +63,7 @@ if [ -n "$DEEP_DEBUG" ]; then
   echo "ROOT_KEY_SCHEMA SET TO: [$ROOT_KEY_SCHEMA]"
 fi
 
+KEYS_LIST=""
 
 function get_schema_keys(){
   rootkey="$1"
@@ -79,7 +76,6 @@ function build_keys_list(){
   local rootkey_schema="$2"
   local keys=""
 
-  echo "start [$rootkey][$rootkey_schema]"
   if [ -z "$rootkey_schema" ];then
     rootkey_schema=$ROOT_KEY_SCHEMA
   fi
@@ -101,8 +97,7 @@ function build_keys_list(){
     if [ "$type" == "object" ]; then
       build_keys_list "${full_value_path}" "${full_value_path_schema}.properties"
     else
-      #echo "$full_value_path,$full_value_path_schema"
-      echo ""
+      echo "$full_value_path,$full_value_path_schema"
     fi
   done <<< "$keys"
 }
@@ -114,8 +109,6 @@ KEYS_LIST="$(build_keys_list $ROOT_KEY)"
 if [ -n "$DEEP_DEBUG" ]; then
   echo "Keys List: [$KEYS_LIST]"
 fi
-
-exit 42
 
 script_options=""
 while IFS= read -r value; do
