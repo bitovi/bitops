@@ -12,6 +12,11 @@ terraform:
           type: string
           parameter: target
           export_env: TF_TARGET
+        backend-config:
+          type: parameter-list
+          parameter: backend-config
+          dash_type: "-"
+          
     options:
       type: object
       properties:

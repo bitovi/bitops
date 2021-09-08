@@ -7,6 +7,9 @@ terraform:
     cli:
         var-file: my-vars.tfvars
         target: terraform.module.resource
+        backend-config:
+            - KEY1=foo
+            - KEY2=bar
     options:
         command: apply
         version: "0.13.2"
@@ -27,6 +30,13 @@ terraform:
 * **BitOps Property:** `target`
 * **CLI Argument:** `--target`
 * **Environment Variable:** `TF_TARGET`
+* **default:** `""`
+
+-------------------
+### backend-config
+* **BitOps Property:** `backend-config`
+* **CLI Argument:** `--KEY1=foo --KEY2=bar`
+* **Environment Variable:** ``
 * **default:** `""`
 
 -------------------

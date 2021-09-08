@@ -47,6 +47,17 @@ nested:
   foo: true
 ```
 
+### Sample standalone scripts
+```
+export ENV_FILE=.env; \
+export DEBUG=true; \
+export DEEP_DEBUG=; \
+export BITOPS_DIR=$(pwd); \
+export SCRIPTS_DIR=$BITOPS_DIR/scripts; export SCHEMA_FILE=$SCRIPTS_DIR/terraform/bitops.schema.yaml; \
+export BITOPS_CONFIG_FILE=$BITOPS_DIR/docs/example-config-files/terraform.bitops.config.yaml; \
+$SCRIPTS_DIR/bitops-config/convert-schema.sh $SCHEMA_FILE $BITOPS_CONFIG_FILE
+```
+
 ### Sample convert schema
 ```
 docker run --rm --name bitops-local \

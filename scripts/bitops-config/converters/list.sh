@@ -4,6 +4,7 @@ set -e
 value="$1"
 cli_flag="$2"
 terminal="$3"
+dash_type="$4"
 space=" "
 
 value=${value%$'\n'}
@@ -12,11 +13,11 @@ do
     if [[ $stringval == "" ]] || [[ $stringval == " " ]]; then
         setval=""
     else
-        setval=$"--${cli_flag}$stringval"
+        setval=$"${cli_flag}$stringval"
         setval=${setval%$'\n'}
         OUTPUT=$OUTPUT$setval$space
     fi
 done
 
-echo "$OUTPUT"
+echo "$dash_type$OUTPUT"
 
