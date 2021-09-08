@@ -76,10 +76,6 @@ function build_keys_list(){
   local rootkey_schema="$2"
   local keys=""
 
-  #if [ -z "$rootkey_schema" ];then
-  #  rootkey_schema=$ROOT_KEY_SCHEMA
-  #fi
-
   keys="$(get_schema_keys ${rootkey_schema})"
 
   while IFS= read -r value; do
