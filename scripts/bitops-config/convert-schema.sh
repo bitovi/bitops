@@ -76,9 +76,9 @@ function build_keys_list(){
   local rootkey_schema="$2"
   local keys=""
 
-  if [ -z "$rootkey_schema" ];then
-    rootkey_schema=$ROOT_KEY_SCHEMA
-  fi
+  #if [ -z "$rootkey_schema" ];then
+  #  rootkey_schema=$ROOT_KEY_SCHEMA
+  #fi
 
   keys="$(get_schema_keys ${rootkey_schema})"
 
@@ -105,7 +105,7 @@ function build_keys_list(){
 # OLD USAGE
 # build_keys_list "$ROOT_KEY" "$ROOT_KEY_SCHEMA"
 # This has been changed to the line below
-KEYS_LIST="$(build_keys_list $ROOT_KEY)"
+KEYS_LIST="$(build_keys_list $ROOT_KEY $ROOT_KEY_SCHEMA)"
 if [ -n "$DEEP_DEBUG" ]; then
   echo "Keys List: [$KEYS_LIST]"
 fi
