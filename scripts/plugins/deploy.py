@@ -70,10 +70,11 @@ for plugin in plugins:
 
     # Invoke Plugin
     print('Calling ' + plugin_dir + '/deploy.sh')
-    # Wait for terraform to complete.
-    if plugin_name == 'terraform':
+    # Wait for processes to complete.
+    if plugin_name == 'terraform' or plugin_name == 'helm':
         result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
         result.wait(timeout = 600)
+        print("Result from command....")
         print(result.stdout)
     else:
         result = subprocess.run(['bash', plugin_dir + '/deploy.sh'], 
