@@ -16,6 +16,11 @@ terraform:
           type: parameter-list
           parameter: backend-config
           dash_type: "-"
+        init-upgrade:
+          type: boolean
+          parameter: upgrade
+          dash_type: '--'
+          default: false
           
     options:
       type: object

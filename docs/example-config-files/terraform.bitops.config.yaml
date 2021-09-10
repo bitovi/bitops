@@ -3,6 +3,7 @@ terraform:
       backend-config:
         - KEY1=foo
         - KEY2=bar
+      init-upgrade: false
     options:
         command: apply
         version: "0.13.2"
