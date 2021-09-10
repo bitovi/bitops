@@ -1,9 +1,9 @@
 terraform:
     cli: 
       backend-config:
-        - KEY1=foo
-        - KEY2=bar
-      init-upgrade: false
+        KEY1=foo
+        KEY2=bar
+      init-upgrade: true
     options:
         command: apply
         version: "0.13.2"
