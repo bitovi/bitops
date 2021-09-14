@@ -5,6 +5,7 @@ set -xe
 ####
 #### validation
 ####
+echo "REGISTRY_URL: ${REGISTRY_URL}"
 if [ -z "$REGISTRY_URL" ]; then
   >&2 echo "{\"script\":\"scripts/ci/publish.sh\", \"error\":\"REGISTRY_URL required\"}"
   exit 1
@@ -64,4 +65,5 @@ fi
 
 
 # push everything
+echo "REGISTRY_URL: ${REGISTRY_URL}"
 docker push ${REGISTRY_URL}
