@@ -13,4 +13,4 @@ fi
 ####
 #### docker build
 ####
-docker build -t ${BITOPS_DOCKER_IMAGE_NAME} .
+docker build -t ${BITOPS_DOCKER_IMAGE_NAME}:plugin .
