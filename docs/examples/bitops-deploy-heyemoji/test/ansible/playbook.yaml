@@ -1,0 +1,15 @@
+- hosts: heyemoji_blog_servers
+  become: true
+  vars_files:
+    - vars/default.yml
+  tasks:
+  - name: Include install
+    include_tasks: tasks/install.yml
+  - name: Include fetch
+    include_tasks: tasks/fetch.yml
+  - name: Include build
+    include_tasks: tasks/build.yml
+  - name: Include start
+    include_tasks: tasks/start.yml
+  - debug: 
+      msg: "Hello from Ansible!"

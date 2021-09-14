@@ -2,3 +2,6 @@
 .tar
 .gz
 credentials
+
+.DS_Store
+NOTES.md

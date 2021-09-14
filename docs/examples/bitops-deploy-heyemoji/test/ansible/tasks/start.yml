@@ -1,0 +1,20 @@
+- name: Create default containers
+  docker_container:
+    name: "{{ default_container_name }}{{ item }}"
+    image: "{{ default_container_image }}"
+    command: "{{ default_container_command }}"
+    exposed_ports: "{{ heyemoji_websocket_port }}"
+    env:
+      HEY_BOT_NAME:	"{{ heyemoji_bot_name }}"
+      HEY_DATABASE_PATH: "{{ heyemoji_database_path }}"
+      HEY_SLACK_TOKEN: "{{ heyemoji_slack_api_token }}"
+      HEY_SLACK_EMOJI:	"{{ heyemoji_slack_emoji }}"
+      HEY_SLACK_DAILY_CAP:	"{{ heyemoji_slack_daily_cap }}"
+      HEY_WEBSOCKET_PORT:	"{{ heyemoji_websocket_port }}"
+    # restart a container
+    # state: started
+  register: command_start_result
+  loop: "{{ range(0, create_containers, 1)|list }}"
+
+- debug:
+    var: command_start_result.0.stdout_lines
