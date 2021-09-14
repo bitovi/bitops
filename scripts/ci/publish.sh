@@ -35,7 +35,7 @@ fi
 #### set up tagging
 ####
 
-
+BITOPS_GIT_TAG=plugin
 # allow custom branching
 if [ -n "$BITOPS_DOCKER_IMAGE_PUBLISH_TAG" ]; then
   echo "{\"script\":\"scripts/ci/publish.sh\", \"tag\": \"${BITOPS_DOCKER_IMAGE_PUBLISH_TAG}\"}"
