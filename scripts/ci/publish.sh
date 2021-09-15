@@ -39,23 +39,23 @@ BITOPS_GIT_TAG=plugin
 # allow custom branching
 if [ -n "$BITOPS_DOCKER_IMAGE_PUBLISH_TAG" ]; then
   echo "{\"script\":\"scripts/ci/publish.sh\", \"tag\": \"${BITOPS_DOCKER_IMAGE_PUBLISH_TAG}\"}"
-  docker tag ${BITOPS_DOCKER_IMAGE_NAME}:plugin ${REGISTRY_URL}:${BITOPS_DOCKER_IMAGE_PUBLISH_TAG}
+  docker tag ${BITOPS_DOCKER_IMAGE_NAME}:latest ${REGISTRY_URL}:${BITOPS_DOCKER_IMAGE_PUBLISH_TAG}
 else
   # handle git tag
   if [ -n "$BITOPS_GIT_TAG" ]; then
     echo "{\"script\":\"scripts/ci/publish.sh\", \"tag\": \"${BITOPS_GIT_TAG}\"}"
-    docker tag ${BITOPS_DOCKER_IMAGE_NAME}:plugin ${REGISTRY_URL}:${BITOPS_GIT_TAG}
+    docker tag ${BITOPS_DOCKER_IMAGE_NAME}:latest ${REGISTRY_URL}:${BITOPS_GIT_TAG}
 
   # if master, tag latest
   elif [ "$BITOPS_GIT_BRANCH" == "$BITOPS_GIT_BASE_BRANCH" ]; then
     echo "{\"script\":\"scripts/ci/publish.sh\", \"tag\": \"${latest}\"}"
-    docker tag ${BITOPS_DOCKER_IMAGE_NAME}:plugin ${REGISTRY_URL}:plugin
+    docker tag ${BITOPS_DOCKER_IMAGE_NAME}:latest ${REGISTRY_URL}:${BITOPS_DOCKER_IMAGE_PUBLISH_TAG}
 
     
   # fall back to the sha
   elif [ -z "$BITOPS_DOCKER_IMAGE_PUBLISH_SKIP_SHA" ]; then
     echo "{\"script\":\"scripts/ci/publish.sh\", \"tag\": \"${BITOPS_GIT_SHA}\"}"
-    docker tag ${BITOPS_DOCKER_IMAGE_NAME}:plugin ${REGISTRY_URL}:${BITOPS_GIT_SHA}
+    docker tag ${BITOPS_DOCKER_IMAGE_NAME}:latest ${REGISTRY_URL}:${BITOPS_GIT_SHA}
   
   # don't tag anything
   else
