@@ -44,13 +44,14 @@ ln -s /usr/local/bin/terraform-$TERRAFORM_VERSION /usr/local/bin/terraform
 # always init first
 echo "Running terraform init"
 upgrade=""
-if [[ "$BITOPS_CONFIG_COMMAND" == *"--upgrade"* ]];then
+if [[ "$INIT_UPGRADE" == "True" ]];then
   upgrade="--upgrade"
 else
   echo "init upgrade not found in config. Skipping upgrade.."
 fi
 
 echo "terraform init -input=false $upgrade"
+exit 42
 
 if [ -n "$TERRAFORM_WORKSPACE" ]; then
   echo "Running Terraform Workspace"
