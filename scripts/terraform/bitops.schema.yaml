@@ -19,7 +19,6 @@ terraform:
         init-upgrade:
           type: boolean
           parameter: upgrade
-          dash_type: '--'
           default: false
           
     options:
