@@ -16,10 +16,6 @@ terraform:
           type: parameter-list
           parameter: backend-config
           dash_type: "-"
-        init-upgrade:
-          type: boolean
-          parameter: upgrade
-          default: false
           
     options:
       type: object
@@ -35,3 +31,7 @@ terraform:
         workspace:
           type: string
           export_env: TERRAFORM_WORKSPACE
+        init-upgrade:
+          type: boolean
+          export_env: INIT_UPGRADE
+          default: false
