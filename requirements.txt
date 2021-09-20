@@ -1,3 +1,4 @@
 shyaml
 pyyaml
 envbash
+pytest

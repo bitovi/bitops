@@ -1,13 +1,13 @@
 plugins:
   - name: aws
     source: https://github.com/bitops-plugins/bitops-aws-plugin
-  - name: terraform
-    source: https://github.com/bitops-plugins/bitops-terraform-plugin
-  - name: kubectl
-    source: https://github.com/bitops-plugins/bitops-kubectl-plugin
-  - name: helm
-    source: https://github.com/bitops-plugins/bitops-helm-plugin
-  - name: ansible
-    source: https://github.com/bitops-plugins/bitops-ansible-plugin
+  # - name: terraform
+  #   source: https://github.com/bitops-plugins/bitops-terraform-plugin
+  # - name: kubectl
+  #   source: https://github.com/bitops-plugins/bitops-kubectl-plugin
+  # - name: helm
+  #   source: https://github.com/bitops-plugins/bitops-helm-plugin
+  # - name: ansible
+  #   source: https://github.com/bitops-plugins/bitops-ansible-plugin
   - name: cloudformation
     source: https://github.com/bitops-plugins/bitops-cloudformation-plugin

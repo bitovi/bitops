@@ -71,7 +71,7 @@ for plugin in plugins:
     # Invoke Plugin
     print('Calling ' + plugin_dir + '/deploy.sh')
     # Wait for processes to complete.
-    if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible':
+    if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible' or plugin_name == 'cloudformation':
         result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
         result.wait(timeout = 600)
         print("Result from command....")
