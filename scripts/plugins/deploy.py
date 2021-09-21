@@ -40,15 +40,6 @@ for plugin in plugins:
         capture_output=True)
     print(result.stdout)
 
-    # try:
-    #     rmtree(plugin_dir + plugin['name'])
-    # except:
-    #     print("All clean. Cloning...")
-    # # cloning repo
-    # result = subprocess.run(['git', 'clone', plugin['source'], plugin_dir],
-    #   universal_newlines = True,
-    #   capture_output=True)
-    # print("Result:", result)
 
     # Reconcile BitOps config using existing shell scripts
     print('Loading BitOps Config for ' + plugin_name)

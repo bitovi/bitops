@@ -1,9 +1,6 @@
 FROM bitops-core
 WORKDIR /opt/bitops
 COPY . .
-#RUN touch /opt/bitops/scripts/plugins/helm/ENVFILE
-#RUN touch /opt/bitops/scripts/plugins/aws/ENVFILE
 RUN touch /opt/bitops/scripts/plugins/cloudformation/ENVFILE
 ENTRYPOINT [ "/opt/bitops/scripts/plugins/deploy2.sh" ]
-#CMD [ "ping", "8.8.8.8" ]
 

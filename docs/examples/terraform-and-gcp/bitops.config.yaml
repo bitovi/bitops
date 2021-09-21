@@ -1,0 +1,7 @@
+terraform:
+  cli:
+    var-file: my-vars.tfvars
+  options:
+    command: apply #destroy
+    version: "0.13.2"
+    workspace: gcp_tform
