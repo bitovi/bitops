@@ -70,11 +70,12 @@ function install_cloud_provider() {
     elif [ "$AZURE" = true ]; then
       echo "AZURE Cloud Provider."
       curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-      /bin/bash $SCRIPTS_DIR/azure-setup.sh
 
     elif [ "$GCP" = true ]; then
       echo "GCP Cloud Provider."
-      /bin/bash $SCRIPTS_DIR/gcp-setup.sh
+      curl -O https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz
+      tar zxvf google-cloud-sdk.tar.gz && ./google-cloud-sdk/install.sh --usage-reporting=false --path-update=true
+      cp -r google-cloud-sdk/bin/* /usr/local/bin/
       
     else
       echo "Unable to determine Cloud Provider."
