@@ -43,3 +43,17 @@ cloudformation:
                 template-param-file:
                   type: string
                   export_env: CFN_TEMPLATE_PARAMS_FILENAME
+        cfn-merge-parameters:
+          type: object
+          properties:
+            parameters:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  default: false
+                  export_env: CFN_MERGE_PARAMETER
+                directory:
+                  type: string
+                  export_env: CFN_MERGE_DIRECTORY
+                  default: parameters

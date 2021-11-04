@@ -53,6 +53,17 @@ fi
 echo "cd cloudformation Root: $CLOUDFORMATION_ROOT"
 cd $CLOUDFORMATION_ROOT
 
+# Combine parameters
+if [[ "$CFN_MERGE_PARAMETER" == "true" ]] || [[ "$CFN_MERGE_PARAMETER" == "True" ]]; then
+  echo "Combining json files in $CFN_MERGE_DIRECTORY folder"
+  # All files in the $CFN_MERGE_DIRECTORY will be merged into the $CFN_TEMPLATE_PARAMS_FILENAME, if $CFN_TEMPLATE_PARAMS_FILENAME is unset it will use parameters.json
+  COMBINE_FILES=
+  for filename in $(ls $CLOUDFORMATION_ROOT/$CFN_MERGE_DIRECTORY); do
+    COMBINE_FILES+="$CLOUDFORMATION_ROOT/$CFN_MERGE_DIRECTORY/$filename "
+  done;
+  jq '.[]' $COMBINE_FILES | jq -s . > $CFN_TEMPLATE_PARAMS_FILENAME
+fi
+
 # cloud provider auth
 echo "cloudformation auth cloud provider"
 bash $SCRIPTS_DIR/aws/sts.get-caller-identity.sh
