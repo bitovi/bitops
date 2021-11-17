@@ -72,6 +72,19 @@ docker run \
 -v $(pwd):/opt/bitops_deployment \
 bitovi/bitops:latest
 ```
+
+## Use your local BitOps
+```
+docker run 
+-e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION           \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID             \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY     \
+-e ENVIRONMENT="test"                               \
+-v $(pwd):/opt/bitops_deployment                    \
+-v $BITOPS_HOME:/opt/bitops                         \
+bitovi/bitops:latest
+```
+
 ## Links to Bitops Guides & Blogs
 
 ### Using Declarative Infrastructure to Deploy an EKS Cluster and Helm Chart

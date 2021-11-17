@@ -74,6 +74,10 @@ Allows you to use CloudFormation nested stacks. Both properties must be set in o
 * **Environment Variable:** `CFN_S3_PREFIX`
 * **default:** `""`
 
+### cfn-merge-parameters
+* **BitOps Property:** `cfn-merge-parameters`
+
+
 Cloudformation capabilities
 
 -------------------
@@ -97,6 +101,24 @@ Additional parameters.
 * **BitOps Property:** `cfn-files.parameters.template-param-file`
 * **Environment Variable:** `CFN_TEMPLATE_PARAMS_FILENAME`
 * **default:** `""`
+
+-------------------
+### cfn-merge-parameters
+* **BitOps Property:** `cfn-merge-parameters`
+
+Allows for param files to be used. Has the following child-properties
+#### enabled
+* **BitOps Property:** `cfn-files.enabled`
+* **Environment Variable:** `CFN_MERGE_PARAMETER`
+* **default:** `false`
+
+True if optional option should be used.
+#### directory
+* **BitOps Property:** `cfn-files.directory`
+* **Environment Variable:** `CFN_MERGE_DIRECTORY`
+* **default:** `parameters`
+
+The directory within the ansible workspace that contains json files that will be merged.
 
 -------------------
 
