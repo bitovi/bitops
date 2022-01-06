@@ -50,9 +50,6 @@ else
   echo "init upgrade not found in config. Skipping upgrade.."
 fi
 
-echo "terraform init -input=false $upgrade"
-exit 42
-
 if [ -n "$TERRAFORM_WORKSPACE" ]; then
   echo "Running Terraform Workspace"
   bash $SCRIPTS_DIR/terraform/terraform_workspace.sh $TERRAFORM_WORKSPACE
