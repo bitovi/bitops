@@ -10,17 +10,7 @@ CFN_TEMPLATE_S3_BUCKET=$6
 CFN_S3_PREFIX=$7
 STATUS="UNKNOWN"
 
-CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
-if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
-  echo "CFN_TEMPLATE_S3_BUCKET is set, syncing operations repo with S3..."
-  aws s3 sync $CLOUDFORMATION_ROOT s3://$CFN_TEMPLATE_S3_BUCKET/$CFN_S3_PREFIX/
-  if [ $? == 0 ]; then
-    echo "Upload to S3 successful..."
-    CFN_TEMPLATE_PARAM="--template-url https://$CFN_TEMPLATE_S3_BUCKET.s3.amazonaws.com/$CFN_S3_PREFIX/$CFN_TEMPLATE_FILENAME"
-  else
-    echo "Upload to S3 failed"
-  fi
-fi
+CFN_TEMPLATE_PARAM="--template-url https://$CFN_TEMPLATE_S3_BUCKET.s3.amazonaws.com/$CFN_S3_PREFIX/$CFN_TEMPLATE_FILENAME"
 
 echo "Checking if stack exists ..."
 STACK_EXISTS=$(aws cloudformation describe-stacks --region $AWS_DEFAULT_REGION --stack-name $CFN_STACK_NAME|jq '.Stacks[0].StackId')
