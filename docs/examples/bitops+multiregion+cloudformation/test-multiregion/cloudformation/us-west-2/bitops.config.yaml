@@ -1,0 +1,18 @@
+cloudformation:
+  cli:
+    validate-cfn: true
+    cfn-stack-action: deploy
+  options:
+    cfn-stack-name: unqiue-stack-name2
+    cfn-s3-bucket: s3-test-multiregion
+    cfn-s3-prefix: us-west-2
+    cfn-create-bucket: true
+    cfn-files:
+      template-file: main-template.yaml
+      parameters:
+        enabled: true
+        template-param-file: parameters.json
+  
+
+
+    

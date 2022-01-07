@@ -4,3 +4,4 @@ cloudformation:
     - region-2
   options:
     cfn-s3-bucket: s3-multiregion-bucket
+    

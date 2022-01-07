@@ -1,0 +1,36 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+
+Description: Simple Security Group
+Parameters:
+  TemplateBucket:
+    Type: String
+  S3TemplateKey:
+    Type: String
+
+
+
+
+# Metadata:
+#   AWS::CloudFormation::Interface:
+#     ParameterLabels:
+#       BucketName:
+#         default: S3 Bucket Name
+
+
+        
+Resources:
+  Infrastructure:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "https://s3.amazonaws.com/${TemplateBucket}/templates/example-a.yaml"
+      Parameters:
+        TemplateBucket: !Ref TemplateBucket
+
+  Infrastructure2:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "https://s3.amazonaws.com/${TemplateBucket}/${S3TemplateKey}/templates/example-c.yaml"
+      Parameters:
+        TemplateBucket: !Ref TemplateBucket
