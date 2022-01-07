@@ -1,0 +1,11 @@
+cloudformation:
+  cli:
+    validate-cfn: true
+    cfn-stack-action: deploy
+  options:
+    cfn-stack-name: unqiue-stack-name1
+    cfn-files:
+      template-file: template.yaml
+      parameters:
+        enabled: true
+        template-param-file: parameters.json
