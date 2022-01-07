@@ -44,15 +44,18 @@ fi
 
 
 until echo "$STATUS" | egrep -q 'CREATE_COMPLETE|UPDATE_COMPLETE|COMPLETE|FAILED|DELETE_IN_PROGRESS'; 
-do   
+do 
   aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`CREATE_IN_PROGRESS`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
   aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`FAILED`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
+
   sleep 10; 
   STATUS=$(aws cloudformation describe-stacks --stack-name "${CFN_STACK_NAME}" --query "Stacks[0].StackStatus" --output text);
 done
 
 # get final status
-aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --output text --no-paginate;
+
+# aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --output text --no-paginate;
+aws cloudformation describe-stacks --stack-name "${CFN_STACK_NAME}" --query "Stacks[0].StackStatus" --output text;
 
 echo "$STATUS" | egrep -q "CREATE_COMPLETE|UPDATE_COMPLETE"
 if [ $? == 0 ]; then

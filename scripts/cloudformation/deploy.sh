@@ -64,23 +64,21 @@ function run_aws_get_identity () {
 }
 
 function run_s3_sync_templates () {
-
-    run_config_conversion
-
     # Just need to figure out a good strategy to get the bucket name
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT/templates
     CFN_TEMPLATE_FILENAME="templates"
-    CFN_S3_PREFIX="templates"
     run_config_conversion
+    CFN_S3_PREFIX="templates"
     run_s3_sync
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
 }
 
 function run_s3_sync () {
-  CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
+  # CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
 
   if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
     echo "CFN_TEMPLATE_S3_BUCKET is set, syncing operations repo with S3..."
+    echo "Syncing to: [s3://$CFN_TEMPLATE_S3_BUCKET/$CFN_S3_PREFIX/]"
     aws s3 sync $CLOUDFORMATION_ROOT s3://$CFN_TEMPLATE_S3_BUCKET/$CFN_S3_PREFIX/
     if [ $? == 0 ]; then
       echo "Upload to S3 successful..."
@@ -101,7 +99,6 @@ function run_config_validation_stack_action () {
 function run_deploy_stack_action () {
   if [[ "${CFN_STACK_ACTION}" == "deploy" ]] || [[ "${CFN_STACK_ACTION}" == "Deploy" ]]; then
     echo "Running Cloudformation Deploy Stack"
-    echo "[$CFN_TEMPLATE_FILENAME] | [$CFN_PARAMS_FLAG] | [$CFN_TEMPLATE_PARAMS_FILENAME] | [$CFN_STACK_NAME] | [$CFN_CAPABILITY] | [$CFN_TEMPLATE_S3_BUCKET] | [$CFN_S3_PREFIX] | "
     bash $SCRIPTS_DIR/cloudformation/cloudformation_deploy.sh "$CFN_TEMPLATE_FILENAME" "$CFN_PARAMS_FLAG" "$CFN_TEMPLATE_PARAMS_FILENAME" "$CFN_STACK_NAME" "$CFN_CAPABILITY" "$CFN_TEMPLATE_S3_BUCKET" "$CFN_S3_PREFIX"
   fi
 }
@@ -116,6 +113,44 @@ function run_delete_stack_action () {
 function run_after_scripts () {
   # Check for After Deploy Scripts
   bash $SCRIPTS_DIR/deploy/after-deploy.sh "$CLOUDFORMATION_ROOT"
+}
+
+
+function run_predeployment () {
+  # Load config file
+  run_config_conversion
+
+  # Sync the current files to the S3 bucket
+  run_s3_sync
+
+  # Run before scripts
+  run_before_scripts
+
+  # Validate config file
+  run_config_validation
+
+  # Run Optionals
+  run_optionals
+}
+
+
+function run_deployment () {
+  # Combine anything in the parameters folder
+  run_combine_parameters
+
+  # Log in to the aws identity
+  run_aws_get_identity
+
+  # Validate the stack yaml
+  run_config_validation_stack_action
+
+  # Deploy the stack
+  run_deploy_stack_action
+  
+  run_delete_stack_action
+
+  # Run after scripts
+  run_after_scripts
 }
 
 
@@ -143,13 +178,15 @@ else
   echo "cloudformation - No BitOps config"
 fi
 
-# sync the templates folder
-run_s3_sync_templates
 v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$CLOUDFORMATION_BITOPS_CONFIG" "cloudformation.multi-regional-target-regions" "")"
 
 if [[ -n $v ]]; then
   # ~ # ~ MULTI REGION ~ # ~ # 
   echo "Using Multi-Regional deployment strategy"
+
+  # sync the templates folder
+  run_s3_sync_templates
+  
   for i in $(echo $v);do
     if [[ $i == "-" ]]; then
       # This accounts for the regions being in a list 
@@ -165,41 +202,12 @@ if [[ -n $v ]]; then
       BITOPS_SCHEMA_ENV_FILE="$CLOUDFORMATION_ROOT_MULTIREGION/ENV_FILE"
       BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/cloudformation/bitops.schema.yaml"
 
-
-      # Load config file
-      run_config_conversion
-
-      # Sync the current files to the S3 bucket
-      run_s3_sync
-
-      # Run before scripts
-      run_before_scripts
-
-      # Validate config file
-      run_config_validation
-
-      # Run Optionals
-      run_optionals
+      run_predeployment
 
       cd $CLOUDFORMATION_ROOT_MULTIREGION
       export AWS_DEFAULT_REGION=$i
 
-      # Combine anything in the parameters folder
-      run_combine_parameters
-
-      # Log in to the aws identity
-      run_aws_get_identity
-
-      # Validate the stack yaml
-      run_config_validation_stack_action
-
-      # Deploy the stack
-      run_deploy_stack_action
-      
-      run_delete_stack_action
-
-      # Run after scripts
-      run_after_scripts
+      run_deployment
     fi
   done
 
@@ -207,34 +215,9 @@ if [[ -n $v ]]; then
     # ~ # ~ DEFAULT SINGLE REGION ~ # ~ # 
     echo "Using Default deployment strategy"
 
-    # Load config file
-    run_config_conversion
-
-    # Run before scripts
-    run_before_scripts
-
-    # Validate config file
-    run_config_validation
-
-    # Run Optionals
-    run_optionals
+    run_predeployment
 
     cd $CLOUDFORMATION_ROOT
 
-    # Combine anything in the parameters folder
-    run_combine_parameters
-
-    # Log in to the aws identity
-    run_aws_get_identity
-
-    # Validate the stack yaml
-    run_config_validation_stack_action
-
-    # Deploy the stack
-    run_deploy_stack_action
-    
-    run_delete_stack_action
-
-    # Run after scripts
-    run_after_scripts
+    run_deployment
 fi
