@@ -64,7 +64,6 @@ function run_aws_get_identity () {
 }
 
 function run_s3_sync_templates () {
-    # Just need to figure out a good strategy to get the bucket name
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT/templates
     CFN_TEMPLATE_FILENAME="templates"
     run_config_conversion
