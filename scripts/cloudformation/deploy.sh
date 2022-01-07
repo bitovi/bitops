@@ -15,7 +15,15 @@ function run_config_conversion () {
   source "$BITOPS_SCHEMA_ENV_FILE"
 }
 
-function run_schema_validation () {
+function run_optionals () {
+  # OPTIONAL FEATURES CAN BE PLACED INTO HERE
+  echo "[$CFN_CREATE_BUCKET]"
+  if [[ $CFN_CREATE_BUCKET == true ]] || [[ $CFN_CREATE_BUCKET == True ]]; then
+    aws s3api create-bucket --bucket "$CFN_TEMPLATE_S3_BUCKET" --region $AWS_DEFAULT_REGION --create-bucket-configuration LocationConstraint=$AWS_DEFAULT_REGION || true
+  fi
+}
+
+function run_config_validation () {
   # Exit if Stack Name not found
   if [[ "${CFN_STACK_NAME=}" == "" ]] || [[ "${CFN_STACK_NAME=}" == "''" ]] || [[ "${CFN_STACK_NAME=}" == "None" ]]; then
     >&2 echo "{\"error\":\"$CFN_STACK_NAME config is required in bitops config.Exiting...\"}"
@@ -55,6 +63,34 @@ function run_aws_get_identity () {
   bash $SCRIPTS_DIR/aws/sts.get-caller-identity.sh
 }
 
+function run_s3_sync_templates () {
+
+    run_config_conversion
+
+    # Just need to figure out a good strategy to get the bucket name
+    CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT/templates
+    CFN_TEMPLATE_FILENAME="templates"
+    CFN_S3_PREFIX="templates"
+    run_config_conversion
+    run_s3_sync
+    CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
+}
+
+function run_s3_sync () {
+  CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
+
+  if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
+    echo "CFN_TEMPLATE_S3_BUCKET is set, syncing operations repo with S3..."
+    aws s3 sync $CLOUDFORMATION_ROOT s3://$CFN_TEMPLATE_S3_BUCKET/$CFN_S3_PREFIX/
+    if [ $? == 0 ]; then
+      echo "Upload to S3 successful..."
+      CFN_TEMPLATE_PARAM="--template-url https://$CFN_TEMPLATE_S3_BUCKET.s3.amazonaws.com/$CFN_S3_PREFIX/$CFN_TEMPLATE_FILENAME"
+    else
+      echo "Upload to S3 failed"
+    fi
+  fi
+}
+
 function run_config_validation_stack_action () {
   if [[ "${CFN_TEMPLATE_VALIDATION}" == "True" ]] || [[ "${CFN_TEMPLATE_VALIDATION}" == "true" ]]; then
     echo "Running Cloudformation Template Validation : [$CFN_TEMPLATE_FILENAME]"
@@ -65,6 +101,7 @@ function run_config_validation_stack_action () {
 function run_deploy_stack_action () {
   if [[ "${CFN_STACK_ACTION}" == "deploy" ]] || [[ "${CFN_STACK_ACTION}" == "Deploy" ]]; then
     echo "Running Cloudformation Deploy Stack"
+    echo "[$CFN_TEMPLATE_FILENAME] | [$CFN_PARAMS_FLAG] | [$CFN_TEMPLATE_PARAMS_FILENAME] | [$CFN_STACK_NAME] | [$CFN_CAPABILITY] | [$CFN_TEMPLATE_S3_BUCKET] | [$CFN_S3_PREFIX] | "
     bash $SCRIPTS_DIR/cloudformation/cloudformation_deploy.sh "$CFN_TEMPLATE_FILENAME" "$CFN_PARAMS_FLAG" "$CFN_TEMPLATE_PARAMS_FILENAME" "$CFN_STACK_NAME" "$CFN_CAPABILITY" "$CFN_TEMPLATE_S3_BUCKET" "$CFN_S3_PREFIX"
   fi
 }
@@ -82,8 +119,10 @@ function run_after_scripts () {
 }
 
 
+# ~ # ~ # ~ SCRIPT START ~ # ~ # ~ # 
 
 # cloudformation vars
+export CLOUDFORMATION_ROOT_READONLY="$ENVROOT/cloudformation"
 export CLOUDFORMATION_ROOT="$ENVROOT/cloudformation" 
 export CLOUDFORMATION_BITOPS_CONFIG="$CLOUDFORMATION_ROOT/bitops.config.yaml" 
 export BITOPS_SCHEMA_ENV_FILE="$CLOUDFORMATION_ROOT/ENV_FILE"
@@ -104,52 +143,98 @@ else
   echo "cloudformation - No BitOps config"
 fi
 
-v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$CLOUDFORMATION_BITOPS_CONFIG" "bitops.multi-regional-target-regions" "")"
+# sync the templates folder
+run_s3_sync_templates
+v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$CLOUDFORMATION_BITOPS_CONFIG" "cloudformation.multi-regional-target-regions" "")"
 
 if [[ -n $v ]]; then
+  # ~ # ~ MULTI REGION ~ # ~ # 
   echo "Using Multi-Regional deployment strategy"
+  for i in $(echo $v);do
+    if [[ $i == "-" ]]; then
+      # This accounts for the regions being in a list 
+      continue
+    
+    else
+    
+      echo "Processing region: [$i]"
+      CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
+      CLOUDFORMATION_ROOT_MULTIREGION="$CLOUDFORMATION_ROOT/$i"
+      CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_MULTIREGION
+      CLOUDFORMATION_BITOPS_CONFIG="$CLOUDFORMATION_ROOT_MULTIREGION/bitops.config.yaml"   
+      BITOPS_SCHEMA_ENV_FILE="$CLOUDFORMATION_ROOT_MULTIREGION/ENV_FILE"
+      BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/cloudformation/bitops.schema.yaml"
 
-  for i in $(echo $v | tr " " "\n"); do
-    echo "Processing region: [$i]"
-    CLOUDFORMATION_ROOT_MULTIREGION="$CLOUDFORMATION_ROOT/$i"
-    CLOUDFORMATION_BITOPS_CONFIG="$CLOUDFORMATION_ROOT_MULTIREGION/bitops.config.yaml"   
-    BITOPS_SCHEMA_ENV_FILE="$CLOUDFORMATION_ROOT_MULTIREGION/ENV_FILE"
-    BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/cloudformation/bitops.schema.yaml"
 
-    run_before_scripts
-    run_config_conversion
-    run_schema_validation
+      # Load config file
+      run_config_conversion
 
-    cd $CLOUDFORMATION_ROOT_MULTIREGION
-    export AWS_DEFAULT_REGION=$i
+      # Sync the current files to the S3 bucket
+      run_s3_sync
 
-    run_combine_parameters
-    run_aws_get_identity
+      # Run before scripts
+      run_before_scripts
 
-    run_config_validation_stack_action
+      # Validate config file
+      run_config_validation
 
-    run_deploy_stack_action
-    run_delete_stack_action
+      # Run Optionals
+      run_optionals
 
-    run_after_scripts
+      cd $CLOUDFORMATION_ROOT_MULTIREGION
+      export AWS_DEFAULT_REGION=$i
+
+      # Combine anything in the parameters folder
+      run_combine_parameters
+
+      # Log in to the aws identity
+      run_aws_get_identity
+
+      # Validate the stack yaml
+      run_config_validation_stack_action
+
+      # Deploy the stack
+      run_deploy_stack_action
+      
+      run_delete_stack_action
+
+      # Run after scripts
+      run_after_scripts
+    fi
   done
 
   else
+    # ~ # ~ DEFAULT SINGLE REGION ~ # ~ # 
     echo "Using Default deployment strategy"
-    run_before_scripts
+
+    # Load config file
     run_config_conversion
-    run_schema_validation
+
+    # Run before scripts
+    run_before_scripts
+
+    # Validate config file
+    run_config_validation
+
+    # Run Optionals
+    run_optionals
 
     cd $CLOUDFORMATION_ROOT
 
+    # Combine anything in the parameters folder
     run_combine_parameters
+
+    # Log in to the aws identity
     run_aws_get_identity
 
+    # Validate the stack yaml
     run_config_validation_stack_action
 
+    # Deploy the stack
     run_deploy_stack_action
+    
     run_delete_stack_action
 
+    # Run after scripts
     run_after_scripts
 fi
-
