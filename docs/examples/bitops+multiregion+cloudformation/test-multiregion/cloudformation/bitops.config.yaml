@@ -1,0 +1,8 @@
+cloudformation:
+  multi-regional-target-regions:
+    - us-east-1
+    - us-west-2
+  options:
+    cfn-s3-bucket: s3-test-multiregion
+    cfn-s3-prefix: multiregion-deployment
+    
