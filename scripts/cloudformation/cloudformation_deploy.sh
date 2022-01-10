@@ -42,11 +42,13 @@ else
     )
 fi
 
-
+STATUS=$(aws cloudformation describe-stacks --stack-name "${CFN_STACK_NAME}" --query "Stacks[0].StackStatus" --output text);
 until echo "$STATUS" | egrep -q 'CREATE_COMPLETE|UPDATE_COMPLETE|COMPLETE|FAILED|DELETE_IN_PROGRESS'; 
 do 
-  aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`CREATE_IN_PROGRESS`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
-  aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`FAILED`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
+  echo "STATUS: [$STATUS]"
+  aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --no-paginate --output text --query 'StackEvents[?contains(ResourceStatus,`CREATE_IN_PROGRESS`) || contains(ResourceStatus,`CREATE_COMPLETE`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]'
+  
+  # aws cloudformation describe-stack-events --stack-name "${CFN_STACK_NAME}" --query 'StackEvents[?contains(ResourceStatus,`FAILED`)].[LogicalResourceId, ResourceStatus, ResourceType, ResourceStatusReason]';
 
   sleep 10; 
   STATUS=$(aws cloudformation describe-stacks --stack-name "${CFN_STACK_NAME}" --query "Stacks[0].StackStatus" --output text);
