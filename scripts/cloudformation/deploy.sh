@@ -65,6 +65,9 @@ function run_aws_get_identity () {
 
 function run_s3_sync_templates () {
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT/templates
+    CFN_S3_PREFIX_READONLY=$CFN_S3_PREFIX
+    CFN_S3_PREFIX_READONLY=$CFN_S3_PREFIX
+    
     CFN_TEMPLATE_FILENAME="templates"
     run_config_conversion
     CFN_S3_PREFIX="templates"
@@ -78,6 +81,8 @@ function run_s3_sync_templates () {
     fi
 
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
+    CFN_S3_PREFIX=$CFN_S3_PREFIX_READONLY
+    CFN_S3_PREFIX=$CFN_S3_PREFIX_READONLY
 }
 
 function run_s3_sync () {
