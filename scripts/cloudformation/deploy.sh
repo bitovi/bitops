@@ -88,6 +88,7 @@ function run_s3_sync () {
 
   if [[ $MULTI_REGION_DEPLOY == "true" ]] || [[ $MULTI_REGION_DEPLOY == "True" ]]; then
     CFN_S3_PREFIX="$CFN_S3_PREFIX/$AWS_DEFAULT_REGION"
+    echo "Sync with prefix + region"
   fi
   
   if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
@@ -200,7 +201,7 @@ if [[ -n $multi_region_targets ]]; then
 
   # sync the templates folder
   run_s3_sync_templates
-  MULTI_REGION_DEPLOY="true"
+  export MULTI_REGION_DEPLOY="true"
   
   for region in $(echo $multi_region_targets);do
     if [[ $region == "-" ]]; then
