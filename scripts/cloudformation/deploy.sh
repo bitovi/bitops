@@ -177,25 +177,25 @@ else
   echo "cloudformation - No BitOps config"
 fi
 
-v="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$CLOUDFORMATION_BITOPS_CONFIG" "cloudformation.multi-regional-target-regions" "")"
+multi_region_targets="$(bash "$SCRIPTS_DIR/bitops-config/get.sh" "$CLOUDFORMATION_BITOPS_CONFIG" "cloudformation.multi-regional-target-regions" "")"
 
-if [[ -n $v ]]; then
+if [[ -n $multi_region_targets ]]; then
   # ~ # ~ MULTI REGION ~ # ~ # 
   echo "Using Multi-Regional deployment strategy"
 
   # sync the templates folder
   run_s3_sync_templates
   
-  for i in $(echo $v);do
-    if [[ $i == "-" ]]; then
+  for region in $(echo $multi_region_targets);do
+    if [[ $region == "-" ]]; then
       # This accounts for the regions being in a list 
       continue
     
     else
     
-      echo "Processing region: [$i]"
+      echo "Processing region: [$region]"
       CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
-      CLOUDFORMATION_ROOT_MULTIREGION="$CLOUDFORMATION_ROOT/$i"
+      CLOUDFORMATION_ROOT_MULTIREGION="$CLOUDFORMATION_ROOT/$region"
       CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_MULTIREGION
       CLOUDFORMATION_BITOPS_CONFIG="$CLOUDFORMATION_ROOT_MULTIREGION/bitops.config.yaml"   
       BITOPS_SCHEMA_ENV_FILE="$CLOUDFORMATION_ROOT_MULTIREGION/ENV_FILE"
@@ -204,7 +204,7 @@ if [[ -n $v ]]; then
       run_predeployment
 
       cd $CLOUDFORMATION_ROOT_MULTIREGION
-      export AWS_DEFAULT_REGION=$i
+      export AWS_DEFAULT_REGION=$region
 
       run_deployment
     fi
