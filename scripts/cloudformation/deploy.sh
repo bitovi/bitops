@@ -132,7 +132,7 @@ function run_after_scripts () {
 
 run_copy_multideploy_parameters () { 
   mv $CLOUDFORMATION_ROOT/parameters.json $CLOUDFORMATION_ROOT/parameters-old.json
-  cp $CLOUDFORMATION_ROOT_READONLY/parameters.json$CLOUDFORMATION_ROOT/parameters.json
+  cp $CLOUDFORMATION_ROOT_READONLY/parameters.json $CLOUDFORMATION_ROOT/parameters.json
 }
 
 
