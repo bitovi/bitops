@@ -26,6 +26,7 @@ fi
 
 if [[ "${CFN_PARAMS_FLAG}" == "True" ]] || [[ "${CFN_PARAMS_FLAG}" == "true" ]]; then
     echo "Parameters file exist..."
+    cat $CFN_TEMPLATE_PARAMS_FILENAME
     CFN_STACK_ID=$(aws cloudformation $ACTION \
     --stack-name $CFN_STACK_NAME \
     --region $AWS_DEFAULT_REGION \
