@@ -131,11 +131,8 @@ function run_after_scripts () {
 }
 
 run_copy_multideploy_parameters () { 
-  ls $CLOUDFORMATION_ROOT_READONLY
-  cat $CLOUDFORMATION_ROOT_READONLY/parameters.json
-
-  ls $CLOUDFORMATION_ROOT
-  cat $CLOUDFORMATION_ROOT/parameters.json
+  mv $CLOUDFORMATION_ROOT/parameters.json $CLOUDFORMATION_ROOT/parameters-old.json
+  cp $CLOUDFORMATION_ROOT_READONLY/parameters.json$CLOUDFORMATION_ROOT/parameters.json
 }
 
 
