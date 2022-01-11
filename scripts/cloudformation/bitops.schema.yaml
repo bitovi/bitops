@@ -61,7 +61,3 @@ cloudformation:
           type: boolean
           default: false
           export_env: CFN_CREATE_BUCKET
-        cfn-multi-region:
-          type: boolean
-          default: false
-          export_env: CFN_MULTI_REGIONAL

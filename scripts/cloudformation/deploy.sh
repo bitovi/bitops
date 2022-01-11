@@ -66,11 +66,10 @@ function run_aws_get_identity () {
 function run_s3_sync_templates () {
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT/templates
     CFN_S3_PREFIX_READONLY=$CFN_S3_PREFIX
-    CFN_S3_PREFIX_READONLY=$CFN_S3_PREFIX
     
     CFN_TEMPLATE_FILENAME="templates"
     run_config_conversion
-    CFN_S3_PREFIX="templates"
+    CFN_S3_PREFIX="$CFN_S3_PREFIX/templates"
 
     # Check if template folder exists
     if [[ -d $CLOUDFORMATION_ROOT ]]; then
@@ -82,12 +81,15 @@ function run_s3_sync_templates () {
 
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
     CFN_S3_PREFIX=$CFN_S3_PREFIX_READONLY
-    CFN_S3_PREFIX=$CFN_S3_PREFIX_READONLY
 }
 
 function run_s3_sync () {
   # CFN_TEMPLATE_PARAM="--template-body=file://$CFN_TEMPLATE_FILENAME"
 
+  if [[ $MULTI_REGION_DEPLOY == "true" ]] || [[ $MULTI_REGION_DEPLOY == "True" ]]; then
+    CFN_S3_PREFIX="$CFN_S3_PREFIX/$AWS_DEFAULT_REGION"
+  fi
+  
   if [ -n "$CFN_TEMPLATE_S3_BUCKET" ] && [ -n "$CFN_S3_PREFIX" ]; then
     echo "CFN_TEMPLATE_S3_BUCKET is set, syncing operations repo with S3..."
     echo "Syncing to: [s3://$CFN_TEMPLATE_S3_BUCKET/$CFN_S3_PREFIX/]"
@@ -198,6 +200,7 @@ if [[ -n $multi_region_targets ]]; then
 
   # sync the templates folder
   run_s3_sync_templates
+  MULTI_REGION_DEPLOY="true"
   
   for region in $(echo $multi_region_targets);do
     if [[ $region == "-" ]]; then
@@ -213,11 +216,12 @@ if [[ -n $multi_region_targets ]]; then
       CLOUDFORMATION_BITOPS_CONFIG="$CLOUDFORMATION_ROOT_MULTIREGION/bitops.config.yaml"   
       BITOPS_SCHEMA_ENV_FILE="$CLOUDFORMATION_ROOT_MULTIREGION/ENV_FILE"
       BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/cloudformation/bitops.schema.yaml"
+      export AWS_DEFAULT_REGION=$region
+
 
       run_predeployment
 
       cd $CLOUDFORMATION_ROOT_MULTIREGION
-      export AWS_DEFAULT_REGION=$region
 
       run_deployment
     fi
