@@ -55,6 +55,9 @@ jobs:
             ###
             ### PUBLISH
             ###
+          
+            # CUSTOM IMAGE NAME (comment out below and add your image name)
+            # export BITOPS_DOCKER_IMAGE_PUBLISH_TAG="v1-multi-region"
             ./scripts/ci/publish.sh
   
   deploy-docs:
