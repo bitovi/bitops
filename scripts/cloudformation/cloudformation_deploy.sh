@@ -11,6 +11,7 @@ CFN_S3_PREFIX=$7
 STATUS="UNKNOWN"
 
 CFN_TEMPLATE_PARAM="--template-url https://$CFN_TEMPLATE_S3_BUCKET.s3.amazonaws.com/$CFN_S3_PREFIX/$CFN_TEMPLATE_FILENAME"
+echo "CFN_TEMPLATE_PARAM: [$CFN_TEMPLATE_PARAM]"
 
 echo "Checking if stack exists ..."
 STACK_EXISTS=$(aws cloudformation describe-stacks --region $AWS_DEFAULT_REGION --stack-name $CFN_STACK_NAME|jq '.Stacks[0].StackId')
