@@ -7,7 +7,6 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - multi-regional-deployment
             tags:
               only:
