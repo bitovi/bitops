@@ -68,7 +68,15 @@ function run_s3_sync_templates () {
     CFN_TEMPLATE_FILENAME="templates"
     run_config_conversion
     CFN_S3_PREFIX="templates"
-    run_s3_sync
+
+    # Check if template folder exists
+    if [[ -d $CLOUDFORMATION_ROOT ]]; then
+
+      run_s3_sync 
+    else
+      echo "A default template folder was not detected. It's recommended you add one when using multi-regional deployments."
+    fi
+
     CLOUDFORMATION_ROOT=$CLOUDFORMATION_ROOT_READONLY
 }
 
