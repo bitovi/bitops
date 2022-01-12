@@ -74,17 +74,29 @@ fi
 
 if [ "1" == "1" ]; then
     echo "COPY_HELM_CHART_BITOPS_BEFORE_SCRIPTS"
+    # Copying before scripts
     if [ -d "$DEFAULT_HELM_CHART_DIRECTORY/bitops.before-deploy.d" ]; then
         echo "HELM_CHART_BITOPS_BEFORE_SCRIPTS folder found"
         cp -rf "$DEFAULT_HELM_CHART_DIRECTORY/bitops.before-deploy.d/." "$HELM_CHART_DIRECTORY/bitops.before-deploy.d/"
+        
+    elif [ -d "$DEFAULT_HELM_CHART_DIRECTORY/bitops-before-deploy.d" ]; then
+        echo "HELM_CHART_BITOPS_BEFORE_SCRIPTS folder found"
+        cp -rf "$DEFAULT_HELM_CHART_DIRECTORY/bitops-before-deploy.d/." "$HELM_CHART_DIRECTORY/bitops-before-deploy.d/"
+    
     else
         echo "HELM_CHART_BITOPS_BEFORE_SCRIPTS folder not found..." # Why do the above lines use "printf" and where is the $ERROR and $NC values coming from?
     fi
 
     echo "COPY_HELM_CHART_BITOPS_AFTER_SCRIPTS"
+    # Copying after scripts
     if [ -d "$DEFAULT_HELM_CHART_DIRECTORY/bitops.after-deploy.d" ]; then
         echo "HELM_CHART_BITOPS_AFTER_SCRIPTS folder found"
         cp -rf "$DEFAULT_HELM_CHART_DIRECTORY/bitops.after-deploy.d/." "$HELM_CHART_DIRECTORY/bitops.after-deploy.d/"
+    
+    elif [ -d "$DEFAULT_HELM_CHART_DIRECTORY/bitops-after-deploy.d" ]; then
+        echo "HELM_CHART_BITOPS_BEFORE_SCRIPTS folder found"
+        cp -rf "$DEFAULT_HELM_CHART_DIRECTORY/bitops-after-deploy.d/." "$HELM_CHART_DIRECTORY/bitops-after-deploy.d/"
+    
     else
         echo "HELM_CHART_BITOPS_AFTER_SCRIPTS folder not found..."
     fi
