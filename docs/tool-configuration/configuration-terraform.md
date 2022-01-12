@@ -85,3 +85,5 @@ Will force call `terraform apply`
 Will force call `terraform destroy`
 
 -------------------
+### INIT_UPGRADE
+Will add `--upgrade` flag to the init command
