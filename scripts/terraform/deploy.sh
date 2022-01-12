@@ -44,7 +44,7 @@ ln -s /usr/local/bin/terraform-$TERRAFORM_VERSION /usr/local/bin/terraform
 # always init first
 echo "Running terraform init"
 upgrade=""
-if [[ "$INIT_UPGRADE" == "True" ]];then
+if [ "${INIT_UPGRADE}" == "True" ] || [ "${INIT_UPGRADE}" == "true" ]; then
   upgrade="--upgrade"
 else
   echo "init upgrade not found in config. Skipping upgrade.."
