@@ -31,3 +31,7 @@ terraform:
         workspace:
           type: string
           export_env: TERRAFORM_WORKSPACE
+        init-upgrade:
+          type: boolean
+          export_env: INIT_UPGRADE
+          default: false
