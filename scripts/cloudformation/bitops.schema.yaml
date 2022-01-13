@@ -57,6 +57,10 @@ cloudformation:
                   type: string
                   export_env: CFN_MERGE_DIRECTORY
                   default: parameters
+                regional:
+                  type: boolean
+                  default: false
+                  export_env: CFN_REGIONAL_PARAM
         cfn-create-bucket:
           type: boolean
           default: false
