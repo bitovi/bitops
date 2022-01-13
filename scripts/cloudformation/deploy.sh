@@ -15,9 +15,8 @@ function run_config_conversion () {
   source "$BITOPS_SCHEMA_ENV_FILE"
 }
 
-function run_optionals () {
+function run_create_s3_bucket () {
   # OPTIONAL FEATURES CAN BE PLACED INTO HERE
-  echo "[$CFN_CREATE_BUCKET]"
   if [[ $CFN_CREATE_BUCKET == true ]] || [[ $CFN_CREATE_BUCKET == True ]]; then
     aws s3api create-bucket --bucket "$CFN_TEMPLATE_S3_BUCKET" --region $AWS_DEFAULT_REGION --create-bucket-configuration LocationConstraint=$AWS_DEFAULT_REGION || true
   fi
@@ -140,6 +139,9 @@ function run_predeployment () {
   # Load config file
   run_config_conversion
 
+  # Creating S3 bucket
+  run_create_s3_bucket
+
   # Sync the current files to the S3 bucket
   run_s3_sync
 
@@ -148,9 +150,6 @@ function run_predeployment () {
 
   # Validate config file
   run_config_validation
-
-  # Run Optionals
-  run_optionals
 }
 
 
