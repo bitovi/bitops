@@ -43,6 +43,10 @@ cloudformation:
                 template-param-file:
                   type: string
                   export_env: CFN_TEMPLATE_PARAMS_FILENAME
+                regional:
+                  type: boolean
+                  default: false
+                  export_env: CFN_REGIONAL_PARAM
         cfn-merge-parameters:
           type: object
           properties:
@@ -57,10 +61,6 @@ cloudformation:
                   type: string
                   export_env: CFN_MERGE_DIRECTORY
                   default: parameters
-                regional:
-                  type: boolean
-                  default: false
-                  export_env: CFN_REGIONAL_PARAM
         cfn-create-bucket:
           type: boolean
           default: false
