@@ -129,12 +129,6 @@ function run_after_scripts () {
   bash $SCRIPTS_DIR/deploy/after-deploy.sh "$CLOUDFORMATION_ROOT"
 }
 
-run_copy_multideploy_parameters () { 
-  mv $CLOUDFORMATION_ROOT/parameters.json $CLOUDFORMATION_ROOT/parameters-old.json
-  cp $CLOUDFORMATION_ROOT_READONLY/parameters.json $CLOUDFORMATION_ROOT/parameters.json
-}
-
-
 function run_predeployment () {
   # Load config file
   run_config_conversion
@@ -223,12 +217,9 @@ if [[ -n $multi_region_targets ]]; then
       BITOPS_CONFIG_SCHEMA="$SCRIPTS_DIR/cloudformation/bitops.schema.yaml"
       export AWS_DEFAULT_REGION=$region
 
-
       run_predeployment
 
       cd $CLOUDFORMATION_ROOT_MULTIREGION
-
-      run_copy_multideploy_parameters
 
       run_deployment
     fi
