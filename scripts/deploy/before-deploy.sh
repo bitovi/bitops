@@ -18,7 +18,7 @@ if [ -d "$PLUGIN_DIR/$BEFORE_SCRIPTS_DIR/" ];then
             if [[ -x "$script" ]]; then
                 /bin/bash -x $script
             else
-                echo "Before deploy script [$script] is not executible. Skipping..."
+                echo "Before deploy script [$script] is not executable. Skipping..."
             fi
         done
     fi
@@ -37,7 +37,7 @@ if [ -d "$PLUGIN_DIR/$BEFORE_SCRIPTS_DIR/" ];then
             if [[ -x "$script" ]]; then
                 /bin/bash -x $script
             else
-                echo "Before deploy script [$script] is not executible. Skipping..."
+                echo "Before deploy script [$script] is not executable. Skipping..."
             fi
         done
     fi
