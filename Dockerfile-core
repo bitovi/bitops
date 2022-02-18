@@ -26,4 +26,4 @@ RUN pip3 install -r requirements.txt
 ONBUILD WORKDIR /opt/bitops
 # ONBUILD COPY scripts/ ./scripts has proven quite useful for rapid testing. Please keep in. 
 ONBUILD COPY scripts/ ./scripts 
-ONBUILD RUN python scripts/plugins/install_plugins.py
+ONBUILD RUN python3 scripts/plugins.py install
