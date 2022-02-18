@@ -1,5 +1,8 @@
 bitops:
   environment: testing
+
+  project:
+    source: local
   
   logging: 
     level: verbose
