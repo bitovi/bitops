@@ -17,12 +17,13 @@ ENV GLIBC_VER=2.31-r0
 RUN mkdir -p /opt/bitops
 
 WORKDIR /opt/bitops
-COPY scripts/ ./scripts
 COPY build.config.yaml .
 COPY requirements.txt .
+COPY scripts/ ./scripts
 
 RUN pip3 install -r requirements.txt
 
 ONBUILD WORKDIR /opt/bitops
-ONBUILD COPY scripts/ ./scripts
-ONBUILD RUN python scripts/setup/install_plugins.py
+# ONBUILD COPY scripts/ ./scripts has proven quite useful for rapid testing. Please keep in. 
+ONBUILD COPY scripts/ ./scripts 
+ONBUILD RUN python scripts/plugins/install_plugins.py

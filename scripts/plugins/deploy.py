@@ -1,8 +1,53 @@
-import yaml
 import os
 import subprocess
+import yaml
 import envbash
+import tempfile
+
+
+from pickle import GLOBAL
 from shutil import rmtree
+from distutils.dir_util import copy_tree
+from munch import DefaultMunch
+from utilties import Load_Build_Config
+
+# Temp directory setup
+print("Creating temporary directory")
+temp_dir = tempfile.mkdtemp()
+print("temporary directory created: [{}]".format(temp_dir))
+
+# Locals singles in this area
+plugins_yml = Load_Build_Config()
+bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, "bitops")
+bitops_dir = "/opt/bitops"
+bitops_deployment_dir = "/opt/bitops_deployment/"
+bitops_environment = bitops_build_configuration.bitops.environment
+bitops_mode = os.environ.get("BITOPS_MODE", None)
+bitops_default_folder_name = os.environ.get("DEFAULT_FOLDER_NAME", "default")
+bitops_root_dir = temp_dir
+bitops_envroot_dir = "{}/{}".format(bitops_root_dir, bitops_environment)
+bitops_default_envroot = "{}/{}".format(bitops_root_dir, bitops_default_folder_name)
+
+# Cleanup - Call all teardown scripts - TODO
+
+
+# Set global variables
+os.environ["TEMPDIR"] = temp_dir
+os.environ["PATH"] = "/root/.local/bin:$PATH"
+os.environ["ENVROOT"] = "{}/$ENVIRONMENT".format(temp_dir)
+os.environ["BITOPS_DIR"] = bitops_dir
+os.environ["SCRIPTS_DIR"] = "{}/scripts".format(bitops_dir)
+os.environ["KUBE_CONFIG_FILE"] = "{}/.kube/config".format(temp_dir)
+os.environ["PLUGINS_DIR"] = "{}/scripts/plugins".format(bitops_dir)
+
+# Global environment evaluation
+if bitops_environment is None:
+    print("ENVIRONMENT variables must be set... Exiting")
+    quit()
+
+
+# Move to temp directory
+copy_tree(bitops_deployment_dir, temp_dir)
 
 # Load plugin.config.yaml
 bitops_dir=os.environ['BITOPS_DIR']
@@ -71,12 +116,6 @@ for plugin in plugins:
         result = subprocess.run(['bash', plugin_dir + '/deploy.sh'], 
             universal_newlines = True,
             capture_output=True)
-
-    # Invoke plugin install script
-    result = subprocess.run(['bash', plugin_dir + '/install.sh'],
-        universal_newlines = True,
-        capture_output=True)
-    print(result.stdout)
 
     # After hooks
     result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', environment_dir], 
