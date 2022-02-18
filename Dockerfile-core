@@ -17,9 +17,12 @@ ENV GLIBC_VER=2.31-r0
 RUN mkdir -p /opt/bitops
 
 WORKDIR /opt/bitops
-COPY . .
+COPY scripts/ ./scripts
+COPY build.config.yaml .
+COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
-#RUN bash -x scripts/setup/install_tools.sh
-COPY plugin.config.yaml .
+
+ONBUILD WORKDIR /opt/bitops
+ONBUILD COPY scripts/ ./scripts
 ONBUILD RUN python scripts/setup/install_plugins.py

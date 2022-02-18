@@ -1,39 +1,39 @@
-# Secrets Manager (for holding sensitive data) - Options are: vault, ssm or none
-secrets_manager:
-  value: none
-
-# Image Repository - Options: ecr, docker, quay, gcr
-image_repository:
-  value: ecr
+bitops:
+  environment: testing
   
-# Specify Kubernetes version: Options: Kubernetes 1.11, 1.12, 1.13, and 1.14
-kubectl:
-  version: 1.13.7
-
-# Example: prod, qa
-environment:
-  default: qa
-
-
-cloud_platform:
-  - aws:
-    name: aws
-    enabled: true
-    region: us-east-2
-
-# Specify Terraform versions
-terraform:
-  versions:
-  - 0.13.0
-  - 0.13.1
-  - 0.13.2
-  - 0.13.4
-
-# Specify Helm version. Options: 2 or 3
-helm:
-  version: 3.4.1
-  namespace: default
+  logging: 
+    level: verbose
+    file: bitops.logs
+    err: bitops.logs
+    rotation: 3
   
-ansible:
-  version: 2.5
+  plugins:
+    aws:
+      region: us-east-2
+      source: https://github.com/bitops-plugins/bitops-aws-plugin
 
+    terraform:
+      source: https://github.com/bitops-plugins/bitops-terraform-plugin
+      version: 0.13.0
+      logging: 
+        level: verbose
+
+    helm:
+      version: 3.4.1
+      namespace: default
+      source: https://github.com/bitops-plugins/bitops-helm-plugin
+      logging: 
+        level: verbose
+        file: bitops.helm.logs
+        err: bitops.helm.err
+    
+    kubectl:
+      version: 1.13.7
+      source: https://github.com/bitops-plugins/bitops-kubectl-plugin
+
+    ansible:
+      version: 2.5
+      source: https://github.com/bitops-plugins/bitops-ansible-plugin
+
+    cloudformation:
+      source: https://github.com/bitops-plugins/bitops-cloudformation-plugin
