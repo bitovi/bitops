@@ -1,4 +1,11 @@
-.terraform
-.tar
-.gz
+# File EXT
+*.terraform
+*.tar
+*.gz
+*.logs
+
+# Folders
 credentials
+
+# Employee
+NOTES.md
