@@ -65,15 +65,21 @@ def install_plugins():
 
             # Check if Version
             plugin_version = bitops_plugins_configuration[plugin].version
-
+            
+            # Check if install script is present
+            plugin_install_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
+            plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
+            
             # install plugin dependencies (install.sh)
-            install_script = plugin_dir + plugin + "/install.sh"
-            if os.path.isfile(install_script):
-                print("Installing plugin: [{}]".format(plugin))
-                result = subprocess.run(['bash', install_script, plugin_version], 
+            plugin_install_script_path = plugin_dir + plugin + "/{}".format(plugin_install_script)
+            print("Install Command: [{} {} {}]".format(plugin_install_language, plugin_install_script_path, plugin_version))
+            if os.path.isfile(plugin_install_script_path):
+                result = subprocess.run([plugin_install_language, plugin_install_script_path, "{}".format(plugin_version)], 
                     universal_newlines = True,
                     capture_output=True)
                 print(result.stdout)
+            else:
+                print("File does not exist: [{}]".format(plugin_install_script_path))
             
         else:
             print("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))

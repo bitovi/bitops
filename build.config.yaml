@@ -11,7 +11,7 @@ bitops:
   plugins:
     plugins_seq:
       - terraform-usage1
-      - helm  
+      - helm
       - terraform-usage2
 
     tools:
@@ -38,7 +38,7 @@ bitops:
         version: 3.4.1
         namespace: default
         source: https://github.com/bitops-plugins/bitops-helm-plugin
-        source_branch: test
+        source_branch: master
         source_tag: v0.0.1
         logging: 
           level: verbose
@@ -48,6 +48,8 @@ bitops:
       kubectl:
         version: 1.13.7
         source: https://github.com/bitops-plugins/bitops-kubectl-plugin
+        install_script: install.py
+        deploy_script: deploy.py
 
       ansible:
         version: 2.5
