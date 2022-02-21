@@ -5,21 +5,20 @@ import subprocess
 import glob
 import os.path
 import os
+import git
 
 from .utilties import Load_Build_Config
 from munch import DefaultMunch
 
 def install_plugins():
-    def git(*args):
-        return subprocess.check_call(['git'] + list(args))
-        
     plugins_yml = Load_Build_Config()
-    bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, None)
-    plugin_dir = "/opt/bitops/scripts/plugins/"
-    # bitops_environment = bitops_build_configuration.bitops.environment
-    bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
 
-    #print(bitops_build_configuration.bitops.plugins)
+    plugin_dir = "/opt/bitops/scripts/plugins/"
+
+    bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, None)
+    bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
+    bitops_logging = bitops_build_configuration.bitops.logging.level
+
     #print(bitops_build_configuration.bitops.plugins.tools)
     #print(bitops_build_configuration.bitops.plugins.plugins_seq)
 
@@ -27,44 +26,55 @@ def install_plugins():
         print("No plugins found. Exiting {}".format(__file__))
         quit()
 
-    # Loop through plugins and git clone each
+    # Loop through plugins and clone
     for plugin in bitops_plugins_configuration:
         print("Preparing plugin: [{}]".format(plugin))
-        source = bitops_plugins_configuration[plugin].source
-        download_logging_message = "Something went wrong during the plugin [{}] download".format(plugin)
+        plugin_source = bitops_plugins_configuration[plugin].source
         
-        if source is not None:
-            plugin_logging = "using branch: [master] "
-            install_tag = bitops_plugins_configuration[plugin].source_tag
-            install_branch = bitops_plugins_configuration[plugin].source_branch
+        if plugin_source is not None:
+            plugin_tag = bitops_plugins_configuration[plugin].source_tag
+            plugin_branch = bitops_plugins_configuration[plugin].source_branch
             
-            if install_branch is None and install_tag is None:
-                install_tag = "latest"
-                install_branch = "master"
+            try:
+                # Non-Entry default
+                if plugin_branch is None and plugin_tag is None:
+                    plugin_tag = "latest"
+                    plugin_branch = "master"
+                    print("Downloading plugin: [{}], from: [{}], using branch: [master]".format(plugin, plugin_source))
+                    git.Repo.clone_from(plugin_source, plugin_dir+plugin)
 
-            elif install_branch is not None and install_tag is not None:
-                install_tag=""
-                plugin_logging = ", using branch: [{}]".format(install_branch)
+                # If the plugin branch and tag are specified, default to branch
+                elif plugin_branch is not None and plugin_tag is not None:
+                    print("Downloading plugin: [{}], from: [{}], using branch: [{}]".format(plugin, plugin_source, plugin_branch))
+                    git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_branch)
 
-            else:
-                plugin_logging = ", using tag: [{}]".format(install_tag) if install_branch is None else ", using branch: [{}]".format(install_branch)
+                else:
+                    plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
+                    print("Downloading plugin: [{}], from: [{}], using branch: [{}]".format(plugin, plugin_source, plugin_pull_branch))
+                    git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_pull_branch)
+                
+                print("Plugin [{}] Download completed".format(plugin))
 
+            except git.exc.GitCommandError as exc:
+                print("Plugin [{}] Failed to download".format(plugin))
+                if bitops_logging == "verbose": print(exc)
+            
+            except Exception as exc:
+                print("Critical error: Plugin [{}] Failed to download".format(plugin))
+                if bitops_logging == "verbose": print(exc)
 
-            print("Downloading plugin: [{}], from: [{}], {}".format(plugin, source, plugin_logging))
-            git("clone", source, plugin_dir + plugin)
-            download_logging_message = "Download completed"
+            # Check if Version
+            plugin_version = bitops_plugins_configuration[plugin].version
+
+            # install plugin dependencies (install.sh)
+            install_script = plugin_dir + plugin + "/install.sh"
+            if os.path.isfile(install_script):
+                print("Installing plugin: [{}]".format(plugin))
+                result = subprocess.run(['bash', install_script, plugin_version], 
+                    universal_newlines = True,
+                    capture_output=True)
+                print(result.stdout)
+            
         else:
-            print("Plugin source cannot be empty. Plugin: [{}]".format(plugin))
-            download_logging_message = "Download did not run"
-        
-        print(download_logging_message)
-
-
-        # install plugin dependencies (install.sh)
-        install_script = plugin_dir + plugin + "/install.sh"
-        if os.path.isfile(install_script):
-            print("Installing plugin: [{}]".format(plugin))
-            result = subprocess.run(['bash', install_script], 
-                universal_newlines = True,
-                capture_output=True)
-            print(result.stdout)
+            print("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))
+    

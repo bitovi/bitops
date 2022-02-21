@@ -2,3 +2,4 @@ shyaml
 pyyaml
 envbash
 munch
+GitPython
