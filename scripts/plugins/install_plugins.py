@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from ast import Load
 import yaml
 import subprocess
 import glob
@@ -8,6 +7,7 @@ import os
 import git
 
 from .utilties import Load_Build_Config
+from ast import Load
 from munch import DefaultMunch
 
 def install_plugins():
@@ -66,7 +66,7 @@ def install_plugins():
             # Check if Version
             plugin_version = bitops_plugins_configuration[plugin].version
             
-            # Check if install script is present
+            # Check if install script config is present
             plugin_install_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
             plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
             

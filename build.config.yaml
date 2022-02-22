@@ -17,7 +17,6 @@ bitops:
     tools:
       aws:
         region: us-east-2
-        
 
       terraform-usage1:
         source: https://github.com/bitops-plugins/bitops-terraform-plugin
