@@ -1,4 +1,9 @@
 shyaml
 pyyaml
 envbash
+<<<<<<< HEAD
 munch
+=======
+munch
+GitPython
+>>>>>>> plugins-cont

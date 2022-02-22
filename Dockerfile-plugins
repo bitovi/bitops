@@ -1,2 +1,6 @@
 FROM bitops-core
+<<<<<<< HEAD
 ENTRYPOINT [ "/opt/bitops/scripts/plugins/deploy_plugins.sh" ]
+=======
+ENTRYPOINT ["python3", "/opt/bitops/scripts/plugins.py", "deploy"]
+>>>>>>> plugins-cont
