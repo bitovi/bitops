@@ -49,6 +49,7 @@ if [ "${INIT_UPGRADE}" == "True" ] || [ "${INIT_UPGRADE}" == "true" ]; then
 else
   echo "init upgrade not found in config. Skipping upgrade.."
 fi
+terraform init $upgrade
 
 if [ -n "$TERRAFORM_WORKSPACE" ]; then
   echo "Running Terraform Workspace"
