@@ -13,46 +13,45 @@ bitops:
       - terraform-usage1
       - helm
       - terraform-usage2
-
+    
     tools:
-      aws:
-        region: us-east-2
+      cloudproviders:
+        aws:
+          source: https://github.com/bitops-plugins/bitops-aws-plugin
 
-      terraform-usage1:
-        source: https://github.com/bitops-plugins/bitops-terraform-plugin
-        source_tag: v0.0.1
-        version: 0.13.0
-        logging: 
-          level: verbose
+      deployment:
+        terraform-usage1:
+          source: https://github.com/bitops-plugins/bitops-terraform-plugin
+          source_tag: v0.0.1
+          version: 0.13.0
+          logging:
+            level: verbose
+          
         
-      
-      terraform-usage2:
-        source: https://github.com/bitops-plugins/bitops-terraform-plugin
-        source_branch: test
-        version: 0.13.0
-        logging: 
-          level: verbose
+        terraform-usage2:
+          source: https://github.com/bitops-plugins/bitops-terraform-plugin
+          source_branch: test
+          version: 0.13.0
+          logging: 
+            level: verbose
 
-      helm:
-        version: 3.4.1
-        namespace: default
-        source: https://github.com/bitops-plugins/bitops-helm-plugin
-        source_branch: master
-        source_tag: v0.0.1
-        logging: 
-          level: verbose
-          file: bitops.helm.logs
-          err: bitops.helm.err
-      
-      kubectl:
-        version: 1.13.7
-        source: https://github.com/bitops-plugins/bitops-kubectl-plugin
-        install_script: install.py
-        deploy_script: deploy.py
+        helm:
+          version: 3.4.1
+          namespace: default
+          source: https://github.com/bitops-plugins/bitops-helm-plugin
+          source_branch: master
+          source_tag: v0.0.1
+          logging: 
+            level: verbose
+            file: bitops.helm.logs
+            err: bitops.helm.err
+        
+        kubectl:
+          version: 1.13.7
+          source: https://github.com/bitops-plugins/bitops-kubectl-plugin
+          install_script: install.py
+          deploy_script: deploy.py
 
-      ansible:
-        version: 2.5
-        source: https://github.com/bitops-plugins/bitops-ansible-plugin
-
-      cloudformation:
-        source: https://github.com/bitops-plugins/bitops-cloudformation-plugin
+        ansible:
+          version: 2.5
+          source: https://github.com/bitops-plugins/bitops-ansible-plugin
