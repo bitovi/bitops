@@ -1,5 +1,4 @@
 import yaml
-import shyaml
 import os
 
 config_file = "build.config.yaml"

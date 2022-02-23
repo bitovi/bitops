@@ -1,7 +1,7 @@
 import sys
 
-from plugins.deploy_plugins import deploy_plugins
-from plugins.install_plugins import install_plugins
+from plugins.deploy_plugins import Deploy_Plugins
+from plugins.install_plugins import Install_Plugins
 
 if __name__ == "__main__":
     try:
@@ -10,8 +10,9 @@ if __name__ == "__main__":
         mode = None
 
     if mode == "deploy":
-        deploy_plugins()
+        Deploy_Plugins()
     if mode == "install":
-        install_plugins()
+        Install_Plugins()
+        
     else:
         print("Mode is not specified. Please use [plugins.py install|deploy]")
