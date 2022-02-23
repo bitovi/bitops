@@ -10,7 +10,7 @@ from .utilties import Load_Build_Config
 from ast import Load
 from munch import DefaultMunch, Munch
 
-def install_plugins():
+def Install_Plugins():
     plugins_yml = Load_Build_Config()
 
     plugin_dir = "/opt/bitops/scripts/plugins/"
@@ -18,13 +18,6 @@ def install_plugins():
     bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, None)
     bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
     bitops_logging = bitops_build_configuration.bitops.logging.level
-
-    bitops_plugins_cloudproviders=DefaultMunch.fromDict(bitops_plugins_configuration["cloudproviders"], None)
-    bitops_plugins_deployment_tools=DefaultMunch.fromDict(bitops_plugins_configuration["deployment"], None)
-
-    
-    #print(bitops_build_configuration.bitops.plugins.tools)
-    #print(bitops_build_configuration.bitops.plugins.plugins_seq)
 
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
@@ -42,7 +35,7 @@ def install_plugins():
                     # Non-Entry default
                     if plugin_branch is None and plugin_tag is None:
                         plugin_tag = "latest"
-                        plugin_branch = "master"
+                        plugin_branch = "main"
                         print("Downloading plugin: [{}], from: [{}], using branch: [master]".format(plugin, plugin_source))
                         git.Repo.clone_from(plugin_source, plugin_dir+plugin)
 

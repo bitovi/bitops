@@ -47,14 +47,9 @@ def Convert_Schema(schema_file, config_file):
 
             keys_list += Parse_Yaml_To_List(schema_yaml, root_key)
             print("Schema keys: [{}]".format(keys_list))
-            
-
         except yaml.YAMLError as exc:
             print(exc)
         except Exception as exc:
             print(exc)
-        
-        
-        print("Done")
 
-    return "Finished"
+    return keys_list
