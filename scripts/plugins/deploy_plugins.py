@@ -8,11 +8,11 @@ import tempfile
 from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
-from .utilties import Load_Build_Config
+from .utilties import Load_Build_Config, Convert_Schema
 from munch import DefaultMunch
 
 
-def deploy_plugins():
+def Deploy_Plugins():
     # Temp directory setup
     print("Creating temporary directory")
     temp_dir = tempfile.mkdtemp()
@@ -23,6 +23,7 @@ def deploy_plugins():
     bitops_default_folder_name = os.environ.get("DEFAULT_FOLDER_NAME", "default")
     bitops_environment = os.environ.get("ENVIRONMENT", None)
     timeout = os.environ.get("TIMEOUT", 600)
+    bitops_debug = os.environ.get("DEBUG", None)
 
     plugins_yml = Load_Build_Config()
     bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, "bitops")
@@ -68,63 +69,92 @@ def deploy_plugins():
         quit()
 
     # Loop through plugins and invoke each
-    for plugin in bitops_plugins_configuration:
-        plugin_name = plugin
+    for plugin_config in bitops_plugins_configuration:
+        print("Preparing plugin_config: [{}]".format(plugin_config))
+        for plugin in bitops_plugins_configuration[plugin_config]:
+            plugin_name = plugin
+            print("Preparing plugin: [{}]".format(plugin_name))
 
-        # Set ENV vars
-        plugin_dir = bitops_plugins_dir + plugin_name
-        # temp/env/plugin_name
-        plugin_environment_dir = bitops_operations_dir + '/' + plugin_name
-        
-        os.environ['PLUGIN_DIR'] = plugin_dir
-        os.environ['ENVIRONMENT_DIR'] = plugin_environment_dir
+            # Set plugin vars
+            plugin_dir = bitops_plugins_dir + plugin_name
+            plugin_environment_dir = bitops_operations_dir + '/' + plugin_name
+            
+            os.environ['PLUGIN_DIR'] = plugin_dir
+            os.environ['ENVIRONMENT_DIR'] = plugin_environment_dir
 
-        # Before Hooks - START HERE TOMORROW (WTF is this?)
-        # result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
-        #     universal_newlines = True,
-        #     capture_output=True)
-        # print(result.stdout)
-
+            # Before Hooks - START HERE TOMORROW (WTF is this?)
+            # result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
+            #     universal_newlines = True,
+            #     capture_output=True)
+            # print(result.stdout)
 
 
 
-        # Reconcile BitOps config using existing shell scripts
-        print('Loading BitOps Config for plugin: [{}]'.format(plugin_name))
-        os.environ['ENV_FILE'] = plugin_dir + '/' + 'ENV_FILE'
-        bitops_schema = plugin_dir + '/' + 'bitops.schema.yaml'
-        bitops_config = plugin_environment_dir + '/' + 'bitops.config.yaml'
-        old_debug = os.environ['DEBUG'] 
-        os.environ['DEBUG'] = ''
-        cli_options = subprocess.run(['bash',os.environ['SCRIPTS_DIR']+'/bitops-config/convert-schema.sh', bitops_schema, bitops_config], 
-            universal_newlines = True,
-            capture_output=True)
-        os.environ['DEBUG'] = old_debug
 
-        # Set CLI_OTIONS
-        os.environ['CLI_OPTIONS'] = cli_options.stdout
+            # Reconcile BitOps config using existing shell scripts
+            print('Loading BitOps Config for plugin: [{}]'.format(plugin_name))
+            plugin_env_file = plugin_dir + '/' + 'ENV_FILE'
+            os.environ['ENV_FILE'] = plugin_env_file
 
-        # Source envfile
-        #envbash.load_envbash(os.environ['ENV_FILE'])
+            plugin_schema_file = plugin_dir + '/' + 'bitops.schema.yaml'
+            plugin_config_file = plugin_environment_dir + '/' + 'bitops.config.yaml'
+            bitops_convert_schema_file = bitops_scripts_dir+'/bitops-config/convert-schema.sh'
+            
+            # os.environ['DEBUG'] = ''
+            print("Loading converter file: [{}]".format(bitops_convert_schema_file))
+            print("Loading schema file: [{}]".format(plugin_schema_file))
+            print("loading config file: [{}]".format(plugin_config_file))
+            print("loading ENV_FILE   : [{}]".format(plugin_env_file)) # Something seems wrong with this. 
+            
+            
+            plugin_cli_options = Convert_Schema(plugin_schema_file, plugin_config_file)
 
-        # Check if install script is present
-        plugin_install_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
-        plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
 
-        # Invoke Plugin
-        print('Calling ' + plugin_dir + '/deploy.sh')
-        # Wait for processes to complete.
-        # if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible' or plugin_name == 'cloudformation':
-        #     result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
-        #     result.wait(timeout = 600)
-        #     print("Result from command....")
-        #     print(result.stdout)
-        # else:
-        result = subprocess.run([plugin_install_language, plugin_dir + '/deploy.sh'], 
-            universal_newlines = True,
-            capture_output=True)
 
-        # After hooks
-        result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
+
+            # try:
+            #     cli_options = subprocess.run(["bash", bitops_convert_schema_file, plugin_schema_file, plugin_config_file], 
+            #         universal_newlines = True,
+            #         capture_output=True,
+            #         shell=True)
+            
+            # except Exception as e:
+            #     print(e)
+
+
+            quit()
+                           
+            # os.environ['DEBUG'] = bitops_debug
+
+            # Set CLI_OTIONS
+            os.environ['CLI_OPTIONS'] = cli_options.stdout
+
+            print("Check here")
+            print(cli_options.stdout)
+            quit()
+
+            # Source envfile
+            #envbash.load_envbash(os.environ['ENV_FILE'])
+
+            # Check if install script is present
+            plugin_install_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
+            plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
+
+            # Invoke Plugin
+            print('Calling ' + plugin_dir + '/deploy.sh')
+            # Wait for processes to complete.
+            # if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible' or plugin_name == 'cloudformation':
+            #     result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
+            #     result.wait(timeout = 600)
+            #     print("Result from command....")
+            #     print(result.stdout)
+            # else:
+            result = subprocess.run([plugin_install_language, plugin_dir + '/deploy.sh'], 
+                universal_newlines = True,
+                capture_output=True)
+
+            # After hooks
+            result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
             universal_newlines = True,
             capture_output=True)
         print(result.stdout)
