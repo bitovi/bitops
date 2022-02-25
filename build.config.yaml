@@ -2,6 +2,8 @@ bitops:
   project:
     source: local
   
+  fail_fast: True
+  
   logging: 
     level: verbose
     file: bitops.logs
