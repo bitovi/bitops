@@ -19,11 +19,11 @@ bitops:
     tools:
       cloudproviders:
         aws:
-          source: https://github.com/bitops-plugins/bitops-aws-plugin
+          source: https://github.com/bitops-plugins/aws
 
       deployment:
         terraform-usage1:
-          source: https://github.com/bitops-plugins/bitops-terraform-plugin
+          source: https://github.com/bitops-plugins/terraform
           source_tag: v0.0.1
           version: 0.13.0
           logging:
