@@ -55,7 +55,7 @@ def Deploy_Plugins():
     os.environ["PLUGINS_DIR"] = bitops_plugins_dir
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
     os.environ["KUBE_CONFIG_FILE"] = "{}/.kube/config".format(temp_dir)
-    os.environ["PATH"] = "/root/.local/bin:$PATH"
+    os.environ["PATH"] = "/root/.local/bin:/bin:$PATH"
 
     # Global environment evaluation
     if bitops_environment is None:
@@ -140,6 +140,8 @@ def Deploy_Plugins():
             
             except Exception as exc:
                 logger.error(exc)
+                if BITOPS_fast_fail_mode: quit(101)
+                
             # After hooks
             # result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
             # universal_newlines = True,
