@@ -12,6 +12,8 @@ from .settings import BITOPS_fast_fail_mode, BITOPS_config_file
 from .logging import logger
 
 class SchemaObject:
+    properties = ["export_env", "default", "enabled", "type", "parameter"]
+    
     def __init__(self, name, schema_key, schema_property_type, schema_property_values=None):
         self.name = name
         self.schema_key = schema_key
@@ -24,14 +26,13 @@ class SchemaObject:
         self.value = ""
         self.type = ""
 
-        self.properties = ["export_env", "default", "enabled", "type"]
-
         if schema_property_values:
             for property in self.properties:
                 try:
-                    logger.debug("Schema Object setting attribute: [{}] values: [{}]".format(property, schema_property_values))
+                    logger.debug("Schema Object setting attribute: [{}] value: [{}] from values: [{}]".format(property, schema_property_values[property], schema_property_values))
                     setattr(self, property, schema_property_values[property])
                 except KeyError as exc:
+                    setattr(self, property, None)
                     if BITOPS_fast_fail_mode:
                         raise exc
                     else:
@@ -39,12 +40,6 @@ class SchemaObject:
             
     def __str__(self):
         return "Schema Poperty Name: [{}]\nSchema Key: [{}]\nConfig Key: [{}]\nSchema Property Type: [{}]\nValue Set To: [{}]\nSchema Properties:\n\texport_env: [{}]\n\tdefault: [{}]\n\ttype: [{}]\n".format(self.name, self.schema_key, self.config_key, self.schema_property_type, self.value, self.export_env, self.default, self.type)
-            
-    def AddProperties(self, property, value):
-        if property == "export_env": self.export_env = value
-        if property == "default": self.default = value
-        if property == "enabled": self.enabled = value
-        if property == "type": self.type = value
     
     def ProcessConfig(self, config_yaml):
         if self.type == "object": return
@@ -59,7 +54,7 @@ class SchemaObject:
             self.value = found_config_value
         else:
             self.value = self.default
-
+        
         AddValueToEnv(self.export_env, self.value)
 
 def Load_Yaml(yaml_file):
@@ -140,9 +135,8 @@ def Get_Config_List(schema_file, config_file):
     logger.debug("Schema keys: [{}]".format(schema_keys_list))
     
     ignore_values = ["type", "properties", "cli", "options", root_key]
-    property_values = ["export_env", "default", "type"]
     
-    schema_properties_list = [item for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in property_values]
+    schema_properties_list = [item for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in SchemaObject.properties]
     schema_list = []
     
     for schema_properties in schema_properties_list:
