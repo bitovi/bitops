@@ -118,7 +118,7 @@ def Deploy_Plugins():
             #envbash.load_envbash(os.environ['ENV_FILE'])
 
             # Check if install script is present
-            plugin_install_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
+            plugin_install_script = bitops_plugins_configuration[plugin_config][plugin].install_script  if bitops_plugins_configuration[plugin_config][plugin].install_script else "install.sh"
             plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
 
             # Invoke Plugin
@@ -130,12 +130,14 @@ def Deploy_Plugins():
             #     logger.info("Result from command....")
             #     logger.info(result.stdout)
             # else:
+
             result = subprocess.run([plugin_install_language, plugin_dir + '/deploy.sh'], 
                 universal_newlines = True,
-                capture_output=True)
+                capture_output=True, 
+                shell=True)
 
             # After hooks
-            result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
-            universal_newlines = True,
-            capture_output=True)
-        logger.info(result.stdout)
+            # result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
+            # universal_newlines = True,
+            # capture_output=True)
+            logger.info(result.stdout)
