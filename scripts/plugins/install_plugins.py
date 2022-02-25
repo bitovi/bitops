@@ -9,6 +9,7 @@ import git
 from .utilties import Load_Build_Config
 from ast import Load
 from munch import DefaultMunch, Munch
+from .logging import logger
 
 def Install_Plugins():
     plugins_yml = Load_Build_Config()
@@ -21,10 +22,10 @@ def Install_Plugins():
 
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
-        print("Preparing plugin_config: [{}]".format(plugin_config))
+        logger.info("Preparing plugin_config: [{}]".format(plugin_config))
         for plugin in bitops_plugins_configuration[plugin_config]:
         
-            print("Preparing plugin: [{}]".format(plugin))
+            logger.info("Preparing plugin: [{}]".format(plugin))
             plugin_source = bitops_plugins_configuration[plugin_config][plugin].source
             
             if plugin_source is not None:
@@ -36,28 +37,28 @@ def Install_Plugins():
                     if plugin_branch is None and plugin_tag is None:
                         plugin_tag = "latest"
                         plugin_branch = "main"
-                        print("Downloading plugin: [{}], from: [{}], using branch: [master]".format(plugin, plugin_source))
+                        logger.info("Downloading plugin: [{}], from: [{}], using branch: [master]".format(plugin, plugin_source))
                         git.Repo.clone_from(plugin_source, plugin_dir+plugin)
 
                     # If the plugin branch and tag are specified, default to branch
                     elif plugin_branch is not None and plugin_tag is not None:
-                        print("Downloading plugin: [{}], from: [{}], using branch: [{}]".format(plugin, plugin_source, plugin_branch))
+                        logger.info("Downloading plugin: [{}], from: [{}], using branch: [{}]".format(plugin, plugin_source, plugin_branch))
                         git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_branch)
 
                     else:
                         plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
-                        print("Downloading plugin: [{}], from: [{}], using branch: [{}]".format(plugin, plugin_source, plugin_pull_branch))
+                        logger.info("Downloading plugin: [{}], from: [{}], using branch: [{}]".format(plugin, plugin_source, plugin_pull_branch))
                         git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_pull_branch)
                     
-                    print("Plugin [{}] Download completed".format(plugin))
+                    logger.info("Plugin [{}] Download completed".format(plugin))
 
                 except git.exc.GitCommandError as exc:
-                    print("Plugin [{}] Failed to download".format(plugin))
-                    if bitops_logging == "verbose": print(exc)
+                    logger.warning("Plugin [{}] Failed to download".format(plugin))
+                    if bitops_logging == "verbose": logger.warn(exc)
                 
                 except Exception as exc:
-                    print("Critical error: Plugin [{}] Failed to download".format(plugin))
-                    if bitops_logging == "verbose": print(exc)
+                    logger.error("Critical error: Plugin [{}] Failed to download".format(plugin))
+                    if bitops_logging == "verbose": logger.error(exc)
 
                 # Check if Version
                 plugin_version = bitops_plugins_configuration[plugin_config][plugin].version
@@ -68,16 +69,16 @@ def Install_Plugins():
                 
                 # install plugin dependencies (install.sh)
                 plugin_install_script_path = plugin_dir + plugin + "/{}".format(plugin_install_script)
-                print("Install Command: [{} {} {}]".format(plugin_install_language, plugin_install_script_path, plugin_version))
+                logger.info("Install Command: [{} {} {}]".format(plugin_install_language, plugin_install_script_path, plugin_version))
                 if os.path.isfile(plugin_install_script_path):
                     result = subprocess.run([plugin_install_language, plugin_install_script_path, "{}".format(plugin_version)], 
                         universal_newlines = True,
                         capture_output=True, 
                         shell=True)
-                    print(result.stdout)
+                    # logger.info(result.stdout)
                 else:
-                    print("File does not exist: [{}]".format(plugin_install_script_path))
+                    logger.info("File does not exist: [{}]".format(plugin_install_script_path))
                 
             else:
-                print("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))
+                logger.info("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))
         
