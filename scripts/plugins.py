@@ -1,10 +1,12 @@
 import sys
+import os
 import plugins.settings
 
 from plugins.deploy_plugins import Deploy_Plugins
 from plugins.install_plugins import Install_Plugins
 from plugins.utilties import Get_Config_List
-from plugins.logging import logging
+from plugins.logging import logger
+from scripts.plugins.settings import BITOPS_logging_level
 
 
 if __name__ == "__main__":
@@ -12,6 +14,8 @@ if __name__ == "__main__":
         mode = sys.argv[1]
     except IndexError:
         mode = None
+
+    logger.debug(os.environ)
 
     if mode == "deploy":
         Deploy_Plugins()
