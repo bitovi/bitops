@@ -15,10 +15,8 @@ from munch import DefaultMunch, Munch
 def Install_Plugins():
     bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
     bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
-    bitops_logging = bitops_build_configuration.bitops.logging.level
 
     plugin_dir = "/opt/bitops/scripts/plugins/"
-
 
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:

@@ -117,9 +117,10 @@ def Deploy_Plugins():
             # Check if install script is present
             plugin_install_script = bitops_plugins_configuration[plugin_config][plugin].install_script  if bitops_plugins_configuration[plugin_config][plugin].install_script else "install.sh"
             plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
+            plugin_install_script_path = plugin_dir + '/deploy.sh'
 
             # Invoke Plugin
-            logger.info('Calling ' + plugin_dir + '/deploy.sh')
+            logger.info('Calling {}'.format(plugin_install_script_path))
             # Wait for processes to complete.
             # if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible' or plugin_name == 'cloudformation':
             #     result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
@@ -129,13 +130,18 @@ def Deploy_Plugins():
             # else:
 
             # result = subprocess.run([plugin_install_language, plugin_dir + '/deploy.sh'], 
-            result = subprocess.run(["." + plugin_dir + '/deploy.sh'], 
-                universal_newlines = True,
-                capture_output=True, 
-                shell=True)
-
+            
+            # Add executable flag to deploy.sh
+            os.chmod(plugin_install_script_path, 775)
+            try:
+                result = subprocess.run([plugin_install_script_path], 
+                    universal_newlines = True,
+                    capture_output=True)
+            
+            except Exception as exc:
+                logger.error(exc)
             # After hooks
             # result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
             # universal_newlines = True,
             # capture_output=True)
-            logger.info(result.stdout)
+            logger.critical(result)

@@ -17,7 +17,7 @@ ENV GLIBC_VER=2.31-r0
 RUN mkdir -p /opt/bitops
 
 WORKDIR /opt/bitops
-COPY build.config.yaml .
+COPY bitops.config.yaml .
 COPY requirements.txt .
 COPY scripts/ ./scripts
 
@@ -26,4 +26,7 @@ RUN pip3 install -r requirements.txt
 ONBUILD WORKDIR /opt/bitops
 # ONBUILD COPY scripts/ ./scripts has proven quite useful for rapid testing. Please keep in while testing. 
 ONBUILD COPY scripts/ ./scripts
+ONBUILD COPY bitops.config.yaml .
+ONBUILD COPY cloudformation.schema.yaml .
+ONBUILD COPY cloudformation.config.yaml .
 ONBUILD RUN python3 scripts/plugins.py install

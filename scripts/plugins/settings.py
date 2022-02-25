@@ -4,7 +4,7 @@ import yaml
 from munch import DefaultMunch
 
 # Configuration files
-BITOPS_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML", "build.config.yaml")
+BITOPS_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML", "bitops.config.yaml")
 with open(BITOPS_config_file, 'r') as stream:    
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
