@@ -6,19 +6,19 @@ import os.path
 import os
 import git
 
-from .utilties import Load_Build_Config
+from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode
+from .logging import logger
 from ast import Load
 from munch import DefaultMunch, Munch
-from .logging import logger
+
 
 def Install_Plugins():
-    plugins_yml = Load_Build_Config()
+    bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
+    bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
+    bitops_logging = bitops_build_configuration.bitops.logging.level
 
     plugin_dir = "/opt/bitops/scripts/plugins/"
 
-    bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, None)
-    bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
-    bitops_logging = bitops_build_configuration.bitops.logging.level
 
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
@@ -53,12 +53,14 @@ def Install_Plugins():
                     logger.info("Plugin [{}] Download completed".format(plugin))
 
                 except git.exc.GitCommandError as exc:
-                    logger.warning("Plugin [{}] Failed to download".format(plugin))
-                    if bitops_logging == "verbose": logger.warn(exc)
+                    logger.warn("Plugin [{}] Failed to download".format(plugin))
+                    logger.warn(exc)
+                    if BITOPS_fast_fail_mode: quit()
                 
                 except Exception as exc:
                     logger.error("Critical error: Plugin [{}] Failed to download".format(plugin))
-                    if bitops_logging == "verbose": logger.error(exc)
+                    logger.error(exc)
+                    if BITOPS_fast_fail_mode: quit()
 
                 # Check if Version
                 plugin_version = bitops_plugins_configuration[plugin_config][plugin].version

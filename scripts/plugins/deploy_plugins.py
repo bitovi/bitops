@@ -7,8 +7,8 @@ import tempfile
 from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
-from .utilties import Load_Build_Config, Get_Config_List
-from .settings import BITOPS_fast_fail_mode
+from .utilities import Get_Config_List
+from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml
 from .logging import logger
 from munch import DefaultMunch
 
@@ -26,8 +26,7 @@ def Deploy_Plugins():
     timeout = os.environ.get("TIMEOUT", 600)
     bitops_debug = os.environ.get("DEBUG", None)
 
-    plugins_yml = Load_Build_Config()
-    bitops_build_configuration = DefaultMunch.fromDict(plugins_yml, "bitops")
+    bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, "bitops")
     bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
 
     BITOPS_fast_fail_mode = DefaultMunch.fromDict(bitops_build_configuration.bitops.fail_fast, False)
@@ -85,7 +84,7 @@ def Deploy_Plugins():
             os.environ['PLUGIN_DIR'] = plugin_dir
             os.environ['ENVIRONMENT_DIR'] = plugin_environment_dir
 
-            # Before Hooks - START HERE TOMORROW (WTF is this?)
+            # Before Hooks
             # result = subprocess.run(['bash', bitops_dir + '/deploy/before-deploy.sh', environment_dir], 
             #     universal_newlines = True,
             #     capture_output=True)

@@ -7,7 +7,6 @@ from plugins.utilties import Get_Config_List
 from plugins.logging import logging
 
 
-
 if __name__ == "__main__":
     try:
         mode = sys.argv[1]
