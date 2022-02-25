@@ -31,7 +31,7 @@ bitops:
           
         
         terraform-usage2:
-          source: https://github.com/bitops-plugins/bitops-terraform-plugin
+          source: https://github.com/bitops-plugins/terraform
           source_branch: test
           version: 0.13.0
           logging: 
