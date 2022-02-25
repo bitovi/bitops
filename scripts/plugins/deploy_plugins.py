@@ -98,12 +98,10 @@ def Deploy_Plugins():
 
             plugin_schema_file = plugin_dir + '/' + 'bitops.schema.yaml'
             plugin_config_file = plugin_environment_dir + '/' + 'bitops.config.yaml'
-            bitops_convert_schema_file = bitops_scripts_dir+'/bitops-config/convert-schema.sh'
             
             # os.environ['DEBUG'] = ''
             logger.info("Loading schema file: [{}]".format(plugin_schema_file))
             logger.info("loading config file: [{}]".format(plugin_config_file))
-            logger.debug("Loading converter file: [{}]".format(bitops_convert_schema_file))
             logger.debug("loading ENV_FILE   : [{}]".format(plugin_env_file)) # Something seems wrong with this. 
                         
             cli_config_list, options_config_list = Get_Config_List(plugin_schema_file, plugin_config_file)
@@ -130,7 +128,8 @@ def Deploy_Plugins():
             #     logger.info(result.stdout)
             # else:
 
-            result = subprocess.run([plugin_install_language, plugin_dir + '/deploy.sh'], 
+            # result = subprocess.run([plugin_install_language, plugin_dir + '/deploy.sh'], 
+            result = subprocess.run(["." + plugin_dir + '/deploy.sh'], 
                 universal_newlines = True,
                 capture_output=True, 
                 shell=True)
