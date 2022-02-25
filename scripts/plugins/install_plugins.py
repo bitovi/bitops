@@ -75,7 +75,7 @@ def Install_Plugins():
                         universal_newlines = True,
                         capture_output=True, 
                         shell=True)
-                    # logger.info(result.stdout)
+                    logger.info("results from [{}]: [{}]".format(plugin_install_script_path, result.stdout))
                 else:
                     logger.info("File does not exist: [{}]".format(plugin_install_script_path))
                 
