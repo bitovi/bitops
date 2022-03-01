@@ -27,10 +27,11 @@ bitops:
 # <ins>Configuration explanation</ins>
 ---
 ## <ins>ops_repo</ins>
-Describes the application folder source. 
+## ops_repo.source
 #### *Expected Values*
   - "local"
-  - A url to project code (Github)
+  - A https url to project code (Github)
+    - example: https://github.com/PhillypHenning/test-opsrepo.git
 #### *Usage*
   ````
   ```
