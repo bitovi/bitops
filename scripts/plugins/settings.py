@@ -14,8 +14,7 @@ BITOPS_run_mode = os.environ.get("BITOPS_MODE", "default") # ["default", "testin
 BITOPS_logging_level = os.environ.get("BITOPS_LOGGING_LEVEL", "INFO").upper
 
 
-
-
 # Updating from Bitops build config
 bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
 bitops_build_configuration.bitops.fast_fail
+BITOPS_opsrepo_source = bitops_build_configuration.bitops.ops_repo.source

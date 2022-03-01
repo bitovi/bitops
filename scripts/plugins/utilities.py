@@ -8,7 +8,7 @@ from munch import DefaultMunch
 from itertools import chain
 from logging import root
 from xml.etree.ElementTree import tostring
-from .settings import BITOPS_fast_fail_mode, BITOPS_config_file, BITOPS_config_yaml
+from .settings import BITOPS_fast_fail_mode, BITOPS_config_file
 from .logging import logger
 
 class SchemaObject:
@@ -21,10 +21,11 @@ class SchemaObject:
         self.schema_property_type = schema_property_type
 
         self.export_env = ""
-        self.default = ""
+        self.default = "NO DEFAULT FOUND"
         self.enabled = ""
         self.value = ""
         self.type = ""
+        self.parameter = ""
 
         if schema_property_values:
             for property in self.properties:
@@ -47,9 +48,7 @@ class SchemaObject:
         result = Get_Nested_Item(config_yaml, self.config_key)
         found_config_value = Apply_Data_Type(self.type, result)
         
-        if found_config_value is None or found_config_value == "None":
-            self.value = "BAD_CONFIG"
-        elif found_config_value != "":
+        if found_config_value != "":
             logger.info("Override found for: [{}], default: [{}], new value: [{}]".format(self.name, self.default, found_config_value))
             self.value = found_config_value
         else:
@@ -60,12 +59,17 @@ class SchemaObject:
 def Load_Yaml(yaml_file):
     with open(yaml_file, 'r') as stream:
         try:
-            yml = yaml.load(stream, Loader=yaml.FullLoader)
+            plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
             logger.error(exc)
         except Exception as exc:
             logger.error(exc)
-    return yml
+    return plugins_yml
+
+def Load_Build_Config():
+    logger.info("Loading {}".format(BITOPS_config_file))
+    # Load plugin config yml
+    return Load_Yaml(BITOPS_config_file)
 
 def Apply_Data_Type(data_type, convert_value):
     if re.search("list", data_type, re.IGNORECASE):

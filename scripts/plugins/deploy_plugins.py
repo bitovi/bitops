@@ -3,12 +3,13 @@ import subprocess
 import yaml
 import envbash
 import tempfile
+import git
 
 from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
 from .utilities import Get_Config_List
-from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml
+from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml, BITOPS_opsrepo_source
 from .logging import logger
 from munch import DefaultMunch
 
@@ -42,6 +43,8 @@ def Deploy_Plugins():
     bitops_operations_dir = "{}/{}".format(temp_dir, bitops_environment)
     bitops_scripts_dir = "{}/scripts".format(bitops_dir)
 
+    PATH = os.environ.get("PATH")
+    PATH += ":/root/.local/bin"
 
 
     # Cleanup - Call all teardown scripts - TODO
@@ -55,13 +58,19 @@ def Deploy_Plugins():
     os.environ["PLUGINS_DIR"] = bitops_plugins_dir
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
     os.environ["KUBE_CONFIG_FILE"] = "{}/.kube/config".format(temp_dir)
-    os.environ["PATH"] = "/root/.local/bin:/bin:$PATH"
+    os.environ["PATH"] = PATH
 
     # Global environment evaluation
     if bitops_environment is None:
         logger.error("ENVIRONMENT variables must be set... Exiting")
         quit()
 
+    # If a OpsRepo is specified, clone it to the bitops_deployment_dir
+    if BITOPS_opsrepo_source != "local":
+        logger.info("Downloading OpsRepo from: [{}]".format(BITOPS_opsrepo_source))
+        git.Repo.clone_from(BITOPS_opsrepo_source, bitops_deployment_dir)
+    logger.info("OpsRepo sourced from: [{}]".format(BITOPS_opsrepo_source))
+    
     # Move to temp directory
     copy_tree(bitops_deployment_dir, temp_dir)
 
@@ -69,6 +78,8 @@ def Deploy_Plugins():
     if bitops_plugins_configuration is None:
         logger.error("No plugins found. Exiting {}".format(__file__))
         quit()
+
+    logger.info("\n\n\n~#~#~#~ DEPLOYING PLUGINS ~#~#~#~")
 
     # Loop through plugins and invoke each
     for plugin_config in bitops_plugins_configuration:

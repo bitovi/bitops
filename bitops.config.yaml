@@ -1,5 +1,6 @@
 bitops:
-  project:
+
+  ops_repo:
     source: local
   
   fail_fast: True
@@ -8,7 +9,6 @@ bitops:
     level: verbose
     file: bitops.logs
     err: bitops.logs
-    rotation: 3
     
   plugins:
     plugins_seq:
@@ -17,7 +17,7 @@ bitops:
       - terraform-usage2
     
     tools:
-      cloudproviders:
+      initialization:
         aws:
           source: https://github.com/bitops-plugins/aws
 

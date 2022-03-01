@@ -2,7 +2,8 @@
 ## Schema
 ```
 bitops:
-  source: <value>
+  ops_repo:
+    source: <value>
   fail_fast: <value>
   logging:
     level: <value>
@@ -25,7 +26,7 @@ bitops:
 
 # <ins>Configuration explanation</ins>
 ---
-## <ins>source</ins>
+## <ins>ops_repo</ins>
 Describes the application folder source. 
 #### *Expected Values*
   - "local"
@@ -80,7 +81,7 @@ What logging level BitOps will run with.
 Describes the sequence of execution that will be performed during the deployment tools execution.
 
 #### *Expected Values*
-Should use the same values as the alias names given to the deployment tools.
+- Should use the same values as the alias names given to the deployment tools.
 
 #### *Usage*
   ````
