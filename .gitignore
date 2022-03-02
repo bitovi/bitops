@@ -9,3 +9,5 @@ credentials
 
 # Employee
 NOTES.md
+cloudformation.config.yaml
+cloudformation.schema.yaml

@@ -9,7 +9,7 @@ with open(BITOPS_config_file, 'r') as stream:
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
 # BitOps run options
-BITOPS_fast_fail_mode = os.environ.get("BITOPS_FAST_FAIL", False)
+BITOPS_fast_fail_mode = os.environ.get("BITOPS_FAST_FAIL", True)
 BITOPS_run_mode = os.environ.get("BITOPS_MODE", "default") # ["default", "testing"]
 BITOPS_logging_level = os.environ.get("BITOPS_LOGGING_LEVEL", "INFO").upper
 

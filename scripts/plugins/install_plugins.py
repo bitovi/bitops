@@ -66,6 +66,8 @@ def Install_Plugins():
                 # Check if install script config is present
                 plugin_install_script = bitops_plugins_configuration[plugin_config][plugin].install_script  if bitops_plugins_configuration[plugin_config][plugin].install_script else "install.sh"
                 plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
+
+                # Check the file ext - if not bash or python fail
                 
                 # install plugin dependencies (install.sh)
                 plugin_install_script_path = plugin_dir + plugin + "/{}".format(plugin_install_script)
