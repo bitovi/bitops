@@ -38,9 +38,9 @@ nav:
   - Lifecycle: lifecycle.md
   - Examples: examples.md
   - Contributing:
-    - Contributing Guide: contributing/contributing.md
-    - Development Guide: contributing/development.md
-    - DCO: contributing/DCO.md
+    - Contributing Guide: contributing.md
+    - Development Guide: development/development.md
+    - DCO: development/DCO.md
     - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
     - License: license.md
 
