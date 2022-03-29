@@ -1,0 +1,6 @@
+terraform:
+    cli: {}
+    options:
+        command: apply
+        init-upgrade: true
+
