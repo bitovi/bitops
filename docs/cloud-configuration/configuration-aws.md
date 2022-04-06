@@ -23,6 +23,15 @@ AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general
 AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 
 -------------------
+### aws_session_token
+* **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
+* **Environment Variable:** `AWS_SESSION_TOKEN`
+* **default:** `""`
+* **required:** no
+
+AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
+
+-------------------
 ### aws_default_region
 * **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
 * **Environment Variable:** `AWS_DEFAULT_REGION`
