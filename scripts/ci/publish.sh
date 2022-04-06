@@ -75,7 +75,6 @@ echo "Building the docker image"
 docker build -t ${IMAGE_NAME} .
 
 #docker image deploy function
-aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URL}
 echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
 docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
 
