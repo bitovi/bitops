@@ -2,8 +2,7 @@ name: Build and Publish
 
 on:
   push:
-    branches: [ handle-aws-sso ]
-    # branches: [ master ]
+    branches: [ master ]
     tags:
       - "*"
     paths-ignore:
