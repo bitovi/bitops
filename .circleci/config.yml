@@ -7,7 +7,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - handle-aws-sso
             tags:
               only:
                 - "/.*/"
@@ -45,6 +45,7 @@ jobs:
             export AWS_SECRET_ACCESS_KEY="${BITOPS_AWS_SECRET_ACCESS_KEY}"
 
             # publish setup
+            export BITOPS_DOCKER_IMAGE_PUBLISH_TAG="handle-aws-sso"
             export BITOPS_DOCKER_IMAGE_PUBLISH_SKIP_SHA="1"
             export BITOPS_DOCKER_IMAGE_NAME="${CIRCLE_PROJECT_REPONAME}" # bitops
             export BITOPS_GIT_TAG="${CIRCLE_TAG}"
