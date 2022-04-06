@@ -8,9 +8,6 @@ workflows:
             branches:
               only:
                 - handle-aws-sso
-            tags:
-              only:
-                - "/.*/"
   docs:
     jobs:
     - deploy-docs:
