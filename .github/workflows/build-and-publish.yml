@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    # TODO: when we have tests
     # - run: |
     #   ./scripts/ci/install.sh
-    # - run: |
     #   ./scripts/ci/test.sh
     - name: Publish Docker
       env:
