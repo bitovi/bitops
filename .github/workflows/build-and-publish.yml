@@ -17,7 +17,7 @@ jobs:
     # - run: |
     #   ./scripts/ci/install.sh
     #   ./scripts/ci/test.sh
-    - name: Publish Docker
+    - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "master"
