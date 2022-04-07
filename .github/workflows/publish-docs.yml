@@ -2,16 +2,18 @@ name: Publish Docs
 
 on:
   push:
-    branches: [ master ]
+    branches: [ fix-gha-docs-pipeline ]
+    # branches: [ master ]
     tags:
       - "*"
     paths:
       - "docs/**"
       - "mkdocs.yml"
+      - ".github/workflows/publish-docs.yml"
 
 jobs:
   publish:
-    runs-on: cimg/python:3.7
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
@@ -20,6 +22,7 @@ jobs:
     #       fingerprints:
     #         - "0a:83:f3:84:67:25:97:33:af:42:38:77:dc:29:60:8f"
     - name: Publish Docs
+      uses: docker://cimg/python:3.7
       run: |
         pip install mkdocs mkdocs-material
         mkdocs gh-deploy -c -m "[ci skip]"
