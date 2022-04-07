@@ -2,8 +2,7 @@ name: Publish Docs
 
 on:
   push:
-    branches: [ fix-gha-docs-pipeline ]
-    # branches: [ master ]
+    branches: [ master ]
     tags:
       - "*"
     paths:
@@ -16,11 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    # TODO: this was from circleci - do we need it for GHA?
-    # - add_ssh_keys:
-    #       fingerprints:
-    #         - "0a:83:f3:84:67:25:97:33:af:42:38:77:dc:29:60:8f"
     - name: Publish Docs
       uses: mhausenblas/mkdocs-deploy-gh-pages@master
       env:
