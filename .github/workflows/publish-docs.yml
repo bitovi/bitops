@@ -22,6 +22,7 @@ jobs:
     #       fingerprints:
     #         - "0a:83:f3:84:67:25:97:33:af:42:38:77:dc:29:60:8f"
     - name: Publish Docs
-      run: |
-        pip install mkdocs mkdocs-material
-        mkdocs gh-deploy -c -m "[ci skip]"
+      uses: mhausenblas/mkdocs-deploy-gh-pages@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CONFIG_FILE: mkdocs.yml
