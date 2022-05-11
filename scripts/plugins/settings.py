@@ -1,11 +1,25 @@
-import os
+import os, sys
 import yaml
+import argparse
 
 from munch import DefaultMunch
 
+
+parser = argparse.ArgumentParser(description='Add BitOps Usage')
+parser.add_argument('--bitops_config_file', "-c", help='BitOps source usage information here')
+
+BITOPS_CL_args, unknowns = parser.parse_known_args()
+
 # Configuration files
-BITOPS_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML", "bitops.config.yaml")
-with open(BITOPS_config_file, 'r') as stream:    
+#BITOPS_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML", "bitops.config.yaml")
+BITOPS_ENV_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML") 
+BITOPS_config_file = BITOPS_ENV_config_file                         \
+    if BITOPS_ENV_config_file is not None                        \
+    else BITOPS_CL_args.bitops_config_file               \
+        if BITOPS_CL_args.bitops_config_file is not None  \
+        else "bitops.config.yaml"
+
+with open(BITOPS_config_file, 'r') as stream:
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
 # Updating from Bitops build config
