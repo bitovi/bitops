@@ -1,9 +1,10 @@
 bitops:
 
   ops_repo:
-    source: local
+    source_from: local
   
-  fail_fast: True
+  fail_fast: true
+  run_mode: default
   
   logging: 
     level: verbose
