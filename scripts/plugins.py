@@ -13,13 +13,13 @@ if __name__ == "__main__":
     except IndexError:
         mode = None
     
-    logger.info("\n\n\n~#~#~#~ BITOPS CONFIGURATION ~#~#~#~\
+    logger.info("\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~\
     \n\tFAIL FAST: [{fail_fast}]\
     \n\tRUN MODE: [{run_mode}]\
     \n\tLOGGING LEVEL: [{log_level}]\
     \n\tBITOPS SOURCE: [{github_source}]\
     \n\tBITOPS CONFIG FILE: [{config_file}]\
-    \n\n\n\
+    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n\
     ".format(\
         fail_fast=plugins.settings.BITOPS_fast_fail_mode, \
         run_mode=plugins.settings.BITOPS_run_mode, \

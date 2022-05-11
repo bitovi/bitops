@@ -83,10 +83,10 @@ def Deploy_Plugins():
 
     # Loop through plugins and invoke each
     for plugin_config in bitops_plugins_configuration:
-        logger.info("Preparing plugin_config: [{}]".format(plugin_config))
+        logger.info("\n\t\tPreparing plugin_config: [{}]".format(plugin_config))
         for plugin in bitops_plugins_configuration[plugin_config]:
             plugin_name = plugin
-            logger.info("Preparing plugin: [{}]".format(plugin_name))
+            logger.info("\n\t\t\tPreparing plugin: [{}]".format(plugin_name))
 
             # Set plugin vars
             plugin_dir = bitops_plugins_dir + plugin_name

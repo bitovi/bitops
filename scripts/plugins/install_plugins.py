@@ -20,10 +20,10 @@ def Install_Plugins():
 
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
-        logger.info("Preparing plugin_config: [{}]".format(plugin_config))
+        logger.info("\n\t\tPreparing plugin_config: [{}]".format(plugin_config))
         for plugin in bitops_plugins_configuration[plugin_config]:
         
-            logger.info("Preparing plugin: [{}]".format(plugin))
+            logger.info("\n\t\t\tPreparing plugin: [{}]".format(plugin))
             plugin_source = bitops_plugins_configuration[plugin_config][plugin].source
             
             if plugin_source is not None:
@@ -77,7 +77,7 @@ def Install_Plugins():
                         universal_newlines = True,
                         capture_output=True, 
                         shell=True)
-                    logger.info("results from [{}]: [{}]".format(plugin_install_script_path, result.stdout))
+                    logger.info("results from [{}] ReturnCode: [{}]".format(plugin_install_script_path, result.returncode))
                 else:
                     logger.info("File does not exist: [{}]".format(plugin_install_script_path))
                 

@@ -76,3 +76,75 @@ See [Releases](https://github.com/bitovi/bitops/releases).
 ## License
 
 [MIT License](/license).
+
+
+
+
+
+<hr/>
+
+[<img src="docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png" width="250"/>](docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
+
+---------------------
+
+[![LICENSE](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
+[![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
+[![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](docs/operations-repo-structure.md).
+
+https://bitovi.github.io/bitops/
+
+
+
+... CONTENT ...
+
+
+## Using BitOps
+
+## Features that need to be noted; 
+Run modes = install, deploy, setting-test
+Variables are set in the following order; ENV_VAR, config_file, default
+
+
+### Rapid Testing
+#### Build the core image
+```
+docker build -t bitops-core:latest -f Dockerfile-core .
+```
+
+#### Build the plugins image
+```
+docker build -t test-plugins:latest -f Dockerfile-plugins .
+```
+
+**What does this do?**
+
+OS/Arch: `linux/386`
+
+Installed tools: 
+  - unzip
+  - git
+  - jq
+  - curl
+  - wget
+  - python3.8.6
+  - pip
+
+Source folders copied:
+  - bitops.config.yaml
+  - requirements.txt
+  - scripts/
+
+[Docker OnBuild](https://docs.docker.com/engine/reference/builder/#onbuild) instructions:
+  - Changes workdir to `/opt/bitops`
+  - Copies files/folders:
+    - `scripts/`
+    - `bitops.config.yaml`
+  - Runs BitOps install
+
+
+
+
+
+
