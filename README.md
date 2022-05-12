@@ -118,6 +118,14 @@ docker build -t bitops-core:latest -f Dockerfile-core .
 docker build -t test-plugins:latest -f Dockerfile-plugins .
 ```
 
+#### Run Plugins image
+```
+docker run \
+-e ENVIRONMENT=test-simple  \
+-v /Users/philh/Documents/Bitovi/test-ops:/opt/bitops_deployment    \
+test-plugins:latest 2> dockerplugins-run.logs
+```
+
 **What does this do?**
 
 OS/Arch: `linux/386`
