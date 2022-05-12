@@ -2,6 +2,7 @@ import sys
 import os
 
 import plugins.settings
+import pyfiglet
 
 from plugins.logging import logger
 from plugins.deploy_plugins import Deploy_Plugins
@@ -12,14 +13,24 @@ if __name__ == "__main__":
         mode = sys.argv[1]
     except IndexError:
         mode = None
+
+    bitops_figlet = pyfiglet.figlet_format("BitOps")
+    bitops_description = \
+    """
+    BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an Operations Repo.
+    """
+    logger.info("\n\n{figlet}{description}"
+        .format(
+            figlet=bitops_figlet,
+            description=bitops_description))
     
-    logger.info("\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~\
-    \n\tFAIL FAST: [{fail_fast}]\
-    \n\tRUN MODE: [{run_mode}]\
-    \n\tLOGGING LEVEL: [{log_level}]\
-    \n\tBITOPS SOURCE: [{github_source}]\
-    \n\tBITOPS CONFIG FILE: [{config_file}]\
-    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n\
+    logger.info("\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
+    \n\tFAIL FAST:              [{fail_fast}]                   \
+    \n\tRUN MODE:               [{run_mode}]                    \
+    \n\tLOGGING LEVEL:          [{log_level}]                   \
+    \n\tBITOPS SOURCE:          [{github_source}]               \
+    \n\tBITOPS CONFIG FILE:     [{config_file}]                 \
+    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n                   \
     ".format(\
         fail_fast=plugins.settings.BITOPS_fast_fail_mode, \
         run_mode=plugins.settings.BITOPS_run_mode, \

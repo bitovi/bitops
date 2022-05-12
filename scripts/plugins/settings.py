@@ -24,14 +24,12 @@ with open(BITOPS_config_file, 'r') as stream:
 
 # Updating from Bitops build config
 bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
-bitops_build_configuration.bitops.fast_fail
-
-
 
 # ENVIRONMENT
-BITOPS_ENV_fast_fail_mode = os.environ.get("BITOPS_FAST_FAIL")
-BITOPS_ENV_run_mode = os.environ.get("BITOPS_MODE")
-BITOPS_ENV_logging_level = os.environ.get("BITOPS_LOGGING_LEVEL")
+BITOPS_ENV_fast_fail_mode   = os.environ.get("BITOPS_FAST_FAIL")
+BITOPS_ENV_run_mode         = os.environ.get("BITOPS_MODE")
+BITOPS_ENV_logging_level    = os.environ.get("BITOPS_LOGGING_LEVEL")
+BITOPS_ENV_plugin_dir       = os.environ.get("BITOPS_PLUGIN_DIR")
 
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared. All this does is X if X is set, Y if Y is set, else default value
@@ -57,3 +55,9 @@ BITOPS_opsrepo_source = bitops_build_configuration.bitops.ops_repo.source_from  
     if bitops_build_configuration.bitops.ops_repo.source_from is not None        \
     else "local"
 
+
+BITOPS_plugin_dir = BITOPS_ENV_plugin_dir                         \
+    if BITOPS_ENV_plugin_dir is not None                             \
+    else bitops_build_configuration.bitops.plugin_dir               \
+        if bitops_build_configuration.bitops.plugin_dir is not None  \
+        else "/opt/bitops/scripts/plugins/"

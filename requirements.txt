@@ -3,3 +3,4 @@ pyyaml
 envbash
 munch
 GitPython
+pyfiglet
