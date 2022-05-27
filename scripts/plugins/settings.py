@@ -10,8 +10,7 @@ parser.add_argument('--bitops_config_file', "-c", help='BitOps source usage info
 
 BITOPS_CL_args, unknowns = parser.parse_known_args()
 
-# Configuration files
-#BITOPS_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML", "bitops.config.yaml")
+# BitOps Configuration file
 BITOPS_ENV_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML") 
 BITOPS_config_file = BITOPS_ENV_config_file                         \
     if BITOPS_ENV_config_file is not None                        \
@@ -51,8 +50,8 @@ BITOPS_logging_level = BITOPS_ENV_logging_level                         \
         if bitops_build_configuration.bitops.logging.level is not None  \
         else "DEBUG"
 
-BITOPS_opsrepo_source = bitops_build_configuration.bitops.ops_repo.source_from   \
-    if bitops_build_configuration.bitops.ops_repo.source_from is not None        \
+BITOPS_opsrepo_source = bitops_build_configuration.bitops.ops_repo.source.sourced_from   \
+    if bitops_build_configuration.bitops.ops_repo.source.sourced_from is not None        \
     else "local"
 
 

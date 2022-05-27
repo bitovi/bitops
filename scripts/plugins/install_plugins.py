@@ -23,7 +23,7 @@ def Install_Plugins():
         logger.info("\n\n\n~#~#~#~PROCESSING STAGE [{}]~#~#~#~\n".format(plugin_config.upper()))
         for plugin in bitops_plugins_configuration[plugin_config]:
         
-            plugin_source = bitops_plugins_configuration[plugin_config][plugin].source
+            plugin_source = bitops_plugins_configuration[plugin_config][plugin].source.sourced_from
             
             if plugin_source is not None:
                 #~#~#~#~#~#~#~#~#~#~#~#~#~#
@@ -79,40 +79,83 @@ def Install_Plugins():
                 #~#~#~#~#~#~#~#~#~#~#~#~#~#
                 # RUN PLUGIN INSTALL SCRIPT
                 #~#~#~#~#~#~#~#~#~#~#~#~#~#
-                # Check if Version
-                plugin_version = bitops_plugins_configuration[plugin_config][plugin].version
-                
-                # Check if install script config is present
-                plugin_install_script = bitops_plugins_configuration[plugin_config][plugin].install_script  if bitops_plugins_configuration[plugin_config][plugin].install_script else "install.sh"
-                plugin_install_language = "bash" if plugin_install_script[-2:] == "sh" else "python3"
 
-                # Check the file ext - if not bash or python fail
+                # Once the plugin is cloned, begin using its config + schema
+                plugin_configuration_path = "config/{}.plugin.config.yaml".format(plugin) 
+
+                try:
+                    with open(plugin_configuration_path, 'r') as stream:
+                        plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+                except FileNotFoundError as e:
+                    logger.warning("No plugin file was found at path: [{}]".format(plugin_configuration_path))
+                    # plugin_configuration_yaml = None
+                    plugin_configuration_yaml = {"{}".format(plugin) : {"plugin" : {"install": {}}}}
+
+                plugin_configuration = \
+                    None if plugin_configuration_yaml is None \
+                    else DefaultMunch.fromDict(plugin_configuration_yaml, None)                
+                                
+                # breakdown of values
+                #   plugin.config.yaml should be used first
+                #   bitops.config.yaml should be used second
+                #   A default value should be used as a last resort
+
+                plugin_install_script = plugin_configuration[plugin].plugin.install.install_script  \
+                    if plugin_configuration[plugin].plugin.install.install_script is not None       \
+                    else bitops_plugins_configuration[plugin_config][plugin].install_script         \
+                        if bitops_plugins_configuration[plugin_config][plugin].install_script is not None   \
+                        else "install.sh"
                 
+                # The below code is technically a safer, albeit more cumbersome way to accomplish the above.
+                # The issue with the above is that if the ".install" value is a NoneType, then it is non subscriptable ".install_sctipt"
+                # which will throw an attribute error ...
+
+                # try:
+                #     plugin_config_install_script = plugin_configuration[plugin].plugin.install.install_script
+                # except TypeError: plugin_config_install_script = None
+                # try:
+                #     bitops_plugins_configuration_install_script = bitops_plugins_configuration[plugin_config][plugin].install_script
+                # except TypeError: bitops_plugins_configuration_install_script = None
+
+                # plugin_install_script = plugin_config_install_script    \
+                #     if plugin_config_install_script is not None         \
+                #     else bitops_plugins_configuration_install_script    \
+                #         if bitops_plugins_configuration_install_script is not None  \
+                #         else "install.sh"
+
+                plugin_install_language = plugin_configuration[plugin].plugin.install.language  \
+                    if plugin_configuration[plugin].plugin.install.language is not None       \
+                    else bitops_plugins_configuration[plugin_config][plugin].language         \
+                        if bitops_plugins_configuration[plugin_config][plugin].language is not None   \
+                        else "bash"
+                                
                 # install plugin dependencies (install.sh)
                 plugin_install_script_path = plugin_dir + plugin + "/{}".format(plugin_install_script)
-                
-                
+
                 logger.info("\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin}]~#~#~#~   \
-                \n\t PLUGIN_VERSION:                    [{plugin_version}]       \
                 \n\t PLUGIN_INSTALL_SCRIPT:             [{plugin_install_script}]          \
                 \n\t PLUGIN_INSTALL_LANGUAGE:           [{plugin_install_language}]        \
                 \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
                 ".format(  
                     plugin=plugin,                                               
-                    plugin_version=plugin_version,
                     plugin_install_script=plugin_install_script,
                     plugin_install_language=plugin_install_language,
                 ))
 
+
                 if os.path.isfile(plugin_install_script_path):
-                    result = subprocess.run([plugin_install_language, plugin_install_script_path, "{}".format(plugin_version)], 
+                    result = subprocess.run([plugin_install_language, plugin_install_script_path], 
                         universal_newlines = True,
                         capture_output=True, 
                         shell=True)
-                    logger.info("results from [{}] ReturnCode: [{}]".format(plugin_install_script_path, result.returncode))
-                
+                    if result.returncode == 0:
+                        logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+                    else:
+                        logger.warning("\n~#~#~#~INSTALLING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
+                        logger.warning("\n#~#~#~#~#~#~#~#~#~#~#\n{}\n#~#~#~#~#~#~#~#~#~#~#".format(result.stderr))
                 else:
                     logger.warning("File does not exist: [{}]".format(plugin_install_script_path))
+                    
                 
             else:
                 logger.warning("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))

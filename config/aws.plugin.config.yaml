@@ -1,0 +1,9 @@
+aws:
+  plugin:
+    install: 
+      language: bash
+      install_script: install.sh
+  
+    deployment:
+      language: bash
+      deployment_script: install.sh
