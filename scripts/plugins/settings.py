@@ -4,7 +4,6 @@ import argparse
 
 from munch import DefaultMunch
 
-
 parser = argparse.ArgumentParser(description='Add BitOps Usage')
 parser.add_argument('--bitops_config_file', "-c", help='BitOps source usage information here')
 
@@ -17,18 +16,29 @@ BITOPS_config_file = BITOPS_ENV_config_file                         \
     else BITOPS_CL_args.bitops_config_file               \
         if BITOPS_CL_args.bitops_config_file is not None  \
         else "bitops.config.yaml"
-
 with open(BITOPS_config_file, 'r') as stream:
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
+BITOPS_ENV_schema_file = os.environ.get("BITOPS_BUILD_SCHEMA_YAML") 
+BITOPS_schema_file = BITOPS_ENV_schema_file                       \
+    if BITOPS_ENV_schema_file is not None                        \
+    else "bitops.schema.yaml"
+with open(BITOPS_schema_file, 'r') as stream:
+    BITOPS_schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+
 # Updating from Bitops build config
 bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
+bitops_schema_configuration = DefaultMunch.fromDict(BITOPS_schema_yaml, None)
 
 # ENVIRONMENT
 BITOPS_ENV_fast_fail_mode   = os.environ.get("BITOPS_FAST_FAIL")
 BITOPS_ENV_run_mode         = os.environ.get("BITOPS_MODE")
 BITOPS_ENV_logging_level    = os.environ.get("BITOPS_LOGGING_LEVEL")
 BITOPS_ENV_plugin_dir       = os.environ.get("BITOPS_PLUGIN_DIR")
+
+BITOPS_ENV_default_folder   = os.environ.get("DEFAULT_FOLDER_NAME")
+BITOPS_ENV_environment      = os.environ.get("ENVIRONMENT", None)
+BITOPS_ENV_timeout          = os.environ.get("TIMEOUT")
 
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared. All this does is X if X is set, Y if Y is set, else default value
@@ -50,13 +60,26 @@ BITOPS_logging_level = BITOPS_ENV_logging_level                         \
         if bitops_build_configuration.bitops.logging.level is not None  \
         else "DEBUG"
 
-BITOPS_opsrepo_source = bitops_build_configuration.bitops.ops_repo.source.sourced_from   \
-    if bitops_build_configuration.bitops.ops_repo.source.sourced_from is not None        \
+BITOPS_opsrepo_source = bitops_build_configuration.bitops.source.sourced_from   \
+    if bitops_build_configuration.bitops.source.sourced_from is not None        \
     else "local"
 
 
 BITOPS_plugin_dir = BITOPS_ENV_plugin_dir                         \
     if BITOPS_ENV_plugin_dir is not None                             \
-    else bitops_build_configuration.bitops.plugin_dir               \
-        if bitops_build_configuration.bitops.plugin_dir is not None  \
+    else bitops_build_configuration.bitops.plugins.plugin_dir               \
+        if bitops_build_configuration.bitops.plugins.plugin_dir is not None  \
         else "/opt/bitops/scripts/plugins/"
+
+
+BITOPS_default_folder = BITOPS_ENV_default_folder   \
+    if BITOPS_ENV_default_folder is not None        \
+    else bitops_build_configuration.bitops.default_folder               \
+        if bitops_build_configuration.bitops.default_folder is not None \
+        else "default"
+
+BITOPS_timeout = BITOPS_ENV_timeout   \
+    if BITOPS_ENV_timeout is not None        \
+    else bitops_build_configuration.bitops.timeout               \
+        if bitops_build_configuration.bitops.timeout is not None \
+        else 600    

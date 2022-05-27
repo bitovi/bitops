@@ -1,4 +1,5 @@
 
+from distutils.command.config import config
 import yaml
 import os
 import subprocess
@@ -8,17 +9,16 @@ from munch import DefaultMunch
 from itertools import chain
 from logging import root
 from xml.etree.ElementTree import tostring
-from .settings import BITOPS_fast_fail_mode, BITOPS_config_file
+from .settings import BITOPS_fast_fail_mode, BITOPS_config_file, bitops_schema_configuration
 from .logging import logger
 
 class SchemaObject:
     properties = ["export_env", "default", "enabled", "type", "parameter"]
     
-    def __init__(self, name, schema_key, schema_property_type, schema_property_values=None):
+    def __init__(self, name, schema_key, schema_property_values=None):
         self.name = name
         self.schema_key = schema_key
         self.config_key = schema_key.replace(".properties", "")
-        self.schema_property_type = schema_property_type
 
         self.export_env = ""
         self.default = "NO DEFAULT FOUND"
@@ -55,6 +55,9 @@ class SchemaObject:
             self.value = self.default
         
         AddValueToEnv(self.export_env, self.value)
+    
+def Parse_Values(item):
+    return item.replace("properties.", "")
 
 def Load_Yaml(yaml_file):
     with open(yaml_file, 'r') as stream:
@@ -118,31 +121,56 @@ def Parse_Yaml_Keys_To_List(schema, root_key, key_chain=None):
             continue
     return keys_list
 
-def Get_Config_List(schema_file, config_file):          
-    logger.info("Converting... Schema: [{}], Config: [{}]".format(schema_file, config_file))
+def Get_Config_List(config_file, schema_file):          
+    logger.info("\n\n\n~#~#~#~CONVERTING: \
+    \n\t PLUGIN CONFIGURATION FILE PATH:    [{}]    \
+    \n\t PLUGIN SCHEMA FILE PATH:           [{}]    \
+    \n\n" 
+    .format(config_file, schema_file))
 
-    config_yaml = Load_Yaml(config_file)
-    schema_yaml = Load_Yaml(schema_file)
+    with open(schema_file, 'r') as stream:
+        schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+    with open(config_file, 'r') as stream:
+        config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+
+    schema = DefaultMunch.fromDict(schema_yaml, None)
+    config = DefaultMunch.fromDict(config_yaml, None)
 
     schema_keys_list = []
-    schema_root_keys = list(schema_yaml.keys())
+    schema_root_keys = list(schema.keys())
     root_key = schema_root_keys[0]
     schema_keys_list.append(root_key)
 
-    schema_keys_list += Parse_Yaml_Keys_To_List(schema_yaml, root_key)
+    schema_keys_list += Parse_Yaml_Keys_To_List(schema, root_key)
     
     logger.debug("Schema keys: [{}]".format(schema_keys_list))
     
     ignore_values = ["type", "properties", "cli", "options", root_key]
     
-    schema_properties_list = [item for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in SchemaObject.properties]
+    schema_top_level = schema_keys_list[0]
+    schema_properties_list = [Parse_Values(item) for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in SchemaObject.properties]
+    schema_properties_list.insert(0, schema_top_level)
+
     schema_list = []
+
+    #logger.debug("Schema Properties: [{}]".format(schema_properties_list))
+    # WASH
+    logger.debug("Washed schema values are")
+    for item in schema_properties_list:
+        logger.debug(item)
     
     for schema_properties in schema_properties_list:
         property_name = schema_properties.split(".")[-1]
-        result = Get_Nested_Item(schema_yaml, schema_properties)
+        result = Get_Nested_Item(config, schema_properties)
+        
+        logger.debug("\n\n\n~#~#~#~BUILDING SCHEMA OBJECT: \
+            \n\t PROPERTY NAME:    [{}]    \
+            \n\t SCHEMA PROPERTY:  [{}]    \
+            \n\t RESULT:           [{}]    \
+            \n\n" 
+            .format(property_name, schema_properties, result))
 
-        schema = SchemaObject(property_name, schema_properties, schema_properties.split(".")[2], result)
+        schema = SchemaObject(property_name, schema_properties, result)
         schema.ProcessConfig(config_yaml)
         schema_list.append(schema)
     

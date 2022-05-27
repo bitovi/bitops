@@ -135,11 +135,13 @@ def Install_Plugins():
                 logger.info("\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin}]~#~#~#~   \
                 \n\t PLUGIN_INSTALL_SCRIPT:             [{plugin_install_script}]          \
                 \n\t PLUGIN_INSTALL_LANGUAGE:           [{plugin_install_language}]        \
+                \n\t PLUGIN_CONFIG_PATH:                [{plugin_configuration_path}]        \
                 \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
                 ".format(  
                     plugin=plugin,                                               
                     plugin_install_script=plugin_install_script,
                     plugin_install_language=plugin_install_language,
+                    plugin_configuration_path=plugin_configuration_path
                 ))
 
 

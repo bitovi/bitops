@@ -9,25 +9,15 @@ from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
 from .utilities import Get_Config_List
-from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml, BITOPS_opsrepo_source
+from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml, BITOPS_opsrepo_source, bitops_build_configuration, BITOPS_ENV_environment, BITOPS_default_folder, BITOPS_timeout
 from .logging import logger
 from munch import DefaultMunch
 
 
 def Deploy_Plugins():
     # Temp directory setup
-    #logger.info("Creating temporary directory")
     temp_dir = tempfile.mkdtemp()
-    #logger.info("temporary directory created: [{}]".format(temp_dir))
 
-    # Locals singles in this area
-    # bitops_mode = os.environ.get("BITOPS_MODE", None)
-    bitops_default_folder_name = os.environ.get("DEFAULT_FOLDER_NAME", "default")
-    bitops_environment = os.environ.get("ENVIRONMENT", None)
-    timeout = os.environ.get("TIMEOUT", 600)
-    # bitops_debug = os.environ.get("DEBUG", None)
-
-    bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, "bitops")
     bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins.tools, None)
 
     bitops_dir = "/opt/bitops"
@@ -36,9 +26,9 @@ def Deploy_Plugins():
 
     bitops_root_dir = temp_dir
 
-    bitops_envroot_dir = "{}/{}".format(bitops_root_dir, bitops_environment) # What is the difference between this and bitops_operations_dir ...
-    bitops_default_envroot = "{}/{}".format(bitops_root_dir, bitops_default_folder_name)
-    bitops_operations_dir = "{}/{}".format(temp_dir, bitops_environment)
+    bitops_envroot_dir = "{}/{}".format(bitops_root_dir, BITOPS_ENV_environment) # What is the difference between this and bitops_operations_dir ...
+    bitops_default_envroot = "{}/{}".format(bitops_root_dir, BITOPS_default_folder)
+    bitops_operations_dir = "{}/{}".format(temp_dir, BITOPS_ENV_environment)
     bitops_scripts_dir = "{}/scripts".format(bitops_dir)
 
     PATH = os.environ.get("PATH")
@@ -59,7 +49,7 @@ def Deploy_Plugins():
     os.environ["PATH"] = PATH
 
     # Global environment evaluation
-    if bitops_environment is None:
+    if BITOPS_ENV_environment is None:
         logger.error("ENVIRONMENT variables must be set... Exiting")
         quit()
 
@@ -79,11 +69,14 @@ def Deploy_Plugins():
 
     #logger.info("\n\n\n~#~#~#~ DEPLOYING PLUGINS ~#~#~#~")
 
-    logger.info("\n\n\n~#~#~#~PLUGIN DEPLOYMENT CONFIGURATION~#~#~#~    \
+    logger.info("\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~    \
             \n\t TEMP_DIR:              [{temp_dir}]                    \
             \n\t DEFAULT_FOLDER_NAME:   [{default_folder_name}]         \
             \n\t ENVIRONMENT:           [{env}]                         \
             \n\t TIMEOUT:               [{timeout}]                     \
+            \n                                                          \
+            \n\t SOURCE:                [{source}]                      \
+            \n                                                          \
             \n\t BITOPS_DIR:            [{bitops_dir}]                  \
             \n\t BITOPS_DEPLOYMENT_DIR: [{bitops_deployment_dir}]       \
             \n\t BITOPS_PLUGIN_DIR:     [{bitops_plugin_dir}]           \
@@ -93,9 +86,12 @@ def Deploy_Plugins():
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                \
             ".format(                                                       
                 temp_dir=temp_dir,
-                default_folder_name=bitops_default_folder_name,
-                env=bitops_environment,
-                timeout=timeout,
+                default_folder_name=BITOPS_default_folder,
+                env=BITOPS_ENV_environment,
+                timeout=BITOPS_timeout,
+
+                source=BITOPS_opsrepo_source,
+                
                 bitops_dir=bitops_dir,
                 bitops_deployment_dir=bitops_deployment_dir,
                 bitops_plugin_dir=bitops_plugins_dir,
@@ -111,30 +107,26 @@ def Deploy_Plugins():
         logger.info("\n\n\n~#~#~#~PROCESSING STAGE [{}]~#~#~#~\n".format(plugin_config.upper()))
         
         for plugin in bitops_plugins_configuration[plugin_config]:
-            
             plugin_name = plugin
-            # logger.info("\n\t\t\tPreparing plugin: [{}]".format(plugin_name))
 
             # Set plugin vars
             plugin_dir = bitops_plugins_dir + plugin_name
             plugin_environment_dir = bitops_operations_dir + '/' + plugin_name
             
             os.environ['PLUGIN_DIR'] = plugin_dir
-            os.environ['ENVIRONMENT_DIR'] = plugin_environment_dir
-
+            os.environ['PLUGIN_ENVIRONMENT_DIR'] = plugin_environment_dir
 
             # Reconcile BitOps config using existing shell scripts
             plugin_env_file = plugin_dir + '/' + 'ENV_FILE'
-            os.environ['ENV_FILE'] = plugin_env_file
+            os.environ['PLUGIN_ENV_FILE'] = plugin_env_file
 
-            plugin_schema_file = plugin_dir + '/' + 'bitops.schema.yaml'
             plugin_config_file = plugin_environment_dir + '/' + 'bitops.config.yaml'
+            plugin_schema_file = plugin_dir+"/plugin.schema.yaml" 
             
             logger.info("\n\n\n~#~#~#~{plugin} PLUGIN CONFIGURATION~#~#~#~  \
             \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
             \n\t ENVIRONMENT_DIR:       [{plugin_env_dir}]                  \
             \n\t ENVIRONMENT_FILE_PATH: [{plugin_env_file}]                 \
-            \n\t SCHEMA_FILE_PATH:      [{plugin_schema_file_path}]         \
             \n\t CONFIG_FILE_PATH:      [{plugin_config_file_path}]         \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
             ".format(                                                       
@@ -142,7 +134,6 @@ def Deploy_Plugins():
                 plugin_dir=plugin_dir,
                 plugin_env_dir=plugin_environment_dir,
                 plugin_env_file=plugin_env_file,
-                plugin_schema_file_path=plugin_schema_file,
                 plugin_config_file_path=plugin_config_file,
             ))
 
@@ -153,11 +144,13 @@ def Deploy_Plugins():
             # logger.info(result.stdout)
 
 
-            logger.info("Loading schema file: [{}]".format(plugin_schema_file))
             logger.info("loading config file: [{}]".format(plugin_config_file))
-            logger.debug("loading ENV_FILE   : [{}]".format(plugin_env_file)) # Something seems wrong with this. 
+            logger.debug("loading ENV_FILE   : [{}]".format(plugin_env_file))
                         
-            cli_config_list, options_config_list = Get_Config_List(plugin_schema_file, plugin_config_file)
+            
+            cli_config_list, options_config_list = Get_Config_List(plugin_config_file, plugin_schema_file) 
+            # THIS NEEDS TO SEND IN THE plugin.schema.yaml from the plugin folder
+            # WHICH WILL BE COMPARED TO THE PROVIDED plugin.config.yaml that will be pulled from the ops-repo
             logger.info("DONE")
 
             # Set CLI_OTIONS
