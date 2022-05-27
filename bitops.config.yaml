@@ -1,8 +1,7 @@
 bitops:
 
-  ops_repo:
-    source:
-      sourced_from: local
+  source:
+    sourced_from: local
   
   fail_fast: true
   run_mode: default

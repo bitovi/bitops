@@ -1,0 +1,5 @@
+source:
+  type: object
+  properties:
+    source_from:
+      type: string
