@@ -154,9 +154,7 @@ def Install_Plugins():
                         logger.warning("\n~#~#~#~INSTALLING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
                         logger.warning("\n#~#~#~#~#~#~#~#~#~#~#\n{}\n#~#~#~#~#~#~#~#~#~#~#".format(result.stderr))
                 else:
-                    logger.warning("File does not exist: [{}]".format(plugin_install_script_path))
-                    
-                
+                    logger.error("File does not exist: [{}]".format(plugin_install_script_path)) 
             else:
-                logger.warning("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))
+                logger.error("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin))
         
