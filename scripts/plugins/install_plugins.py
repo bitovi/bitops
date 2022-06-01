@@ -144,14 +144,15 @@ def Install_Plugins():
                     plugin_configuration_path=plugin_configuration_path
                 ))
 
-
+                os.chmod(plugin_install_script_path, 775)
                 if os.path.isfile(plugin_install_script_path):
                     result = subprocess.run([plugin_install_language, plugin_install_script_path], 
                         universal_newlines = True,
                         capture_output=True, 
                         shell=True)
+                    
                     if result.returncode == 0:
-                        logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+                        logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~\n\t{stdout}\n\t{stderr}".format(plugin=plugin, stdout=result.stdout, stderr=result.stderr))
                     else:
                         logger.warning("\n~#~#~#~INSTALLING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
                         logger.warning("\n#~#~#~#~#~#~#~#~#~#~#\n{}\n#~#~#~#~#~#~#~#~#~#~#".format(result.stderr))

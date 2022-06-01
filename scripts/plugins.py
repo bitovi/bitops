@@ -27,15 +27,19 @@ if __name__ == "__main__":
     logger.info("\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
     \n\tFAIL FAST:              [{fail_fast}]                   \
     \n\tRUN MODE:               [{run_mode}]                    \
+    \
     \n\tLOGGING LEVEL:          [{log_level}]                   \
+    \n\tLOGGING COLOR:          [{log_color}]                   \
+    \
     \n\tBITOPS SOURCE:          [{github_source}]               \
     \n\tBITOPS CONFIG FILE:     [{config_file}]                 \
     \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n                   \
-    ".format(\
-        fail_fast=plugins.settings.BITOPS_fast_fail_mode, \
-        run_mode=plugins.settings.BITOPS_run_mode, \
-        log_level=plugins.settings.BITOPS_logging_level,\
-        github_source=plugins.settings.BITOPS_opsrepo_source,\
+    ".format(
+        fail_fast=plugins.settings.BITOPS_fast_fail_mode, 
+        run_mode=plugins.settings.BITOPS_run_mode, 
+        log_level=plugins.settings.BITOPS_logging_level,
+        log_color=plugins.settings.BITOPS_logging_color,
+        github_source=plugins.settings.BITOPS_opsrepo_source,
         config_file=plugins.settings.BITOPS_config_file
     ))
     

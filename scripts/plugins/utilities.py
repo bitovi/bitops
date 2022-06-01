@@ -1,5 +1,6 @@
 
 from distutils.command.config import config
+from inspect import Parameter
 import yaml
 import os
 import subprocess
@@ -20,17 +21,19 @@ class SchemaObject:
         self.schema_key = schema_key
         self.config_key = schema_key.replace(".properties", "")
 
+        self.value = ""
+
+        self.schema_property_type = self.config_key.split('.')[1] or None
+
         self.export_env = ""
         self.default = "NO DEFAULT FOUND"
         self.enabled = ""
-        self.value = ""
-        self.type = ""
+        self.type = "object"
         self.parameter = ""
 
         if schema_property_values:
             for property in self.properties:
                 try:
-                    logger.debug("Schema Object setting attribute: [{}] value: [{}] from values: [{}]".format(property, schema_property_values[property], schema_property_values))
                     setattr(self, property, schema_property_values[property])
                 except KeyError as exc:
                     setattr(self, property, None)
@@ -38,14 +41,43 @@ class SchemaObject:
                         raise exc
                     else:
                         continue
+
+        logger.info("\n\tNEW SCHEMA:{}".format(self.PrintSchema()))
             
     def __str__(self):
-        return "Schema Poperty Name: [{}]\nSchema Key: [{}]\nConfig Key: [{}]\nSchema Property Type: [{}]\nValue Set To: [{}]\nSchema Properties:\n\texport_env: [{}]\n\tdefault: [{}]\n\ttype: [{}]\n".format(self.name, self.schema_key, self.config_key, self.schema_property_type, self.value, self.export_env, self.default, self.type)
+        return "\n\tSCHEMA:{}".format(self.PrintSchema())
+    
+    def PrintSchema(self):
+        return                      \
+            "\n\t\tName:         [{}]\
+            \n\t\tSchema Key:   [{}]\
+            \n\t\tConfig_Key:   [{}]\
+            \n\t\tSchema Type:  [{}]\
+            \n                      \
+            \n\t\tExport Env:   [{}]\
+            \n\t\tDefault:      [{}]\
+            \n\t\tEnabled:      [{}]\
+            \n\t\tType:         [{}]\
+            \n\t\tParameter:    [{}]\
+            \n                      \
+            \n\t\tValue Set:    [{}]".format( \
+                self.name,
+                self.schema_key,
+                self.config_key,
+                self.schema_property_type,
+
+                self.export_env,
+                self.default,
+                self.enabled,
+                self.type,
+                self.parameter,
+                
+                self.value)
     
     def ProcessConfig(self, config_yaml):
         if self.type == "object": return
-        logger.info("Searching for: [{}]".format(self.config_key))
         result = Get_Nested_Item(config_yaml, self.config_key)
+        logger.info("\n\tSearching for: [{}]\n\t\tResult Found: [{}]".format(self.config_key, result))
         found_config_value = Apply_Data_Type(self.type, result)
         
         if found_config_value != "":
@@ -75,6 +107,8 @@ def Load_Build_Config():
     return Load_Yaml(BITOPS_config_file)
 
 def Apply_Data_Type(data_type, convert_value):
+    if data_type == "object": return data_type
+
     if re.search("list", data_type, re.IGNORECASE):
         return list(convert_value)
     elif re.search("string", data_type, re.IGNORECASE):
@@ -97,6 +131,8 @@ def AddValueToEnv(export_env, value):
     logger.info("Setting environment variable: [{}], to value: [{}]".format(export_env, value))
 
 def Get_Nested_Item(search_dict, key):
+    logger.debug("\n\t\tSEARCHING FOR KEY:  [{}]    \
+                  \n\t\tSEARCH_DICT:        [{}]".format(key, search_dict))
     obj = search_dict
     key_list = key.split(".")
     try:
@@ -104,6 +140,8 @@ def Get_Nested_Item(search_dict, key):
             obj = obj[k]
     except KeyError:
         return None
+    logger.debug("\n\t\tKEY [{}] \
+                  \n\t\tRESULT FOUND:   [{}]".format(key, obj))
     return obj
 
 def Parse_Yaml_Keys_To_List(schema, root_key, key_chain=None):
@@ -128,10 +166,13 @@ def Get_Config_List(config_file, schema_file):
     \n\n" 
     .format(config_file, schema_file))
 
-    with open(schema_file, 'r') as stream:
-        schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-    with open(config_file, 'r') as stream:
-        config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+    try:
+        with open(schema_file, 'r') as stream:
+            schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+        with open(config_file, 'r') as stream:
+            config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+    except FileNotFoundError as e:
+        logger.error("REQUIRED FILE NOT FOUND: [{}]".format(e.filename))
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
     config = DefaultMunch.fromDict(config_yaml, None)
@@ -147,32 +188,27 @@ def Get_Config_List(config_file, schema_file):
     
     ignore_values = ["type", "properties", "cli", "options", root_key]
     
-    schema_top_level = schema_keys_list[0]
-    schema_properties_list = [Parse_Values(item) for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in SchemaObject.properties]
-    schema_properties_list.insert(0, schema_top_level)
+    #schema_top_level = schema_keys_list[0]
+    schema_properties_list = [item for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in SchemaObject.properties]
+    #schema_properties_list.insert(0, schema_top_level)
 
     schema_list = []
 
-    #logger.debug("Schema Properties: [{}]".format(schema_properties_list))
     # WASH
     logger.debug("Washed schema values are")
     for item in schema_properties_list:
         logger.debug(item)
     
     for schema_properties in schema_properties_list:
+        logger.debug("Starting a new property search")
         property_name = schema_properties.split(".")[-1]
-        result = Get_Nested_Item(config, schema_properties)
-        
-        logger.debug("\n\n\n~#~#~#~BUILDING SCHEMA OBJECT: \
-            \n\t PROPERTY NAME:    [{}]    \
-            \n\t SCHEMA PROPERTY:  [{}]    \
-            \n\t RESULT:           [{}]    \
-            \n\n" 
-            .format(property_name, schema_properties, result))
 
-        schema = SchemaObject(property_name, schema_properties, result)
-        schema.ProcessConfig(config_yaml)
-        schema_list.append(schema)
+        result = Get_Nested_Item(schema, schema_properties)
+        
+        schema_object = SchemaObject(property_name, schema_properties, result)
+        schema_object.ProcessConfig(config_yaml)
+        schema_list.append(schema_object)
+        
     
     bad_config_list = [item for item in schema_list if item.value == "BAD_CONFIG"]
     schema_list = [item for item in schema_list if item not in bad_config_list]
