@@ -11,6 +11,13 @@ bitops:
     level: DEBUG
     file: bitops.logs
     err: bitops.logs
+    color:
+      enabled: true
+    filename: bitops-run
+    path: /var/logs/bitops
+    
+
+
     
   plugins:
     plugins_seq:
@@ -28,10 +35,12 @@ bitops:
         terraform-usage1:
           source: 
             sourced_from: https://github.com/bitops-plugins/terraform
+          identity: terraform
         
         terraform-usage2:
           source: 
             sourced_from: https://github.com/bitops-plugins/terraform
+          identity: terraform
 
         helm:
           source: 

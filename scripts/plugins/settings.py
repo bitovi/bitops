@@ -60,6 +60,18 @@ BITOPS_logging_level = BITOPS_ENV_logging_level                         \
         if bitops_build_configuration.bitops.logging.level is not None  \
         else "DEBUG"
 
+BITOPS_logging_color = bitops_build_configuration.bitops.logging.color.enabled                      \
+    if bitops_build_configuration.bitops.logging.color.enabled is not None  \
+    else False
+
+BITOPS_logging_filename = bitops_build_configuration.bitops.logging.filename                      \
+    if bitops_build_configuration.bitops.logging.filename is not None  \
+    else None
+
+BITOPS_logging_path = bitops_build_configuration.bitops.logging.path                      \
+    if bitops_build_configuration.bitops.logging.path is not None  \
+    else "/var/log/bitops"
+
 BITOPS_opsrepo_source = bitops_build_configuration.bitops.source.sourced_from   \
     if bitops_build_configuration.bitops.source.sourced_from is not None        \
     else "local"

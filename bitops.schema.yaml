@@ -23,6 +23,18 @@ bitops:
           type: string
         err:
           type: string
+      color:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+      filename:
+        type: string
+      path:
+        type: string
+          
+
+
     
     timeout:
       type: int
