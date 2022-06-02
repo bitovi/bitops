@@ -149,13 +149,15 @@ def Install_Plugins():
                     result = subprocess.run([plugin_install_language, plugin_install_script_path], 
                         universal_newlines = True,
                         capture_output=True, 
-                        shell=True)
-                    
+                        #shell=True
+                        )
                     if result.returncode == 0:
-                        logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~\n\t{stdout}\n\t{stderr}".format(plugin=plugin, stdout=result.stdout, stderr=result.stderr))
+                        logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+                        logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
                     else:
                         logger.warning("\n~#~#~#~INSTALLING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
-                        logger.warning("\n#~#~#~#~#~#~#~#~#~#~#\n{}\n#~#~#~#~#~#~#~#~#~#~#".format(result.stderr))
+                        logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+                    
                 else:
                     logger.error("File does not exist: [{}]".format(plugin_install_script_path)) 
             else:

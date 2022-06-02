@@ -191,8 +191,14 @@ def Deploy_Plugins():
                 logger.error(exc)
                 if BITOPS_fast_fail_mode: quit(101)
                 
+            if result.returncode == 0:
+                logger.info("\n~#~#~#~DEPLOYING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+                logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+            else:
+                logger.warning("\n~#~#~#~DEPLOYING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
+                logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+
             # After hooks
             # result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
             # universal_newlines = True,
             # capture_output=True)
-            logger.critical(result)
