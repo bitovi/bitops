@@ -172,7 +172,7 @@ Contains the plugins that are installed
 **/opt/bitops_deployment**
 Contains the Operations Repo
 
-
+```
 *Docker container layers*
 **BitOps Core**
 |-------------------------------|
@@ -220,3 +220,4 @@ Contains the Operations Repo
 |   bitops                      |
 |     /opt/bitops               |
 |-------------------------------|
+```
