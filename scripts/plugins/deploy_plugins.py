@@ -57,17 +57,13 @@ def Deploy_Plugins():
     if BITOPS_opsrepo_source != "local":
         logger.info("Downloading OpsRepo from: [{}]".format(BITOPS_opsrepo_source))
         git.Repo.clone_from(BITOPS_opsrepo_source, bitops_deployment_dir)
-    #logger.info("OpsRepo sourced from: [{}]".format(BITOPS_opsrepo_source))
     
     # Move to temp directory
     copy_tree(bitops_deployment_dir, temp_dir)
 
-    # logger.info("TIMEOUT: ", timeout) # TODO: What is this?
     if bitops_plugins_configuration is None:
         logger.error("No plugins found. Exiting {}".format(__file__))
         quit()
-
-    #logger.info("\n\n\n~#~#~#~ DEPLOYING PLUGINS ~#~#~#~")
 
     logger.info("\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~    \
             \n\t TEMP_DIR:              [{temp_dir}]                    \
@@ -110,8 +106,8 @@ def Deploy_Plugins():
             plugin_name = plugin
 
             # Set plugin vars
-            plugin_dir = bitops_plugins_dir + plugin_name
-            plugin_environment_dir = bitops_operations_dir + '/' + plugin_name
+            plugin_dir = bitops_plugins_dir + plugin_name                           # Sourced from BitOps Core + plugin install
+            plugin_environment_dir = bitops_operations_dir + '/' + plugin_name      # Sourced from Operations repo
             
             os.environ['PLUGIN_DIR'] = plugin_dir
             os.environ['PLUGIN_ENVIRONMENT_DIR'] = plugin_environment_dir
@@ -151,11 +147,9 @@ def Deploy_Plugins():
             cli_config_list, options_config_list = Get_Config_List(plugin_config_file, plugin_schema_file) 
             # THIS NEEDS TO SEND IN THE plugin.schema.yaml from the plugin folder
             # WHICH WILL BE COMPARED TO THE PROVIDED plugin.config.yaml that will be pulled from the ops-repo
-            logger.info("DONE")
 
             # Set CLI_OTIONS
             # os.environ['CLI_OPTIONS'] = cli_options.stdout
-
 
             # Source envfile
             #envbash.load_envbash(os.environ['ENV_FILE'])
@@ -177,6 +171,7 @@ def Deploy_Plugins():
 
             # result = subprocess.run([plugin_deploy_language, plugin_dir + '/deploy.sh'], 
             
+
             # Add executable flag to deploy.sh
             os.chmod(plugin_deploy_script_path, 775)
             logger.info("\n\t\tRUNNING DEPLOYMENT SCRIPT    \

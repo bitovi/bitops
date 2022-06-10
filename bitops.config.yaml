@@ -32,7 +32,6 @@ bitops:
       deployment:
         terraform-usage1:
           source: 
-            sourced_from: local
-            path: /Users/philh/Documents/Bitovi/terraform
+            sourced_from: https://github.com/bitops-plugins/terraform
           identity: terraform
     
