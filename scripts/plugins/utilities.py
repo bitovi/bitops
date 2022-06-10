@@ -14,7 +14,7 @@ from .settings import BITOPS_fast_fail_mode, BITOPS_config_file, bitops_schema_c
 from .logging import logger
 
 class SchemaObject:
-    properties = ["export_env", "default", "enabled", "type", "parameter"]
+    properties = ["export_env", "default", "enabled", "type", "parameter", "required"]
     
     def __init__(self, name, schema_key, schema_property_values=None):
         self.name = name
