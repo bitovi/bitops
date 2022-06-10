@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import shutil
 import yaml
 import subprocess
 import glob
@@ -6,7 +7,7 @@ import os.path
 import os
 import git
 
-from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_plugin_dir
+from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_plugin_dir, 
 from .logging import logger
 from ast import Load
 from munch import DefaultMunch, Munch
@@ -29,52 +30,68 @@ def Install_Plugins():
                 #~#~#~#~#~#~#~#~#~#~#~#~#~#
                 # CLONE PLUGIN FROM SOURCE
                 #~#~#~#~#~#~#~#~#~#~#~#~#~#
-                
-                plugin_tag = bitops_plugins_configuration[plugin_config][plugin].source_tag if bitops_plugins_configuration[plugin_config][plugin].source_tag is not None else "latest"
-                plugin_branch = bitops_plugins_configuration[plugin_config][plugin].source_branch if bitops_plugins_configuration[plugin_config][plugin].source_branch is not None else "main"
-                
-                logger.info("\n\n\n~#~#~#~CLONING PLUGIN [{plugin}]~#~#~#~  \
-                \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
-                \n\t PLUGIN_TAG:            [{plugin_tag}]                  \
-                \n\t PLUGIN_BRANCH:         [{plugin_branch}]                \
-                \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                \
-                ".format(                                                 
-                    plugin=plugin.upper(),
-                    plugin_source=plugin_source,
-                    plugin_tag=plugin_tag,
-                    plugin_branch=plugin_branch
-                ))
 
-                try:
-                    # Non-Entry default
-                    if plugin_branch == "latest" and plugin_tag == "main":
-                        git.Repo.clone_from(plugin_source, plugin_dir+plugin)
+                if plugin_source == "local":
+                    plugin_local_path = bitops_plugins_configuration[plugin_config][plugin].source.path
 
-                    # If the plugin branch and tag are specified, default to branch
-                    elif plugin_branch is not None and plugin_tag is not None:
-                        git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_branch)
+                    logger.info("\n\n\n~#~#~#~COPYING PLUGIN [{plugin}]~#~#~#~  \
+                    \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
+                    \n\t PLUGIN_LOCAL_PATH:     [{plugin_local_path}]                  \
+                    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                \
+                    ".format(                                                 
+                        plugin=plugin.upper(),
+                        plugin_source=plugin_source,
+                        plugin_local_path=plugin_local_path
+                    ))
 
-                    else:
-                        plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
-                        git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_pull_branch)
+                    shutil.copyfile(plugin_local_path, plugin_dir+plugin)
+
+                else:
+                    plugin_tag = bitops_plugins_configuration[plugin_config][plugin].source_tag if bitops_plugins_configuration[plugin_config][plugin].source_tag is not None else "latest"
+                    plugin_branch = bitops_plugins_configuration[plugin_config][plugin].source_branch if bitops_plugins_configuration[plugin_config][plugin].source_branch is not None else "main"
                     
-                    logger.info("\n~#~#~#~CLONING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+                    logger.info("\n\n\n~#~#~#~CLONING PLUGIN [{plugin}]~#~#~#~  \
+                    \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
+                    \n\t PLUGIN_TAG:            [{plugin_tag}]                  \
+                    \n\t PLUGIN_BRANCH:         [{plugin_branch}]                \
+                    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                \
+                    ".format(                                                 
+                        plugin=plugin.upper(),
+                        plugin_source=plugin_source,
+                        plugin_tag=plugin_tag,
+                        plugin_branch=plugin_branch
+                    ))
 
-                except git.exc.GitCommandError as exc:
-                    logger.info("\n~#~#~#~CLONING PLUGIN [{plugin}] FAILED~#~#~#~\n\t{stderr}"
-                        .format(
-                            plugin=plugin,
-                            stderr=exc
-                        ))
-                    if BITOPS_fast_fail_mode: quit()
-                
-                except Exception as exc:
-                    logger.info("\n~#~#~#~CLONING PLUGIN [{plugin}] CRITICAL ERROR~#~#~#~\n\t{stderr}"
-                        .format(
-                            plugin=plugin,
-                            stderr=exc
-                        ))
-                    if BITOPS_fast_fail_mode: quit()
+                    try:
+                        # Non-Entry default
+                        if plugin_branch == "latest" and plugin_tag == "main":
+                            git.Repo.clone_from(plugin_source, plugin_dir+plugin)
+
+                        # If the plugin branch and tag are specified, default to branch
+                        elif plugin_branch is not None and plugin_tag is not None:
+                            git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_branch)
+
+                        else:
+                            plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
+                            git.Repo.clone_from(plugin_source, plugin_dir+plugin, branch=plugin_pull_branch)
+                        
+                        logger.info("\n~#~#~#~CLONING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+
+                    except git.exc.GitCommandError as exc:
+                        logger.info("\n~#~#~#~CLONING PLUGIN [{plugin}] FAILED~#~#~#~\n\t{stderr}"
+                            .format(
+                                plugin=plugin,
+                                stderr=exc
+                            ))
+                        if BITOPS_fast_fail_mode: quit()
+                    
+                    except Exception as exc:
+                        logger.info("\n~#~#~#~CLONING PLUGIN [{plugin}] CRITICAL ERROR~#~#~#~\n\t{stderr}"
+                            .format(
+                                plugin=plugin,
+                                stderr=exc
+                            ))
+                        if BITOPS_fast_fail_mode: quit()
 
                 #~#~#~#~#~#~#~#~#~#~#~#~#~#
                 # RUN PLUGIN INSTALL SCRIPT
