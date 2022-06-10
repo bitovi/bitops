@@ -6,7 +6,7 @@ bitops:
   fail_fast: true
   run_mode: default
 
-  # DEBUG, INFO, WARNING, ERROR
+  # DEBUG, INFO, WARNING, ERROR, CRITICAL
   logging:
     level: DEBUG
     file: bitops.logs
@@ -15,9 +15,7 @@ bitops:
       enabled: true
     filename: bitops-run
     path: /var/logs/bitops
-    
-
-
+    # May need Logging modes to support log aggs like; LogStash, etc
     
   plugins:
     plugins_seq:
@@ -28,21 +26,13 @@ bitops:
     tools:
       cloudproviders:
         aws:
-          source: 
+          source:
             sourced_from: https://github.com/bitops-plugins/aws
 
       deployment:
         terraform-usage1:
           source: 
-            sourced_from: https://github.com/bitops-plugins/terraform
+            sourced_from: local
+            path: /Users/philh/Documents/Bitovi/terraform
           identity: terraform
-        
-        terraform-usage2:
-          source: 
-            sourced_from: https://github.com/bitops-plugins/terraform
-          identity: terraform
-
-        helm:
-          source: 
-            sourced_from: https://github.com/bitops-plugins/helm
     

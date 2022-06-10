@@ -100,7 +100,7 @@ https://bitovi.github.io/bitops/
 ... CONTENT ...
 
 
-## Using BitOps
+## Using BitOpsV2
 
 ## Features that need to be noted; 
 Run modes = install, deploy, setting-test
@@ -154,5 +154,69 @@ Source folders copied:
 
 
 
+#### Visual
+*Docker container*
+|-----------------------------|
+| /opt/bitops                 |
+| /opt/bitops/scripts/plugins |
+|                             |
+| /opt/bitops_deployment      |
+|-----------------------------|
+
+**/opt/bitops**
+Contains the BitOps core
+
+**/opt/bitops/scripts/plugins**
+Contains the plugins that are installed
+
+**/opt/bitops_deployment**
+Contains the Operations Repo
 
 
+*Docker container layers*
+**BitOps Core**
+|-------------------------------|
+|         BitOps Core           |
+| CLI:                          |
+|   python3                     |
+|   curl                        |
+|   jq                          |
+|   git                         |
+|   unzip                       |
+|   wget                        |
+|-------------------------------|
+
+**Plugins**
+*Docker container layers*
+|-------------------------------|
+|         BitOps Core           |
+|-------------------------------|
+|-------------------------------|
+|           Plugins             |
+| CLI:                          |
+|   Plugin CLI tool             |
+| Plugin Files:                 |
+|   install.sh / install.py     |
+|   deploy.sh / deploy.py       |
+|   plugin.schema.yaml          |                    
+| Bitops Files:                 |
+|   bitops.config.yaml          |
+|   scripts/                    |
+|-------------------------------|
+
+
+
+**Runtime**
+|-------------------------------|
+|         BitOps Core           |
+|-------------------------------|
+|-------------------------------|
+|           Plugins             |
+|-------------------------------|
+|          Operations           |
+| Mounts:                       |
+|   operations repo             |
+|     /opt/bitops_deployment    |
+|   bitops                      |
+|     /opt/bitops               |
+|-------------------------------|
