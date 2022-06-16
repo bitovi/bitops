@@ -18,40 +18,22 @@ bitops:
     # May need Logging modes to support log aggs like; LogStash, etc
     
   plugins:
-    plugins_seq:
-      - terraform-usage1
-      - helm
-      - terraform-usage2
-
-    tools:
-      cloudproviders:
-        aws:
-          source:
-            sourced_from: https://github.com/bitops-plugins/aws
-
-      deployment:
-        terraform-usage1:
-          source: 
-            sourced_from: https://github.com/bitops-plugins/terraform
-          identity: terraform
-    
-  # plugins:
-  #   aws:
-  #     source: 
-  #       sourced_from: https://github.com/bitops-plugins/aws
-  #   terraform:
-  #     source: 
-  #       sourced_from: https://github.com/bitops-plugins/terraform
-  #   helm:
-  #     source: 
-  #       sourced_from: https://github.com/bitops-plugins/helm
-  #   cloudformation:
-  #     source: 
-  #       sourced_from: https://github.com/bitops-plugins/cloudformation
-  # deployment-sequence:
-  #   terraform:
-  #     plugin: terraform
-  #   helm:
-  #     plugin: helm
-  #   cloudformation:
-  #     plugin: cloudformation
+    aws:
+      source: 
+        sourced_from: https://github.com/bitops-plugins/aws
+    terraform:
+      source: 
+        sourced_from: https://github.com/bitops-plugins/terraform
+    helm:
+      source: 
+        sourced_from: https://github.com/bitops-plugins/helm
+    cloudformation:
+      source: 
+        sourced_from: https://github.com/bitops-plugins/cloudformation
+  deployment-sequence:
+    terraform:
+      plugin: terraform
+    helm:
+      plugin: helm
+    cloudformation:
+      plugin: cloudformation
