@@ -27,6 +27,12 @@ bitops:
     helm:
       source: 
         sourced_from: https://github.com/bitops-plugins/helm
+    kubectl:
+      source: 
+        sourced_from: https://github.com/bitops-plugins/kubectl
+    ansible:
+      source: 
+        sourced_from: https://github.com/bitops-plugins/ansible
     cloudformation:
       source: 
         sourced_from: https://github.com/bitops-plugins/cloudformation
