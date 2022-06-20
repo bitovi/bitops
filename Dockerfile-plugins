@@ -1,2 +1,0 @@
-FROM bitops-core
-ENTRYPOINT ["python3", "/opt/bitops/scripts/plugins.py", "deploy"]
