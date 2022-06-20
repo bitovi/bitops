@@ -188,6 +188,6 @@ def Deploy_Plugins():
                 # universal_newlines = True,
                 # capture_output=True)
             else:
-                logger.error("Plugin environment directory does not exist: [{}]".format(plugin_environment_dir))    
+                logger.info("Plugin environment directory does not exist: [{}]".format(plugin_environment_dir))    
     else:
         logger.info("Add deployment sequence logic here")
