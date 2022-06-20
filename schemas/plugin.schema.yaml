@@ -1,5 +1,0 @@
-plugin:
-  type: object
-  properties:
-    source:
-      type: source
