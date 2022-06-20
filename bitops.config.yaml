@@ -36,10 +36,10 @@ bitops:
     cloudformation:
       source: 
         sourced_from: https://github.com/bitops-plugins/cloudformation
-  deployment_sequence:
-    terraform:
-      plugin: terraform
-    helm:
-      plugin: helm
-    cloudformation:
-      plugin: cloudformation
+  # deployment_sequence:
+  #   terraform:
+  #     plugin: terraform
+  #   helm:
+  #     plugin: helm
+  #   cloudformation:
+  #     plugin: cloudformation
