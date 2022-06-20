@@ -19,7 +19,7 @@ def Deploy_Plugins():
     temp_dir = tempfile.mkdtemp()
 
     bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins, None)
-    bitops_deployment_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.deployment_sequence, None)
+    bitops_deployment_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.deployments, None)
 
     bitops_dir = "/opt/bitops"
     bitops_deployment_dir = "/opt/bitops_deployment/"
