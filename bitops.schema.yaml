@@ -1,57 +1,41 @@
 bitops:
   type: object
   properties:
-    
-    source:
-      type: source
-    
     fail_fast:
       type: boolean
-     
     run_mode:
       type: string
 
-    default_folder:
-      type: string
-    
     logging:
       type: object
       properties:
         level:
           type: string
-        file:
+        color:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+        filename:
           type: string
         err:
           type: string
-      color:
-        type: object
-        properties:
-          enabled:
-            type: boolean
-      filename:
-        type: string
-      path:
-        type: string
-          
-
-
-    
-    timeout:
-      type: int
+        path:
+          type: string
     
     plugins:
       type: object
       properties:
-        plugins_seq:
-          type: list
-        plugin_dir:
-          type: string
-    
-        tools:
+        tool-name:
           type: object
           properties:
-            cloudproviders:
-              type: plugin_list
-            deployment:
-              type: plugin_list
-        
+            source:
+              type: object
+              properties:
+                sourced_from:
+                  type: string
+                branch: 
+                  type: string
+                tag:
+                  type: string
+    

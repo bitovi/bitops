@@ -1,7 +1,4 @@
 bitops:
-
-  source:
-    sourced_from: local
   
   fail_fast: true
   run_mode: default
@@ -9,11 +6,10 @@ bitops:
   # DEBUG, INFO, WARNING, ERROR, CRITICAL
   logging:
     level: DEBUG
-    file: bitops.logs
-    err: bitops.logs
     color:
       enabled: true
     filename: bitops-run
+    err: bitops.logs
     path: /var/logs/bitops
     # May need Logging modes to support log aggs like; LogStash, etc
     
