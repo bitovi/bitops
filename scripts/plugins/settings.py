@@ -72,10 +72,6 @@ BITOPS_logging_path = bitops_build_configuration.bitops.logging.path            
     if bitops_build_configuration.bitops.logging.path is not None  \
     else "/var/log/bitops"
 
-BITOPS_opsrepo_source = bitops_build_configuration.bitops.source.sourced_from   \
-    if bitops_build_configuration.bitops.source.sourced_from is not None        \
-    else "local"
-
 
 BITOPS_plugin_dir = BITOPS_ENV_plugin_dir                         \
     if BITOPS_ENV_plugin_dir is not None                             \

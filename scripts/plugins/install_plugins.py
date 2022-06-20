@@ -85,15 +85,15 @@ def Install_Plugins():
             #~#~#~#~#~#~#~#~#~#~#~#~#~#
 
             # Once the plugin is cloned, begin using its config + schema
-            plugin_configuration_path = "config/{}.plugin.config.yaml".format(plugin_config) 
+            plugin_configuration_path = plugin_dir+plugin_config+"/plugin.config.yaml" 
 
             try:
                 with open(plugin_configuration_path, 'r') as stream:
                     plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+            
             except FileNotFoundError as e:
                 logger.warning("No plugin file was found at path: [{}]".format(plugin_configuration_path))
-                # plugin_configuration_yaml = None
-                plugin_configuration_yaml = {"{}".format(plugin_config) : {"plugin" : {"install": {}}}}
+                plugin_configuration_yaml = {"plugin" : {"install": {}}}
 
             plugin_configuration = \
                 None if plugin_configuration_yaml is None \
@@ -104,34 +104,15 @@ def Install_Plugins():
             #   bitops.config.yaml should be used second
             #   A default value should be used as a last resort
 
-            plugin_install_script = plugin_configuration[plugin_config].plugin.install.install_script  \
-                if plugin_configuration[plugin_config].plugin.install.install_script is not None       \
-                else bitops_plugins_configuration[plugin_config].install_script         \
-                    if bitops_plugins_configuration[plugin_config].install_script is not None   \
-                    else "install.sh"
-            
-            # The below code is technically a safer, albeit more cumbersome way to accomplish the above.
-            # The issue with the above is that if the ".install" value is a NoneType, then it is non subscriptable ".install_sctipt"
-            # which will throw an attribute error ...
+            logger.error(plugin_configuration)
 
-            # try:
-            #     plugin_config_install_script = plugin_configuration[plugin].plugin.install.install_script
-            # except TypeError: plugin_config_install_script = None
-            # try:
-            #     bitops_plugins_configuration_install_script = bitops_plugins_configuration[plugin_config][plugin].install_script
-            # except TypeError: bitops_plugins_configuration_install_script = None
+            plugin_install_script = plugin_configuration.plugin.install.install_script  \
+                if plugin_configuration.plugin.install.install_script is not None       \
+                else "install.sh"
 
-            # plugin_install_script = plugin_config_install_script    \
-            #     if plugin_config_install_script is not None         \
-            #     else bitops_plugins_configuration_install_script    \
-            #         if bitops_plugins_configuration_install_script is not None  \
-            #         else "install.sh"
-
-            plugin_install_language = plugin_configuration[plugin_config].plugin.install.language  \
-                if plugin_configuration[plugin_config].plugin.install.language is not None       \
-                else bitops_plugins_configuration[plugin_config].language         \
-                    if bitops_plugins_configuration[plugin_config].language is not None   \
-                    else "bash"
+            plugin_install_language = plugin_configuration.plugin.install.language  \
+                if plugin_configuration.plugin.install.language is not None       \
+                else "bash"
                             
             # install plugin dependencies (install.sh)
             plugin_install_script_path = plugin_dir + plugin_config + "/{}".format(plugin_install_script)

@@ -9,7 +9,7 @@ from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
 from .utilities import Get_Config_List
-from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml, BITOPS_opsrepo_source, bitops_build_configuration, BITOPS_ENV_environment, BITOPS_default_folder, BITOPS_timeout
+from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_config_yaml, bitops_build_configuration, BITOPS_ENV_environment, BITOPS_default_folder, BITOPS_timeout
 from .logging import logger
 from munch import DefaultMunch
 
@@ -53,11 +53,6 @@ def Deploy_Plugins():
     if BITOPS_ENV_environment is None:
         logger.error("ENVIRONMENT variables must be set... Exiting")
         quit()
-
-    # If a OpsRepo is specified, clone it to the bitops_deployment_dir
-    if BITOPS_opsrepo_source != "local":
-        logger.info("Downloading OpsRepo from: [{}]".format(BITOPS_opsrepo_source))
-        git.Repo.clone_from(BITOPS_opsrepo_source, bitops_deployment_dir)
     
     # Move to temp directory
     copy_tree(bitops_deployment_dir, temp_dir)
@@ -75,8 +70,6 @@ def Deploy_Plugins():
                 \n\t ENVIRONMENT:           [{env}]                         \
                 \n\t TIMEOUT:               [{timeout}]                     \
                 \n                                                          \
-                \n\t SOURCE:                [{source}]                      \
-                \n                                                          \
                 \n\t BITOPS_DIR:            [{bitops_dir}]                  \
                 \n\t BITOPS_DEPLOYMENT_DIR: [{bitops_deployment_dir}]       \
                 \n\t BITOPS_PLUGIN_DIR:     [{bitops_plugin_dir}]           \
@@ -89,8 +82,6 @@ def Deploy_Plugins():
                     default_folder_name=BITOPS_default_folder,
                     env=BITOPS_ENV_environment,
                     timeout=BITOPS_timeout,
-
-                    source=BITOPS_opsrepo_source,
                     
                     bitops_dir=bitops_dir,
                     bitops_deployment_dir=bitops_deployment_dir,
@@ -115,7 +106,7 @@ def Deploy_Plugins():
                 os.environ['PLUGIN_ENV_FILE'] = plugin_env_file
 
                 plugin_config_file = plugin_environment_dir + '/' + 'bitops.config.yaml'
-                plugin_schema_file = plugin_dir+"/plugin.schema.yaml" 
+                plugin_schema_file = plugin_dir+"/bitops.schema.yaml" 
                 
                 logger.info("\n\n\n~#~#~#~{plugin} PLUGIN CONFIGURATION~#~#~#~  \
                 \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
@@ -159,16 +150,25 @@ def Deploy_Plugins():
                 #     logger.info(result.stdout)
                 # else:
 
-                # result = subprocess.run([plugin_deploy_language, plugin_dir + '/deploy.sh'], 
+                logger.warning("LOOK HERE")
+                logger.warning(cli_config_list)
+                stack_action=""
+                for item in cli_config_list:
+                    if item.name == "stack-action": 
+                        stack_action = item.value
+                        break
+                logger.warning(stack_action)
                 
 
                 # Add executable flag to deploy.sh
                 os.chmod(plugin_deploy_script_path, 775)
                 logger.info("\n\t\tRUNNING DEPLOYMENT SCRIPT    \
-                                \n\t\t\tLANGUAGE:      [{}]             \
-                                \n\t\t\tSCRIPT PATH:   [{}]".format(plugin_deploy_language, plugin_deploy_script_path))
+                                \n\t\t\tLANGUAGE:       [{}]    \
+                                \n\t\t\tSCRIPT PATH:    [{}]    \
+                                \n\t\t\tSTACK ACTION:   [{}]".format(plugin_deploy_language, plugin_deploy_script_path, stack_action))
+                
                 try:
-                    result = subprocess.run([plugin_deploy_language, plugin_deploy_script_path], 
+                    result = subprocess.run([plugin_deploy_language, plugin_deploy_script_path, stack_action], 
                         universal_newlines = True,
                         capture_output=True)
                 

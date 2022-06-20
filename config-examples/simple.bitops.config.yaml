@@ -11,7 +11,7 @@ bitops:
     level: DEBUG              # Sets the logging level
     color:
       enabled: true           # Enables colored logs
-    filename: bitops-run      # log filename
+    filename: bitops-run      # logs filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
     
@@ -24,21 +24,10 @@ bitops:
     #     branch:         # Github branch for versioned clone
     
     aws:
-      source: https://github.com/bitops-plugins/aws
+      source: 
+        sourced_from: https://github.com/bitops-plugins/aws
+    
     terraform:
-      source: https://github.com/bitops-plugins/terraform
-    helm:
-      source: https://github.com/bitops-plugins/helm
-    kubectl:
-      source: https://github.com/bitops-plugins/kubectl
-    ansible:
-      source: https://github.com/bitops-plugins/ansible
-    cloudformation:
-      source: https://github.com/bitops-plugins/cloudformation
-  # deployments:
-  #   terraform:
-  #     plugin: terraform
-  #   helm:
-  #     plugin: helm
-  #   cloudformation:
-  #     plugin: cloudformation
+      source: 
+        sourced_from: https://github.com/bitops-plugins/terraform
+
