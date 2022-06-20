@@ -29,3 +29,5 @@ ONBUILD COPY scripts/ ./scripts
 ONBUILD COPY bitops.config.yaml .
 ONBUILD COPY bitops.schema.yaml .
 ONBUILD RUN python3 scripts/plugins.py install
+
+ENTRYPOINT ["python3", "/opt/bitops/scripts/plugins.py", "deploy"]

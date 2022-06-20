@@ -150,8 +150,6 @@ def Deploy_Plugins():
                 #     logger.info(result.stdout)
                 # else:
 
-                logger.warning("LOOK HERE")
-                logger.warning(cli_config_list)
                 stack_action=""
                 for item in cli_config_list:
                     if item.name == "stack-action": 
