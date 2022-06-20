@@ -108,83 +108,86 @@ def Deploy_Plugins():
             plugin_environment_dir = bitops_operations_dir + '/' + plugin_name      # Sourced from Operations repo
             os.environ['PLUGIN_DIR'] = plugin_dir
             os.environ['PLUGIN_ENVIRONMENT_DIR'] = plugin_environment_dir
-
-            # Reconcile BitOps config using existing shell scripts
-            plugin_env_file = plugin_dir + '/' + 'ENV_FILE'
-            os.environ['PLUGIN_ENV_FILE'] = plugin_env_file
-
-            plugin_config_file = plugin_environment_dir + '/' + 'bitops.config.yaml'
-            plugin_schema_file = plugin_dir+"/plugin.schema.yaml" 
             
-            logger.info("\n\n\n~#~#~#~{plugin} PLUGIN CONFIGURATION~#~#~#~  \
-            \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
-            \n\t ENVIRONMENT_DIR:       [{plugin_env_dir}]                  \
-            \n\t ENVIRONMENT_FILE_PATH: [{plugin_env_file}]                 \
-            \n\t CONFIG_FILE_PATH:      [{plugin_config_file_path}]         \
-            \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
-            ".format(                                                       
-                plugin=plugin.upper(),                                      
-                plugin_dir=plugin_dir,
-                plugin_env_dir=plugin_environment_dir,
-                plugin_env_file=plugin_env_file,
-                plugin_config_file_path=plugin_config_file,
-            ))
-            logger.info("loading config file: [{}]".format(plugin_config_file))
-            logger.debug("loading ENV_FILE   : [{}]".format(plugin_env_file))
-                        
-            
-            cli_config_list, options_config_list = Get_Config_List(plugin_config_file, plugin_schema_file)
-            # THIS NEEDS TO SEND IN THE plugin.schema.yaml from the plugin folder
-            # WHICH WILL BE COMPARED TO THE PROVIDED plugin.config.yaml that will be pulled from the ops-repo
+            if os.path.isdir(plugin_environment_dir):
+                # Reconcile BitOps config using existing shell scripts
+                plugin_env_file = plugin_dir + '/' + 'ENV_FILE'
+                os.environ['PLUGIN_ENV_FILE'] = plugin_env_file
 
-            # Set CLI_OTIONS
-            # os.environ['CLI_OPTIONS'] = cli_options.stdout
-
-            # Source envfile
-            #envbash.load_envbash(os.environ['ENV_FILE'])
-
-            # Check if install script is present
-            plugin_deploy_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
-            plugin_deploy_language = "bash" if plugin_deploy_script[-2:] == "sh" else "python3"
-            plugin_deploy_script_path = plugin_dir + '/deploy.sh'
-
-            # Invoke Plugin
-            
-            # Wait for processes to complete.
-            # if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible' or plugin_name == 'cloudformation':
-            #     result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
-            #     result.wait(timeout = 600)
-            #     logger.info("Result from command....")
-            #     logger.info(result.stdout)
-            # else:
-
-            # result = subprocess.run([plugin_deploy_language, plugin_dir + '/deploy.sh'], 
-            
-
-            # Add executable flag to deploy.sh
-            os.chmod(plugin_deploy_script_path, 775)
-            logger.info("\n\t\tRUNNING DEPLOYMENT SCRIPT    \
-                            \n\t\t\tLANGUAGE:      [{}]             \
-                            \n\t\t\tSCRIPT PATH:   [{}]".format(plugin_deploy_language, plugin_deploy_script_path))
-            try:
-                result = subprocess.run([plugin_deploy_language, plugin_deploy_script_path], 
-                    universal_newlines = True,
-                    capture_output=True)
-            
-            except Exception as exc:
-                logger.error(exc)
-                if BITOPS_fast_fail_mode: quit(101)
+                plugin_config_file = plugin_environment_dir + '/' + 'bitops.config.yaml'
+                plugin_schema_file = plugin_dir+"/plugin.schema.yaml" 
                 
-            if result.returncode == 0:
-                logger.info("\n~#~#~#~DEPLOYING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
-                logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
-            else:
-                logger.warning("\n~#~#~#~DEPLOYING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
-                logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+                logger.info("\n\n\n~#~#~#~{plugin} PLUGIN CONFIGURATION~#~#~#~  \
+                \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
+                \n\t ENVIRONMENT_DIR:       [{plugin_env_dir}]                  \
+                \n\t ENVIRONMENT_FILE_PATH: [{plugin_env_file}]                 \
+                \n\t CONFIG_FILE_PATH:      [{plugin_config_file_path}]         \
+                \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
+                ".format(                                                       
+                    plugin=plugin.upper(),                                      
+                    plugin_dir=plugin_dir,
+                    plugin_env_dir=plugin_environment_dir,
+                    plugin_env_file=plugin_env_file,
+                    plugin_config_file_path=plugin_config_file,
+                ))
+                logger.info("loading config file: [{}]".format(plugin_config_file))
+                logger.debug("loading ENV_FILE   : [{}]".format(plugin_env_file))
+                            
+                
+                cli_config_list, options_config_list = Get_Config_List(plugin_config_file, plugin_schema_file)
+                # THIS NEEDS TO SEND IN THE plugin.schema.yaml from the plugin folder
+                # WHICH WILL BE COMPARED TO THE PROVIDED plugin.config.yaml that will be pulled from the ops-repo
 
-            # After hooks
-            # result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
-            # universal_newlines = True,
-            # capture_output=True)
+                # Set CLI_OTIONS
+                # os.environ['CLI_OPTIONS'] = cli_options.stdout
+
+                # Source envfile
+                #envbash.load_envbash(os.environ['ENV_FILE'])
+
+                # Check if install script is present
+                plugin_deploy_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
+                plugin_deploy_language = "bash" if plugin_deploy_script[-2:] == "sh" else "python3"
+                plugin_deploy_script_path = plugin_dir + '/deploy.sh'
+
+                # Invoke Plugin
+                
+                # Wait for processes to complete.
+                # if plugin_name == 'terraform' or plugin_name == 'helm' or plugin_name == 'ansible' or plugin_name == 'cloudformation':
+                #     result = subprocess.Popen(plugin_dir + '/deploy.sh', universal_newlines = True)
+                #     result.wait(timeout = 600)
+                #     logger.info("Result from command....")
+                #     logger.info(result.stdout)
+                # else:
+
+                # result = subprocess.run([plugin_deploy_language, plugin_dir + '/deploy.sh'], 
+                
+
+                # Add executable flag to deploy.sh
+                os.chmod(plugin_deploy_script_path, 775)
+                logger.info("\n\t\tRUNNING DEPLOYMENT SCRIPT    \
+                                \n\t\t\tLANGUAGE:      [{}]             \
+                                \n\t\t\tSCRIPT PATH:   [{}]".format(plugin_deploy_language, plugin_deploy_script_path))
+                try:
+                    result = subprocess.run([plugin_deploy_language, plugin_deploy_script_path], 
+                        universal_newlines = True,
+                        capture_output=True)
+                
+                except Exception as exc:
+                    logger.error(exc)
+                    if BITOPS_fast_fail_mode: quit(101)
+                    
+                if result.returncode == 0:
+                    logger.info("\n~#~#~#~DEPLOYING PLUGIN [{plugin}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin=plugin))
+                    logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+                else:
+                    logger.warning("\n~#~#~#~DEPLOYING PLUGIN [{plugin}] FAILED~#~#~#~".format(plugin=plugin))
+                    logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+
+                # After hooks
+                # result = subprocess.run(['bash', bitops_dir + '/deploy/after-deploy.sh', plugin_environment_dir], 
+                # universal_newlines = True,
+                # capture_output=True)
+            else:
+                logger.error("Plugin environment directory does not exist: [{}]".format(plugin_environment_dir))    
     else:
         logger.info("Add deployment sequence logic here")
