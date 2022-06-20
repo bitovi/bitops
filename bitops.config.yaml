@@ -15,23 +15,17 @@ bitops:
     
   plugins:
     aws:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/aws
+      source: https://github.com/bitops-plugins/aws
     terraform:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/terraform
+      source: https://github.com/bitops-plugins/terraform
     helm:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/helm
+      source: https://github.com/bitops-plugins/helm
     kubectl:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/kubectl
+      source: https://github.com/bitops-plugins/kubectl
     ansible:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/ansible
+      source: https://github.com/bitops-plugins/ansible
     cloudformation:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/cloudformation
+      source: https://github.com/bitops-plugins/cloudformation
   # deployments:
   #   terraform:
   #     plugin: terraform

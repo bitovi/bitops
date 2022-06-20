@@ -24,7 +24,7 @@ def Install_Plugins():
         logger.info("\n\n\n~#~#~#~PROCESSING STAGE [{}]~#~#~#~\n".format(plugin_config.upper()))
         # for plugin in bitops_plugins_configuration[plugin_config]:
         
-        plugin_source = bitops_plugins_configuration[plugin_config].source.sourced_from
+        plugin_source = bitops_plugins_configuration[plugin_config].source
         
         logger.info("\n\n\n~#~#~#~PLUGIN SOURCE [{}]~#~#~#~\n".format(plugin_source))
 
