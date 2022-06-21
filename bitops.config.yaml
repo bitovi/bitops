@@ -29,7 +29,7 @@ bitops:
     cloudformation:
       source: https://github.com/bitops-plugins/cloudformation
   deployments:
-    tf-stack1:
+    terraform:
       plugin: terraform
     # helm:
     #   plugin: helm
