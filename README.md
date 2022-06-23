@@ -110,20 +110,19 @@ Variables are set in the following order; ENV_VAR, config_file, default
 ### Rapid Testing
 #### Build the core image
 ```
-docker build -t bitops-core:latest -f Dockerfile-core .
-```
+docker build -t bitops-core:latest .
 
-#### Build the plugins image
-```
-docker build -t test-plugins:latest -f Dockerfile-plugins .
 ```
 
 #### Run Plugins image
 ```
 docker run \
--e ENVIRONMENT=test-simple  \
--v /Users/philh/Documents/Bitovi/test-ops:/opt/bitops_deployment    \
-test-plugins:latest 2> dockerplugins-run.logs
+-e ENVIRONMENT=ENVIRONMENT  \
+-e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-v /path/to/operations_repo:/opt/bitops_deployment    \
+bitops-core:latest
 ```
 
 **What does this do?**
@@ -151,18 +150,7 @@ Source folders copied:
     - `bitops.config.yaml`
   - Runs BitOps install
 
-
-
-
 #### Visual
-*Docker container*
-|-----------------------------|
-| /opt/bitops                 |
-| /opt/bitops/scripts/plugins |
-|                             |
-| /opt/bitops_deployment      |
-|-----------------------------|
-
 **/opt/bitops**
 Contains the BitOps core
 
@@ -173,6 +161,14 @@ Contains the plugins that are installed
 Contains the Operations Repo
 
 ```
+*Docker container*
+|-----------------------------|
+| /opt/bitops                 |
+| /opt/bitops/scripts/plugins |
+|                             |
+| /opt/bitops_deployment      |
+|-----------------------------|
+
 *Docker container layers*
 **BitOps Core**
 |-------------------------------|
@@ -219,3 +215,31 @@ Contains the Operations Repo
 |     /opt/bitops               |
 |-------------------------------|
 ```
+
+
+
+## Files and Folders breakdown
+### BitOps
+  **bitops.schema.yaml**
+  <br/>
+  Documents configuration options that BitOps core uses
+
+  **bitops.config.yaml**
+  <br/>
+  Defines configuration options that BitOps core is using
+
+### Plugin
+  This applies to all plugins that BitOps installs and deploys with
+  
+  **plugin.config.yaml**
+  <br/>
+  Defines configuration for the plugins installation and deployment
+
+  **bitops.schema.yaml**
+  <br/>
+  Documents configuration options that the plugin can use
+
+### Operation Repo
+  **bitops.config.yaml**
+  <br/>
+  Defines configuration options that the plugin will use when invoked
