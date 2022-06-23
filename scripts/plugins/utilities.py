@@ -14,7 +14,7 @@ from .settings import BITOPS_fast_fail_mode, BITOPS_config_file, bitops_schema_c
 from .logging import logger
 
 class SchemaObject:
-    properties = ["export_env", "default", "enabled", "type", "parameter", "required"]
+    properties = ["export_env", "default", "enabled", "type", "parameter", "required", "dash_type"]
     
     def __init__(self, name, schema_key, schema_property_values=None):
         self.name = name
@@ -30,6 +30,7 @@ class SchemaObject:
         self.enabled = ""
         self.type = "object"
         self.parameter = ""
+        self.dash_type = ""
 
         if schema_property_values:
             for property in self.properties:
@@ -59,6 +60,7 @@ class SchemaObject:
             \n\t\tEnabled:      [{}]\
             \n\t\tType:         [{}]\
             \n\t\tParameter:    [{}]\
+            \n\t\tDash Type:    [{}]\
             \n                      \
             \n\t\tValue Set:    [{}]".format( \
                 self.name,
@@ -71,6 +73,7 @@ class SchemaObject:
                 self.enabled,
                 self.type,
                 self.parameter,
+                self.dash_type,
                 
                 self.value)
     
@@ -107,8 +110,8 @@ def Load_Build_Config():
     return Load_Yaml(BITOPS_config_file)
 
 def Apply_Data_Type(data_type, convert_value):
-    if data_type == "object": return data_type
-
+    if data_type == "object" or convert_value == None: return data_type
+    
     if re.search("list", data_type, re.IGNORECASE):
         return list(convert_value)
     elif re.search("string", data_type, re.IGNORECASE):

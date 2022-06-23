@@ -36,9 +36,9 @@ BITOPS_ENV_run_mode         = os.environ.get("BITOPS_MODE")
 BITOPS_ENV_logging_level    = os.environ.get("BITOPS_LOGGING_LEVEL")
 BITOPS_ENV_plugin_dir       = os.environ.get("BITOPS_PLUGIN_DIR")
 
-BITOPS_ENV_default_folder   = os.environ.get("DEFAULT_FOLDER_NAME")
-BITOPS_ENV_environment      = os.environ.get("ENVIRONMENT", None)
-BITOPS_ENV_timeout          = os.environ.get("TIMEOUT")
+BITOPS_ENV_default_folder   = os.environ.get("BITOPS_DEFAULT_FOLDER_NAME")
+BITOPS_ENV_environment      = os.environ.get("BITOPS_ENVIRONMENT", None)
+BITOPS_ENV_timeout          = os.environ.get("BITOPS_TIMEOUT")
 
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared. All this does is X if X is set, Y if Y is set, else default value

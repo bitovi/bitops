@@ -40,13 +40,13 @@ def Deploy_Plugins():
 
 
     # Set global variables
-    os.environ["TEMPDIR"] = temp_dir
-    os.environ["ENVROOT"] = bitops_operations_dir
+    os.environ["BITOPS_TEMPDIR"] = temp_dir
+    os.environ["BITOPS_ENVROOT"] = bitops_operations_dir
     os.environ["BITOPS_DIR"] = bitops_dir
-    os.environ["SCRIPTS_DIR"] = bitops_scripts_dir
-    os.environ["PLUGINS_DIR"] = bitops_plugins_dir
+    os.environ["BITOPS_SCRIPTS_DIR"] = bitops_scripts_dir
+    os.environ["BITOPS_PLUGINS_DIR"] = bitops_plugins_dir
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
-    os.environ["KUBE_CONFIG_FILE"] = "{}/.kube/config".format(temp_dir)
+    os.environ["BITOPS_KUBE_CONFIG_FILE"] = "{}/.kube/config".format(temp_dir)
     os.environ["PATH"] = PATH
 
     # Global environment evaluation
@@ -96,12 +96,12 @@ def Deploy_Plugins():
         # Set plugin vars
         plugin_dir = bitops_plugins_dir + plugin_name                           # Sourced from BitOps Core + plugin install
         opsrepo_environment_dir = bitops_operations_dir + '/' + deployment      # Sourced from Operations repo
-        os.environ['PLUGIN_DIR'] = plugin_dir
-        os.environ['ENVIRONMENT_DIR'] = opsrepo_environment_dir
+        os.environ['BITOPS_PLUGIN_DIR'] = plugin_dir
+        os.environ['BITOPS_OPSREPO_ENVIRONMENT_DIR'] = opsrepo_environment_dir
         if os.path.isdir(opsrepo_environment_dir):
             # Reconcile BitOps config using existing shell scripts
             opsrepo_env_file = opsrepo_environment_dir + '/' + 'ENV_FILE'
-            os.environ['PLUGIN_ENV_FILE'] = opsrepo_env_file
+            os.environ['BITOPS_OPSREPO_ENV_FILE'] = opsrepo_env_file
 
             opsrepo_config_file = opsrepo_environment_dir + '/' + 'bitops.config.yaml'
             plugin_schema_file = plugin_dir+"/bitops.schema.yaml"
@@ -124,8 +124,18 @@ def Deploy_Plugins():
 
             cli_config_list, options_config_list = Get_Config_List(opsrepo_config_file, plugin_schema_file)
 
+            # Adding print env logging
+            bitops_env_vars = [item for item in os.environ if "BITOPS_" in item]
+            bitops_env_vars.sort()
+            env_vars_msg="\n\n~#~#~#~BITOPS ENVIRONMENT VARIABLES~#~#~#~"
+            for item in bitops_env_vars:
+                value=os.environ.get(item)
+                env_vars_msg+="\n\t{}={}".format(item, value)
+            logger.debug(env_vars_msg)
+            
             plugin_deploy_script_path = plugin_dir + '/deploy.sh'
             plugin_deploy_language = "bash"
+            
             # plugin_deploy_script = bitops_plugins_configuration[plugin].install_script  if bitops_plugins_configuration[plugin].install_script else "install.sh"
             # plugin_deploy_language = "bash" if plugin_deploy_script[-2:] == "sh" else "python3"
 
