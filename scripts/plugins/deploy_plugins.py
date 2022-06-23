@@ -104,7 +104,7 @@ def Deploy_Plugins():
             os.environ['PLUGIN_ENV_FILE'] = opsrepo_env_file
 
             opsrepo_config_file = opsrepo_environment_dir + '/' + 'bitops.config.yaml'
-            plugin_schema_file = plugin_dir+"/plugin.schema.yaml" 
+            plugin_schema_file = plugin_dir+"/bitops.schema.yaml"
             
             logger.info("\n\n\n~#~#~#~{deployment} DEPLOYMENT CONFIGURATION~#~#~#~  \
             \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
