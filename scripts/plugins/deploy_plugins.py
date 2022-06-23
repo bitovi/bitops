@@ -97,7 +97,7 @@ def Deploy_Plugins():
         plugin_dir = bitops_plugins_dir + plugin_name                           # Sourced from BitOps Core + plugin install
         opsrepo_environment_dir = bitops_operations_dir + '/' + deployment      # Sourced from Operations repo
         os.environ['PLUGIN_DIR'] = plugin_dir
-        os.environ['PLUGIN_ENVIRONMENT_DIR'] = opsrepo_environment_dir
+        os.environ['ENVIRONMENT_DIR'] = opsrepo_environment_dir
         if os.path.isdir(opsrepo_environment_dir):
             # Reconcile BitOps config using existing shell scripts
             opsrepo_env_file = opsrepo_environment_dir + '/' + 'ENV_FILE'
