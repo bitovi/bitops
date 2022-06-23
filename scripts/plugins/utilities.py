@@ -83,7 +83,7 @@ class SchemaObject:
         logger.info("\n\tSearching for: [{}]\n\t\tResult Found: [{}]".format(self.config_key, result))
         found_config_value = Apply_Data_Type(self.type, result)
         
-        if found_config_value != "":
+        if found_config_value:
             logger.info("Override found for: [{}], default: [{}], new value: [{}]".format(self.name, self.default, found_config_value))
             self.value = found_config_value
         else:
@@ -110,7 +110,7 @@ def Load_Build_Config():
     return Load_Yaml(BITOPS_config_file)
 
 def Apply_Data_Type(data_type, convert_value):
-    if data_type == "object" or convert_value == None: return data_type
+    if data_type == "object" or convert_value == None: return None
     
     if re.search("list", data_type, re.IGNORECASE):
         return list(convert_value)
@@ -130,6 +130,8 @@ def Apply_Data_Type(data_type, convert_value):
 def AddValueToEnv(export_env, value):
     if value is None or value == "" or value == "None" or export_env is None or export_env == "" :
         return
+    
+    export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
     logger.info("Setting environment variable: [{}], to value: [{}]".format(export_env, value))
 
@@ -191,9 +193,7 @@ def Get_Config_List(config_file, schema_file):
     
     ignore_values = ["type", "properties", "cli", "options", root_key]
     
-    #schema_top_level = schema_keys_list[0]
     schema_properties_list = [item for item in schema_keys_list if item.split(".")[-1] not in ignore_values and item.split(".")[-1] not in SchemaObject.properties]
-    #schema_properties_list.insert(0, schema_top_level)
 
     schema_list = []
 
