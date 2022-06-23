@@ -1,0 +1,6 @@
+aws:
+  cli:
+    validate-cfn: true
+  options:
+    s3-bucket: bitops
+    s3-key: testing
