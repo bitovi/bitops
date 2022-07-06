@@ -86,7 +86,7 @@ def Install_Plugins():
 
             # Once the plugin is cloned, begin using its config + schema
             plugin_configuration_path = plugin_dir+plugin_config+"/plugin.config.yaml" 
-
+            logger.info("plugin_configuration_path ==>[{}]".format(plugin_configuration_path) )
             try:
                 with open(plugin_configuration_path, 'r') as stream:
                     plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)

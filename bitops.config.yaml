@@ -5,7 +5,6 @@ bitops:
 
   fail_fast: true     # When set, will exit if any warning+ is raised, otherwise only exit on critical error
   run_mode: default   # (Unused for now)
-
   # LEVELS: [ DEBUG, INFO, WARNING, ERROR, CRITICAL ]
   logging:      
     level: DEBUG              # Sets the logging level
@@ -14,13 +13,22 @@ bitops:
     filename: bitops-run      # log filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
-  
+  opsrepo_root_default_dir: _default
   plugins:    
     aws:
       source: https://github.com/bitops-plugins/aws
     terraform:
       source: https://github.com/bitops-plugins/terraform
-  
+    cloudformation:
+      source: https://github.com/bitops-plugins/cloudformation
+    helm:
+      source: https://github.com/bitops-plugins/helm
+    kubectl:
+      source: https://github.com/bitops-plugins/kubectl
   deployments:
+    cloudformation:
+      plugin: cloudformation
     terraform:
       plugin: terraform
+    helm:
+      plugin: helm
