@@ -12,8 +12,6 @@ from plugins.utilities import Get_Config_List
 if __name__ == "__main__":
     try:
         mode = sys.argv[1]
-        config_file = sys.argv[2]
-        schema_file = sys.argv[3]
     except IndexError:
         mode = None
 
@@ -30,7 +28,7 @@ if __name__ == "__main__":
     logger.info("\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
     \n\tFAIL FAST:              [{fail_fast}]                   \
     \n\tRUN MODE:               [{run_mode}]                    \
-    \
+    \n\tDEFAULT RUN MODE:       [{mode}]                        \
     \n\tLOGGING LEVEL:          [{log_level}]                   \
     \n\tLOGGING COLOR:          [{log_color}]                   \
     \
@@ -39,6 +37,7 @@ if __name__ == "__main__":
     ".format(
         fail_fast=plugins.settings.BITOPS_fast_fail_mode, 
         run_mode=plugins.settings.BITOPS_run_mode, 
+        mode=mode,
         log_level=plugins.settings.BITOPS_logging_level,
         log_color=plugins.settings.BITOPS_logging_color,
         config_file=plugins.settings.BITOPS_config_file
@@ -49,6 +48,8 @@ if __name__ == "__main__":
     elif mode == "install":
         Install_Plugins()
     elif mode == "schema_parsing":
+        config_file = sys.argv[2]
+        schema_file = sys.argv[3]
         Get_Config_List(config_file, schema_file)
     elif mode == "setting-test":
         print("Plugins Load complete. Exiting...")
