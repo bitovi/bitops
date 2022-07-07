@@ -7,10 +7,13 @@ import pyfiglet
 from plugins.logging import logger
 from plugins.deploy_plugins import Deploy_Plugins
 from plugins.install_plugins import Install_Plugins
+from plugins.utilities import Get_Config_List
 
 if __name__ == "__main__":
     try:
         mode = sys.argv[1]
+        config_file = sys.argv[2]
+        schema_file = sys.argv[3]
     except IndexError:
         mode = None
 
@@ -45,6 +48,8 @@ if __name__ == "__main__":
         Deploy_Plugins()
     elif mode == "install":
         Install_Plugins()
+    elif mode == "schema_parsing":
+        Get_Config_List(config_file, schema_file)
     elif mode == "setting-test":
         print("Plugins Load complete. Exiting...")
         exit(0)
