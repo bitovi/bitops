@@ -159,9 +159,14 @@ def Deploy_Plugins():
                 if plugin_configuration.plugin.deployment.core_schema_parsing is not None \
                 else "true"
             
-            # plugin.deployment.life_cycle_scripts
-            plugin_deploy_life_cycle_scripts_flag = plugin_configuration.plugin.deployment.life_cycle_scripts \
-                if plugin_configuration.plugin.deployment.life_cycle_scripts is not None \
+            # plugin.deployment.before_hook_scripts
+            plugin_deploy_before_hook_scripts_flag = plugin_configuration.plugin.deployment.before_hook_scripts \
+                if plugin_configuration.plugin.deployment.before_hook_scripts is not None \
+                else "true"
+
+            # plugin.deployment.after_hook_scripts
+            plugin_deploy_after_hook_scripts_flag = plugin_configuration.plugin.deployment.after_hook_scripts \
+                if plugin_configuration.plugin.deployment.after_hook_scripts is not None \
                 else "true"
             
             # Check if deploy script is present
@@ -194,7 +199,7 @@ def Deploy_Plugins():
                 #   The reason the before hooks have been placed here is because I'd like to ensure that the plugin level environment loading has been completed. This will ensure the before hook have access to all the same environment variables as the deployment invoking stage does.
 
                 # Check whether a plugin is using the before hook
-                if plugin_deploy_life_cycle_scripts_flag:
+                if plugin_deploy_before_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir+"/bitops.before-deploy.d"
                     Handle_Hooks("before", hooks_folder)
 
@@ -231,7 +236,7 @@ def Deploy_Plugins():
                     #logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
             
                 #~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
-                if plugin_deploy_life_cycle_scripts_flag:
+                if plugin_deploy_after_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir+"/bitops.after-deploy.d"
                     Handle_Hooks("after", hooks_folder)
 

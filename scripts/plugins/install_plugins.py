@@ -18,7 +18,7 @@ def Install_Plugins():
     bitops_plugins_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.plugins, None)
 
     plugin_dir = BITOPS_plugin_dir
-
+    plugin_list = [item for item in bitops_plugins_configuration]
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
         logger.info("\n\n\n~#~#~#~PROCESSING STAGE [{}]~#~#~#~\n".format(plugin_config.upper()))
@@ -104,28 +104,50 @@ def Install_Plugins():
             #   bitops.config.yaml should be used second
             #   A default value should be used as a last resort
 
-            logger.error(plugin_configuration)
-
+            # plugin.install.install_script
             plugin_install_script = plugin_configuration.plugin.install.install_script  \
                 if plugin_configuration.plugin.install.install_script is not None       \
                 else "install.sh"
 
+            # plugin.install.language
             plugin_install_language = plugin_configuration.plugin.install.language  \
                 if plugin_configuration.plugin.install.language is not None       \
                 else "bash"
+            
+            # plugin.install.dependencies
+            plugin_install_dependencies = plugin_configuration.plugin.install.dependencies  \
+                if plugin_configuration.plugin.install.dependencies is not None       \
+                else None
                             
+            # Checking that any dependency for a plugin is found within the bitops.config.yaml plugins section
+            if plugin_install_dependencies:
+                if plugin_install_dependencies not in plugin_list:
+                    logger.critical("MISSING DEPENDENCY \
+                    \n\t NEEDED DEPENDENCY: [{}] \
+                    \n\t PLUGIN LIST:       [{}] \
+                    ".format(
+                        plugin_install_dependencies,
+                        plugin_list
+                    ))
+                    exit(10)
+
+
+
             # install plugin dependencies (install.sh)
             plugin_install_script_path = plugin_dir + plugin_config + "/{}".format(plugin_install_script)
+            
 
             logger.info("\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin_config}]~#~#~#~   \
             \n\t PLUGIN_INSTALL_SCRIPT:             [{plugin_install_script}]          \
             \n\t PLUGIN_INSTALL_LANGUAGE:           [{plugin_install_language}]        \
+            \n\t PLUGIN_DEPENDENCIES:               [{plugin_install_dependencies}]        \
             \n\t PLUGIN_CONFIG_PATH:                [{plugin_configuration_path}]        \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
             ".format(  
                 plugin_config=plugin_config,                                               
                 plugin_install_script=plugin_install_script,
                 plugin_install_language=plugin_install_language,
+                plugin_install_dependencies=plugin_install_dependencies,
                 plugin_configuration_path=plugin_configuration_path
             ))
 
