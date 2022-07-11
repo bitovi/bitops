@@ -25,6 +25,8 @@ bitops:
       source: https://github.com/bitops-plugins/helm
     kubectl:
       source: https://github.com/bitops-plugins/kubectl
+    ansible:
+      source: https://github.com/bitops-plugins/ansible
   deployments:
     cloudformation:
       plugin: cloudformation
@@ -32,3 +34,5 @@ bitops:
       plugin: terraform
     helm:
       plugin: helm
+    ansible:
+      plugin: ansible
