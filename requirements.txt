@@ -4,3 +4,4 @@ envbash
 munch
 GitPython
 pyfiglet
+boto3
