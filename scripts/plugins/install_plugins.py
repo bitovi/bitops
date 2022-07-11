@@ -9,6 +9,7 @@ import git
 
 from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_plugin_dir
 from .logging import logger
+from .doc import Get_Doc
 from ast import Load
 from munch import DefaultMunch, Munch
 
@@ -121,16 +122,19 @@ def Install_Plugins():
                             
             # Checking that any dependency for a plugin is found within the bitops.config.yaml plugins section
             if plugin_install_dependencies:
-                if plugin_install_dependencies not in plugin_list:
+                missing_dependencies = list(set(plugin_install_dependencies).difference(plugin_list))
+
+                if missing_dependencies:
                     logger.critical("MISSING DEPENDENCY \
                     \n\t NEEDED DEPENDENCY: [{}] \
                     \n\t PLUGIN LIST:       [{}] \
+                    \n\t\t {doc_link} \
                     ".format(
-                        plugin_install_dependencies,
-                        plugin_list
+                        missing_dependencies,
+                        plugin_list,
+                        doc_link=Get_Doc("missing_plugin_dependency")
                     ))
                     exit(10)
-
 
 
             # install plugin dependencies (install.sh)
