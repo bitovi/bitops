@@ -235,3 +235,33 @@ def Generate_Cli_Command(cli_config_list):
     logger.info("Generating CLI options")
     for item in cli_config_list:
         logger.info(item)
+
+def Handle_Hooks(mode, hooks_folder):
+    umode = mode.upper()
+    logger.info("INVOKING {} HOOKS".format(umode))
+    # Check what's in the ops_repo/<plugin>/bitops.before-deploy.d/
+    hooks = sorted(os.listdir(hooks_folder))
+    msg="\n\n~#~#~#~BITOPS {} HOOKS~#~#~#~".format(umode)
+    for hook in hooks: msg+="\n\t"+hook
+    logger.debug(msg)
+
+    for hook_script in hooks:
+        # Invoke the hook script
+
+        plugin_before_hook_script_path = hooks_folder + "/" + hook_script
+        os.chmod(plugin_before_hook_script_path, 775)
+        try:
+            result = subprocess.run(["bash", plugin_before_hook_script_path], 
+                universal_newlines = True,
+                capture_output=True)
+        
+        except Exception as exc:
+            logger.error(exc)
+            if BITOPS_fast_fail_mode: quit(101)
+
+        if result.returncode == 0:
+            logger.info("~#~#~#~{} HOOK [{}] SUCCESSFULLY COMPLETED~#~#~#~".format(umode, hook_script))
+            logger.debug(result.stdout)
+        else:
+            logger.warning("~#~#~#~{} HOOK [{}] FAILED~#~#~#~".format(umode, hook_script))
+            logger.debug(result.stdout)
