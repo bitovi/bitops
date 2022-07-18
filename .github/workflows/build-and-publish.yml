@@ -7,16 +7,26 @@ on:
       - "*"
     paths-ignore:
       - "docs/**"
-
+  
 jobs:
   publish:
+    name: Publish for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        target:
+          - a
+          - b
+          - c
+
     steps:
     - uses: actions/checkout@v2
+    
     # TODO: when we have tests
     # - run: |
     #   ./scripts/ci/install.sh
     #   ./scripts/ci/test.sh
+    
     - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"
