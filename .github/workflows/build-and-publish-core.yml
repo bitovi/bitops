@@ -1,0 +1,27 @@
+name: Build and Publish core image
+
+on:
+  push:
+    branches: [ plugins ]
+    tags:
+      - "*"
+    paths-ignore:
+      - "docs/**"
+      - "prebuilt-config/**"
+  
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+        
+    - name: Publish Docker Image
+      env:
+        REGISTRY_URL: "bitovi/bitops"
+        DEFAULT_BRANCH: "plugins"
+        DOCKER_USER: ${{ secrets.DOCKER_USER}}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
+        IMAGE_TAG: core
+      run: |
+        echo "running scripts/ci/publish.sh"
+        ./scripts/ci/publish.sh
