@@ -6,7 +6,7 @@ on:
     tags:
       - "*"
     paths:
-      - "prebuilt-config/**"
+      - "prebuilt-config/bitops-tag"
   
 jobs:
   publish:
@@ -23,17 +23,20 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # Apply jinja to tag
+    uses: cuchi/jinja2-action@v1.2.0
+    with:
+      template: prebuilt-config/dockerfile.template
+      output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
+      data_file: prebuilt-config/bitops-tag
+      data_format: yaml
+
     # Move the dockerfile and bitops.config.yaml into the project root folder
     - name: Copy Dockerfile and bitops.config.yaml into the project root folder
       run: |
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
-    
-    # TODO: when we have tests
-    # - run: |
-    #   ./scripts/ci/install.sh
-    #   ./scripts/ci/test.sh
-    
+        
     - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"

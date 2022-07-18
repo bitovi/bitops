@@ -1,1 +1,0 @@
-FROM bitovi/bitops:core
