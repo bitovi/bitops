@@ -45,7 +45,9 @@ if [ -z "$IMAGE_TAG" ]; then
   if [ -n "$USE_COMMIT_HASH_FOR_ARTIFACTS" ]; then
     IMAGE_TAG="$GITHUB_SHA"
   else
-    if [ "$TAG_OR_HEAD" == "tags" ]; then
+    if [ "$IMAGE_TAG" == "KitchenSink" ]; then
+      IMAGE_TAG="latest"
+    elif [ "$TAG_OR_HEAD" == "tags" ]; then
       IMAGE_TAG="$BRANCH_OR_TAG_NAME"
     elif [ "$TAG_OR_HEAD" == "heads" ] && [ "$BRANCH_OR_TAG_NAME" == "$DEFAULT_BRANCH" ]; then
       IMAGE_TAG="latest"
