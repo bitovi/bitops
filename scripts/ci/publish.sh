@@ -65,13 +65,10 @@ else
 fi
 #*#*#*#*#*#*#*#*#*#*#*#*#
 
-echo "LOOK HERE: $IMAGE_PREFIX | $IMAGE_TAG"
 # If an IMAGE_PREFIX is not NULL
-if [ -z "$IMAGE_PREFIX"]; then
-  echo "LOOK HERE CHECK"
+if [ -n "$IMAGE_PREFIX" ]; then
   export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
 fi
-echo "LOOK HERE: $IMAGE_PREFIX | $IMAGE_TAG"
 
 ###
 ### PUBLISH DOCKER
