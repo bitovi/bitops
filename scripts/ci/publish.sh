@@ -65,10 +65,12 @@ else
 fi
 #*#*#*#*#*#*#*#*#*#*#*#*#
 
-# If an IMAGE_PREFIX is specified
+echo "LOOK HERE: $IMAGE_PREFIX | $IMAGE_TAG"
+# If an IMAGE_PREFIX is not NULL
 if [ -n "$IMAGE_PREFIX"]; then
   IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
 fi
+echo "LOOK HERE: $IMAGE_PREFIX | $IMAGE_TAG"
 
 ###
 ### PUBLISH DOCKER
