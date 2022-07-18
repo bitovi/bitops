@@ -249,4 +249,3 @@ def Deploy_Plugins():
                 quit()
         else:
             logger.error("Opsrepo environment directory does not exist: [{}]".format(opsrepo_environment_dir))
-            quit()
