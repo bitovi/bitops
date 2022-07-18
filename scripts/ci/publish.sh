@@ -66,7 +66,7 @@ fi
 #*#*#*#*#*#*#*#*#*#*#*#*#
 
 # If an IMAGE_PREFIX is not NULL
-if [ -n "$IMAGE_PREFIX" ]; then
+if [ -n "$IMAGE_PREFIX" ] && [ "$IMAGE_TAG" != "latest" ]; then
   export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
 fi
 
