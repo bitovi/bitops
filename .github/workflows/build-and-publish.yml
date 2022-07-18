@@ -26,7 +26,7 @@ jobs:
     # Move the dockerfile and bitops.config.yaml into the project root folder
     - name: Copy Dockerfile and bitops.config.yaml into the project root folder
       run: |
-        cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
+        # cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
     
     # TODO: when we have tests
