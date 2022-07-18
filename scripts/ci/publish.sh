@@ -67,7 +67,7 @@ fi
 
 echo "LOOK HERE: $IMAGE_PREFIX | $IMAGE_TAG"
 # If an IMAGE_PREFIX is not NULL
-if [ -n "$IMAGE_PREFIX"]; then
+if [ -z "$IMAGE_PREFIX"]; then
   echo "LOOK HERE CHECK"
   export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
 fi
