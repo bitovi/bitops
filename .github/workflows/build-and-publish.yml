@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix: 
         target:
-          - kitchen-sink
-          - aws+terraform
+          - KitchenSink
+          - AwsTerraform
 
     steps:
     - uses: actions/checkout@v2
