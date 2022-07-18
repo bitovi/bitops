@@ -17,6 +17,8 @@ jobs:
         target:
           - KitchenSink
           - AwsTerraform
+          - AwsAnsible
+          - AwsTerraformHelm
 
     steps:
     - uses: actions/checkout@v2
