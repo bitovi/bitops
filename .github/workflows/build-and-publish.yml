@@ -2,7 +2,7 @@ name: Build and Publish
 
 on:
   push:
-    branches: [ master ]
+    branches: [ plugins ]
     tags:
       - "*"
     paths-ignore:
@@ -20,7 +20,7 @@ jobs:
     - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"
-        DEFAULT_BRANCH: "master"
+        DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
       run: |
