@@ -27,7 +27,10 @@ jobs:
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
-        IMAGE_TAG: core
+        IMAGE_TAG: v2.0.0
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
+    
+    # Bump the version in `prebuilt-config/bitops-tag
+    
