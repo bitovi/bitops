@@ -5,12 +5,9 @@ on:
     branches: [ plugins ]
     tags:
       - "*"
-    paths:
-      - ".github/workflows/build-and-publish-core.yml"
     paths-ignore:
       - "docs/**"
       - "prebuilt-config/**"
-      - ".github/**"
       - ".gitignore"
       - "bitops.schema.yaml"
       - "*.md"
