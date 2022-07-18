@@ -8,6 +8,8 @@ on:
     paths-ignore:
       - "docs/**"
       - "prebuilt-config/**"
+      - ".github/workflows/build-and-publish-prebuilt.yml"
+      - ".github/workflows/publish-docs.yml"
       - ".gitignore"
       - "bitops.schema.yaml"
       - "*.md"
