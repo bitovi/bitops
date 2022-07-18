@@ -10,17 +10,22 @@ on:
   
 jobs:
   publish:
-    name: Publish for ${{ matrix.targetPlatform }}
+    name: Publish for ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
       matrix: 
         target:
-          - a
-          - b
-          - c
+          - kitchen-sink
+          - aws+terraform
 
     steps:
     - uses: actions/checkout@v2
+
+    # Move the dockerfile and bitops.config.yaml into the project root folder
+    - name: Copy Dockerfile and bitops.config.yaml into the project root folder
+      run: |
+        cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
+        cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
     
     # TODO: when we have tests
     # - run: |
