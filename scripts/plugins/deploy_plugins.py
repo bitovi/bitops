@@ -248,4 +248,4 @@ def Deploy_Plugins():
                 logger.error("Plugin deploy script missing. Exiting[{plugin_deploy_language}]".format(plugin_deploy_script_path))
                 quit()
         else:
-            logger.error("Opsrepo environment directory does not exist: [{}]".format(opsrepo_environment_dir))
+            logger.warning("Opsrepo environment directory does not exist: [{}]".format(opsrepo_environment_dir))
