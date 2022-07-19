@@ -1,6 +1,7 @@
 name: Build and Publish preconfigured images
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [ plugins ]
     tags:
