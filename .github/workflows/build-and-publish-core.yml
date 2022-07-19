@@ -1,6 +1,7 @@
 name: Build and Publish core image
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [ plugins ]
     tags:
