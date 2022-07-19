@@ -237,6 +237,9 @@ def Generate_Cli_Command(cli_config_list):
         logger.info(item)
 
 def Handle_Hooks(mode, hooks_folder):
+    # Checks if the folder exists, if not, move on
+    if not os.path.isdir(hooks_folder): return
+
     umode = mode.upper()
     logger.info("INVOKING {} HOOKS".format(umode))
     # Check what's in the ops_repo/<plugin>/bitops.before-deploy.d/

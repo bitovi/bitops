@@ -180,9 +180,8 @@ def Deploy_Plugins():
                         if item.name == "stack-action": 
                             stack_action = item.value
                             break
-                    logger.warning(stack_action)
                 else:
-                    logger.debug("setting null value for stack_action...." )
+                    logger.warning("setting null value for stack_action...." )
                     stack_action = ""
 
                 # Adding print env logging
