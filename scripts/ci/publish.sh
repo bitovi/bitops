@@ -70,6 +70,11 @@ if [ -n "$IMAGE_PREFIX" ]; then
   export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
 fi
 
+# If an IMAGE_POSTFIX is not NULL
+if [ -n "$IMAGE_POSTFIX" ]; then
+  export IMAGE_TAG="$IMAGE_TAG-$IMAGE_POSTFIX"
+fi
+
 ###
 ### PUBLISH DOCKER
 ###
