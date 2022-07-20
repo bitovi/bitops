@@ -1,8 +1,6 @@
 # Loads JSON
 # Provides a function to access the documentation
 import json
-import os 
-from .logging import logger
 
 fh = open("scripts/plugins/documentation.json")
 jh = json.load(fh)
