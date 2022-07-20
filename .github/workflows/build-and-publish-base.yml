@@ -1,4 +1,4 @@
-name: Build and Publish core image
+name: Build and Publish base image
 
 on:
   workflow_dispatch: {}
@@ -28,7 +28,8 @@ jobs:
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
-        IMAGE_TAG: plugins-prerelease
+        IMAGE_TAG: base
+        IMAGE_PREFIX: 2.0.0
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
