@@ -8,6 +8,7 @@ on:
       - "*"
     paths:
       - "prebuilt-config/bitops-tag"
+      - ".github/workflows/build-and-publish-prebuilt.yml"
   
 jobs:
   publish-prebuilds:
@@ -46,7 +47,7 @@ jobs:
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
         IMAGE_TAG: ${{ matrix.target }}
         IMAGE_PREFIX: 2.0.0
-        IMAGE_POSTFIX: "prerelease"
+        IMAGE_POSTFIX: "pre"
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
