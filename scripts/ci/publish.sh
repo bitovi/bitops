@@ -59,14 +59,14 @@ if [ -z "$IMAGE_TAG" ]; then
   fi
   #~#~#~#~#~#~#~#~#~#~#~#~#~#
 else
-  if [ "$IMAGE_TAG" == "KitchenSink" ]; then
-        IMAGE_TAG="latest"
+  if [ "$IMAGE_TAG" == "kitchensink" ]; then
+        ADDITIONAL_IMAGE_TAG="latest"
   fi
 fi
 #*#*#*#*#*#*#*#*#*#*#*#*#
 
 # If an IMAGE_PREFIX is not NULL
-if [ -n "$IMAGE_PREFIX" ] && [ "$IMAGE_TAG" != "latest" ]; then
+if [ -n "$IMAGE_PREFIX" ]; then
   export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
 fi
 
@@ -80,8 +80,6 @@ echo "###"
 #Defining the Image name variable
 IMAGE_NAME="$REPO_NAME"
 
-
-
 #Building the docker image...
 echo "Building the docker image"
 docker build -t ${IMAGE_NAME} .
@@ -92,3 +90,14 @@ docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
 
 echo "Pushing the docker image to the ecr repository..."
 docker push ${REGISTRY_URL}:${IMAGE_TAG}
+
+if [ -n "$ADDITIONAL_IMAGE_TAG" ]; then
+  export IMAGE_TAG="$IMAGE_PREFIX-$ADDITIONAL_IMAGE_TAG"
+  
+  #docker image deploy function
+  echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
+  docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
+
+  echo "Pushing the docker image to the ecr repository..."
+  docker push ${REGISTRY_URL}:${IMAGE_TAG}
+fi

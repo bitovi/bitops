@@ -10,16 +10,16 @@ on:
       - "prebuilt-config/bitops-tag"
   
 jobs:
-  publish:
+  publish-prebuilds:
     name: Publish for ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
       matrix: 
         target:
-          - KitchenSink
-          - AwsTerraform
-          - AwsAnsible
-          - AwsTerraformHelm
+          - aws-ansible  
+          - aws-helm
+          - aws-terraform
+          - kitchensink
 
     steps:
     - uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
         IMAGE_TAG: ${{ matrix.target }}
-        IMAGE_PREFIX: plugins
+        IMAGE_PREFIX: 2.0.0
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
