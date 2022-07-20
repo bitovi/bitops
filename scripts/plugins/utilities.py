@@ -31,6 +31,7 @@ class SchemaObject:
         self.type = "object"
         self.parameter = ""
         self.dash_type = ""
+        self.required = False
 
         if schema_property_values:
             for property in self.properties:
@@ -61,6 +62,7 @@ class SchemaObject:
             \n\t\tType:         [{}]\
             \n\t\tParameter:    [{}]\
             \n\t\tDash Type:    [{}]\
+            \n\t\tRequired:     [{}]\
             \n                      \
             \n\t\tValue Set:    [{}]".format( \
                 self.name,
@@ -74,6 +76,7 @@ class SchemaObject:
                 self.type,
                 self.parameter,
                 self.dash_type,
+                self.required,
                 
                 self.value)
     
@@ -217,6 +220,7 @@ def Get_Config_List(config_file, schema_file):
     schema_list = [item for item in schema_list if item not in bad_config_list]
     cli_config_list = [item for item in schema_list if item.schema_property_type == "cli"]
     options_config_list = [item for item in schema_list if item.schema_property_type == "options"]
+    required_config_list = [item for item in schema_list if item.required == True and not item.value]
     
     logger.debug("\n~~~~~ CLI OPTIONS ~~~~~")
     for item in cli_config_list:
@@ -224,10 +228,16 @@ def Get_Config_List(config_file, schema_file):
     logger.debug("\n~~~~~ PLUGIN OPTIONS ~~~~~")
     for item in options_config_list:
         logger.debug(item)
-    
     logger.debug("\n~~~~~ BAD SCHEMA CONFIG ~~~~~")
     for item in bad_config_list:
         logger.debug(item)
+
+    if required_config_list:
+        logger.warning("\n~~~~~ REQUIRED CONFIG ~~~~~")
+        for item in required_config_list:
+            logger.error("Configuration value: [{}] is required. Please ensure you set this configuration value in the plugins `bitops.config.yaml`".format(item.name))
+            logger.debug(item)
+            quit()
     
     return cli_config_list, options_config_list
 
