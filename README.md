@@ -6,17 +6,19 @@
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](docs/operations-repo-structure.md).
-
-https://bitovi.github.io/bitops/
+### tl;dr
+BitOps is two things; 
+- A automated tool [orchestrator](https://bitovi.github.io/bitops/)
+- A way to describe [infrastructure](docs/operations-repo-structure.md)
 
 ---------------------
 
 ## Features
 
-* **[Configurable](docs/configuration-base.md):** Configure how you want bitops to deploy your application with yaml or environment variables
+* **[Configurable](docs/configuration-base.md):** Configure how you want bitops to deploy your application with yaml or environment variables.
 * **[Event Hooks](docs/lifecycle.md):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points using bitops' lifecycle.
 * **[Pipeline Agnostic](docs/examples.md):** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your CI. You can even run bitops locally!
+* **[Customizable](docs/plugins.md):** Configure how what tools you want installed in your BitOps image. Only take what you need, leave the bloat behind. 
 
 ## How it works
 
