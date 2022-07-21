@@ -231,6 +231,7 @@ def Deploy_Plugins():
                 else:
                     logger.warning("\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~".format(deployment=deployment))
                     logger.debug(result.stdout)
+                    logger.error(result.stderr)
                     # TODO: DEEP DEBUG
                     #logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
             
