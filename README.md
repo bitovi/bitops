@@ -18,7 +18,7 @@ BitOps is two things;
 * **[Configurable](docs/configuration-base.md):** Configure how you want bitops to deploy your application with yaml or environment variables.
 * **[Event Hooks](docs/lifecycle.md):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points using bitops' lifecycle.
 * **[Pipeline Agnostic](docs/examples.md):** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your CI. You can even run bitops locally!
-* **[Customizable](docs/plugins.md):** Configure how what tools you want installed in your BitOps image. Only take what you need, leave the bloat behind. 
+* **[Customizable](docs/plugins.md):** Configure what tools you want installed in your BitOps image. Only take what you need, leave the bloat behind. 
 
 ## How it works
 
