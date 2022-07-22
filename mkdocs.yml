@@ -46,6 +46,8 @@ nav:
     - DCO: contributing/DCO.md
     - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
     - License: license.md
+  - Migrations:
+    - 2.0.0: migration/2.0.0-migration.md
 
 extra:
   social:
