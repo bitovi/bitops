@@ -25,6 +25,9 @@ repo_url: https://www.bitovi.com/devops
 nav:
   - About: about.md
   - Operations Repository: operations-repo-structure.md
+  - Development:
+    - Local development: development-local.md
+    - Custom Images: custom-image.md
   - Configuration:
     - Base Configuration: configuration-base.md
     - Cloud Configuration: 
