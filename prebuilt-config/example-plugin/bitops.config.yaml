@@ -5,29 +5,20 @@ bitops:
 
   fail_fast: true     # When set, will exit if any warning+ is raised, otherwise only exit on critical error
   run_mode: default   # (Unused for now)
-
   # LEVELS: [ DEBUG, INFO, WARNING, ERROR, CRITICAL ]
   logging:      
     level: DEBUG              # Sets the logging level
     color:
       enabled: true           # Enables colored logs
-    filename: bitops-run      # logs filename
+    filename: bitops-run      # log filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
+  opsrepo_root_default_dir: _default
+  plugins:    
+    example-plugin:
+      source: https://github.com/bitops-plugins/example-plugin
+  deployments:
+    alias-name-1:
+      plugin: example-plugin
+      
     
-  plugins:
-    # Example plugin
-    # tool-name:          # Unique name of tool
-    #   source:           
-    #     sourced_from:   # Where the plugin will be sourced from
-    #     tag:            # Github tag for versioned clone
-    #     branch:         # Github branch for versioned clone
-    
-    aws:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/aws
-    
-    terraform:
-      source: 
-        sourced_from: https://github.com/bitops-plugins/terraform
-

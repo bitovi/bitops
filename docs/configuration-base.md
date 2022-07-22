@@ -15,12 +15,15 @@ $tool
 * `cli` - object that contains cli arguments
 * `options` - object that offers additional control over how a tool executes
 
+## Arbitrary Environment Variables
+During the docker run command, you can specify a ENV var and it will be accessible during all processing stages of BitOps. 
+
 ## Common Configuration
 There are some global configuration options that are shared among all tools and cloud providers in a bitops run. These are set via environment variables
 
 -------------------
 ### environment
-* **Environment Variable:** `ENVIRONMENT`
+* **Environment Variable:** `BITOPS_ENVIRONMENT`
 * **default:** `""`
 * **required:** yes
 
@@ -33,14 +36,6 @@ Each bitops run is done against a single environment. This property tells bitops
 * **required:** no
 
 Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a kubernetes cluster
-
--------------------
-### debug
-* **Environment Variable:** `DEBUG`
-* **default:** `""`
-* **required:** no
-
-If true, will enable verbose logging
 
 -------------------
 ### default_replace
