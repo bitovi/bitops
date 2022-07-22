@@ -4,14 +4,14 @@
 *.gz
 *.logs
 
-
 # Python
 *.pyc
 
-# Folders
+# Security
 credentials
+.pem
+.key
 
 # Employee
 NOTES.md
-cloudformation.config.yaml
-cloudformation.schema.yaml
+prebuild.sh

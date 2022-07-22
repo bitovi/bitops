@@ -82,7 +82,7 @@ deployments:
         plugin: plugin-name-1
 ```
 
-In the above example we define 2 plugins that BitOps will install, plugin-name-1 and plugin-name-2. 
+In the above example we define 2 plugins that BitOps will install, `plugin-name-1` and `plugin-name-2`. 
 
 In the deployment section we specify 3 alias' that we will act on in our ops_repo. We also specify which plugin we'd like to make that action. 
 

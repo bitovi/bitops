@@ -18,5 +18,7 @@ bitops:
     example-plugin:
       source: https://github.com/bitops-plugins/example-plugin
   deployments:
-    example-plugin:
+    alias-name-1:
       plugin: example-plugin
+      
+    

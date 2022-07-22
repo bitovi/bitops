@@ -8,7 +8,7 @@
 
 ### tl;dr
 BitOps is two things; 
-- A automated tool [orchestrator](https://bitovi.github.io/bitops/)
+- A automated tool [orchestrator](docs/about.md)
 - A way to describe [infrastructure](docs/operations-repo-structure.md)
 
 ---------------------
@@ -26,7 +26,7 @@ BitOps is a tool orchestrator packaged in a docker image for DevOps work. An ope
 
 * Auto-detect bitops configuration files within tool directories
 * Loop through each tool and
-  * Read in `yml` configuration
+  * Read in `yaml` configuration
   * Run any pre-execute hooks
   * Execute the tool
   * Run any post-execute hooks
@@ -44,13 +44,13 @@ Need a hand? We got you! Check out our [Example Operation Repos](https://github.
 ## Configure BitOps
 BitOps is configured in 3 steps:
 
-1. Select which project you'd like to act on
+1. Select an environment to process
 2. Configure access to your cloud provider
 3. Configure how you want your deployment tools to execute
 
 Ready to dive deeper? Check out our [Docs](docs/configuration-base.md)
 
-Still not enough? Why not try building and running a [local version of bitops]()
+Still not enough? Why not try building and running a [local version of bitops](docs/development-local.md)
 
 ## Supported Plugins
 * [Provision infrastructure with CloudFormation](https://github.com/bitops-plugins/cloudformation/blob/main/README.md)

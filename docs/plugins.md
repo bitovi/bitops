@@ -59,7 +59,7 @@ bitops:
 ```
 The repo for each plugin must be a `git clone`-able url. The name can be anything.
 
-The order that plugins run is dependent on the `deployments` section. If a `depoyments` section isn't provided, it will attempt to process all folders in the BITOPS_ENVIRONMENT directory.
+The order that plugins run is dependent on the `deployments` section. If a `depoyments` section isn't provided, it will attempt to process all folders in the BITOPS_ENVIRONMENT directory in alphabetical order.
 
 **Dockerfile**
 The only content that is needed to create a custom image is;

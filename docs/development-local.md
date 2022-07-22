@@ -19,7 +19,7 @@ Create a file in the root level of bitops named `Dockerfile.plugins` with the co
 ## Run BitOps
 ```
 docker run \
-  -e BITOPS_ENVIRONMENT=/path/to/environment  \
+  -e BITOPS_ENVIRONMENT=environment  \
   -e AWS_DEFAULT_REGION=us-east-1 \
   -e AWS_ACCESS_KEY_ID=your-aws-access-key \
   -e AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key \
