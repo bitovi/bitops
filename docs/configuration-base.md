@@ -1,7 +1,8 @@
 # Base Configuration
 
-Each deployment tool is traditionally controlled with a set of cli arguments. Instead of defining arguments within your pipeline configuration, they
- can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool.
+Each deployment tool is traditionally controlled with a set of cli arguments. Instead of defining arguments within your pipeline configuration, they can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool.
+
+> For more information on tool configuration, see [plugins](plugins.md).
 
 -------------------
 ## Base Schema
@@ -19,7 +20,7 @@ $tool
 During the docker run command, you can specify a ENV var and it will be accessible during all processing stages of BitOps. 
 
 ## Common Configuration
-There are some global configuration options that are shared among all tools and cloud providers in a bitops run. These are set via environment variables
+There are some global configuration options that are shared among all tools and cloud providers during a BitOps run. These are set via environment variables
 
 -------------------
 ### environment
@@ -27,7 +28,7 @@ There are some global configuration options that are shared among all tools and 
 * **default:** `""`
 * **required:** yes
 
-Each bitops run is done against a single environment. This property tells bitops which environment to run. For more information on environments, see [Operations Repo Structure](operations-repo-structure.md#environment-directories).
+Each BitOps run is done against a single environment. This property tells BitOps which environment to run. For more information on environments, see [Operations Repo Structure](operations-repo-structure.md#environment-directories).
 
 -------------------
 ### kubeconfig_base64

@@ -5,6 +5,8 @@ A BitOps plugin is a repository with files that tell BitOps how the tool depende
 
 You can create your own BitOps image to customize runtime behavior by installing your own plugins.
 
+> Check out the [bitops-plugins](https://github.com/bitops-plugins) org in GitHub to see available plugins!
+
 ## Pre-Built Images
 
 BitOps' default image contains BitOps base along with the following pre-installed plugins:

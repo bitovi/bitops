@@ -22,7 +22,7 @@ It leverages a way to describe infrastructure for many environments and IaC tool
 
 ## How it works
 
-BitOps is a deployment tool orchestrator packaged in a Docker image. An [Operations Repository](docs/operations-repo-structure.md) is mounted to a BitOps image, and BitOps will parse through a given environment directory and;
+BitOps is a deployment tool orchestrator packaged in a Docker image. An [Operations Repository](docs/operations-repo-structure.md) is mounted to a BitOps container's `/opt/bitops_deployment` directory, and BitOps will parse through a given environment directory and;
 
 * Auto-detect BitOps configuration files within tool directories
 * Loop through each tool and
@@ -61,6 +61,8 @@ Need a hand with implementation? We can [help](https://www.bitovi.com/devops-con
 * Provision infrastructure with [Terraform](https://github.com/bitops-plugins/terraform/blob/main/README.md)
 * Configure infrastructure with [Ansible](https://github.com/bitops-plugins/ansible/blob/main/README.md)
 * Deploy to kubernetes with [Helm](https://github.com/bitops-plugins/helm/blob/main/README.md)
+
+> Don't see a plugin you want?  [Submit an issue](https://github.com/bitovi/bitops/issues) or [build your own](docs/plugins.md#creating-your-own-plugin)!
 
 ## Supported Cloud Providers
 * [Amazon Web Services (AWS)](https://github.com/bitops-plugins/aws/blob/main/README.md)
