@@ -1,16 +1,14 @@
-In this section we will learn how we can create a custom BitOps image with plugins and additional utilities. 
+In this section we will learn how we can create a custom BitOps image with plugins and additional utilities.
 
 
-
-### Clone Bitops source
-First thing is first, if you haven't already clone the github bitops repo locally
-`git clone https://github.com/bitovi/bitops.git`
+### Create a custom bitops repo
+First thing is first, if you haven't already create a repo for your custom bitops image
 
 <hr/>
 
 
 ### Modify the *bitops.config.yaml*
-Using your preferred editor, open the root level `bitops.config.yaml`
+Using your preferred editor, create a file in the root level of the project and call it; `bitops.config.yaml`
 
 This file is used to configure the BitOps image.
 
@@ -23,7 +21,7 @@ This file is used to configure the BitOps image.
 <br/>
 
 #### BitOps "official" image
-Below is an example of how the "official" image of bitops is configured. 
+Below is an example of how the "official latest" image of bitops is configured. 
 
 As you can see there are two sections we need to be aware of; Plugins and Deployments. 
 
@@ -67,6 +65,10 @@ Defines alias', the sequence of executions for those alias' and the alias' relat
 <hr/>
 
 ### Custom image example
+In the example below we define 2 plugins that BitOps will install, `plugin-name-1` and `plugin-name-2`. 
+
+In the deployment section we specify 3 alias' that we will act on in our ops_repo. We also specify which plugin we'd like to make that action. 
+
 ```
 plugins:
     plugin-name-1:
@@ -82,11 +84,7 @@ deployments:
         plugin: plugin-name-1
 ```
 
-In the above example we define 2 plugins that BitOps will install, `plugin-name-1` and `plugin-name-2`. 
-
-In the deployment section we specify 3 alias' that we will act on in our ops_repo. We also specify which plugin we'd like to make that action. 
-
-So continuing with our example above, the ops_repo would look like; 
+So continuing with our example, the ops_repo would look like; 
 ```
 OPS_REPO/
     ENV/

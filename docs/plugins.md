@@ -11,7 +11,7 @@ You can create your own BitOps image to customize runtime behavior by installing
 ## Creating your own BitOps
 To create your own BitOps, you will need two files;
 * **[bitops.configuration.yaml](../bitops.config.yaml)**: Contains configuration attributes that will modify how BitOps behaves
-* **[Dockerfile.local](../prebuilt-config/dockerfile.template)**: Needs to source bitops as the base image
+* **[Dockerfile.local](../prebuilt-config/dockerfile.template)**: Needs to source bitops as the latest image
 
 
 ### bitops.config.yaml

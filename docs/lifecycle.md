@@ -50,7 +50,7 @@ A single run of BitOps will
     * Run any `bitops.after-deploy.d/*.sh` scripts
 
 ### Environment Variables
-Plugins export environment variables when a value is specified in a ops_repo level `bitops.config.yaml`. These environment variables are prefixed with `BITOPS` and their plugin name. 
+Plugins can export environment when a value is specified in a ops_repo level `bitops.config.yaml`. These environment variables are prefixed with `BITOPS` and their plugin name. 
 
 So for example, if the terraform plugin exported the environment variable BUTTER_FLAG, it would be accessible in the lifecycle hooks by referencing; 
 

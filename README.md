@@ -34,17 +34,17 @@ BitOps is a tool orchestrator packaged in a docker image for DevOps work. An ope
 ## Quick Start
 BitOps is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/r/bitovi/bitops).
 ```
-docker pull bitovi/bitops:2.0.0-latest
+docker pull bitovi/bitops:latest
 cd $YOUR_OPERATIONS_REPO
-docker run bitovi/bitops:2.0.0-latest -v .:/opt/bitops_deployment
+docker run bitovi/bitops:latest -v .:/opt/bitops_deployment
 ```
 
-Need a hand? We got you! Check out our [Example Operation Repos](https://github.com/bitovi/operations-test)
+Need an example? We got you! Check out our [Example Operation Repos](https://github.com/bitovi/operations-test)
 
 ## Configure BitOps
 BitOps is configured in 3 steps:
 
-1. Select an environment to process
+1. Define [configuration](https://bitovi.github.io/bitops/configuration-base/) for your environments
 2. Configure access to your cloud provider
 3. Configure how you want your deployment tools to execute
 
@@ -52,11 +52,13 @@ Ready to dive deeper? Check out our [Docs](docs/configuration-base.md)
 
 Still not enough? Why not try building and running a [local version of bitops](docs/development-local.md)
 
+Need a hand with implementation? We can [help](https://www.bitovi.com/devops-consulting)
+
 ## Supported Plugins
-* [Provision infrastructure with CloudFormation](https://github.com/bitops-plugins/cloudformation/blob/main/README.md)
-* [Provision infrastructure with Terraform](https://github.com/bitops-plugins/terraform/blob/main/README.md)
-* [Configure infrastructure with Ansible](https://github.com/bitops-plugins/ansible/blob/main/README.md)
-* [Deploy to kubernetes with Helm](https://github.com/bitops-plugins/helm/blob/main/README.md)
+* Provision infrastructure with [CloudFormation](https://github.com/bitops-plugins/cloudformation/blob/main/README.md)
+* Provision infrastructure with [Terraform](https://github.com/bitops-plugins/terraform/blob/main/README.md)
+* Configure infrastructure with [Ansible](https://github.com/bitops-plugins/ansible/blob/main/README.md)
+* Deploy to kubernetes with [Helm](https://github.com/bitops-plugins/helm/blob/main/README.md)
 
 ## Supported Cloud Providers
 * [Amazon Web Services (AWS)](https://github.com/bitops-plugins/aws/blob/main/README.md)
