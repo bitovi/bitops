@@ -20,7 +20,7 @@ jobs:
           - aws-ansible  
           - aws-helm
           - aws-terraform
-          - kitchensink
+          - omnibus
 
     steps:
     - uses: actions/checkout@v2
