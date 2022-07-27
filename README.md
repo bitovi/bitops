@@ -15,16 +15,16 @@ BitOps is two things;
 
 ## Features
 
-* **[Configurable](docs/configuration-base.md):** Configure how you want bitops to deploy your application with yaml or environment variables.
-* **[Event Hooks](docs/lifecycle.md):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points using bitops' lifecycle.
-* **[Pipeline Agnostic](docs/examples.md):** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your deployment pipeline. You can even run bitops locally!
+* **[Configurable](docs/configuration-base.md):** Configure how you want BitOps to deploy your application with yaml or environment variables.
+* **[Event Hooks](docs/lifecycle.md):** If BitOps doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points using BitOps' lifecycle.
+* **[Pipeline Agnostic](docs/examples.md):** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your deployment pipeline. You can even run BitOps locally!
 * **[Customizable](docs/plugins.md):** Configure how what tools you want installed in your BitOps image. Only take what you need, leave the bloat behind. 
 
 ## How it works
 
-BitOps is a tool orchestrator packaged in a docker image for DevOps work. An operations repository is mounted to a bitops image's `/opt/bitops_deployment` directory. BitOps will parse through the operations repo and;
+BitOps is a tool orchestrator packaged in a docker image for DevOps work. An operations repository is mounted to a BitOps image's `/opt/bitops_deployment` directory. BitOps will parse through the operations repo and;
 
-* Auto-detect bitops configuration files within tool directories
+* Auto-detect BitOps configuration files within tool directories
 * Loop through each tool and
   * Read in `yaml` configuration
   * Run any pre-execute hooks
@@ -50,7 +50,7 @@ BitOps is configured in 3 steps:
 
 Ready to dive deeper? Check out our [Docs](docs/configuration-base.md)
 
-Still not enough? Why not try building and running a [local version of bitops](docs/development-local.md)
+Still not enough? Why not try building and running a [local version of BitOps](docs/development-local.md)
 
 Need a hand with implementation? We can [help](https://www.bitovi.com/devops-consulting)
 
