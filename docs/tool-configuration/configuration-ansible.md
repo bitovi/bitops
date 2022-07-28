@@ -1,6 +1,6 @@
 # Ansible
 
-## Example bitops.config.yml
+## Example bitops.config.yaml
 ```
 ansible:
   cli:
@@ -104,7 +104,7 @@ Will run `--list-tasks` but won't actually execute playbook(s)
 Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v` flags. Will override a pre-existing `ANSIBLE_VERBOSITY` environmental variable or `[default]` `verbosity=` setting in ansible.cfg.
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour.
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
 
 -------------------
 ### EXTRA_ENV

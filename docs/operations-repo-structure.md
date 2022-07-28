@@ -5,40 +5,40 @@ BitOps expects an operations repo to be in the following structure
 │   ├── ansible
 │   │   ├── bitops.after-deploy.d
 │   │   ├── bitops.before-deploy.d
-│   │   └── bitops.config.yml
+│   │   └── bitops.config.yaml
 │   ├── cloudformation
 │   │   ├── bitops.after-deploy.d
 │   │   ├── bitops.before-deploy.d
-│   │   └── bitops.config.yml
+│   │   └── bitops.config.yaml
 │   ├── helm
 │   │   ├── chartA
-│   │   │   └── bitops.config.yml
+│   │   │   └── bitops.config.yaml
 │   │   └── chartB
-│   │       └── bitops.config.yml
-│   │   └── bitops.config.yml
+│   │       └── bitops.config.yaml
+│   │   └── bitops.config.yaml
 │   └── terraform
 │       ├── bitops.after-deploy.d
 │       ├── bitops.before-deploy.d
-│       └── bitops.config.yml
+│       └── bitops.config.yaml
 └── test-serviceA
     ├── ansible
     │   ├── bitops.after-deploy.d
     │   ├── bitops.before-deploy.d
-    │   └── bitops.config.yml
+    │   └── bitops.config.yaml
     ├── cloudformation
     │   ├── bitops.after-deploy.d
     │   ├── bitops.before-deploy.d
-    │   └── bitops.config.yml
+    │   └── bitops.config.yaml
     ├── helm
     │   ├── chartA
-    │   │   └── bitops.config.yml
+    │   │   └── bitops.config.yaml
     │   └── chartB
-    │       └── bitops.config.yml
-    │   └── bitops.config.yml
+    │       └── bitops.config.yaml
+    │   └── bitops.config.yaml
     └── terraform
         ├── bitops.after-deploy.d
         ├── bitops.before-deploy.d
-        └── bitops.config.yml
+        └── bitops.config.yaml
 ```
 #### Environment Directories
 These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your usecase, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services. This pattern is preferential to having a branch for each environment as this allows the state of all your infrastructure to be managed from one location without merging potentially breaking an environment.
@@ -61,7 +61,7 @@ chmod +x bitops.before-deploy.d/*
 chmod +x bitops.after-deploy.d/*
 ```
 
-#### bitops.config.yml
-Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool. See [BitOps Configuration](configuration-base.md) for details.
+#### bitops.config.yaml
+Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yaml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool. See [BitOps Configuration](configuration-base.md) for details.
 
 

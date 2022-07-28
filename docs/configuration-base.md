@@ -1,11 +1,11 @@
 # Base Configuration
 
 Each deployment tool is traditionally controlled with a set of cli arguments. Instead of defining arguments within your pipeline configuration, they
- can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool.
+ can instead either be defined with environment variables or in a `bitops.config.yaml` file. While the core schema for a `bitops.config.yaml` file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool.
 
 -------------------
 ## Base Schema
-All `bitops.config.yml` files share the following structure
+All `bitops.config.yaml` files share the following structure
 ```
 $tool
   cli: {}

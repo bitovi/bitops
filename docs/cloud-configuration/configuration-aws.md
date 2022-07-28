@@ -1,6 +1,6 @@
 # AWS
 
-`bitops.config.yml` is not yet supported for AWS ([TODO](https://github.com/bitovi/bitops/issues/15)). All configuration must be done with environment variables
+`bitops.config.yaml` is not yet supported for AWS ([TODO](https://github.com/bitovi/bitops/issues/15)). All configuration must be done with environment variables
 
 ## Configuration
 
