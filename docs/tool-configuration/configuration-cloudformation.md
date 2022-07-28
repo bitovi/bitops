@@ -1,6 +1,6 @@
 # Cloudformation
 
-## Example bitops.config.yml
+## Example bitops.config.yaml
 ```
 cloudformation:
   cli:
@@ -123,7 +123,7 @@ The directory within the ansible workspace that contains json files that will be
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
 
 -------------------
 ### SKIP_DEPLOY_CLOUDFORMATION

@@ -1,7 +1,7 @@
 # Terraform
 Terraform will always run `terraform init` and `terraform plan` on every execution.
 
-## Example bitops.config.yml
+## Example bitops.config.yaml
 ```
 terraform:
     cli:
@@ -70,7 +70,7 @@ Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORK
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
 
 -------------------
 ### SKIP_DEPLOY_TERRAFORM

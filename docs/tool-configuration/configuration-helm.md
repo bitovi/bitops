@@ -1,6 +1,6 @@
 # Helm
 
-## Example bitops.config.yml
+## Example bitops.config.yaml
 ```
 helm:
   cli:
@@ -145,7 +145,7 @@ cloud kubernetes cluster name for kubeconfig fetching.
 
 -------------------
 ## Plugin Configuration
-This section of `bitops.config.yml` is unique to helm and allows the customization of helm plugins
+This section of `bitops.config.yaml` is unique to helm and allows the customization of helm plugins
 
 -------------------
 ### S3 Plugin
@@ -169,7 +169,7 @@ AWS s3 bucket name
 
 -------------------
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
 
 -------------------
 ### SKIP_DEPLOY_HELM
