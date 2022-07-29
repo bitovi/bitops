@@ -37,13 +37,13 @@ jobs:
     - uses: CumulusDS/get-yaml-paths-action@v0.1.0
       with:
         file: prebuilt-config/bitops-tag.yaml
-        bitops_base: tags.bitops_base
 
     - name: Debugging event name
       run: |
         echo ${{ env.bitops_base }}
+        printenv
+        
     # Move the dockerfile and bitops.config.yaml into the project root folder
-    
     - name: Copy Dockerfile and bitops.config.yaml into the project root folder
       run: |
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
