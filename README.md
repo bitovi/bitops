@@ -1,4 +1,4 @@
-[<img src="docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png" width="250"/>](docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
+[<p align="center"><img src="docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png" width="250"/></p>](docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
 
 ---------------------
 
