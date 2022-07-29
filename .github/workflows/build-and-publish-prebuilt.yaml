@@ -40,7 +40,7 @@ jobs:
       uses: KJ002/read-yaml@main
       with:
         file: 'prebuilt-config/bitops-tag.yaml'    
-        key-path: '["tags", "bitops_base"]'
+        key-path: '["tags", "plugins_base"]'
       if: github.event_name == 'push'
     
     - name: Update VERSION_TAG with input (Push)
