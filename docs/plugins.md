@@ -73,7 +73,7 @@ The order that plugins run is dependent on the `deployments` section. If a `depo
 The only content that is needed to create a custom image is;
 
 ```
-FROM bitovi/bitops:latest-base
+FROM bitovi/bitops:plugins-base
 ```
 
 ## Creating your own Plugin
