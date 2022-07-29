@@ -60,11 +60,23 @@ jobs:
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
-      if: ${{ github.event_name == "push"}}
+      if: ${{ github.event_name == "workflow_dispatch"}}
 
 
-
-
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
+    #                Release                   #
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
+    - name: Publish Docker Image (Release)
+      env:
+        REGISTRY_URL: "bitovi/bitops"
+        DEFAULT_BRANCH: "plugins"
+        DOCKER_USER: ${{ secrets.DOCKER_USER}}
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
+        IMAGE_TAG: ${{ env.BASE_TAG}}
+      run: |
+        echo "running scripts/ci/publish.sh"
+        ./scripts/ci/publish.sh
+      if: ${{ github.event_name == "release"}}
 
 
     # Bump the version in `prebuilt-config/bitops-tag
