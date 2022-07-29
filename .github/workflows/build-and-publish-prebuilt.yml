@@ -39,6 +39,12 @@ jobs:
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
         
+        echo "#~# Dockerfile #~#"
+        cat ./Dockerfile
+        
+        echo "#~# bitops.config.yaml #~#"
+        cat ./bitops.config.yaml
+        
     - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"
@@ -47,7 +53,7 @@ jobs:
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
         IMAGE_TAG: ${{ matrix.target }}
         IMAGE_PREFIX: 2.0.0
-        IMAGE_POSTFIX: "pre"
+        IMAGE_POSTFIX: "PR"
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
