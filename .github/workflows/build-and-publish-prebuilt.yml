@@ -30,7 +30,7 @@ jobs:
       with:
         template: prebuilt-config/dockerfile.template
         output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
-        data_file: prebuilt-config/bitops-tag
+        data_file: prebuilt-config/bitops-tag.yaml
         data_format: yaml
 
     # Move the dockerfile and bitops.config.yaml into the project root folder
