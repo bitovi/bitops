@@ -1,7 +1,17 @@
 name: Build and Publish base image
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch: 
+    inputs:
+      bitops_base_tag:
+        description: Specifies the tag that will be published
+        type: string
+        default: plugins-base
+      bump_base_tag:
+        description: Bumps the bitops-tag.yaml file, this will trigger the recreation of the official prebuilt plugins images
+        type: boolean
+        default: false
+
   push:
     branches: [ plugins ]
     tags:
@@ -15,6 +25,7 @@ on:
       - "bitops.schema.yaml"
       - "*.md"
       - "mkdocs.yml"
+
   release:
     types: [ published ]
   
@@ -27,7 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
         
-    - name: debugging
+    - name: debugging event_name
       run: |
         echo ${{ github.event_name}}
 
@@ -56,7 +67,7 @@ jobs:
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
-        IMAGE_TAG: ${{ env.BASE_TAG}}
+        IMAGE_TAG: ${{ github.event.inputs.bitops_base_tag}}
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
@@ -65,20 +76,23 @@ jobs:
 
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #                Release                   #
-    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     - name: Publish Docker Image (Release)
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
-        IMAGE_TAG: ${{ env.BASE_TAG}}
+        IMAGE_TAG: ${{ github.event.release.tag_name }}-base
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
       if: github.event_name == 'release'
 
 
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
+    #         ALL!push: BUMP                   #
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
     # Bump the version in `prebuilt-config/bitops-tag
     - name: Bump version tag
       uses: fjogeleit/yaml-update-action@main
@@ -88,3 +102,4 @@ jobs:
         value: ${{ env.BASE_TAG}}
         commitChange: true
         updateFile: true
+      if: github.event_name != 'push' && github.event.inputs.bump_base_tag == false
