@@ -71,6 +71,7 @@ jobs:
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
+        echo "IMAGE_TAG=${{ github.event.inputs.bitops_base_tag}}" >> $GITHUB_ENV
       if: github.event_name == 'workflow_dispatch'
 
 
@@ -87,6 +88,7 @@ jobs:
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
+        echo "IMAGE_TAG=${{ github.event.release.tag_name }}-base" >> $GITHUB_ENV
       if: github.event_name == 'release'
 
 
