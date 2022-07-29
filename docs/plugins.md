@@ -1,6 +1,6 @@
 # Plugins
 
-BitOps' default image contains BitOps base along with pre-installed plugins:
+BitOps' default image called `Omnibus` contains BitOps base along with pre-installed plugins:
 * [bitops-terraform-plugin](https://github.com/bitops-plugins/terraform)
 * [bitops-ansible-plugin](https://github.com/bitops-plugins/ansible)
 * [bitops-cloudformation-plugin](https://github.com/bitops-plugins/cloudformation)
@@ -65,7 +65,7 @@ The order that plugins run is dependent on the `deployments` section. If a `depo
 The only content that is needed to create a custom image is;
 
 ```
-FROM bitovi/bitops:latest
+FROM bitovi/bitops:plugins-base
 ```
 
 ## Creating your own Plugin
@@ -74,4 +74,6 @@ Creating a plugin is easy, you only need 4 files:
 * `deploy.sh` - The main entrypoint for your plugin
 * `bitops.schema.yaml` - Defines the parameters users have access to. The corresponding `bitops.config.yaml` within the BITOPS_ENVIRONMENT folder will configure the parameter values.
 For more information, you can look at our [example plugin](https://github.com/bitops-plugins/example-plugin) repo that prints your name and favorite color!
-* `plugin.config.yaml` - A file used to describes the plugin configuration to BitOps 
+* `plugin.config.yaml` - A file used to describes the plugin configuration to BitOps
+
+When you're ready to test your new plugin, check out the [local development](development-local.md) page for build and testing instructions.
