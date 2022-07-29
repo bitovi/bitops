@@ -33,18 +33,16 @@ jobs:
         data_file: prebuilt-config/bitops-tag.yaml
         data_format: yaml
     
-    
-    - uses: CumulusDS/get-yaml-paths-action@v0.1.0
+    - name: Run read-yaml action
+      id: yaml-data
+      uses: KJ002/read-yaml@main
       with:
-        file: prebuilt-config/bitops-tag.yaml
-      id: tags
+        file: 'prebuilt-config/bitops-tag.yaml'    
+        key-path: '["tags", "bitops_base"]'
 
     - name: Debugging event name
       run: |
-        echo ${{ env.bitops_base }}
-        echo ${{ steps.tags.outputs.tags.bitops_base }}
-        echo IMAGE_TAG=$(cat prebuilt-config/bitops-tag.yaml| shyaml get-value tags.bitops_base) >> $GITHUB_ENV
-        echo ${{ env.IMAGE_TAG }}
+        echo ${{ steps.yaml-data.outputs.data }}
 
 
     # Move the dockerfile and bitops.config.yaml into the project root folder
