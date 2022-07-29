@@ -1,1 +1,1 @@
-FROM bitovi/bitops:{{ tags.bitops-base }}
+FROM bitovi/bitops:{{ tags.bitops_base }}
