@@ -1,12 +1,15 @@
 # Terraform
 Terraform will always run `terraform init` and `terraform plan` on every execution.
 
-## Example bitops.config.yml
+## Example bitops.config.yaml
 ```
 terraform:
     cli:
         var-file: my-vars.tfvars
         target: terraform.module.resource
+        backend-config:
+            - KEY1=foo
+            - KEY2=bar
     options:
         command: apply
         version: "0.13.2"
@@ -27,6 +30,13 @@ terraform:
 * **BitOps Property:** `target`
 * **CLI Argument:** `--target`
 * **Environment Variable:** `TF_TARGET`
+* **default:** `""`
+
+-------------------
+### backend-config
+* **BitOps Property:** `backend-config`
+* **CLI Argument:** `--KEY1=foo --KEY2=bar`
+* **Environment Variable:** ``
 * **default:** `""`
 
 -------------------
@@ -60,7 +70,7 @@ Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORK
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
 
 -------------------
 ### SKIP_DEPLOY_TERRAFORM
@@ -75,3 +85,5 @@ Will force call `terraform apply`
 Will force call `terraform destroy`
 
 -------------------
+### INIT_UPGRADE
+Will add `--upgrade` flag to the init command

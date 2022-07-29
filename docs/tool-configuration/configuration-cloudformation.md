@@ -1,6 +1,6 @@
 # Cloudformation
 
-## Example bitops.config.yml
+## Example bitops.config.yaml
 ```
 cloudformation:
   cli:
@@ -60,6 +60,24 @@ Cloudformation stack name
 * **Environment Variable:** `CFN_CAPABILITY`
 * **default:** `""`
 
+Allows you to use CloudFormation nested stacks. Both properties must be set in order to use nested stacks.
+
+-------------------
+
+### cfn-s3-bucket
+* **BitOps Property:** `cfn-s3-bucket`
+* **Environment Variable:** `CFN_TEMPLATE_S3_BUCKET`
+* **default:** `""`
+
+### cfn-s3-prefix
+* **BitOps Property:** `cfn-s3-prefix`
+* **Environment Variable:** `CFN_S3_PREFIX`
+* **default:** `""`
+
+### cfn-merge-parameters
+* **BitOps Property:** `cfn-merge-parameters`
+
+
 Cloudformation capabilities
 
 -------------------
@@ -85,9 +103,27 @@ Additional parameters.
 * **default:** `""`
 
 -------------------
+### cfn-merge-parameters
+* **BitOps Property:** `cfn-merge-parameters`
+
+Allows for param files to be used. Has the following child-properties
+#### enabled
+* **BitOps Property:** `cfn-files.enabled`
+* **Environment Variable:** `CFN_MERGE_PARAMETER`
+* **default:** `false`
+
+True if optional option should be used.
+#### directory
+* **BitOps Property:** `cfn-files.directory`
+* **Environment Variable:** `CFN_MERGE_DIRECTORY`
+* **default:** `parameters`
+
+The directory within the ansible workspace that contains json files that will be merged.
+
+-------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
 
 -------------------
 ### SKIP_DEPLOY_CLOUDFORMATION

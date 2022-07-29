@@ -10,7 +10,9 @@ RUN apk add \
     unzip \
     git \
     jq \
-    curl
+    curl \
+    rsync \
+    openssh
     
 # install glibc compatibility for alpine
 ENV GLIBC_VER=2.31-r0

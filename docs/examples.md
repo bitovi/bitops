@@ -74,3 +74,32 @@ docker run \
 -v $(pwd):/opt/bitops_deployment \
 bitovi/bitops:latest
 ```
+
+## Use your local BitOps
+```
+docker run 
+-e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION           \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID             \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY     \
+-e ENVIRONMENT="test"                               \
+-v $(pwd):/opt/bitops_deployment                    \
+-v $BITOPS_HOME:/opt/bitops                         \
+bitovi/bitops:latest
+```
+
+## Links to Bitops Guides & Blogs
+
+### Using Declarative Infrastructure to Deploy an EKS Cluster and Helm Chart
+* [Using Declarative Infrastructure to Deploy an EKS Cluster and Helm Chart](https://www.bitovi.com/blog/eks-helm-bitops)
+
+### Bitops and Terraform
+* [BitOps + Terraform](https://www.bitovi.com/blog/bitops-terraform)
+
+### Combine Terraform and Ansible to provision and configure a webserver
+* [Combine Terraform and Ansible to provision and configure a webserver](https://www.bitovi.com/blog/bitops-terraform-ansible)
+
+### StackStorm Series
+1. [DevOps Automation using StackStorm - Getting Started Guide](https://www.bitovi.com/blog/devops-automation-using-stackstorm-getting-started)
+2. [DevOps Automation using StackStorm - Deploying with Ansible](https://www.bitovi.com/blog/devops-automation-using-stackstorm-ansible-deployment)
+3. [DevOps Automation using StackStorm - Cloud Deployment via BitOps](https://www.bitovi.com/blog/devops-automation-using-stackstorm-bitops-infrastructure)
+4. [DevOps Automation using StackStorm: BitOps Secrets Management](https://www.bitovi.com/blog/devops-automation-using-stackstorm-bitops-secrets)

@@ -1,0 +1,11 @@
+helm:
+  cli:
+    namespace: bitops
+    debug: false
+    atomic: true
+  options:
+      release-name: bitops-eks
+      kubeconfig:
+        fetch:
+          enabled: true
+          cluster-name: bitops-eks

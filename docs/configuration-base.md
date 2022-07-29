@@ -1,12 +1,12 @@
 # Base Configuration
 
-Each deployment tool is traditionally controlled with a set of cli arguments. Instead of defining arguments within your pipeline configuration, they can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool.
+Each deployment tool is traditionally controlled with a set of cli arguments. Instead of defining arguments within your pipeline configuration, they can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common between tools, the specific properties and environment variable equivilants vary from tool to tool.
 
 > For more information on tool configuration, see [plugins](plugins.md).
 
 -------------------
 ## Base Schema
-All `bitops.config.yml` files share the following structure
+All `bitops.config.yaml` files share the following structure
 ```
 $tool
   cli: {}
@@ -44,6 +44,14 @@ Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a kub
 * **default:** `false`
 
 If true, [file mergers](default-environment.md) will replace instead of create a copy during a merge
+
+-------------------
+### skip_if_no_environment_changes
+* **Environment Variable:** `SKIP_IF_NO_ENVIRONMENT_CHANGES`
+* **default:** `""`
+* **required:** no
+
+If nonempty, will evaluate the `git diff` to see if there are any changes in the specified `ENVIRONMENT` and will `exit 0` if not.
 
 -------------------
 ## Cloud Providers

@@ -10,11 +10,11 @@ Suppose we are working with an operations repo that is exlusviely terraform. We 
 │       └── main.tf
 ├── production
 │   └── terraform
-│       └── bitops.config.yml
+│       └── bitops.config.yaml
 │       └── production.auto.tfvars
 └── test
     └── terraform
-        └── bitops.config.yml
+        └── bitops.config.yaml
         └── test.auto.tfvars
 ```
 When `$ENVIRONMENT` is set to `production`, `default/` will be merged in to `production/` at runtime to produce a directory structure that looks like
@@ -24,12 +24,12 @@ When `$ENVIRONMENT` is set to `production`, `default/` will be merged in to `pro
 │       └── main.tf
 ├── production
 │   └── terraform
-│       └── bitops.config.yml
+│       └── bitops.config.yaml
 │       └── production.auto.tfvars
 │       └── main.tf
 └── test
     └── terraform
-        └── bitops.config.yml
+        └── bitops.config.yaml
         └── test.auto.tfvars
 ```
 
@@ -52,7 +52,7 @@ Before default merge
 │       └── main.tf
 └── test
     └── terraform
-        └── bitops.config.yml
+        └── bitops.config.yaml
         └── main.tf
 ```
 After default merge
@@ -62,7 +62,7 @@ After default merge
 │       └── main.tf
 └── test
     └── terraform
-        └── bitops.config.yml
+        └── bitops.config.yaml
         └── main.tf.test.tf
         └── main.tf # This comes from default/terraform/main.tf
 ```
@@ -87,7 +87,7 @@ Before default merge
 │       │   └── default-after-script.sh
 └── test
     └── terraform
-        └── bitops.config.yml
+        └── bitops.config.yaml
         └── main.tf
 ```
 After default merge
