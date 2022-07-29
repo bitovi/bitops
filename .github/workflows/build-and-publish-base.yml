@@ -98,7 +98,7 @@ jobs:
       uses: fjogeleit/yaml-update-action@main
       with:
         valueFile: prebuilt-config/bitops-tag.yaml
-        propertyPath: 'tags.bitops-base'
+        propertyPath: 'tags.bitops_base'
         value: ${{ env.BASE_TAG}}
         commitChange: true
         updateFile: true
