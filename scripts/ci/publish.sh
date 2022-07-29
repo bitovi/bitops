@@ -59,7 +59,7 @@ if [ -z "$IMAGE_TAG" ]; then
   fi
   #~#~#~#~#~#~#~#~#~#~#~#~#~#
 else
-  if [ "$IMAGE_TAG" == "kitchensink" ]; then
+  if [ "$IMAGE_TAG" == "omnibus" ]; then
         ADDITIONAL_IMAGE_TAG="latest"
   fi
 fi

@@ -8,7 +8,7 @@ BitOps is a boiler plate docker image for DevOps work. An operations repository 
 * Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
 * Loop through each tool and
     * Run any pre-execute hooks
-    * Read in `yml` configuration
+    * Read in `yaml` configuration
     * Execute the tool
     * Run any post-execute hooks
 

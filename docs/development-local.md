@@ -1,15 +1,10 @@
-We assume that at this point you've at the very least cloned the repo locally and have it open in your favorite editor. If you haven't made it there, please take a moment to get yourself set up and comfortable. 
+At this point you should have a repo for your custom BitOps image and have it open in your favorite editor. For more information on setting up your [custom BitOps image](custom-image.md)
 
-
-## Build BitOps-base
-`docker build -t bitops-base:latest .`
-
-The initial build of BitOps runs through the commands to setup the bitops container environment. At this point it has not installed any plugins, only a short list of utilities and tools that BitOps will directly use. Things such as python3, jq, etc
 
 ## Create a plugins.dockerfile
 Create a file in the root level of bitops named `Dockerfile.plugins` with the content; 
 
-`FROM bitops-base:latest`
+`FROM bitovi/bitops:2.0.0-omnibus`
 
 
 ## Build BitOps (with plugins)

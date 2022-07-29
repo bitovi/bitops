@@ -1,9 +1,9 @@
 # Execution Lifecycle
 
 ## Lifecycle hooks
-Within each tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. If any shell scripts exist within these directories, bitops will execute them first.
+Within each tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. If any shell scripts exist within these directories, BitOps will execute them in alphanumeric order.
 
-This is a useful way to extend the functionality of bitops. A popular usecase we've seen is loading secrets or dynamically editing `bitops.config.yml`
+This is a useful way to extend the functionality of BitOps. A popular usecase we've seen is loading secrets or dynamically editing `bitops.config.yml`
 
 ## Detailed Execution Flow
 
@@ -50,7 +50,7 @@ A single run of BitOps will
     * Run any `bitops.after-deploy.d/*.sh` scripts
 
 ### Environment Variables
-Plugins export environment variables when a value is specified in a ops_repo level `bitops.config.yaml`. These environment variables are prefixed with `BITOPS` and their plugin name. 
+Plugins can export environment when a value is specified in a ops_repo level `bitops.config.yaml`. These environment variables are prefixed with `BITOPS` and their plugin name. 
 
 So for example, if the terraform plugin exported the environment variable BUTTER_FLAG, it would be accessible in the lifecycle hooks by referencing; 
 
