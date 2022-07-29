@@ -7,6 +7,7 @@ on:
         description: Specifies the tag that will be published
         type: string
         default: plugins-base
+        required: true
       bump_base_tag:
         description: Bumps the bitops-tag.yaml file, this will trigger the recreation of the official prebuilt plugins images
         type: boolean
