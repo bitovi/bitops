@@ -1,7 +1,13 @@
 name: Build and Publish preconfigured images
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch: 
+    inputs:
+      bitops_tag:
+        description: Specifies the tag that will be published
+        type: string
+        default: plugins
+        required: true
   push:
     branches: [ plugins ]
     tags:
@@ -25,21 +31,53 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    # Apply jinja to tag
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
+    #                   PUSH                   #
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
+    # Loads VERSION_TAG from prebuilt-config/bitops-tag.yaml
+    - name: Parse bitops_base from yaml
+      id: yaml-data
+      uses: KJ002/read-yaml@main
+      with:
+        file: 'prebuilt-config/bitops-tag.yaml'    
+        key-path: '["tags", "bitops_base"]'
+      if: github.event_name == 'push'
+    
+    - name: Update VERSION_TAG with input (Push)
+      run: |
+        echo "VERSION_TAG=${{ steps.yaml-data.outputs.data }}" >> $GITHUB_ENV
+      if: github.event_name == 'push'
+    
+     # Apply jinja to tag
     - uses: cuchi/jinja2-action@v1.2.0
       with:
         template: prebuilt-config/dockerfile.template
         output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
         data_file: prebuilt-config/bitops-tag.yaml
         data_format: yaml
+      if: github.event_name == 'push'
+  
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
+    #           Workflow dispatch              #
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
+    # Loads VERSION_TAG from inputs
+    - name: Update VERSION_TAG with input (workflow_disbatch)
+      run: |
+        echo "VERSION_TAG=${{ github.event.inputs.bitops_base_tag}}" >> $GITHUB_ENV
+      if: github.event_name == 'workflow_disbatch'
     
-    - name: Run read-yaml action
-      id: yaml-data
-      uses: KJ002/read-yaml@main
+    - uses: cuchi/jinja2-action@v1.2.0
       with:
-        file: 'prebuilt-config/bitops-tag.yaml'    
-        key-path: '["tags", "bitops_base"]'
+        template: prebuilt-config/dockerfile.template
+        output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
+        strict: true
+        variables: |
+          bitops_base=${{ env.VERSION_TAG }}
+      if: github.event_name == 'workflow_disbatch'
 
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
+    #                   ALL                    #
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
     # Move the dockerfile and bitops.config.yaml into the project root folder
     - name: Copy Dockerfile and bitops.config.yaml into the project root folder
       run: |
@@ -52,7 +90,7 @@ jobs:
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
-        IMAGE_TAG: ${{ steps.yaml-data.outputs.data }}-${{ matrix.target }}
+        IMAGE_TAG: ${{ env.VERSION_TAG }}-${{ matrix.target }}
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh

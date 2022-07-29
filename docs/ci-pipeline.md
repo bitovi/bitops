@@ -80,3 +80,12 @@ The workflow disbatch trigger will create a custom bitops image name, and provid
 ```
 
 Creates a new base image based on the tag of the release and bumps the [prebuilt-config/bitops-tag.yaml](../prebuilt-config/bitops-tag.yaml)`:tags.bitops-tag`
+
+## Prebuilt
+Currently there is only a single CI pipeline for the prebuilt images. 
+
+### **Push**
+The CI pipeline watches the [prebuilt-config/bitops-tag.yaml](../prebuilt-config/bitops-tag.yaml) file and if an update occurs to the `tags.bitops_base` tag then it rebuilds using the new version.
+
+### **Workflow Disbatch**
+The user who triggers the workflow disbatch must specify a version tag 
