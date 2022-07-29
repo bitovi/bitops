@@ -3,7 +3,7 @@ name: Build and Publish preconfigured images
 on:
   workflow_dispatch: 
     inputs:
-      bitops_tag:
+      image_tag:
         description: Specifies the tag that will be published
         type: string
         default: plugins
@@ -63,7 +63,7 @@ jobs:
     # Loads VERSION_TAG from inputs
     - name: Update VERSION_TAG with input (workflow_disbatch)
       run: |
-        echo "VERSION_TAG=${{ github.event.inputs.bitops_base_tag}}" >> $GITHUB_ENV
+        echo "VERSION_TAG=${{ github.event.inputs.image_tag}}" >> $GITHUB_ENV
       if: github.event_name == 'workflow_disbatch'
     
     - uses: cuchi/jinja2-action@v1.2.0
