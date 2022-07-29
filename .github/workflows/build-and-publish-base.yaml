@@ -39,7 +39,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
         
-    - name: debugging event_name
+    - name: Debugging event name
       run: |
         echo ${{ github.event_name}}
 
@@ -73,6 +73,7 @@ jobs:
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
         echo "IMAGE_TAG=${{ github.event.inputs.bitops_base_tag}}" >> $GITHUB_ENV
+        echo "IMAGE_BUMP=${{ github.event.release.bump_base_tag }}" >> $GITHUB_ENV
       if: github.event_name == 'workflow_dispatch'
 
 
@@ -90,6 +91,7 @@ jobs:
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
         echo "IMAGE_TAG=${{ github.event.release.tag_name }}-base" >> $GITHUB_ENV
+        echo "IMAGE_BUMP=true" >> $GITHUB_ENV
       if: github.event_name == 'release'
 
 
@@ -105,4 +107,4 @@ jobs:
         value: ${{ env.BASE_TAG}}
         commitChange: true
         updateFile: true
-      if: github.event_name != 'push' && github.event.inputs.bump_base_tag == false
+      if: github.event_name != 'push' && env.IMAGE_BUMP == true
