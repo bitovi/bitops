@@ -18,24 +18,36 @@ on:
   release:
     types: [ published ]
   
+env:
+  BASE_TAG: plugins-base-RC
+  
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
         
+    - name: debugging
+      run: |
+        echo ${{ github.event_name}}
+
     - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKER_USER}}
         DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
-        IMAGE_TAG: base
-        IMAGE_PREFIX: plugins
-        IMAGE_POSTFITX: RC
+        IMAGE_TAG: ${{ env.BASE_TAG}}
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
-    
+      
     # Bump the version in `prebuilt-config/bitops-tag
-    
+    - name: Bump version tag
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: prebuilt-config/bitops-tag
+        propertyPath: 'tags.bitops-base'
+        value: ${{ env.BASE_TAG}}
+        commitChange: true
+        updateFile: true
