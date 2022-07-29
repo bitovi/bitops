@@ -86,4 +86,4 @@ Creates a new base image based on the tag of the release and bumps the [prebuilt
 The CI pipeline watches the [prebuilt-config/bitops-tag.yaml](../prebuilt-config/bitops-tag.yaml) file and if an update occurs to the `tags.bitops_base` tag then it rebuilds using the new version.
 
 ### **Workflow Disbatch**
-The user who triggers the workflow disbatch must specify a version tag for the plugins image name. For example if `2.0.0` was entered as the `image_tag`
+The user who triggers the workflow disbatch must specify a image tag for the plugins image name. For example if `2.0.0` was entered as the `image_tag` then a resulting image would be; `2.0.0-<tool>`. The value of tool is determined from the CI matrix within the [build-and-publish-prebuilt.yaml](../.github/workflows/build-and-publish-prebuilt.yaml)
