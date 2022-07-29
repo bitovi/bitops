@@ -19,8 +19,8 @@ on:
     paths-ignore:
       - "docs/**"
       - "prebuilt-config/**"
-      - ".github/workflows/build-and-publish-prebuilt.yml"
-      - ".github/workflows/publish-docs.yml"
+      - ".github/workflows/build-and-publish-prebuilt.yaml"
+      - ".github/workflows/publish-docs.yaml"
       - ".gitignore"
       - "bitops.schema.yaml"
       - "*.md"

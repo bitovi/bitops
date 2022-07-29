@@ -8,7 +8,7 @@ on:
     paths:
       - "docs/**"
       - "mkdocs.yml"
-      - ".github/workflows/publish-docs.yml"
+      - ".github/workflows/publish-docs.yaml"
 
 jobs:
   publish:

@@ -8,7 +8,7 @@ on:
       - "*"
     paths:
       - "prebuilt-config/bitops-tag.yaml"
-      - ".github/workflows/build-and-publish-prebuilt.yml"
+      - ".github/workflows/build-and-publish-prebuilt.yaml"
   
 jobs:
   publish-prebuilds:
