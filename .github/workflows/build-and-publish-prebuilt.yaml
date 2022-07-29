@@ -43,6 +43,8 @@ jobs:
       run: |
         echo ${{ env.bitops_base }}
         echo ${{ steps.tags.outputs.tags.bitops_base }}
+        echo IMAGE_TAG=$(cat prebuilt-config/bitops-tag.yaml| shyaml get-value tags.bitops_base) >> $GITHUB_ENV
+        echo ${{ env.IMAGE_TAG }}
 
 
     # Move the dockerfile and bitops.config.yaml into the project root folder
