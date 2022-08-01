@@ -50,8 +50,8 @@ jobs:
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "plugins"
-        DOCKER_USER: ${{ secrets.DOCKER_USER}}
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         IMAGE_TAG: ${{ env.BASE_TAG}}
       run: |
         echo "running scripts/ci/publish.sh"
@@ -66,8 +66,8 @@ jobs:
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "plugins"
-        DOCKER_USER: ${{ secrets.DOCKER_USER}}
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         IMAGE_TAG: ${{ github.event.inputs.bitops_base_tag}}
       run: |
         echo "running scripts/ci/publish.sh"
@@ -84,8 +84,8 @@ jobs:
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "plugins"
-        DOCKER_USER: ${{ secrets.DOCKER_USER}}
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         IMAGE_TAG: ${{ github.event.release.tag_name }}-base
       run: |
         echo "running scripts/ci/publish.sh"
