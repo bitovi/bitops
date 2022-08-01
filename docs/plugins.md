@@ -10,6 +10,7 @@ You can create your own BitOps image to customize runtime behavior by installing
 ## Pre-Built Images
 
 BitOps' default image contains BitOps base along with the following pre-installed plugins:
+
 * [bitops-terraform-plugin](https://github.com/bitops-plugins/terraform)
 * [bitops-ansible-plugin](https://github.com/bitops-plugins/ansible)
 * [bitops-cloudformation-plugin](https://github.com/bitops-plugins/cloudformation)
@@ -18,7 +19,8 @@ BitOps' default image contains BitOps base along with the following pre-installe
 > See [prebuilt-config](../prebuilt-config) to see other available pre-built images.
 
 ## Creating your own BitOps
-To create your own BitOps, you will need two files;
+To create your own BitOps, you will need two files:
+
 * **[bitops.config.yaml](../bitops.config.yaml)**: Contains configuration attributes that will modify how BitOps behaves
 * **[Dockerfile](../prebuilt-config/dockerfile.template)**: Needs to use the BitOps base image in the `FROM` directive
 
@@ -70,7 +72,7 @@ The repo for each plugin must be a `git clone`-able url. The name can be anythin
 The order that plugins run is dependent on the `deployments` section. If a `depoyments` section isn't provided, it will attempt to process all folders in the `BITOPS_ENVIRONMENT` directory in alphabetical order.
 
 **Dockerfile**
-The only content that is needed to create a custom image is;
+The only content that is needed to create a custom image is:
 
 ```
 FROM bitovi/bitops:plugins-base
@@ -78,6 +80,7 @@ FROM bitovi/bitops:plugins-base
 
 ## Creating your own Plugin
 Creating a plugin is easy, you only need 4 files:
+
 * `install.sh` - This script is called during plugin installation (Docker build time). It should be used to install any dependencies needed for your plugin to function 
 * `deploy.sh` - The main entrypoint for your plugin at deploy time
 * `bitops.schema.yaml` - Defines the parameters users have access to. The corresponding `bitops.config.yaml` within the `BITOPS_ENVIRONMENT` folder will configure the parameter values.
