@@ -79,6 +79,13 @@ Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
 
 https://bitovi.github.io/bitops/ is auto-generated using [MKDocs](https://www.mkdocs.org/). Updating markdown in `docs/*` and ensuring the page is defined in `mkdocs.yml` will auto update the site when pushed to the `master` branch.
 
+#### Testing Documentation Locally with Docker
+Using Docker to test the docs is easy.  Just run:
+```
+docker-compose -f docker-compose.docs.yaml up
+```
+Then load [http://localhost:8000](http://localhost:8000)
+
 ## Release History
 
 See [Releases](https://github.com/bitovi/bitops/releases).
