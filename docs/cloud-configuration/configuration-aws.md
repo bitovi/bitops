@@ -1,3 +1,5 @@
+Note from the developers: We are currently in the process of moving our documentation and so the below documentation is only partially correct. For more information on this tool please checkout our [plugin documentation](https://github.com/bitops-plugins/aws) 
+
 # AWS
 
 `bitops.config.yaml` is not yet supported for AWS ([TODO](https://github.com/bitovi/bitops/issues/15)). All configuration must be done with environment variables

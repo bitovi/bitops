@@ -1,3 +1,5 @@
+Note from the developers: We are currently in the process of moving our documentation and so the below documentation is only partially correct. For more information on this tool please checkout our [plugin documentation](https://github.com/bitops-plugins/helm) 
+
 # Helm
 
 ## Example bitops.config.yaml
