@@ -168,7 +168,7 @@ def Install_Plugins():
                     logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin_config=plugin_config))
                     logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
                 else:
-                    logger.warning("\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] FAILED~#~#~#~".format(plugin_config=plugin_config))
+                    logger.error("\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] FAILED~#~#~#~".format(plugin_config=plugin_config))
                     logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
                     sys.exit(result.returncode)
                 
