@@ -18,12 +18,12 @@ on:
   
 jobs:
   publish-prebuilds:
-    name: Publish for ${{ matrix.target }}
+    name: Publish image for ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
       matrix: 
         target:
-          - aws-ansible  
+          - aws-ansible
           - aws-helm
           - aws-terraform
           - omnibus
@@ -61,10 +61,10 @@ jobs:
     #           Workflow dispatch              #
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
     # Loads VERSION_TAG from inputs
-    - name: Update VERSION_TAG with input (workflow_disbatch)
+    - name: Update VERSION_TAG with input (workflow_dispatch)
       run: |
         echo "VERSION_TAG=${{ github.event.inputs.image_tag}}" >> $GITHUB_ENV
-      if: github.event_name == 'workflow_disbatch'
+      if: github.event_name == 'workflow_dispatch'
     
     - uses: cuchi/jinja2-action@v1.2.0
       with:
@@ -73,7 +73,7 @@ jobs:
         strict: true
         variables: |
           bitops_base=${{ env.VERSION_TAG }}
-      if: github.event_name == 'workflow_disbatch'
+      if: github.event_name == 'workflow_dispatch'
 
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #                   ALL                    #
@@ -83,7 +83,7 @@ jobs:
       run: |
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
-                
+
     - name: Publish Docker Image
       env:
         REGISTRY_URL: "bitovi/bitops"
