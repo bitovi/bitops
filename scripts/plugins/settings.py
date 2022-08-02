@@ -40,6 +40,10 @@ BITOPS_ENV_default_folder   = os.environ.get("BITOPS_DEFAULT_FOLDER_NAME")
 BITOPS_ENV_environment      = os.environ.get("BITOPS_ENVIRONMENT", None)
 BITOPS_ENV_timeout          = os.environ.get("BITOPS_TIMEOUT")
 
+if not bitops_build_configuration.bitops:
+    sys.stderr.write(f"Error: Invalid {BITOPS_config_file}: 'bitops' at the root level definition is required!")
+    sys.exit(1)
+
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared. All this does is X if X is set, Y if Y is set, else default value
 BITOPS_fast_fail_mode = BITOPS_ENV_fast_fail_mode                   \
@@ -90,4 +94,4 @@ BITOPS_timeout = BITOPS_ENV_timeout   \
     if BITOPS_ENV_timeout is not None        \
     else bitops_build_configuration.bitops.timeout               \
         if bitops_build_configuration.bitops.timeout is not None \
-        else 600    
+        else 600
