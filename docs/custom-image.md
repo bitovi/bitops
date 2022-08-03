@@ -21,7 +21,7 @@ This file is used to configure the BitOps image.
 <br/>
 
 #### BitOps "official" image
-Below is an example of how the "official latest" image of bitops is configured. 
+Below is an example of how the "official latest" image of BitOps is configured. 
 
 As you can see there are two sections we need to be aware of; Plugins and Deployments. 
 

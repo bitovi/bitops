@@ -3,7 +3,7 @@
 ---------------------
 ## How BitOps works
 
-BitOps is a boiler plate docker image for DevOps work. An operations repository is mounted to a bitops image's `/opt/bitops_deployment` directory. BitOps will
+BitOps is a boiler plate docker image for DevOps work. An operations repository is mounted to a BitOps image's `/opt/bitops_deployment` directory. BitOps will
 
 * Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
 * Loop through each tool and

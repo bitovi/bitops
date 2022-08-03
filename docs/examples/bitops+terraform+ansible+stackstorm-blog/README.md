@@ -20,4 +20,4 @@ docker run \
 bitovi/bitops:latest
 ```
 
-For more information, check out official bitops docs https://bitovi.github.io/bitops/
+For more information, check out official BitOps docs https://bitovi.github.io/bitops/

@@ -38,6 +38,7 @@ nav:
       - Helm: tool-configuration/configuration-helm.md
       - Cloudformation: tool-configuration/configuration-cloudformation.md
     - Default Environment: default-environment.md
+  - Plugins: plugins.md
   - Lifecycle: lifecycle.md
   - Examples: examples.md
   - Contributing:
