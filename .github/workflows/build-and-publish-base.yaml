@@ -14,7 +14,7 @@ on:
         default: false
 
   push:
-    branches: [ plugins ]
+    branches: [ main ]
     tags:
       - "*"
     paths-ignore:
