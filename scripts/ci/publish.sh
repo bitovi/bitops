@@ -2,17 +2,11 @@
 
 set -e
 
-####
-#### validation
-####
-if [ -z "$REGISTRY_URL" ]; then
-  >&2 echo "{\"script\":\"scripts/ci/publish.sh\", \"error\":\"REGISTRY_URL required\"}"
-  exit 1
-fi
+# Validation
+: ${REGISTRY_URL:? REGISTRY_URL env is required!}
+: ${IMAGE_TAG:? IMAGE_TAG env variable is required!}
 
-####
-#### docker login
-####
+# Docker login
 echo "$DOCKER_PASS" | docker login --username="$DOCKER_USER" --password-stdin
 echo "logged into dockerhub registry"
 
@@ -25,7 +19,6 @@ if [ -z "$DEFAULT_BRANCH" ]; then
     DEFAULT_BRANCH="main"
 fi
 
-
 REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 TAG_OR_HEAD="$(echo $GITHUB_REF | cut -d / -f2)"
@@ -36,39 +29,24 @@ echo "TAG_OR_HEAD: $TAG_OR_HEAD"
 echo "BRANCH_OR_TAG_NAME: $BRANCH_OR_TAG_NAME"
 
 
-# if tag, use tag and `latest`
-# if default branch, use `dev`
-# if otherwise, use branch name
+# if omnibus tag, use tag and `latest`
+# if base tag, use tag and `base`
+# if default `main` branch merge, use `dev`
 # See: https://github.com/bitovi/bitops/wiki/BitOps-Image#versioning
-if [ -z "$IMAGE_TAG" ]; then
-  if [ -n "$USE_COMMIT_HASH_FOR_ARTIFACTS" ]; then
-    IMAGE_TAG="$GITHUB_SHA"
-  else
-    if [ "$TAG_OR_HEAD" == "tags" ]; then
-      IMAGE_TAG="$BRANCH_OR_TAG_NAME"
-      ADDITIONAL_IMAGE_TAG="latest"
-    elif [ "$TAG_OR_HEAD" == "heads" ] && [ "$BRANCH_OR_TAG_NAME" == "$DEFAULT_BRANCH" ]; then
-      IMAGE_TAG="dev"
-    elif [ "$TAG_OR_HEAD" == "pull" ]; then
-      IMAGE_TAG="pr-${BRANCH_OR_TAG_NAME}"
-    else
-      IMAGE_TAG="$BRANCH_OR_TAG_NAME"
-    fi
-  fi
-else
-  if [ "$IMAGE_TAG" == "omnibus" ]; then
+
+# TODO: Remove "v" prefix before the version
+
+if echo "$IMAGE_TAG" | grep '\d.\d.\d-omnibus'; then
+  if [ "$TAG_OR_HEAD" == "tags" ]; then # a release
     ADDITIONAL_IMAGE_TAG="latest"
+  elif [ "$TAG_OR_HEAD" == "heads" ] && [ "$BRANCH_OR_TAG_NAME" == "$DEFAULT_BRANCH" ]; then # merge to default branch
+    IMAGE_TAG="dev"
   fi
 fi
 
 # If an IMAGE_PREFIX is not NULL
 if [ -n "$IMAGE_PREFIX" ]; then
   export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
-fi
-
-# If an IMAGE_POSTFIX is not NULL
-if [ -n "$IMAGE_POSTFIX" ]; then
-  export IMAGE_TAG="$IMAGE_TAG-$IMAGE_POSTFIX"
 fi
 
 echo "###"
@@ -90,7 +68,11 @@ echo "Pushing the docker image to the repository..."
 docker push ${REGISTRY_URL}:${IMAGE_TAG}
 
 if [ -n "$ADDITIONAL_IMAGE_TAG" ]; then
-  export IMAGE_TAG="$IMAGE_PREFIX-$ADDITIONAL_IMAGE_TAG"
+  if [ -n "$IMAGE_PREFIX" ]; then
+    export IMAGE_TAG="$IMAGE_PREFIX-$ADDITIONAL_IMAGE_TAG"
+  else
+    export IMAGE_TAG="$ADDITIONAL_IMAGE_TAG"
+  fi
   
   # docker image deploy function
   echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
