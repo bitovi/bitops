@@ -39,7 +39,7 @@ if [[ "${IMAGE_TAG:0:1}" == "v" ]]; then
   IMAGE_TAG="${IMAGE_TAG:1}"
 fi
 
-if echo "$IMAGE_TAG" | grep '\d.\d.\d-omnibus'; then
+if echo "$IMAGE_TAG" | grep 'omnibus$'; then
   if [ "$TAG_OR_HEAD" == "tags" ]; then # a release
     ADDITIONAL_IMAGE_TAG="latest"
   elif [ "$TAG_OR_HEAD" == "heads" ] && [ "$BRANCH_OR_TAG_NAME" == "$DEFAULT_BRANCH" ]; then # merge to default branch
