@@ -1,0 +1,34 @@
+name: Bump bitops base image tag
+
+on:
+  workflow_dispatch: 
+    inputs:
+      bitops_base_tag:
+        description: Specifies the tag that will be published
+        type: string
+        default: plugins-base
+        required: true
+  
+env:
+  BASE_TAG: plugins-base-RC
+  IMAGE_BUMP: true
+  
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
+    #         ALL!push: BUMP                   #
+    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
+    # Bump the version in `prebuilt-config/bitops-tag
+    - name: Bump version tag
+      uses: fjogeleit/yaml-update-action@main
+      with:
+        valueFile: prebuilt-config/bitops-tag.yaml
+        propertyPath: 'tags.bitops_base'
+        value: ${{ env.BASE_TAG}}
+        commitChange: true
+        updateFile: true
+      if: github.event_name != 'push' && env.IMAGE_BUMP == 'true'
