@@ -74,6 +74,7 @@ jobs:
         ./scripts/ci/publish.sh
         echo "IMAGE_TAG=${{ github.event.inputs.bitops_base_tag}}" >> $GITHUB_ENV
         echo "IMAGE_BUMP=${{ github.event.release.bump_base_tag }}" >> $GITHUB_ENV
+        cat $GITHUB_ENV
       if: github.event_name == 'workflow_dispatch'
 
 

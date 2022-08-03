@@ -31,4 +31,6 @@ jobs:
         value: ${{ env.BASE_TAG}}
         commitChange: true
         updateFile: true
-      if: github.event_name != 'push' && env.IMAGE_BUMP == 'true'
+        branch: main
+        masterBranchName: main
+      if: env.IMAGE_BUMP == 'true'
