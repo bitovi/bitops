@@ -2,7 +2,6 @@
 
 set -e
 
-
 ####
 #### validation
 ####
@@ -17,12 +16,11 @@ fi
 echo "$DOCKER_PASS" | docker login --username="$DOCKER_USER" --password-stdin
 echo "logged into dockerhub registry"
 
-
 ###
 ### PUBLISH - environment setup
 ###
 
-#Defining the Default branch variable
+# Defining the Default branch variable
 if [ -z "$DEFAULT_BRANCH" ]; then
     DEFAULT_BRANCH="main"
 fi
@@ -38,32 +36,30 @@ echo "TAG_OR_HEAD: $TAG_OR_HEAD"
 echo "BRANCH_OR_TAG_NAME: $BRANCH_OR_TAG_NAME"
 
 
-# if tag, use tag
-# if default branch, use `latest`
+# if tag, use tag and `latest`
+# if default branch, use `dev`
 # if otherwise, use branch name
-#*#*#*#*#*#*#*#*#*#*#*#*#
+# See: https://github.com/bitovi/bitops/wiki/BitOps-Image#versioning
 if [ -z "$IMAGE_TAG" ]; then
-  #~#~#~#~#~#~#~#~#~#~#~#~#~#
   if [ -n "$USE_COMMIT_HASH_FOR_ARTIFACTS" ]; then
     IMAGE_TAG="$GITHUB_SHA"
   else
     if [ "$TAG_OR_HEAD" == "tags" ]; then
       IMAGE_TAG="$BRANCH_OR_TAG_NAME"
+      ADDITIONAL_IMAGE_TAG="latest"
     elif [ "$TAG_OR_HEAD" == "heads" ] && [ "$BRANCH_OR_TAG_NAME" == "$DEFAULT_BRANCH" ]; then
-      IMAGE_TAG="latest"
+      IMAGE_TAG="dev"
     elif [ "$TAG_OR_HEAD" == "pull" ]; then
       IMAGE_TAG="pr-${BRANCH_OR_TAG_NAME}"
     else
       IMAGE_TAG="$BRANCH_OR_TAG_NAME"
     fi
   fi
-  #~#~#~#~#~#~#~#~#~#~#~#~#~#
 else
   if [ "$IMAGE_TAG" == "omnibus" ]; then
-        ADDITIONAL_IMAGE_TAG="latest"
+    ADDITIONAL_IMAGE_TAG="latest"
   fi
 fi
-#*#*#*#*#*#*#*#*#*#*#*#*#
 
 # If an IMAGE_PREFIX is not NULL
 if [ -n "$IMAGE_PREFIX" ]; then
@@ -75,34 +71,31 @@ if [ -n "$IMAGE_POSTFIX" ]; then
   export IMAGE_TAG="$IMAGE_TAG-$IMAGE_POSTFIX"
 fi
 
-###
-### PUBLISH DOCKER
-###
 echo "###"
 echo "### PUBLISH DOCKER"
 echo "###"
 
-#Defining the Image name variable
+# Defining the Image name variable
 IMAGE_NAME="$REPO_NAME"
 
-#Building the docker image...
+# Building the docker image...
 echo "Building the docker image"
 docker build -t ${IMAGE_NAME} .
 
-#docker image deploy function
+# docker image deploy function
 echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
 docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
 
-echo "Pushing the docker image to the ecr repository..."
+echo "Pushing the docker image to the repository..."
 docker push ${REGISTRY_URL}:${IMAGE_TAG}
 
 if [ -n "$ADDITIONAL_IMAGE_TAG" ]; then
   export IMAGE_TAG="$IMAGE_PREFIX-$ADDITIONAL_IMAGE_TAG"
   
-  #docker image deploy function
+  # docker image deploy function
   echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
   docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
 
-  echo "Pushing the docker image to the ecr repository..."
+  echo "Pushing the additional docker image to the repository..."
   docker push ${REGISTRY_URL}:${IMAGE_TAG}
 fi
