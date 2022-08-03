@@ -1,1 +1,7 @@
 shyaml
+pyyaml
+envbash
+munch
+GitPython
+pyfiglet
+boto3

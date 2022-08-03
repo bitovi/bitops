@@ -1,4 +1,4 @@
-[<img src="docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png" width="250"/>](docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
+[<p align="center"><img src="docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png" width="250"/></p>](docs/assets/images/logo/Bitops(RGB)_L2_Full_4C.png)
 
 ---------------------
 
@@ -6,58 +6,68 @@
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](docs/operations-repo-structure.md).
+### tl;dr
+BitOps is an automated [orchestrator](docs/about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/).
 
-https://bitovi.github.io/bitops/
+It leverages a way to describe infrastructure for many environments and IaC tools called an [Operations Repository](docs/operations-repo-structure.md).
 
 ---------------------
 
 ## Features
 
-* **[Configurable](docs/configuration-base.md):** Configure how you want bitops to deploy your application with environment variables or yaml
-* **[Event Hooks](docs/lifecycle.md):** If bitops doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points in bitops' lifecycle.
-* **[Pipeline Agnostic](docs/examples.md):** By bundling all logic in bitops, you can have the same experience regardless of which pipeline service runs your CI. You can even run bitops locally!
+* **[Configurable](docs/configuration-base.md):** Configure how you want BitOps to deploy your application with yaml or environment variables.
+* **[Event Hooks](docs/lifecycle.md):** If BitOps doesn't have built-in support for your usecase, execute arbitrary bash scripts at different points using BitOps' lifecycle.
+* **[Pipeline Runner Agnostic](docs/examples.md):** By bundling all logic in BitOps, you can have the same experience regardless of which pipeline service runs your deployment pipeline. You can even run BitOps locally!
+* **[Customizable](docs/plugins.md):** Configure what tools you want installed in your BitOps image. Only take what you need, leave the bloat behind. 
 
 ## How it works
 
-BitOps is a boiler plate docker image for DevOps work. An operations repository is mounted to a bitops image's `/opt/bitops_deployment` directory. BitOps will
+BitOps is a deployment tool orchestrator packaged in a Docker image. An [Operations Repository](docs/operations-repo-structure.md) is mounted to a BitOps container's `/opt/bitops_deployment` directory, and BitOps will parse through a given environment directory and;
 
-* Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
+* Auto-detect BitOps configuration files within tool directories
 * Loop through each tool and
+  * Read in `yaml` configuration
   * Run any pre-execute hooks
-  * Read in `yml` configuration
   * Execute the tool
   * Run any post-execute hooks
 
-## Run BitOps
-BitOps is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/r/bitovi/bitops).
+## Quick Start
+BitOps is packaged as a docker image and is available on [Dockerhub](https://hub.docker.com/r/bitovi/bitops).
 ```
-docker pull bitovi/bitops
+docker pull bitovi/bitops:latest
 cd $YOUR_OPERATIONS_REPO
-docker run bitovi/bitops -v .:/opt/bitops_deployment
+docker run bitovi/bitops:latest -v .:/opt/bitops_deployment
 ```
+
+Need an example? We got you! Check out our [Example Operation Repos](https://github.com/bitovi/operations-test)
 
 ## Configure BitOps
-
 BitOps is configured in 3 steps:
 
-1. Select your environment
-2. Configure aceess to your cloud provider
+1. Define [configuration](docs/configuration-base.md) for each tool in your environments
+2. Configure access to your cloud provider
 3. Configure how you want your deployment tools to execute
 
-[Docs](docs/configuration-base.md)
+From there, the contents of the tool directories in your environments can exist exactly how the tool expects.
 
-## Supported Tools
-* [Provision infrastructure with CloudFormation](docs/tool-configuration/configuration-cloudformation.md)
-* [Provision infrastructure with Terraform](docs/tool-configuration/configuration-terraform.md)
-* [Configure infrastructure with Ansible](docs/tool-configuration/configuration-ansible.md)
-* [Deploy to kubernetes with Helm](docs/tool-configuration/configuration-helm.md)
+Ready to dive deeper? Check out our [Docs](docs/configuration-base.md)
+
+Still not enough? Why not try building and running a [local version of BitOps](docs/development-local.md)
+
+Need a hand with implementation? We can [help](https://www.bitovi.com/devops-consulting)
+
+## Supported Plugins
+* Provision infrastructure with [CloudFormation](https://github.com/bitops-plugins/cloudformation/blob/main/README.md)
+* Provision infrastructure with [Terraform](https://github.com/bitops-plugins/terraform/blob/main/README.md)
+* Configure infrastructure with [Ansible](https://github.com/bitops-plugins/ansible/blob/main/README.md)
+* Deploy to kubernetes with [Helm](https://github.com/bitops-plugins/helm/blob/main/README.md)
+
+> Don't see a plugin you want?  [Submit an issue](https://github.com/bitovi/bitops/issues) or [build your own](docs/plugins.md#creating-your-own-plugin)!
 
 ## Supported Cloud Providers
-
-* [Amazon Web Services (AWS)](docs/cloud-configuration/configuration-aws.md)
-* Microsoft Azure Cloud (Azure) - TODO - https://github.com/bitovi/bitops/issues/13
-* Google Cloud Engine (GCE) - TODO - https://github.com/bitovi/bitops/issues/14
+* [Amazon Web Services (AWS)](https://github.com/bitops-plugins/aws/blob/main/README.md)
+* Microsoft Azure Cloud (Azure) - COMING SOON - https://github.com/bitovi/bitops/issues/13
+* Google Cloud Engine (GCE) - COMING SOON - https://github.com/bitovi/bitops/issues/14
 
 ## Support / Contributing
 
@@ -68,6 +78,13 @@ Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
 ### Updating Documentation
 
 https://bitovi.github.io/bitops/ is auto-generated using [MKDocs](https://www.mkdocs.org/). Updating markdown in `docs/*` and ensuring the page is defined in `mkdocs.yml` will auto update the site when pushed to the `master` branch.
+
+#### Testing Documentation Locally with Docker
+Using Docker to test the docs is easy.  Just run:
+```
+docker-compose -f docker-compose.docs.yaml up
+```
+Then load [http://localhost:8000](http://localhost:8000)
 
 ## Release History
 

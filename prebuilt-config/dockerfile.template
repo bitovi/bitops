@@ -1,0 +1,1 @@
+FROM bitovi/bitops:{{ tags.bitops_base }}

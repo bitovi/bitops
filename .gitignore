@@ -1,7 +1,17 @@
-.terraform
-.tar
-.gz
-credentials
+# File EXT
+*.terraform
+*.tar
+*.gz
+*.logs
 
-.DS_Store
+# Python
+*.pyc
+
+# Security
+credentials
+.pem
+.key
+
+# Employee
 NOTES.md
+prebuild.sh

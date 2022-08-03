@@ -1,0 +1,22 @@
+name: Publish Docs
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - "*"
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/publish-docs.yaml"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Publish Docs
+      uses: mhausenblas/mkdocs-deploy-gh-pages@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CONFIG_FILE: mkdocs.yml

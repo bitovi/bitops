@@ -1,0 +1,52 @@
+bitops:
+  type: object
+  properties:
+    fail_fast:
+      type: boolean
+      description: "When set, will exit if any warning+ is raised, otherwise only exit on critical error"
+
+    run_mode:
+      type: string
+      description: ""
+
+    logging:
+      type: object
+      properties:
+        level:
+          type: string
+          description: "Sets the logging level"
+        color:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: "Enables colored logs"
+        filename:
+          type: string
+          description: "Log filename"
+        err:
+          type: string
+          description: "Error logs filename"
+        path:
+          type: string
+          description: "Path to log folder"
+    
+    plugins:
+      type: object
+      properties:
+        tool-name:  # Unique name of tool
+          type: object
+          properties:
+            source:
+              type: object
+              properties:
+                sourced_from:
+                  type: string
+                  description: "Where the plugin will be sourced from"
+                branch: 
+                  type: string
+                  description: "Github branch for versioned clone"
+                tag:
+                  type: string
+                  description: "Github tag for versioned clone"
+    

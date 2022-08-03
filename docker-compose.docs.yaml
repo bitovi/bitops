@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  mkdocs:
+    container_name: bitops-docs
+    image: squidfunk/mkdocs-material
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ${PWD}:/docs

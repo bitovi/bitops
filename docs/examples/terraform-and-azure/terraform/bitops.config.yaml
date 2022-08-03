@@ -1,0 +1,6 @@
+terraform:
+    cli: {}
+    options:
+        command: destroy
+        version: "0.13.2"
+        fetch-kubeconfig: false

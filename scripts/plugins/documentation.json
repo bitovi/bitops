@@ -1,0 +1,6 @@
+{
+    "missing_plugin_dependency": {
+        "msg": "Missing plugin dependency. To Fix this update the bitops/bitops.config.yaml file by adding the dependent into the bitops.plugins block.",
+        "link": ""
+    }
+}

@@ -21,8 +21,8 @@ jobs:
       env:
         REGISTRY_URL: "bitovi/bitops"
         DEFAULT_BRANCH: "master"
-        DOCKER_USER: ${{ secrets.DOCKER_USER}}
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS}}
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh

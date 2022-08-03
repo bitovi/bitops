@@ -1,7 +1,7 @@
 # Operations Repo Structure
 BitOps expects an operations repo to be in the following structure
 ```
-├── production-serviceA
+├── production
 │   ├── ansible
 │   │   ├── bitops.after-deploy.d
 │   │   ├── bitops.before-deploy.d
@@ -19,8 +19,8 @@ BitOps expects an operations repo to be in the following structure
 │   └── terraform
 │       ├── bitops.after-deploy.d
 │       ├── bitops.before-deploy.d
-│       └── bitops.config.yaml
-└── test-serviceA
+│       └── bitops.config.yml
+└── dev
     ├── ansible
     │   ├── bitops.after-deploy.d
     │   ├── bitops.before-deploy.d
@@ -43,10 +43,15 @@ BitOps expects an operations repo to be in the following structure
 #### Environment Directories
 These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your usecase, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services. This pattern is preferential to having a branch for each environment as this allows the state of all your infrastructure to be managed from one location without merging potentially breaking an environment.
 
-When running bitops, you provide the environment variable `ENVIRONMENT`. This tells bitops what environment to work in for that run. A full CI/CD pipeline may call bitops multiple times if it requires one environment to run as a pre-requisite for another.
+When running BitOps, you provide the environment variable `ENVIRONMENT`. This tells BitOps what environment to work in for that run. A full CI/CD pipeline may call BitOps multiple times if it requires one environment to run as a pre-requisite for another.
+
+##### Environment Directory Naming Convention
+Sometimes it is useful to have directories in your operations repo that are not deployable environments such as common scripts that can be referenced from any environment's [before or after hooks](lifecycle.md).
+
+BitOps allows you to name your environment directories whatever you want.  However, to better reason about which directories are environments and which aren't, a good convention is to prefix any non-deployable-environment directory with an underscore (e.g. `_scripts`).
 
 #### Tool directories
-Within an environment directory are directories grouping supported tools by name. Each of these directories is optional. For example, if your application only requires `terraform/` to execute, you do not need an `ansible/`, `cloudformation/` or `helm/` directory in your environment.
+Within an environment directory are tool directories which group supported tools by name. Each of these directories is optional. For example, if your application only requires `terraform/` to execute, you do not need an `ansible/`, `cloudformation/` or `helm/` directory in your environment.
 
 This directory is also where you put your infrastructure code associated with the respective tool.
 
