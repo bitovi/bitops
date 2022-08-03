@@ -3,7 +3,7 @@
 set -e
 
 # Validation
-: ${REGISTRY_URL:? REGISTRY_URL env is required!}
+: ${REGISTRY_URL:? REGISTRY_URL env variable is required!}
 : ${IMAGE_TAG:? IMAGE_TAG env variable is required!}
 
 # Docker login
@@ -34,7 +34,10 @@ echo "BRANCH_OR_TAG_NAME: $BRANCH_OR_TAG_NAME"
 # if default `main` branch merge, use `dev`
 # See: https://github.com/bitovi/bitops/wiki/BitOps-Image#versioning
 
-# TODO: Remove "v" prefix before the version
+# Remove "v" prefix before the version
+if [[ "${IMAGE_TAG:0:1}" == "v" ]]; then
+  IMAGE_TAG="${IMAGE_TAG:1}"
+fi
 
 if echo "$IMAGE_TAG" | grep '\d.\d.\d-omnibus'; then
   if [ "$TAG_OR_HEAD" == "tags" ]; then # a release
