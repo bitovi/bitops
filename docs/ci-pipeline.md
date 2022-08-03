@@ -35,7 +35,7 @@ This effectively softlinks the CI pipelines as though they are able to run indep
 
 The push trigger will perform a basic rebuild of the base image but it will not bump the bitops-version, therefor this trigger does not trigger the subsequent prebuilt image CI. 
 
-### **Workflow Disbatch**
+### **Workflow dispatch**
 ```
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #           Workflow dispatch              #
@@ -55,7 +55,7 @@ The push trigger will perform a basic rebuild of the base image but it will not 
       if: github.event_name == 'workflow_dispatch'
 ```
 
-The workflow disbatch trigger will create a custom bitops image name, and provides the boolean option to bump the [prebuilt-config/bitops-tag.yaml](../prebuilt-config/bitops-tag.yaml)`:tags.bitops-tag`
+The workflow dispatch trigger will create a custom bitops image name, and provides the boolean option to bump the [prebuilt-config/bitops-tag.yaml](../prebuilt-config/bitops-tag.yaml)`:tags.bitops-tag`
 
 
 ### **Release**
@@ -85,5 +85,5 @@ Creates a new base image based on the tag of the release and bumps the [prebuilt
 ### **Push**
 The CI pipeline watches the [prebuilt-config/bitops-tag.yaml](../prebuilt-config/bitops-tag.yaml) file and if an update occurs to the `tags.bitops_base` tag then it rebuilds using the new version.
 
-### **Workflow Disbatch**
-The user who triggers the workflow disbatch must specify a image tag for the plugins image name. For example if `2.0.0` was entered as the `image_tag` then a resulting image would be; `2.0.0-<tool>`. The value of tool is determined from the CI matrix within the [build-and-publish-prebuilt.yaml](../.github/workflows/build-and-publish-prebuilt.yaml)
+### **Workflow dispatch**
+The user who triggers the workflow dispatch must specify a image tag for the plugins image name. For example if `2.0.0` was entered as the `image_tag` then a resulting image would be; `2.0.0-<tool>`. The value of tool is determined from the CI matrix within the [build-and-publish-prebuilt.yaml](../.github/workflows/build-and-publish-prebuilt.yaml)

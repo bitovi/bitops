@@ -87,6 +87,7 @@ jobs:
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         IMAGE_TAG: ${{ github.event.release.tag_name }}-base
+        ADDITIONAL_IMAGE_TAG: base
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
