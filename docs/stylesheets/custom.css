@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center; /* align horizontal */
-    align-items: center; /* align vertical */
+    align-items: flex-start; /* align vertical */
     text-align: center;
     flex-wrap: wrap;
     width: 100%;
@@ -22,5 +22,6 @@
 @media screen and (max-width: 800px) {
     .bitovi-row {
         flex-direction: column;
+        align-items: center;
     }
   }

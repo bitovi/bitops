@@ -7,8 +7,11 @@ hide:
 <!-- Custom hero banner using docs/stylesheets/custom.css -->
 <div class="bitovi-row">
     <div class="bitovi-column">
-        <img alt="Logo" float="middle" style="vertical-align: middle;" src="assets/images/logo/Bitops%28RGB%29_L2_Full_4C.png" width="350">
+        <img alt="Logo" float="middle" style="vertical-align: middle;" src="assets/images/logo/Bitops%28RGB%29_L2_Full_4C.png" width="350" />
     </div>
+</div>
+
+<div class="bitovi-row">
     <div class="bitovi-column">
         <h1>Organize your Infrastructure-as-Code (IAC) 
         <nl>Consistently Deploy.</h1>
@@ -33,19 +36,19 @@ It leverages a way to describe infrastructure for many environments and IaC tool
 </div>
 <div class="bitovi-row">
     <div class="bitovi-column">
-        <h3><a href="configuration-base">Configurable</a><h3>
+        <h3><a href="configuration-base">Configurable</a></h3>
         <p>Tell BitOps what deployment tools and parameters it needs to deploy your application through environment variables or yaml based configuration.</p>
     </div>
    <div class="bitovi-column">
-        <h3><a href="lifecycle">Event Hooks</a><h3>
+        <h3><a href="lifecycle">Event Hooks</a></h3>
         <p>If BitOps doesn't have built-in support for your usecase, BitOps can execute arbitrary bash scripts at different points in its lifecycle.</p>
     </div>
     <div class="bitovi-column">
-        <h3><a href="plugins">Customizable</a><h3>
+        <h3><a href="plugins">Customizable</a></h3>
         <p>Our newest feature Plugins offer a layer of plug and play specialization with the BitOps core. Use one of our officially supported plugins or make your own!</p>
     </div>
     <div class="bitovi-column">
-        <h3><a href="examples">Runs Anywhere</a><h3>
+        <h3><a href="examples">Runs Anywhere</a></h3>
         <p>By bundling all logic in BitOps, you can have the same experience regardless of which pipeline service runs your CI. You can even run BitOps locally!</p>
     </div>
 </div>
