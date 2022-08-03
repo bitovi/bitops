@@ -22,7 +22,9 @@ hide:
 </div>
 ---------------------
 
-BitOps is a tool to describe an infrastructure and configurations deployed onto that infrastructure for multiple environments in a single place called an [Operations Repo](operations-repo-structure.md).
+BitOps is an automated [orchestrator](docs/about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/).
+
+It leverages a way to describe infrastructure for many environments and IaC tools called an [Operations Repository](docs/operations-repo-structure.md).
 
 ---------------------
 
@@ -37,6 +39,10 @@ BitOps is a tool to describe an infrastructure and configurations deployed onto 
    <div class="bitovi-column">
         <h3><a href="lifecycle">Event Hooks</a><h3>
         <p>If BitOps doesn't have built-in support for your usecase, BitOps can execute arbitrary bash scripts at different points in its lifecycle.</p>
+    </div>
+    <div class="bitovi-column">
+        <h3><a href="plugins">Customizable</a><h3>
+        <p>Our newest feature Plugins offer a layer of plug and play specialization with the BitOps core. Use one of our officially supported plugins or make your own!</p>
     </div>
     <div class="bitovi-column">
         <h3><a href="examples">Runs Anywhere</a><h3>
