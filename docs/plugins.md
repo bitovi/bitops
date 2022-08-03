@@ -16,7 +16,7 @@ BitOps' default image contains BitOps base along with the following pre-installe
 * [bitops-cloudformation-plugin](https://github.com/bitops-plugins/cloudformation)
 * [bitops-helm-plugin](https://github.com/bitops-plugins/helm)
 
-> See [prebuilt-config](../prebuilt-config) to see other available pre-built images.
+> See [prebuilt-config](https://github.com/bitovi/bitops/tree/main/prebuilt-config) to see other available pre-built images.
 
 ## Creating your own BitOps
 To create your own BitOps, you will need two files:
