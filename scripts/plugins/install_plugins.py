@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import shutil
 import yaml
 import subprocess
@@ -6,8 +7,9 @@ import glob
 import os.path
 import os
 import git
+import sys
 
-from .settings import BITOPS_config_yaml, BITOPS_fast_fail_mode, BITOPS_plugin_dir
+from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 from .logging import logger
 from .doc import Get_Doc
 from ast import Load
@@ -66,20 +68,20 @@ def Install_Plugins():
                 logger.info("\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin_config=plugin_config))
 
             except git.exc.GitCommandError as exc:
-                logger.info("\n~#~#~#~CLONING PLUGIN [{plugin_config}] FAILED~#~#~#~\n\t{stderr}"
+                logger.error("\n~#~#~#~CLONING PLUGIN [{plugin_config}] FAILED~#~#~#~\n\t{stderr}"
                     .format(
                         plugin_config=plugin_config,
                         stderr=exc
                     ))
-                if BITOPS_fast_fail_mode: quit()
+                sys.exit(1)
             
             except Exception as exc:
-                logger.info("\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{stderr}"
+                logger.error("\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{stderr}"
                     .format(
                         plugin_config=plugin_config,
                         stderr=exc
                     ))
-                if BITOPS_fast_fail_mode: quit()
+                sys.exit(1)
 
             #~#~#~#~#~#~#~#~#~#~#~#~#~#
             # RUN PLUGIN INSTALL SCRIPT
@@ -99,7 +101,7 @@ def Install_Plugins():
             plugin_configuration = \
                 None if plugin_configuration_yaml is None \
                 else DefaultMunch.fromDict(plugin_configuration_yaml, None)                
-                            
+
             # breakdown of values
             #   plugin.config.yaml should be used first
             #   bitops.config.yaml should be used second
@@ -119,7 +121,7 @@ def Install_Plugins():
             plugin_install_dependencies = plugin_configuration.plugin.install.dependencies  \
                 if plugin_configuration.plugin.install.dependencies is not None       \
                 else None
-                            
+
             # Checking that any dependency for a plugin is found within the bitops.config.yaml plugins section
             if plugin_install_dependencies:
                 missing_dependencies = list(set(plugin_install_dependencies).difference(plugin_list))
@@ -166,11 +168,13 @@ def Install_Plugins():
                     logger.info("\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~".format(plugin_config=plugin_config))
                     logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
                 else:
-                    logger.warning("\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] FAILED~#~#~#~".format(plugin_config=plugin_config))
+                    logger.error("\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] FAILED~#~#~#~".format(plugin_config=plugin_config))
                     logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
+                    sys.exit(result.returncode)
                 
             else:
-                logger.error("File does not exist: [{}]".format(plugin_install_script_path)) 
+                logger.error("File does not exist: [{}]".format(plugin_install_script_path))
+                sys.exit(1)
         else:
             logger.error("Plugin source cannot be empty. Plugin: [{}] Download did not run".format(plugin_config))
-        
+            sys.exit(1)
