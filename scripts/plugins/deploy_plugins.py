@@ -53,10 +53,13 @@ def Deploy_Plugins():
 
     # Global environment evaluation
     if BITOPS_ENV_environment is None:
-        logger.error("ENVIRONMENT variables must be set... Exiting")
+        logger.error("The `BITOPS_ENVIRONMENT` variable must be set... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/configuration-base/#environment]")
         quit()
     
     # Move to temp directory
+    if not os.path.isdir(bitops_deployment_dir):
+        logger.error("An operations repo needs to be mounted to the Docker container with the path `/opt/bitops_deployment/`... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/about/#how-bitops-works]")
+        quit()
     copy_tree(bitops_deployment_dir, temp_dir)
 
 
