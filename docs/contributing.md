@@ -3,6 +3,18 @@ We'd love to accept your patches and contributions to this project. There are ju
 
 When you are ready to get started developing, see our [development guide](development/development.md) for how to get started!
 
+## Weekly status calls
+
+Join us weekly on Mondays at 10 AM Eastern time!
+TODO: link
+
+
+General Agenda:
+- Roadmap
+- Milestones
+- Issues
+- Discussions
+
 ## Developer Certificate of Origin
 
 To contribute to this project, you must agree to the Developer Certificate of
