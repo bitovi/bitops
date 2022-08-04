@@ -4,6 +4,8 @@ hide:
  - navigation
 ---
 
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
 <!-- Custom hero banner using docs/stylesheets/custom.css -->
 <div class="bitovi-row">
     <div class="bitovi-column">
