@@ -14,25 +14,9 @@ bitops:
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
   opsrepo_root_default_dir: _default
-  plugins:    
-    aws:
-      source: https://github.com/bitops-plugins/aws
-    terraform:
-      source: https://github.com/bitops-plugins/terraform
-    cloudformation:
-      source: https://github.com/bitops-plugins/cloudformation
-    helm:
-      source: https://github.com/bitops-plugins/helm
-    kubectl:
-      source: https://github.com/bitops-plugins/kubectl
-    ansible:
-      source: https://github.com/bitops-plugins/ansible
-  deployments:
-    cloudformation:
-      plugin: cloudformation
-    terraform:
-      plugin: terraform
-    helm:
-      plugin: helm
-    ansible:
-      plugin: ansible
+
+  # https://bitovi.github.io/bitops/plugins/#bitopsconfigyaml
+  plugins: {}
+
+  # https://bitovi.github.io/bitops/plugins/#bitopsconfigyaml
+  deployments: {}
