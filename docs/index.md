@@ -28,11 +28,13 @@ hide:
 </div>
 ---------------------
 
-BitOps is an automated [orchestrator](docs/about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/).
+BitOps is an automated [orchestrator](about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/). 
 
-It leverages a way to describe infrastructure for many environments and IaC tools called an [Operations Repository](docs/operations-repo-structure.md).
+It leverages a way to describe the infrastructure for many environments and IaC tools called an [Operations Repository](operations-repo-structure.md).
 
 ---------------------
+
+
 
 <div class="bitovi-row">
 <h2>Features</h2>
@@ -40,18 +42,19 @@ It leverages a way to describe infrastructure for many environments and IaC tool
 <div class="bitovi-row">
     <div class="bitovi-column">
         <h3><a href="configuration-base">Configurable</a></h3>
-        <p>Tell BitOps what deployment tools and parameters it needs to deploy your application through environment variables or yaml based configuration.</p>
+        <p>Tell BitOps what deployment tools and parameters it needs to deploy your application through environment variables or yaml-based configuration.</p>
     </div>
    <div class="bitovi-column">
         <h3><a href="lifecycle">Event Hooks</a></h3>
-        <p>If BitOps doesn't have built-in support for your usecase, BitOps can execute arbitrary bash scripts at different points in its lifecycle.</p>
+        <p>If BitOps doesn't have built-in support for your use case, BitOps can execute arbitrary bash scripts at different points in its lifecycle.</p>
     </div>
     <div class="bitovi-column">
         <h3><a href="plugins">Customizable</a></h3>
-        <p>Our newest feature Plugins offer a layer of plug and play specialization with the BitOps core. Use one of our officially supported plugins or make your own!</p>
+        <p>Our newest feature Plugins offer a layer of plug-and-play specialization with the BitOps core. Use one of our officially supported plugins or make your own!</p>
     </div>
     <div class="bitovi-column">
         <h3><a href="examples">Runs Anywhere</a></h3>
         <p>By bundling all logic in BitOps, you can have the same experience regardless of which pipeline service runs your CI. You can even run BitOps locally!</p>
     </div>
 </div>
+

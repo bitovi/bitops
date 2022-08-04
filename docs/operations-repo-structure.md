@@ -48,7 +48,7 @@ When running BitOps, you provide the environment variable `ENVIRONMENT`. This te
 ##### Environment Directory Naming Convention
 Sometimes it is useful to have directories in your operations repo that are not deployable environments such as common scripts that can be referenced from any environment's [before or after hooks](lifecycle.md).
 
-BitOps allows you to name your environment directories whatever you want.  However, to better reason about which directories are environments and which aren't, a good convention is to prefix any non-deployable-environment directory with an underscore (e.g. `_scripts`).
+BitOps allows you to name your environment directories whatever you want.  However, to better reason about which directories are environments and which aren't, a good convention is to prefix any non-deployable-environment directory with an underscore (e.g. `_scripts` or `_terraform`).
 
 #### Tool directories
 Within an environment directory are tool directories which group supported tools by name. Each of these directories is optional. For example, if your application only requires `terraform/` to execute, you do not need an `ansible/`, `cloudformation/` or `helm/` directory in your environment.
@@ -68,5 +68,4 @@ chmod +x bitops.after-deploy.d/*
 
 #### bitops.config.yaml
 Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yaml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool. See [BitOps Configuration](configuration-base.md) for details.
-
 

@@ -1,9 +1,11 @@
 # About
 
 ---------------------
-## How BitOps works
+## What is BitOps?
 
-BitOps is a boiler plate docker image for DevOps work. An operations repository is mounted to a BitOps image's `/opt/bitops_deployment` directory. BitOps will
+There are 2 components to BitOps.  First, we have an [Operations Repository](operations-repo-structure.md) (OpsRepo) where we store the code for our various tools. The second part is the BitOps Docker container that you can run to automate the deployment of the code in our OpsRepo.  Now with a single command, you can deploy infrastructure and software.
+
+The second part of BitOps is a boilerplate docker image for DevOps work. When you mount an Operations Repository to a BitOps image's `/opt/bitops_deployment` directory, BitOps will:
 
 * Auto-detect any configuration belonging to one of its [supported tools](#supported-tools)
 * Loop through each tool and
@@ -22,11 +24,12 @@ docker run bitovi/bitops -v $(pwd):/opt/bitops_deployment
 
 ## Configure BitOps
 
-BitOps is configured in 3 steps:
+BitOps is configured in 4 steps:
 
-1. Select your environment
-2. Configure aceess to your cloud provider
-3. Configure how you want your deployment tools to execute
+1. Create an Operations Repository
+2. Select your environment
+3. Configure access to your cloud provider
+4. Configure how you want your deployment tools to execute
 
 [Get Started](configuration-base.md)
 
@@ -39,10 +42,10 @@ BitOps is configured in 3 steps:
 ## Supported Cloud Providers
 
 * [Amazon Web Services (AWS)](cloud-configuration/configuration-aws.md)
-* Microsoft Azure Cloud (Azure) - [TODO](https://github.com/bitovi/bitops/issues/13)
-* Google Cloud Engine (GCE) - [TODO](https://github.com/bitovi/bitops/issues/14)
+* Microsoft Azure Cloud (Azure) - [Coming soon!](https://github.com/bitovi/bitops/issues/13)
+* Google Cloud Engine (GCE) - [Coming Soon!](https://github.com/bitovi/bitops/issues/14)
 
-## Guides and Other Reources
+## Guides and Other Resources
 
 Bitops already has several guides demonstrating deploying a webserver or a pre-configured application using different combinations of the available Bitops tools. If you're looking for a quick-start, check out some of the options available in the [Examples](examples.md) section.
 
@@ -50,7 +53,7 @@ Bitops already has several guides demonstrating deploying a webserver or a pre-c
 
 We welcome any contributions from the community with open arms. Take a look at our [Contributing](contributing/contributing.md) guide.
 
-Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
+Come hang out with us on [Slack](https://www.bitovi.com/community/slack)!
 
 ## Release History
 

@@ -1,11 +1,11 @@
 # Default Environment
 
-There are instances where configuration or variable files should be shared between environments. Instead of duplicating common files across different environments, the `default` environment can be used instead.
+There are instances where configuration or variable files should be shared between environments. Instead of duplicating common files across different environments, the `_default` environment can be used instead.
 
-Suppose we are working with an operations repo that is exlusviely terraform. We have a `production` and `test` environment that have the same HCL, but different input variables between the two. This is a great candidate for the `default` environment. The common configuration can be put in the `default/` environment directory instead of in both `production/` and `test/` environments:
+Suppose we are working with an operations repo that is exlusviely terraform. We have a `production` and `test` environment that have the same HCL, but different input variables between the two. This is a great candidate for the `_default` environment. The common configuration can be put in the `_default/` environment directory instead of in both `production/` and `test/` environments:
 
 ```
-├── default
+├── _default
 │   └── terraform
 │       └── main.tf
 ├── production
@@ -19,7 +19,7 @@ Suppose we are working with an operations repo that is exlusviely terraform. We 
 ```
 When `$ENVIRONMENT` is set to `production`, `default/` will be merged in to `production/` at runtime to produce a directory structure that looks like
 ```
-├── default
+├── _default
 │   └── terraform
 │       └── main.tf
 ├── production
@@ -33,7 +33,7 @@ When `$ENVIRONMENT` is set to `production`, `default/` will be merged in to `pro
         └── test.auto.tfvars
 ```
 
-Things get more complex when files exist in both the `default` and `active` environment share the same name. This is why we have file mergers.
+Things get more complex when files exist in both the `_default` and `active` environment share the same name. This is why we have file mergers.
 
 
 ## File Mergers [TODO](https://github.com/bitovi/bitops/issues/3)
@@ -47,7 +47,7 @@ Files that only exist in the `default` environment will be copied over.
 #### Example
 Before default merge
 ```
-├── default
+├── _default
 │   └── terraform
 │       └── main.tf
 └── test
@@ -57,7 +57,7 @@ Before default merge
 ```
 After default merge
 ```
-├── default
+├── _default
 │   └── terraform
 │       └── main.tf
 └── test
@@ -68,7 +68,7 @@ After default merge
 ```
 This is accomplished with an `rsync` operation
 ```
-DEFAULT_DIR=default
+DEFAULT_DIR=_default
 ENV_DIR=test
 rsync -ab --suffix ".${ENV_DIR}.tf" --include="*/" --include="*.tf" --exclude="*"  $DEFAULT_DIR/ $ENV_DIR/
 ```
@@ -81,7 +81,7 @@ Files that only exist in the `default` environment will be copied over.
 #### Example
 Before default merge
 ```
-├── default
+├── _default
 │   └── terraform
 │       ├── bitops.after-deploy.d
 │       │   └── default-after-script.sh
@@ -92,7 +92,7 @@ Before default merge
 ```
 After default merge
 ```
-├── default
+├── _default
 │   └── terraform
 │       ├── bitops.after-deploy.d
 │       │   └── default-after-script.sh
@@ -104,9 +104,9 @@ After default merge
 ```
 
 ### General .yaml/.yml
-Files that only exist in the `default` environment will be copied over.
+Files that only exist in the `_default` environment will be copied over.
 
-Files from the `default` environment that share its name and path will be merged.
+Files from the `_default` environment that share its name and path will be merged.
 
 ### values.yaml (Helm)
 helm has built in support for merging multiple `values.yaml` files. BitOps will look for files in the following locations and pass them in to helm with with the `-f` in the same order they are found
@@ -121,7 +121,7 @@ helm has built in support for merging multiple `values.yaml` files. BitOps will 
 #### Example
 The following operations repo structure
 ```
-├── default
+├── _default
 │   └── helm
 │       └── my-first-chart
 │           ├── values-files
