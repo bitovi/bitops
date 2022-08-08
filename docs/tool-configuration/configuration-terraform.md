@@ -3,7 +3,7 @@ Note from the developers: We are currently in the process of moving our document
 # Bitops Plugin for Terraform
 ## Deployment
 
-``terraform`` plugin uses ```bitops.config.yaml``` located in the operations repo when deploying resources using terraform scripts.
+`terraform` plugin uses `bitops.config.yaml` located in the operations repo when deploying resources using terraform scripts.
 
 ### Example `bitops.config.yaml`, minimum required
 ```
@@ -24,11 +24,11 @@ terraform:
         workspace: test
 ```
 
-The ``terraform`` plugin will run `terraform init` and `terraform plan` on every execution.
+The `terraform` plugin will run `terraform init` and `terraform plan` on every execution.
 
 Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or set `stack-action` in the `bitops.config.yaml` file to apply to run `terraform apply`.
 
-## CLI and options configuration of Terraform ``bitops.schema.yaml``
+## CLI and options configuration of Terraform``bitops.schema.yaml`
 
 ### Terraform BitOps Schema
 
@@ -97,7 +97,7 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yml`, the following environment variables can be set to further customize behaviour.  Set the value of the environental variable to `true` to use
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.  Set the value of the environental variable to `true` to use
 
 -------------------
 ### SKIP_DEPLOY_TERRAFORM

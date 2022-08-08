@@ -23,7 +23,7 @@ BitOps is configured in 4 steps:
 3. Configure access to your cloud provider
 4. Configure how you want your deployment tools to execute
 
-[Get Started](configuration-base.md)
+See [configuration](configuration-base.md)
 
 ## Run BitOps
 
@@ -34,8 +34,6 @@ docker pull bitovi/bitops
 cd $YOUR_OPERATIONS_REPO
 docker run bitovi/bitops -v $(pwd):/opt/bitops_deployment
 ```
-
-
 
 ## Supported Tools
 * [Provision infrastructure with CloudFormation](tool-configuration/configuration-cloudformation.md)
