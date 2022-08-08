@@ -17,7 +17,7 @@ hide:
     <div class="bitovi-column">
         <h1>Organize your Infrastructure-as-Code (IAC) 
         <nl>Consistently Deploy.</h1>
-        <a class="md-button md-button--primary" href="about">Show me how</a>
+        <a class="md-button md-button--primary" href="getting-started">Show me how</a>
         <p>
             <a href="https://github.com/bitovi/bitops/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/bitovi/bitops"></a>
             <a href="https://www.bitovi.com/community/slack?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join our Slack" src="https://img.shields.io/badge/slack-join%20chat-611f69.svg"></a>
@@ -28,7 +28,7 @@ hide:
 </div>
 ---------------------
 
-BitOps is an automated [orchestrator](about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/). 
+BitOps is an automated [orchestrator](getting-started.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/). 
 
 It leverages a way to describe the infrastructure for many environments and IaC tools called an [Operations Repository](operations-repo-structure.md).
 
@@ -57,4 +57,3 @@ It leverages a way to describe the infrastructure for many environments and IaC 
         <p>By bundling all logic in BitOps, you can have the same experience regardless of which pipeline service runs your CI. You can even run BitOps locally!</p>
     </div>
 </div>
-
