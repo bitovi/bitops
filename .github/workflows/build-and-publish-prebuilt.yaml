@@ -9,13 +9,13 @@ on:
         default: plugins
         required: true
   push:
-    branches: [ plugins ]
+    branches: [ main, fix/omnibus-dev-image ]
     tags:
       - "*"
     paths:
       - "prebuilt-config/bitops-tag.yaml"
       - ".github/workflows/build-and-publish-prebuilt.yaml"
-  
+
 jobs:
   publish-prebuilds:
     name: Publish image for ${{ matrix.target }}
@@ -84,13 +84,24 @@ jobs:
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
 
-    - name: Publish Docker Image
+    - name: Publish Docker Image (Push)
       env:
         REGISTRY_URL: "bitovi/bitops"
-        DEFAULT_BRANCH: "plugins"
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
+        IMAGE_TAG: dev
+      run: |
+        echo "running scripts/ci/publish.sh"
+        ./scripts/ci/publish.sh
+      if: github.event_name == 'push' && matrix.target == 'omnibus'
+
+    - name: Publish Docker Image (Release)
+      env:
+        REGISTRY_URL: "bitovi/bitops"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         IMAGE_TAG: ${{ env.VERSION_TAG }}-${{ matrix.target }}
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
+      if: github.event_name == 'release'
