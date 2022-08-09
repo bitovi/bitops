@@ -29,9 +29,7 @@ jobs:
       with:
         template: prebuilt-config/dockerfile.template
         output_file: ./Dockerfile
-        variables: |
-          tags=""
-          tags.bitops_base=dev-base
+        variables: tags=""
     - name: Copy bitops.config.yaml into the project root folder
       run: cp ./prebuilt-config/omnibus/bitops.config.yaml ./bitops.config.yaml
     - name: Publish Omnibus dev Docker Image (Push)
