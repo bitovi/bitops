@@ -14,7 +14,8 @@ on:
         default: false
 
   push:
-    branches: [ main ]
+    # TODO: Remove debugging
+    branches: [ fix/base-docker-tagging ]
     tags:
       - "*"
     paths-ignore:
