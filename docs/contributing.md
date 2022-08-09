@@ -1,4 +1,8 @@
 # How to Contribute
+Issues and suggestions can be logged on [GitHub](https://github.com/bitovi/bitops/issues)
+
+#### Want to fix it yourself
+
 We'd love to accept your patches and contributions to this project. There are just a few small guidelines you need to follow.
 
 When you are ready to get started developing, see our [development guide](development/development.md) for how to get started!
@@ -33,5 +37,4 @@ All submissions, including submissions by project members, require review. We us
 | Indents  | 2 spaces (Soft)  |
 | Spaces after list items  | ["item1", "item2", "item3"]  |
 | variable naming  | snake_case  |
-
 

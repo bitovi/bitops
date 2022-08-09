@@ -1,9 +1,16 @@
 Note from the developers: We are currently in the process of moving our documentation and so the below documentation is only partially correct. For more information on this tool please checkout our [plugin documentation](https://github.com/bitops-plugins/terraform) 
 
-# Terraform
-Terraform will always run `terraform init` and `terraform plan` on every execution.
+# Bitops Plugin for Terraform
+## Deployment
 
-## Example bitops.config.yaml
+`terraform` plugin uses `bitops.config.yaml` located in the operations repo when deploying resources using terraform scripts.
+
+### Example `bitops.config.yaml`, minimum required
+```
+terraform: {}
+```
+
+### Example 2 `bitops.config.yaml`
 ```
 terraform:
     cli:
@@ -13,26 +20,37 @@ terraform:
             - KEY1=foo
             - KEY2=bar
     options:
-        command: apply
-        version: "0.13.2"
+        stack-action: "plan"
         workspace: test
 ```
 
-## CLI Configuration
+The `terraform` plugin will run `terraform init` and `terraform plan` on every execution.
+
+Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or set `stack-action` in the `bitops.config.yaml` file to apply to run `terraform apply`.
+
+## CLI and options configuration of Terraform``bitops.schema.yaml`
+
+### Terraform BitOps Schema
+
+[bitops.schema.yaml](https://github.com/bitops-plugins/terraform/blob/main/bitops.schema.yaml)
 
 -------------------
 ### var-file
 * **BitOps Property:** `var-file`
 * **CLI Argument:** `--var-file`
-* **Environment Variable:** `TF_VAR_FILE`
+* **Environment Variable:** `BITOPS_TF_VAR_FILE`
 * **default:** `""`
+* **Required:** `false`
+* **Description:** Terraform Varaible file
 
 -------------------
 ### target
 * **BitOps Property:** `target`
 * **CLI Argument:** `--target`
-* **Environment Variable:** `TF_TARGET`
+* **Environment Variable:** `BITOPS_TF_TARGET`
 * **default:** `""`
+* **Required:** `false`
+* **Description:**
 
 -------------------
 ### backend-config
@@ -40,39 +58,46 @@ terraform:
 * **CLI Argument:** `--KEY1=foo --KEY2=bar`
 * **Environment Variable:** ``
 * **default:** `""`
+* **Required:** `false`
+* **Description:**
 
 -------------------
+
 
 ## Options Configuration
 
 -------------------
-### version
-* **BitOps Property:** `version`
-* **Environment Variable:** `TERRAFORM_VERSION`
-* **default:** `"0.12.29"`
 
-Allows customziation of which version of terraform to run
+### stack-action
+* **BitOps Property:** `stack-action`
+* **Environment Variable:** `BITOPS_TERRAFORM_COMMAND`
+* **default:** `"plan"`
+* **Required:** `false`
+* **Description:** Controls what terraform command to run. e.g. `apply`, `destroy`, etc. 
+
 
 -------------------
-### command
-* **BitOps Property:** `command`
-* **Environment Variable:** `TERRAFORM_COMMAND`
-* **default:** `"plan"`
+<!-- ### version
+* **BitOps Property:** `version`
+* **Environment Variable:** `BITOPS_TERRAFORM_VERSION`
+* **default:** `"1.2.2"`
+* **Required:** `false`
+* **Description:** Allows customziation of which version of terraform to run
 
-Controls what terraform command to run. e.g. `apply`, `destroy`, etc.
+* **NOTE:** `This feature currently not supported.`  -->
 
 -------------------
 ### workspace
 * **BitOps Property:** `workspace`
-* **Environment Variable:** `TERRAFORM_WORKSPACE`
+* **Environment Variable:** `BITOPS_TERRAFORM_WORKSPACE`
 * **default:** `""`
-
-Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE || terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands.
+* **Required:** `false`
+* **Description:** Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE || terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands.
 
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.  Set the value of the environental variable to `true` to use
 
 -------------------
 ### SKIP_DEPLOY_TERRAFORM
