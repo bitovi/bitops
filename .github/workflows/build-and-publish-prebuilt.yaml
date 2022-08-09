@@ -22,7 +22,7 @@ jobs:
     name: Build and push 'dev' omnibus Docker image
     runs-on: ubuntu-latest
     # TODO: Replace branch with 'main'
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'ref/head/fix/omnibus-dev-image'
     steps:
     - uses: actions/checkout@v2
     - uses: cuchi/jinja2-action@v1.2.0
@@ -30,7 +30,7 @@ jobs:
         template: prebuilt-config/dockerfile.template
         output_file: ./Dockerfile
         variables: |
-          bitops_base=dev-base
+          tags.bitops_base=dev-base
     - name: Copy bitops.config.yaml into the project root folder
       run: cp ./prebuilt-config/omnibus/bitops.config.yaml ./bitops.config.yaml
     - name: Publish Omnibus dev Docker Image (Push)
