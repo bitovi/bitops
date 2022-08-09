@@ -1,4 +1,8 @@
 #!/bin/bash
+###
+# This script is used by CI/CD workflows to build, tag and push docker images to the Docker Hub.
+# It may route, rename or tag the Docker images depending on the current branch or build environment.
+###
 
 set -e
 
@@ -8,10 +12,10 @@ set -e
 
 # Docker login
 echo "$DOCKER_PASS" | docker login --username="$DOCKER_USER" --password-stdin
-echo "logged into dockerhub registry"
+echo -e "\033[32mSuccessfully logged into Docker Hub Registry!\033[0m"
 
 ###
-### PUBLISH - environment setup
+# Environment setup
 ###
 
 # Defining the Default branch variable
@@ -47,9 +51,9 @@ if echo "$IMAGE_TAG" | grep 'omnibus$'; then
   fi
 fi
 
-echo "###"
-echo "### PUBLISH DOCKER"
-echo "###"
+###
+# DOCKER Build & Publish
+###
 
 echo -e "\033[32mBuilding the docker image \033[1m${REGISTRY_URL}:${IMAGE_TAG}\033[0m\033[32m...\033[0m"
 docker build -t ${REGISTRY_URL}:${IMAGE_TAG} .
