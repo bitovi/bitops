@@ -9,8 +9,7 @@ on:
         default: base
         required: true
   push:
-    # TODO: Remove debugging
-    branches: [ main, fix/omnibus-dev-image ]
+    branches: [ main ]
     tags:
       - "*"
     paths:
@@ -18,10 +17,10 @@ on:
       - ".github/workflows/build-and-publish-prebuilt.yaml"
 
 jobs:
+  # Separated workflow, as 'bitops-tags.yaml' values could be overwriten
   build-publish-dev:
-    name: Build and push 'dev' omnibus Docker image
+    name: Build and publish 'dev' omnibus Docker image
     runs-on: ubuntu-latest
-    # TODO: Replace branch with 'main'
     if: github.event_name == 'push'
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +28,7 @@ jobs:
       with:
         template: prebuilt-config/dockerfile.template
         output_file: ./Dockerfile
-        variables: tags=""
+        variables: tags="" # uses jinja default from the dockerfile.template
     - name: Copy bitops.config.yaml into the project root folder
       run: cp ./prebuilt-config/omnibus/bitops.config.yaml ./bitops.config.yaml
     - name: Publish Omnibus dev Docker Image (Push)
@@ -37,13 +36,13 @@ jobs:
         REGISTRY_URL: "bitovi/bitops"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
-        # 'main' branch 'omnibus' build, publish 'dev' Docker tag
+        # on 'main' branch build 'omnibus' image and publish it as 'dev' Docker tag
         IMAGE_TAG: dev
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
 
-  publish-prebuilds:
+  build-publish-prebuilds:
     name: Publish image for ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
