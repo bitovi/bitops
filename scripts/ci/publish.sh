@@ -1,4 +1,8 @@
 #!/bin/bash
+###
+# This script is used by CI/CD workflows to build, tag and push docker images to the Docker Hub.
+# It may route, rename or tag the Docker images depending on the current branch or build environment.
+###
 
 set -e
 
@@ -8,10 +12,10 @@ set -e
 
 # Docker login
 echo "$DOCKER_PASS" | docker login --username="$DOCKER_USER" --password-stdin
-echo "logged into dockerhub registry"
+echo -e "\033[32mSuccessfully logged into Docker Hub Registry!\033[0m"
 
 ###
-### PUBLISH - environment setup
+# Environment setup
 ###
 
 # Defining the Default branch variable
@@ -47,40 +51,20 @@ if echo "$IMAGE_TAG" | grep 'omnibus$'; then
   fi
 fi
 
-# If an IMAGE_PREFIX is not NULL
-if [ -n "$IMAGE_PREFIX" ]; then
-  export IMAGE_TAG="$IMAGE_PREFIX-$IMAGE_TAG"
-fi
+###
+# DOCKER Build & Publish
+###
 
-echo "###"
-echo "### PUBLISH DOCKER"
-echo "###"
+echo -e "\033[32mBuilding the docker image \033[1m${REGISTRY_URL}:${IMAGE_TAG}\033[0m\033[32m...\033[0m"
+docker build -t ${REGISTRY_URL}:${IMAGE_TAG} .
 
-# Defining the Image name variable
-IMAGE_NAME="$REPO_NAME"
-
-# Building the docker image...
-echo "Building the docker image"
-docker build -t ${IMAGE_NAME} .
-
-# docker image deploy function
-echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
-docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
-
-echo "Pushing the docker image to the repository..."
+echo -e "\033[32mPushing the docker image \033[1m${REGISTRY_URL}:${IMAGE_TAG}\033[0m\033[32m to the repository...\033[0m"
 docker push ${REGISTRY_URL}:${IMAGE_TAG}
 
 if [ -n "$ADDITIONAL_IMAGE_TAG" ]; then
-  if [ -n "$IMAGE_PREFIX" ]; then
-    export IMAGE_TAG="$IMAGE_PREFIX-$ADDITIONAL_IMAGE_TAG"
-  else
-    export IMAGE_TAG="$ADDITIONAL_IMAGE_TAG"
-  fi
-  
-  # docker image deploy function
-  echo "docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}"
-  docker tag ${IMAGE_NAME} ${REGISTRY_URL}:${IMAGE_TAG}
+  echo -e "\033[32mAdding the additional docker tag \033[1m${REGISTRY_URL}:${ADDITIONAL_IMAGE_TAG}\033[0m"
+  docker tag ${REGISTRY_URL}:${IMAGE_TAG} ${REGISTRY_URL}:${ADDITIONAL_IMAGE_TAG}
 
-  echo "Pushing the additional docker image to the repository..."
-  docker push ${REGISTRY_URL}:${IMAGE_TAG}
+  echo -e "\033[32mPushing the additional docker image \033[1m${REGISTRY_URL}:${ADDITIONAL_IMAGE_TAG}\033[0m\033[32m to the repository...\033[0m"
+  docker push ${REGISTRY_URL}:${ADDITIONAL_IMAGE_TAG}
 fi
