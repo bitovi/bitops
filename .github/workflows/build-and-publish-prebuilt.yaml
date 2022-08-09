@@ -6,9 +6,10 @@ on:
       image_tag:
         description: Specifies the tag that will be published
         type: string
-        default: plugins
+        default: base
         required: true
   push:
+    # TODO: Remove debugging
     branches: [ main, fix/omnibus-dev-image ]
     tags:
       - "*"
@@ -17,6 +18,32 @@ on:
       - ".github/workflows/build-and-publish-prebuilt.yaml"
 
 jobs:
+  build-publish-dev:
+    name: Build and push 'dev' omnibus Docker image
+    runs-on: ubuntu-latest
+    # TODO: Replace branch with 'main'
+    if: {{ github.event_name == 'push' && github.ref == 'ref/head/fix/omnibus-dev-image' }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: cuchi/jinja2-action@v1.2.0
+      with:
+        template: prebuilt-config/dockerfile.template
+        output_file: ./Dockerfile
+        variables: |
+          bitops_base=dev-base
+    - name: Copy bitops.config.yaml into the project root folder
+      run: cp ./prebuilt-config/omnibus/bitops.config.yaml ./bitops.config.yaml
+    - name: Publish Omnibus dev Docker Image (Push)
+      env:
+        REGISTRY_URL: "bitovi/bitops"
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
+        # 'main' branch 'omnibus' build, publish 'dev' Docker tag
+        IMAGE_TAG: dev
+      run: |
+        echo "running scripts/ci/publish.sh"
+        ./scripts/ci/publish.sh
+
   publish-prebuilds:
     name: Publish image for ${{ matrix.target }}
     runs-on: ubuntu-latest
@@ -56,7 +83,7 @@ jobs:
         data_file: prebuilt-config/bitops-tag.yaml
         data_format: yaml
       if: github.event_name == 'push'
-  
+
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #           Workflow dispatch              #
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
@@ -65,7 +92,7 @@ jobs:
       run: |
         echo "VERSION_TAG=${{ github.event.inputs.image_tag}}" >> $GITHUB_ENV
       if: github.event_name == 'workflow_dispatch'
-    
+
     - uses: cuchi/jinja2-action@v1.2.0
       with:
         template: prebuilt-config/dockerfile.template
@@ -84,22 +111,12 @@ jobs:
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
 
-    - name: Publish Docker Image (Push)
-      env:
-        REGISTRY_URL: "bitovi/bitops"
-        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
-        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
-        IMAGE_TAG: dev
-      run: |
-        echo "running scripts/ci/publish.sh"
-        ./scripts/ci/publish.sh
-      if: github.event_name == 'push' && matrix.target == 'omnibus'
-
     - name: Publish Docker Image (Release)
       env:
         REGISTRY_URL: "bitovi/bitops"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
+        # On a versioned release push '2.0.0-omnibus', '2.0.0-aws-ansible', etc Docker tags
         IMAGE_TAG: ${{ env.VERSION_TAG }}-${{ matrix.target }}
       run: |
         echo "running scripts/ci/publish.sh"
