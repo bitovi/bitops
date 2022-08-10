@@ -75,7 +75,7 @@ A `*` denotes a required variable.
 | Variable          | Value                             |  Notes     |
 |   :---            |   :---                            |    :---    |
 | `$BITOPS_DIR`     | `/opt/bitops`                     |   Within the container the default working directory for BitOps        |
-| `$ENVIRONMENT`*   | `YOUR_OPS_REPO_ENVIRONMENT`                   |   BitOps requires at least one environment folder to be specified at container execution.   |
+| `$BITOPS_ENVIRONMENT`*   | `YOUR_OPS_REPO_ENVIRONMENT`                   |   BitOps requires at least one environment folder to be specified at container execution.   |
 | `$ENVROOT`        | `$TEMPDIR/$ENVIRONMENT`           |   e.g `/tmp/tmp.RANDOM/YOUR_OPS_REPO_ENVIRONMENT`  |
 | `$TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
 | `$ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$TEMPDIR` during execution)  |
@@ -99,7 +99,7 @@ System Packages natively available in a running BitOps container:
 * wget
 
 > For the most up-to-date list, see
-> [Dockerfile](https://github.com/bitovi/bitops/blob/master/Dockerfile)
+> [Dockerfile](https://github.com/bitovi/bitops/blob/main/Dockerfile)
 
 Python packages natively available in BitOps:
 
