@@ -54,18 +54,18 @@ def Deploy_Plugins():
     # Global environment evaluation
     if BITOPS_ENV_environment is None:
         logger.error("The `BITOPS_ENVIRONMENT` variable must be set... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/configuration-base/#environment]")
-        quit()
+        quit(1)
     
     # Move to temp directory
     if not os.path.isdir(bitops_deployment_dir):
         logger.error("An operations repo needs to be mounted to the Docker container with the path `/opt/bitops_deployment/`... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/about/#how-bitops-works]")
-        quit()
+        quit(1)
     copy_tree(bitops_deployment_dir, temp_dir)
 
 
     if bitops_deployment_configuration is None:
         logger.error("No deployments config found. Exiting... {}".format(__file__))
-        quit()
+        quit(1)
         
     logger.info("\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~            \
             \n\t TEMP_DIR:                [{temp_dir}]                          \
@@ -249,6 +249,6 @@ def Deploy_Plugins():
             
             else:
                 logger.error("Plugin deploy script missing. Exiting[{plugin_deploy_language}]".format(plugin_deploy_script_path))
-                quit()
+                quit(1)
         else:
             logger.warning("Opsrepo environment directory does not exist: [{}]".format(opsrepo_environment_dir))
