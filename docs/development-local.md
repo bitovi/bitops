@@ -4,7 +4,7 @@ At this point you should have a repo for your custom BitOps image and have it op
 ## Create a plugins.dockerfile
 Create a file in the root level of BitOps named `Dockerfile.plugins` with the content; 
 
-`FROM bitovi/bitops:2.0.0-omnibus`
+`FROM bitovi/bitops:2.0.0`
 
 
 ## Build BitOps (with plugins)
