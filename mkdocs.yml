@@ -36,20 +36,21 @@ nav:
       - Cloudformation: tool-configuration/configuration-cloudformation.md
     - Default Environment: default-environment.md
   - Examples: examples.md
+  - Upgrade:
+    - 2.0.0: migration/2.0.0-migration.md
   - Development:
     - Local development: development-local.md
     - Custom Images: custom-image.md
   - Plugins: plugins.md
   - Lifecycle: lifecycle.md
-  - Contributing:
-    - Contributing Guide: contributing.md
-    - Development Guide: development/development.md
-    - DCO: development/DCO.md
-    - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
+  - About: 
+    - About: about.md
+    - Contributing:
+      - Contributing Guide: contributing.md
+      - Development Guide: development/development.md
+      - DCO: development/DCO.md
+      - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
     - License: license.md
-  - Migrations:
-    - 2.0.0: migration/2.0.0-migration.md
-  - About: about.md
 
 extra:
   social:

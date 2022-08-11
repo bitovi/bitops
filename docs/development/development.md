@@ -99,7 +99,7 @@ System Packages natively available in a running BitOps container:
 * wget
 
 > For the most up-to-date list, see
-> [Dockerfile](https://github.com/bitovi/bitops/blob/master/Dockerfile)
+> [Dockerfile](https://github.com/bitovi/bitops/blob/main/Dockerfile)
 
 Python packages natively available in BitOps:
 
