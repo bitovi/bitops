@@ -54,7 +54,7 @@ export AWS_SECRET_ACCESS_KEY=ZYXWV09876
 export AWS_DEFAULT_REGION=us-east-1
 export MY_VAR1=value1
 docker run \
--e ENVIRONMENT="ansible-operations-repo" \
+-e BITOPS_ENVIRONMENT="ansible-operations-repo" \
 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
 -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \

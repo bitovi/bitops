@@ -17,7 +17,7 @@ Suppose we are working with an operations repo that is exlusviely terraform. We 
         └── bitops.config.yaml
         └── test.auto.tfvars
 ```
-When `$ENVIRONMENT` is set to `production`, `default/` will be merged in to `production/` at runtime to produce a directory structure that looks like
+When `$BITOPS_ENVIRONMENT` is set to `production`, `_default/` will be merged in to `production/` at runtime to produce a directory structure that looks like
 ```
 ├── _default
 │   └── terraform
@@ -40,9 +40,9 @@ Things get more complex when files exist in both the `_default` and `active` env
 Different files have different behvaviors based on the file extension + the deployment tool. Some files can be merged together, others can't. This behavior is defined below.
 
 ### `.tf` (HCL) Handling
-Files that only exist in the `default` environment will be copied over.
+Files that only exist in the `_default` environment will be copied over.
 
-`.tf` files from the `default` environment that share its name and path with a file in the active environment will both be in the resulting directory with the active environment name having a suffix added to it.
+`.tf` files from the `_default` environment that share its name and path with a file in the active environment will both be in the resulting directory with the active environment name having a suffix added to it.
 
 #### Example
 Before default merge
@@ -74,9 +74,9 @@ rsync -ab --suffix ".${ENV_DIR}.tf" --include="*/" --include="*.tf" --exclude="*
 ```
 
 ### .sh Handling
-Files that only exist in the `default` environment will be copied over.
+Files that only exist in the `_default` environment will be copied over.
 
-`.sh` files from the `default` environment that share its name and path with a file in the active environment will not be copied over.
+`.sh` files from the `_default` environment that share its name and path with a file in the active environment will not be copied over.
 
 #### Example
 Before default merge

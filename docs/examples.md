@@ -66,7 +66,7 @@ bitovi/bitops:latest
 ### Force call terraform destroy
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
