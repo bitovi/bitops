@@ -50,7 +50,7 @@ Sometimes it is useful to have directories in your operations repo that are not 
 
 BitOps allows you to name your environment directories whatever you want.  However, to better reason about which directories are environments and which aren't, a good convention is to prefix any non-deployable-environment directory with an underscore (e.g. `_scripts` or `_terraform`).  
 
-The directory `_default` is special in BitOps.  This directory is merged into your enviroment directory before deployment.  
+The directory `_default` is special in BitOps.  This directory is merged into your environment directory before deployment. You can control the default folder name through an environment variable `BITOPS_DEFAULT_FOLDER` or through a bitops configuration attribute `bitops.default_folder`.
 
 #### Tool directories
 Within an environment directory are tool directories which group supported tools by name. Each of these directories is optional. For example, if your application only requires `terraform/` to execute, you do not need an `ansible/`, `cloudformation/` or `helm/` directory in your environment.
