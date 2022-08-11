@@ -9,7 +9,7 @@ For complete code samples see [https://github.com/bitovi/bitops/tree/master/docs
 An environment must always be selected
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -v $(pwd):/opt/bitops_deployment \
 bitovi/bitops:latest
 ```
@@ -17,7 +17,7 @@ bitovi/bitops:latest
 ### AWS Config
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
@@ -28,7 +28,7 @@ bitovi/bitops:latest
 ### Passing in kubeconfig
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
@@ -41,7 +41,7 @@ bitovi/bitops:latest
 If you has a cluster arn of `arn:aws:eks:us-east-1:111122223333:cluster/my-cluster`, you would use the following configuration
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
@@ -54,7 +54,7 @@ bitovi/bitops:latest
 If there is a `dev/ansible/` directory, ansible execution can be skipped with `SKIP_DEPLOY_ANSIBLE`
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
@@ -66,7 +66,7 @@ bitovi/bitops:latest
 ### Force call terraform destroy
 ```
 docker run \
--e ENVIRONMENT="dev" \
+-e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
@@ -81,7 +81,7 @@ docker run
 -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION           \
 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID             \
 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY     \
--e ENVIRONMENT="test"                               \
+-e BITOPS_ENVIRONMENT="test"                               \
 -v $(pwd):/opt/bitops_deployment                    \
 -v $BITOPS_HOME:/opt/bitops                         \
 bitovi/bitops:latest
