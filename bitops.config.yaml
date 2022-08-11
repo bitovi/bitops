@@ -13,7 +13,7 @@ bitops:
     filename: bitops-run      # log filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
-  opsrepo_root_default_dir: _default
+  default_folder: _default
 
   # https://bitovi.github.io/bitops/plugins/#bitopsconfigyaml
   plugins: {}
