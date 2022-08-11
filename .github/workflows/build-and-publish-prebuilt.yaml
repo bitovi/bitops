@@ -6,18 +6,43 @@ on:
       image_tag:
         description: Specifies the tag that will be published
         type: string
-        default: plugins
+        default: base
         required: true
   push:
-    branches: [ plugins ]
+    branches: [ main ]
     tags:
       - "*"
     paths:
       - "prebuilt-config/bitops-tag.yaml"
       - ".github/workflows/build-and-publish-prebuilt.yaml"
-  
+
 jobs:
-  publish-prebuilds:
+  # Separated workflow, as 'bitops-tags.yaml' values could be overwriten
+  build-publish-dev:
+    name: Build and publish 'dev' omnibus Docker image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: cuchi/jinja2-action@v1.2.0
+      with:
+        template: prebuilt-config/dockerfile.template
+        output_file: ./Dockerfile
+        variables: tags="" # uses jinja default from the dockerfile.template
+    - name: Copy bitops.config.yaml into the project root folder
+      run: cp ./prebuilt-config/omnibus/bitops.config.yaml ./bitops.config.yaml
+    - name: Publish Omnibus dev Docker Image (Push)
+      env:
+        REGISTRY_URL: "bitovi/bitops"
+        DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
+        DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
+        # on 'main' branch build 'omnibus' image and publish it as 'dev' Docker tag
+        IMAGE_TAG: dev
+      run: |
+        echo "running scripts/ci/publish.sh"
+        ./scripts/ci/publish.sh
+
+  build-publish-prebuilds:
     name: Publish image for ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
@@ -56,7 +81,7 @@ jobs:
         data_file: prebuilt-config/bitops-tag.yaml
         data_format: yaml
       if: github.event_name == 'push'
-  
+
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #           Workflow dispatch              #
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
@@ -65,7 +90,7 @@ jobs:
       run: |
         echo "VERSION_TAG=${{ github.event.inputs.image_tag}}" >> $GITHUB_ENV
       if: github.event_name == 'workflow_dispatch'
-    
+
     - uses: cuchi/jinja2-action@v1.2.0
       with:
         template: prebuilt-config/dockerfile.template
@@ -84,13 +109,14 @@ jobs:
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
 
-    - name: Publish Docker Image
+    - name: Publish Docker Image (Release)
       env:
         REGISTRY_URL: "bitovi/bitops"
-        DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
+        # On a versioned release push '2.0.0-omnibus', '2.0.0-aws-ansible', etc Docker tags
         IMAGE_TAG: ${{ env.VERSION_TAG }}-${{ matrix.target }}
       run: |
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
+      if: github.event_name == 'release'

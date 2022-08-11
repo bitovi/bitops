@@ -15,13 +15,13 @@ hide:
 
 <div class="bitovi-row">
     <div class="bitovi-column">
-        <h1>Organize your Infrastructure-as-Code (IAC) 
-        <nl>Consistently Deploy.</h1>
+        <h1>BitOps centralizes, organizes, and deploys your Infrastructure-as-Code</h1>
         <a class="md-button md-button--primary" href="getting-started">Show me how</a>
         <p>
-            <a href="https://github.com/bitovi/bitops/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/bitovi/bitops"></a>
-            <a href="https://www.bitovi.com/community/slack?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join our Slack" src="https://img.shields.io/badge/slack-join%20chat-611f69.svg"></a>
             <a href="license/"><img alt="LICENSE" src="https://img.shields.io/badge/license-MIT-green"></a>
+            <a href="https://github.com/bitovi/bitops/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/bitovi/bitops"></a>
+            <a href="https://github.com/bitovi/bitops/discussions"><img alt="BitOps Discussions" src="https://img.shields.io/github/discussions/bitovi/bitops"></a>
+            <a href="https://www.bitovi.com/community/slack?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join our Slack" src="https://img.shields.io/badge/slack-join%20chat-611f69.svg"></a>
             <a class="github-button" href="https://github.com/bitovi/bitops" data-icon="octicon-star" data-show-count="true" aria-label="Star BitOps on GitHub">Star</a>
         </p>
     </div>

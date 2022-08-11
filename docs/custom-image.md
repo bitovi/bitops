@@ -12,7 +12,7 @@ Using your preferred editor, create a file in the root level of the project and 
 
 This file is used to configure the BitOps image.
 
-[Example bitops.config.yaml](https://github.com/bitovi/bitops/tree/plugins/prebuilt-config)
+[Example bitops.config.yaml](https://github.com/bitovi/bitops/blob/main/prebuilt-config/example-plugin/bitops.config.yaml)
 
 <hr/>
 
