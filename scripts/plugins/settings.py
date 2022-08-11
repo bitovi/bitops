@@ -37,7 +37,9 @@ BITOPS_ENV_logging_level    = os.environ.get("BITOPS_LOGGING_LEVEL")
 BITOPS_ENV_plugin_dir       = os.environ.get("BITOPS_PLUGIN_DIR")
 
 BITOPS_ENV_default_folder   = os.environ.get("BITOPS_DEFAULT_FOLDER")
-BITOPS_ENV_environment      = os.environ.get("BITOPS_ENVIRONMENT", None)
+# v2.0.0: Fallback to 'ENVIRONMENT' in case when 'BITOPS_ENVIRONMENT' is not set
+# TODO: Drop 'ENVIRONMENT' backward-compatibility in the future versions
+BITOPS_ENV_environment      = os.environ.get("BITOPS_ENVIRONMENT", os.environ.get("ENVIRONMENT", None))
 BITOPS_ENV_timeout          = os.environ.get("BITOPS_TIMEOUT")
 
 if not bitops_build_configuration.bitops:
