@@ -15,8 +15,7 @@ hide:
 
 <div class="bitovi-row">
     <div class="bitovi-column">
-        <h1>Organize your Infrastructure-as-Code (IAC) 
-        <nl>Consistently Deploy.</h1>
+        <h1>BitOps centralizes, organizes, and deploys your Infrastructure-as-Code</h1>
         <a class="md-button md-button--primary" href="getting-started">Show me how</a>
         <p>
             <a href="https://github.com/bitovi/bitops/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/bitovi/bitops"></a>
