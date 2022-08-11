@@ -23,11 +23,8 @@ repo_name: Built By Bitovi
 repo_url: https://www.bitovi.com/devops
 
 nav:
-  - About: about.md
+  - Getting Started: getting-started.md
   - Operations Repository: operations-repo-structure.md
-  - Development:
-    - Local development: development-local.md
-    - Custom Images: custom-image.md
   - Configuration:
     - Base Configuration: configuration-base.md
     - Cloud Configuration: 
@@ -38,9 +35,12 @@ nav:
       - Helm: tool-configuration/configuration-helm.md
       - Cloudformation: tool-configuration/configuration-cloudformation.md
     - Default Environment: default-environment.md
+  - Examples: examples.md
+  - Development:
+    - Local development: development-local.md
+    - Custom Images: custom-image.md
   - Plugins: plugins.md
   - Lifecycle: lifecycle.md
-  - Examples: examples.md
   - Contributing:
     - Contributing Guide: contributing.md
     - Development Guide: development/development.md
@@ -49,6 +49,7 @@ nav:
     - License: license.md
   - Migrations:
     - 2.0.0: migration/2.0.0-migration.md
+  - About: about.md
 
 extra:
   social:
