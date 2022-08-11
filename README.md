@@ -4,6 +4,7 @@
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
+[![GitHub Discussions](https://img.shields.io/github/discussions/bitovi/bitops)](https://github.com/bitovi/bitops/discussions)
 [![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### tl;dr
