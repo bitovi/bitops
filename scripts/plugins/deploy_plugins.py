@@ -19,7 +19,6 @@ def Deploy_Plugins():
     #~#~#~#~#~#~# STAGE 1 - ENVIRONMENT LOADING #~#~#~#~#~#~#
     # Temp directory setup
     temp_dir = tempfile.mkdtemp()
-    bitops_default_dir_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.opsrepo_root_default_dir, None)
     bitops_deployment_configuration = DefaultMunch.fromDict(bitops_build_configuration.bitops.deployments, None)
 
     bitops_dir = "/opt/bitops"
@@ -49,7 +48,7 @@ def Deploy_Plugins():
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
     os.environ["BITOPS_KUBE_CONFIG_FILE"] = "{}/.kube/config".format(temp_dir)
     os.environ["PATH"] = PATH
-    os.environ["BITOPS_DEFAULT_ROOT_DIR"] = bitops_default_dir_configuration
+    os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
 
     # Global environment evaluation
     if BITOPS_ENV_environment is None:
@@ -79,7 +78,6 @@ def Deploy_Plugins():
             \n\t BITOPS_ENVROOT_DIR:      [{bitops_envroot_dir}]                \
             \n\t BITOPS_OPERATIONS_DIR:   [{bitops_operations_dir}]             \
             \n\t BITOPS_SCRIPTS_DIR:      [{bitops_scripts_dir}]                \
-            \n\t BITOPS_DEFAULT_ROOT_DIR: [{bitops_default_dir_configuration}]  \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                        \
             ".format(                                                       
                 temp_dir=temp_dir,
@@ -93,7 +91,6 @@ def Deploy_Plugins():
                 bitops_envroot_dir=bitops_envroot_dir,
                 bitops_operations_dir=bitops_operations_dir,
                 bitops_scripts_dir=bitops_scripts_dir,
-                bitops_default_dir_configuration=bitops_default_dir_configuration,
             ))
     # Loop through deployments and invoke each
     #~#~#~#~#~#~# STAGE 2 - PLUGIN LOADING #~#~#~#~#~#~#
