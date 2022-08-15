@@ -51,10 +51,20 @@ def Deploy_Plugins():
     os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
 
     # Global environment evaluation
+    # TODO: Drop support for 'ENVIRONMENT' env var
+    if 'ENVIRONMENT' in os.environ:
+        logger.warning(
+            "'ENVIRONMENT' var is deprecated in v2.0.0 and will be removed in the future versions! "
+            "Use the 'BITOPS_ENVIRONMENT' env var instead!"
+        )
+
     if BITOPS_ENV_environment is None:
-        logger.error("The `BITOPS_ENVIRONMENT` variable must be set... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/configuration-base/#environment]")
+        logger.error(
+            "The 'BITOPS_ENVIRONMENT' variable must be set! Exiting...\n"
+            "For more information on this issue please check out [https://bitovi.github.io/bitops/configuration-base/#environment]"
+        )
         quit(1)
-    
+
     # Move to temp directory
     if not os.path.isdir(bitops_deployment_dir):
         logger.error("An operations repo needs to be mounted to the Docker container with the path `/opt/bitops_deployment/`... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/about/#how-bitops-works]")
@@ -69,7 +79,7 @@ def Deploy_Plugins():
     logger.info("\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~            \
             \n\t TEMP_DIR:                [{temp_dir}]                          \
             \n\t DEFAULT_FOLDER_NAME:     [{default_folder_name}]               \
-            \n\t ENVIRONMENT:             [{env}]                               \
+            \n\t BITOPS_ENVIRONMENT:      [{env}]                               \
             \n\t TIMEOUT:                 [{timeout}]                           \
             \n                                                                  \
             \n\t BITOPS_DIR:              [{bitops_dir}]                        \
