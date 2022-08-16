@@ -37,9 +37,10 @@ nav:
     - Default Environment: default-environment.md
   - Examples: examples.md
   - Upgrade:
-    - 2.0.0: migration/2.0.0-migration.md
+    - 2.0: migration/2.0-migration.md
   - Development:
     - Local development: development-local.md
+    - Versioning: versioning.md
     - Custom Images: custom-image.md
   - Plugins: plugins.md
   - Lifecycle: lifecycle.md
