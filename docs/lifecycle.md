@@ -3,7 +3,7 @@
 ## Lifecycle hooks
 Within each tool directory, you can optionally have a `bitops.before-deploy.d/` and/or a `bitops.after-deploy.d/`. If any shell scripts exist within these directories, BitOps will execute them in alphanumeric order.
 
-This is a useful way to extend the functionality of BitOps. A popular usecase we've seen is loading secrets or dynamically editing `bitops.config.yml`
+This is a useful way to extend the functionality of BitOps. A popular usecase we've seen is loading secrets or dynamically editing `bitops.config.yaml`
 
 ## Detailed Execution Flow
 
@@ -15,7 +15,7 @@ A single run of BitOps will
 2. Attempt to setup a cloud provider
 3. If a `terraform/` directory exists within the selected environment
     * Run any `bitops.before-deploy.d/*.sh` scripts 
-    * Load `bitops.config.yml` and set environment
+    * Load `bitops.config.yaml` and set environment
     * Merge contents with [Default environment](default-environment.md) - [TODO](https://github.com/bitovi/bitops/issues/18)
     * Select terraform version
     * Run `terraform init`
@@ -25,14 +25,14 @@ A single run of BitOps will
     * Run any `bitops.after-deploy.d/*.sh` scripts
 4. If a `ansible/` directory exists within the selected environment
     * Run any `bitops.before-deploy.d/*.sh` scripts
-    * Load `bitops.config.yml` and set environment
+    * Load `bitops.config.yaml` and set environment
     * Merge contents with [Default environment](default-environment.md) - [TODO](https://github.com/bitovi/bitops/issues/18)
     * Run `ansible-playbook $playbook` for each `*.yaml` or `*.yml` file in `$env/ansible/` 
     * Run any `bitops.after-deploy.d/*.sh` scripts
 4. If a `helm/` directory exists within the selected environment
     * Run the following for `$env/helm/$ENVIRONMENT_HELM_SUBDIRECTORY/` or for all charts in `$env/helm/`
         * Run any `bitops.before-deploy.d/*.sh` scripts
-        * Load `bitops.config.yml` and set environment
+        * Load `bitops.config.yaml` and set environment
         * Merge contents with [Default environment](default-environment.md)
         * Use `$KUBE_CONFIG_PATH` if defined, if not use aws cli to build .kubeconfig
         * Gather all values files - TODO document
@@ -43,7 +43,7 @@ A single run of BitOps will
         * TODO `helm_install_external_charts` and `helm_install_charts_from_s3` never run!
 4. If a `cloudformation/` directory exists within the selected environment
     * Run any `bitops.before-deploy.d/*.sh` scripts
-    * Load `bitops.config.yml` and set environment
+    * Load `bitops.config.yaml` and set environment
     * Merge contents with [Default environment](default-environment.md) - [TODO](https://github.com/bitovi/bitops/issues/18)
     * Run cfn template validation
     * Create or delete cfn stack. Wait for completion

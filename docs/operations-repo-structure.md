@@ -19,7 +19,7 @@ BitOps expects an operations repo to be in the following structure, where each e
 │   └── terraform
 │       ├── bitops.after-deploy.d
 │       ├── bitops.before-deploy.d
-│       └── bitops.config.yml
+│       └── bitops.config.yaml
 └── dev
     ├── ansible
     │   ├── bitops.after-deploy.d
