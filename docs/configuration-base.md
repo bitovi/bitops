@@ -15,7 +15,7 @@ $tool
 
 * `$tool` - identifies the deployment tool
 * `cli` - object that contains CLI arguments
-`options` - an object that offers additional control over how a tool executes
+* `options` - an object that offers additional control over how a tool executes
 
 ## Arbitrary Environment Variables
 During the docker run command, you can specify an ENV var and it will be accessible during all processing stages of BitOps. 
