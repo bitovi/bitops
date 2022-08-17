@@ -1,5 +1,5 @@
 # Operations Repo Structure
-BitOps expects an operations repo to be in the following structure, where each enironment is in the root of the repository.  Each environment then contains folders for each tool, and each tool has a bitops.config.yaml.  There are also directories that can contain before and after scripts for each tool.
+BitOps expects an operations repo to be in the following structure, where each enironment is in the root of the repository.  Each environment then contains folders for each tool, and each tool has a `bitops.config.yaml`.  There are also directories that can contain _before_ and _after_ scripts for each tool.
 ```
 ├── production
 │   ├── ansible
@@ -69,5 +69,4 @@ chmod +x bitops.after-deploy.d/*
 ```
 
 #### bitops.config.yaml
-Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yaml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivilants vary from tool to tool. See [BitOps Configuration](configuration-base.md) for details.
-
+Each tool is traditionally controlled with a set of cli arguements. Instead of defining these cli arguments within your pipeline configuration, these arguements can instead be defined using environment variables or within a `bitops.config.yaml` file. While the core schema for this file is common betwen tools, the specific properties and environment variable equivalents vary from tool to tool. See [BitOps Configuration](configuration-base.md) for details.
