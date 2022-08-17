@@ -5,8 +5,8 @@ Here is how these images are named, versioned and tagged.
 * An image with a version tag containing a [semver](https://semver.org) (e.g. `2.0.0`) is immutable and refers to the [stable release](https://github.com/bitovi/bitops/releases).
 * A version tag equal to `latest` is always mutable and points to the latest [stable release](https://github.com/bitovi/bitops/releases).
 * A version tag containing `dev` is always mutable and refers to the current development state in the [`main`](https://github.com/bitovi/bitops/tree/main) repository branch.
-* A version tag containing `omnibus` points to the default image that includes recommended devops tools.
-* A version tag containing `base` refers to minimal image with no other tools. You can build a [custom BitOps image](plugins.md) from it.
+* A version tag containing `omnibus` points to the default image that includes recommended DevOps tools.
+* A version tag containing `base` refers to a minimal image with no other tools. You can build a [custom BitOps image](plugins.md) from it.
 
 ## Official Images
 To clear up any potential confusion regarding the versioning of the [`bitovi/bitops`](https://hub.docker.com/r/bitovi/bitops) image, we use the following table.

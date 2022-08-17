@@ -9,16 +9,19 @@ You can create your own BitOps image to customize runtime behavior by installing
 
 ## Pre-Built Images
 
-BitOps' default image contains BitOps base along with the following pre-installed plugins:
+BitOps' default image called `omnibus` contains BitOps `base` along with the following pre-installed plugins:
 
+* [bitops-aws-plugin](https://github.com/bitops-plugins/aws)
+* [bitops-cloudformation-plugin](https://github.com/bitops-plugins/cloudformation)
 * [bitops-terraform-plugin](https://github.com/bitops-plugins/terraform)
 * [bitops-ansible-plugin](https://github.com/bitops-plugins/ansible)
-* [bitops-cloudformation-plugin](https://github.com/bitops-plugins/cloudformation)
 * [bitops-helm-plugin](https://github.com/bitops-plugins/helm)
+* [bitops-kubectl-plugin](https://github.com/bitops-plugins/kubectl)
 
-> See [prebuilt-config](https://github.com/bitovi/bitops/tree/main/prebuilt-config) to see other available pre-built images.
 
-## Creating your own BitOps
+> See [prebuilt-config](https://github.com/bitovi/bitops/tree/main/prebuilt-config) for the list of other available pre-built images and [bitops images and versions](versioning.md) to understand how these images are named and tagged on Docker Hub.
+
+## Creating your own BitOps image
 To create your own BitOps, you will need two files:
 
 * **[bitops.config.yaml](../bitops.config.yaml)**: Contains configuration attributes that will modify how BitOps behaves
@@ -67,11 +70,11 @@ bitops:
       plugin: ansible
 
 ```
-The repo for each plugin must be a `git clone`-able url. The name can be anything.
+The repo for each plugin must be a `git clone`-able URL. The name can be anything.
 
-The order that plugins run is dependent on the `deployments` section. If a `depoyments` section isn't provided, it will attempt to process all folders in the `BITOPS_ENVIRONMENT` directory in alphabetical order.
+The order that plugins run is dependent on the `deployments` section. If a `deployments` section isn't provided, it will attempt to process all folders in the `BITOPS_ENVIRONMENT` directory in alphabetical order.
 
-**Dockerfile**
+### Dockerfile
 The only content that is needed to create a custom image is:
 
 ```
@@ -84,6 +87,6 @@ Creating a plugin is easy, you only need 4 files:
 * `install.sh` - This script is called during plugin installation (Docker build time). It should be used to install any dependencies needed for your plugin to function 
 * `deploy.sh` - The main entrypoint for your plugin at deploy time
 * `bitops.schema.yaml` - Defines the parameters users have access to. The corresponding `bitops.config.yaml` within the `BITOPS_ENVIRONMENT` folder will configure the parameter values.
-* `plugin.config.yaml` - A file used to describes the plugin configuration to BitOps 
+* `plugin.config.yaml` - A file used to describe the plugin configuration.
 
 > For more information, you can look at our [example plugin](https://github.com/bitops-plugins/example-plugin) repo that prints your name and favorite color!

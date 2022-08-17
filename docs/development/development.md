@@ -80,9 +80,6 @@ A `*` denotes a required variable.
 | `$TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
 | `$ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$TEMPDIR` during execution)  |
 
-> For more information about the core variables, see
-> [scripts/deploy.sh](https://github.com/bitovi/bitops/blob/master/scripts/deploy.sh)
-
 ### Standard BitOps Packages and Libraries:
 
 System Packages natively available in a running BitOps container:
@@ -109,8 +106,7 @@ Python packages natively available in BitOps:
 * shyaml
 * wheel
 
-> For the most up-to-date list, see
-> - [requirements.txt](https://github.com/bitovi/bitops/blob/master/requirements.txt)
+> For the most up-to-date list, see [requirements.txt](https://github.com/bitovi/bitops/blob/main/requirements.txt)
 
 ### BitOps Code Structure:
 
