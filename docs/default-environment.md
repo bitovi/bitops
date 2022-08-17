@@ -17,7 +17,7 @@ Suppose we are working with an operations repo that is exlusviely terraform. We 
         └── bitops.config.yaml
         └── test.auto.tfvars
 ```
-When `$BITOPS_ENVIRONMENT` is set to `production`, `_default/` will be merged in to `production/` at runtime to produce a directory structure that looks like
+When `$BITOPS_ENVIRONMENT` is set to `production`, `_default/` will be merged into `production/` at runtime to produce a directory structure that looks this way:
 ```
 ├── _default
 │   └── terraform
@@ -33,7 +33,7 @@ When `$BITOPS_ENVIRONMENT` is set to `production`, `_default/` will be merged in
         └── test.auto.tfvars
 ```
 
-Things get more complex when files exist in both the `_default` and `active` environment share the same name. This is why we have file mergers.
+Things get more complex when files that exist in both the `_default` and `active` environment share the same name. This is why we have file mergers.
 
 
 ## File Mergers [TODO](https://github.com/bitovi/bitops/issues/3)
@@ -45,7 +45,7 @@ Files that only exist in the `_default` environment will be copied over.
 `.tf` files from the `_default` environment that share its name and path with a file in the active environment will both be in the resulting directory with the active environment name having a suffix added to it.
 
 #### Example
-Before default merge
+Before default merge:
 ```
 ├── _default
 │   └── terraform
@@ -55,7 +55,7 @@ Before default merge
         └── bitops.config.yaml
         └── main.tf
 ```
-After default merge
+After default merge:
 ```
 ├── _default
 │   └── terraform
@@ -109,7 +109,7 @@ Files that only exist in the `_default` environment will be copied over.
 Files from the `_default` environment that share its name and path will be merged.
 
 ### values.yaml (Helm)
-helm has built in support for merging multiple `values.yaml` files. BitOps will look for files in the following locations and pass them in to helm with with the `-f` in the same order they are found
+Helm has built in support for merging multiple `values.yaml` files. BitOps will look for files in the following locations and pass them in to helm with the `-f` in the same order they are found:
 
 1. Active environment's `values.yaml`
 2. Default environment's `values.yaml`
@@ -139,10 +139,9 @@ The following operations repo structure
 ```
 Will produce the following `helm install` command
 ```
-helm install my-first-chart/
 helm install \
-$HELM_RELEASE_NAME 
-my-first-chart/
+$HELM_RELEASE_NAME \ 
+my-first-chart \
 -f test/helm/my-first-chart/values.yaml \
 -f default/helm/my-first-chart/values.yaml \
 -f test/helm/my-first-chart/values-versions.yaml \

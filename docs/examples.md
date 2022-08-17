@@ -37,8 +37,8 @@ docker run \
 bitovi/bitops:latest
 ```
 
-### Fetch kubeconfig from eks
-If you has a cluster arn of `arn:aws:eks:us-east-1:111122223333:cluster/my-cluster`, you would use the following configuration
+### Fetch kubeconfig from EKS
+If you have a cluster arn of `arn:aws:eks:us-east-1:111122223333:cluster/my-cluster`, you would use the following configuration:
 ```
 docker run \
 -e BITOPS_ENVIRONMENT="dev" \
@@ -51,7 +51,7 @@ bitovi/bitops:latest
 ```
 
 ### Force skip over ansible
-If there is a `dev/ansible/` directory, ansible execution can be skipped with `SKIP_DEPLOY_ANSIBLE`
+If there is a `./dev/ansible/` directory, ansible execution can be skipped with `SKIP_DEPLOY_ANSIBLE=true`:
 ```
 docker run \
 -e BITOPS_ENVIRONMENT="dev" \
@@ -75,13 +75,14 @@ docker run \
 bitovi/bitops:latest
 ```
 
-## Use your local BitOps
+## Use your local BitOps code
+If you'd like to override the BitOps code with your own version, see how to do that with the `$BITOPS_HOME` example:
 ```
 docker run 
 -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION           \
 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID             \
 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY     \
--e BITOPS_ENVIRONMENT="test"                               \
+-e BITOPS_ENVIRONMENT="test"                        \
 -v $(pwd):/opt/bitops_deployment                    \
 -v $BITOPS_HOME:/opt/bitops                         \
 bitovi/bitops:latest
@@ -92,7 +93,7 @@ bitovi/bitops:latest
 ### Using Declarative Infrastructure to Deploy an EKS Cluster and Helm Chart
 * [Using Declarative Infrastructure to Deploy an EKS Cluster and Helm Chart](https://www.bitovi.com/blog/eks-helm-bitops)
 
-### Bitops and Terraform
+### BitOps and Terraform
 * [BitOps + Terraform](https://www.bitovi.com/blog/bitops-terraform)
 
 ### Combine Terraform and Ansible to provision and configure a webserver

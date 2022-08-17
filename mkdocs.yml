@@ -38,7 +38,7 @@ nav:
     - BitOps Versioning: versioning.md
   - Examples: examples.md
   - Upgrade:
-    - 2.0: migration/2.0-migration.md
+    - v2.0: migration/2.0-migration.md
   - Development:
     - Local development: development-local.md
     - Custom Images: custom-image.md
