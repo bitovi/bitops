@@ -27,17 +27,18 @@ nav:
   - Operations Repository: operations-repo-structure.md
   - Configuration:
     - Base Configuration: configuration-base.md
-    - Cloud Configuration: 
+    - Cloud Configuration:
       - AWS: cloud-configuration/configuration-aws.md
-    - Tool Configuration: 
+    - Tool Configuration:
       - Terraform: tool-configuration/configuration-terraform.md
       - Ansible: tool-configuration/configuration-ansible.md
       - Helm: tool-configuration/configuration-helm.md
       - Cloudformation: tool-configuration/configuration-cloudformation.md
     - Default Environment: default-environment.md
+    - BitOps Versioning: versioning.md
   - Examples: examples.md
   - Upgrade:
-    - 2.0.0: migration/2.0.0-migration.md
+    - 2.0: migration/2.0-migration.md
   - Development:
     - Local development: development-local.md
     - Custom Images: custom-image.md

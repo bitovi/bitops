@@ -34,6 +34,7 @@ docker pull bitovi/bitops
 cd $YOUR_OPERATIONS_REPO
 docker run bitovi/bitops -v $(pwd):/opt/bitops_deployment
 ```
+If you need specific version of BitOps, please check the [BitOps versioning](versioning.md).
 
 ## Supported Tools
 * [Provision infrastructure with CloudFormation](tool-configuration/configuration-cloudformation.md)
