@@ -39,13 +39,6 @@ Each BitOps run is done against a single environment. This property tells BitOps
 Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a kubernetes cluster
 
 -------------------
-### default_replace
-* **Environment Variable:** `BITOPS_DEFAULT_REPLACE`
-* **default:** `false`
-
-If true, [file mergers](default-environment.md) will replace instead of create a copy during a merge
-
--------------------
 ### skip_if_no_environment_changes
 * **Environment Variable:** `SKIP_IF_NO_ENVIRONMENT_CHANGES`
 * **default:** `""`
