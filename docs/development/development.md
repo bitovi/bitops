@@ -112,30 +112,13 @@ Python packages natively available in BitOps:
 > For the most up-to-date list, see
 > - [requirements.txt](https://github.com/bitovi/bitops/blob/master/requirements.txt)
 
-### BitOps Code Structure:
+### BitOps Code Structure
 
-The BitOps repo is fairly straight forward in its current implementation. Most aspects of BitOps are all handled as different `plugins`, including the setup and deployment of BitOps itself. This means that both BitOps container setup scripts such as `/bitops/scripts/deploy` as well as tool scripts like `/bitops/scripts/ansible` share a naming scheme and folder structure.
+The BitOps repo is fairly straightforward in its current implementation.
+See `scripts/plugins/` written in Python for most of the logic responsible for running the pipelines that tie together deployment tools like `aws`, `ansible`, `terraform` which are called BitOps plugins.
 
-All scripts for a plugin should be contained within that plugin's named directory unless it requires an additional outside `deploy` script for configuration.
-
-
-### Files of Note:
-
-#### `bitops/scripts/setup/install_tools.sh`
-This script downloads packages of required tools such as `aws-iam` to the BitOps container. If you are adding in a plugin that requries downloading a tools package to extract using `wget`, `install_tools.sh` will allow for that.
-
-#### `bitops/scripts/deploy.sh`
-This script orchestrates the order in which BitOps tools are deployed and configured. If you are adding a plugin that will require a specific ordering (e.g `before ansible but after terraform`), `deploy.sh` is where you can add in your plugin's entrypoint into the BitOps lifecycle.
-
-#### `bitops/scripts/deploy/`
-This directory contains scripts which common to all plugins.
-
-#### `bitops/scripts/bitops-config/`
-This directory contains base scripts that assist with parsing and converting the standard BitOps schema format. Check the included `README.md` within the bitops-config directory for examples.
-
-### Creating a New Plugin
-
-BitOps has additional [functionality being developed](https://github.com/bitovi/bitops/pull/55) to read any plugin folder for BitOps schema, even if it isn't one of the specified tools. BitOps will look for any BitOps schema within the plugin's directory as well as `before` and `after` deploy scripts for each. 
+Additionally, plugins are separated git repositories with instructions about installing the specific tool and running it.
+If you'd like to add support for the new tool to BitOps, take a look at [creating your own plugin](/plugins/#creating-your-own-plugin).
 
 ## Creating a PR
 
