@@ -55,8 +55,8 @@ jobs:
         # On merge to default 'main' branch push current 'dev-base' Docker tag
         IMAGE_TAG: dev-base
       run: |
-        echo "running scripts/ci/publish.sh"
-        ./scripts/ci/publish.sh
+        echo "running .github/workflows/scripts/docker-publish.sh"
+        ./.github/workflows/scripts/docker-publish.sh
       if: github.event_name == 'push'
     
 
@@ -71,8 +71,8 @@ jobs:
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         IMAGE_TAG: ${{ github.event.inputs.bitops_base_tag}}
       run: |
-        echo "running scripts/ci/publish.sh"
-        ./scripts/ci/publish.sh
+        echo "running .github/workflows/scripts/docker-publish.sh"
+        ./.github/workflows/scripts/docker-publish.sh
         echo "IMAGE_TAG=${{ github.event.inputs.bitops_base_tag}}" >> $GITHUB_ENV
         echo "IMAGE_BUMP=${{ github.event.release.bump_base_tag }}" >> $GITHUB_ENV
         cat $GITHUB_ENV
@@ -93,8 +93,8 @@ jobs:
         # On release update additional 'base' Docker tag to refer to the latest stable base
         ADDITIONAL_IMAGE_TAG: base
       run: |
-        echo "running scripts/ci/publish.sh"
-        ./scripts/ci/publish.sh
+        echo "running .github/workflows/scripts/docker-publish.sh"
+        ./.github/workflows/scripts/docker-publish.sh
         echo "IMAGE_TAG=${{ github.event.release.tag_name }}-base" >> $GITHUB_ENV
         echo "IMAGE_BUMP=true" >> $GITHUB_ENV
       if: github.event_name == 'release'

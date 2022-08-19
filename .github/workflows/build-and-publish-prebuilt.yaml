@@ -39,8 +39,8 @@ jobs:
         # on 'main' branch build 'omnibus' image and publish it as 'dev' Docker tag
         IMAGE_TAG: dev
       run: |
-        echo "running scripts/ci/publish.sh"
-        ./scripts/ci/publish.sh
+        echo "running .github/workflows/scripts/docker-publish.sh"
+        ./.github/workflows/scripts/docker-publish.sh
 
   build-publish-prebuilds:
     name: Publish image for ${{ matrix.target }}
@@ -118,6 +118,6 @@ jobs:
         IMAGE_TAG: ${{ env.VERSION_TAG }}-${{ matrix.target }}
         PRE_RELEASE: ${{ github.event.release.prerelease }}
       run: |
-        echo "running scripts/ci/publish.sh"
-        ./scripts/ci/publish.sh
+        echo "running .github/workflows/scripts/docker-publish.sh"
+        ./.github/workflows/scripts/docker-publish.sh
       if: github.event_name == 'release'
