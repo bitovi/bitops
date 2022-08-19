@@ -27,10 +27,12 @@ REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 TAG_OR_HEAD="$(echo $GITHUB_REF | cut -d / -f2)"
 BRANCH_OR_TAG_NAME=$(echo $GITHUB_REF | cut -d / -f3)
+PRE_RELEASE="${PRE_RELEASE:-false}"
 echo "REPO_NAME: $REPO_NAME"
 echo "ORG_NAME: $ORG_NAME"
 echo "TAG_OR_HEAD: $TAG_OR_HEAD"
 echo "BRANCH_OR_TAG_NAME: $BRANCH_OR_TAG_NAME"
+echo "PRE_RELEASE: $PRE_RELEASE"
 
 
 # if omnibus tag, use tag and `latest`
@@ -44,7 +46,8 @@ if [[ "${IMAGE_TAG:0:1}" == "v" ]]; then
 fi
 
 if echo "$IMAGE_TAG" | grep 'omnibus$'; then
-  if [ "$TAG_OR_HEAD" == "tags" ]; then # a release
+  # Github pre-release shouldn't update the 'latest' tag
+  if [[ "$TAG_OR_HEAD" == "tags" ]] && [[ "$PRE_RELEASE" == "false" ]]; then # a release
     ADDITIONAL_IMAGE_TAG="latest"
   elif [ "$TAG_OR_HEAD" == "heads" ] && [ "$BRANCH_OR_TAG_NAME" == "$DEFAULT_BRANCH" ]; then # merge to default branch
     IMAGE_TAG="dev"
