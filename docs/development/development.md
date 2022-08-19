@@ -66,7 +66,7 @@ bitovi/bitops:ansible-feature
 
 ## Understanding Bitops
 
-BitOps has several packages and environment variables readily available which make working with BitOps easy.
+BitOps has several packages and environment variables readily available which makes working with BitOps easy.
 
 ### Standard Bitops Environmental Variables
 
@@ -76,9 +76,9 @@ A `*` denotes a required variable.
 |   :---            |   :---                            |    :---    |
 | `$BITOPS_DIR`     | `/opt/bitops`                     |   Within the container the default working directory for BitOps        |
 | `$BITOPS_ENVIRONMENT`*   | `YOUR_OPS_REPO_ENVIRONMENT`                   |   BitOps requires at least one environment folder to be specified at container execution.   |
-| `$ENVROOT`        | `$TEMPDIR/$ENVIRONMENT`           |   e.g `/tmp/tmp.RANDOM/YOUR_OPS_REPO_ENVIRONMENT`  |
-| `$TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
-| `$ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$TEMPDIR` during execution)  |
+| `$BITOPS_ENVROOT`        | `$BITOPS_TEMPDIR/$BITOPS_ENVIRONMENT`           |   e.g `/tmp/tmp.RANDOM/YOUR_OPS_REPO_ENVIRONMENT`  |
+| `$BITOPS_TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
+| `$BITOPS_DEFAULT_ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$BITOPS_TEMPDIR` during execution)  |
 
 ### Standard BitOps Packages
 
