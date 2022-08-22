@@ -41,7 +41,7 @@ BitOps expects an operations repo to be in the following structure, where each e
         └── bitops.config.yaml
 ```
 #### Environment Directories
-These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your use case, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services such as `test_service_a` and `test_serice_b`. This pattern is preferential to have a branch for each environment as this allows the state of all your infrastructure to be managed from one location without merging potentially breaking an environment.
+These directories live at the root of an operations repository and are used to separate applications and environments. Depending on your use case, you may have an environment for `production`, `test` and `dev` or these traditional environments may be further separated into individual services such as `test_service_a` and `test_serice_b`. This pattern is preferential to having a branch for each environment as this allows the state of all your infrastructure to be managed from one location without merging potentially breaking an environment.
 
 When running BitOps, you provide the environment variable `BITOPS_ENVIRONMENT`. This tells BitOps what environment to work in for that run. A full CI/CD pipeline may call BitOps multiple times if it requires one environment to run as a pre-requisite for another.
 
