@@ -4,7 +4,7 @@ We are excited for any contributions from the community, we welcome any feedback
 
 * Submitting a bug report
 * An idea for feature development
-* Expanding functionality of an existing feature
+* Expanding the functionality of an existing feature
 * Submitting an example guide or blog using Bitops
 * Security or other concerns
 
@@ -36,7 +36,7 @@ git checkout -b your-branch-name
 
 Replace `your-branch-name` with the name of the feature you're building, e.g. `git checkout -b some-ansible-feature` to create a `some-ansible-feature` branch.
 
-As you're forking the code to work locally, you may not need or wish to create a separate branch, however BitOps will not allow commits directly to master and it's just a good habit to get into!
+As you're forking the code to work locally, you may not need or wish to create a separate branch, however, BitOps will not allow commits directly to `main` and it's just a good habit to get into!
 
 Then after modifying the code or adding your changes, re-build the BitOps docker image:
 
@@ -66,9 +66,9 @@ bitovi/bitops:ansible-feature
 
 ## Understanding Bitops
 
-BitOps has several packages and environment variables readily available which make working with BitOps easy:
+BitOps has several packages and environment variables readily available which makes working with BitOps easy.
 
-### Standard Bitops Environmental Variables:
+### Standard Bitops Environmental Variables
 
 A `*` denotes a required variable.
 
@@ -76,72 +76,42 @@ A `*` denotes a required variable.
 |   :---            |   :---                            |    :---    |
 | `$BITOPS_DIR`     | `/opt/bitops`                     |   Within the container the default working directory for BitOps        |
 | `$BITOPS_ENVIRONMENT`*   | `YOUR_OPS_REPO_ENVIRONMENT`                   |   BitOps requires at least one environment folder to be specified at container execution.   |
-| `$ENVROOT`        | `$TEMPDIR/$ENVIRONMENT`           |   e.g `/tmp/tmp.RANDOM/YOUR_OPS_REPO_ENVIRONMENT`  |
-| `$TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
-| `$ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$TEMPDIR` during execution)  |
+| `$BITOPS_ENVROOT`        | `$BITOPS_TEMPDIR/$BITOPS_ENVIRONMENT`           |   e.g `/tmp/tmp.RANDOM/YOUR_OPS_REPO_ENVIRONMENT`  |
+| `$BITOPS_TEMPDIR`        | `/tmp/tmp.RANDOM`                  |   This is the randomly generated working dir for BitOps.  |
+| `$BITOPS_DEFAULT_ROOT_DIR`        | `/opt/bitops_deployment`                  |   This working dir for BitOps (moved to `$BITOPS_TEMPDIR` during execution)  |
 
-> For more information about the core variables, see
-> [scripts/deploy.sh](https://github.com/bitovi/bitops/blob/master/scripts/deploy.sh)
+### Standard BitOps Packages
 
-### Standard BitOps Packages and Libraries:
-
-System Packages natively available in a running BitOps container:
+Packages natively available in a running BitOps container:
 
 * ansible
 * aws / awscli
-* binutils
 * curl
 * git
-* glibc
-* ig
-* libsodium-dev
+* shyaml
+* pip
+* rsync
+* jq
 * unzip
 * wget
 
 > For the most up-to-date list, see
 > [Dockerfile](https://github.com/bitovi/bitops/blob/main/Dockerfile)
+> and [requirements.txt](https://github.com/bitovi/bitops/blob/main/requirements.txt).
 
-Python packages natively available in BitOps:
+### BitOps Code Structure
 
-* pip
-* PyYAML
-* setuptools
-* shyaml
-* wheel
+The BitOps repo is fairly straightforward in its current implementation.
+See `scripts/plugins/` written in Python for most of the logic responsible for running the pipelines that tie together deployment tools like `aws`, `ansible`, `terraform` which are called BitOps plugins.
 
-> For the most up-to-date list, see
-> - [requirements.txt](https://github.com/bitovi/bitops/blob/master/requirements.txt)
-
-### BitOps Code Structure:
-
-The BitOps repo is fairly straight forward in its current implementation. Most aspects of BitOps are all handled as different `plugins`, including the setup and deployment of BitOps itself. This means that both BitOps container setup scripts such as `/bitops/scripts/deploy` as well as tool scripts like `/bitops/scripts/ansible` share a naming scheme and folder structure.
-
-All scripts for a plugin should be contained within that plugin's named directory unless it requires an additional outside `deploy` script for configuration.
-
-
-### Files of Note:
-
-#### `bitops/scripts/setup/install_tools.sh`
-This script downloads packages of required tools such as `aws-iam` to the BitOps container. If you are adding in a plugin that requries downloading a tools package to extract using `wget`, `install_tools.sh` will allow for that.
-
-#### `bitops/scripts/deploy.sh`
-This script orchestrates the order in which BitOps tools are deployed and configured. If you are adding a plugin that will require a specific ordering (e.g `before ansible but after terraform`), `deploy.sh` is where you can add in your plugin's entrypoint into the BitOps lifecycle.
-
-#### `bitops/scripts/deploy/`
-This directory contains scripts which common to all plugins.
-
-#### `bitops/scripts/bitops-config/`
-This directory contains base scripts that assist with parsing and converting the standard BitOps schema format. Check the included `README.md` within the bitops-config directory for examples.
-
-### Creating a New Plugin
-
-BitOps has additional [functionality being developed](https://github.com/bitovi/bitops/pull/55) to read any plugin folder for BitOps schema, even if it isn't one of the specified tools. BitOps will look for any BitOps schema within the plugin's directory as well as `before` and `after` deploy scripts for each. 
+Additionally, plugins are separated git repositories with instructions about installing the specific tool and running it.
+If you'd like to add support for the new tool to BitOps, take a look at [creating your own plugin](/plugins/#creating-your-own-plugin).
 
 ## Creating a PR
 
 Once you have finished testing your code, please ensure you have first created an issue related to the feature you are developing.
 
-After you've `git add`'d and `git commit`'d push your new branch to Github:
+After you ran `git add` and `git commit`, push your new branch to Github:
 
 ```
 git push --set-upstream origin some-ansible-feature
@@ -157,7 +127,7 @@ If you're unable to solve the merge conflicts, don't worry you'll still be able 
 
 Give your PR a meaningful title and provide details about the change in the description, including a link to the issue(s) relating to your PR. All that's left is to click the 'Create pull request' button and wait for our eager review of your code!
 
-### Bash Styleguide
+### Bash Style guide
 
 The BitOps container uses the Bourne shell during execution, please ensure all functions used in your submission exist for `sh`. Submissions that utilize alternate shells (`zsh`,`ksh`,`csh`, etc.) will not be accepted.
 
@@ -168,11 +138,11 @@ When contributing Bash code segments to BitOps please keep these concepts in min
 * Add `echo` statements during plugin execution to give verbosity and debugging during execution
 * Update any related documentation to the code or feature you are modifying
 * Avoid multiple commands per line if possible. Replace `;` with whitespace and newline characters where appropriate.
-* For scripts or other subroutines use `_` to connnect multiple word names, e.g `validate_env.sh`
+* For scripts or other subroutines use `_` to connect multiple word names, e.g `validate_env.sh`
 
-### YAML Styleguide
+### YAML Style guide
 
-BitOps uses standard YAML formatting with only a few reccomendations regarding style:
+BitOps uses standard YAML formatting with only a few recommendations regarding style:
 
 * When adding additional YAML files, utilize the full `.yaml` file extension
-* For multi-word variable names use `-` hyphen to connect them, e.g `cfn-stack-name`
+* For multi-word variable names use `-` hyphen to connect them, e.g `cfn-stack-name.yaml`
