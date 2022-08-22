@@ -99,8 +99,6 @@ Packages natively available in a running BitOps container:
 > [Dockerfile](https://github.com/bitovi/bitops/blob/main/Dockerfile)
 > and [requirements.txt](https://github.com/bitovi/bitops/blob/main/requirements.txt).
 
-### BitOps Code Structure
-
 The BitOps repo is fairly straightforward in its current implementation.
 See `scripts/plugins/` written in Python for most of the logic responsible for running the pipelines that tie together deployment tools like `aws`, `ansible`, `terraform` which are called BitOps plugins.
 

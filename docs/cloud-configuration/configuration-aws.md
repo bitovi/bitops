@@ -1,8 +1,8 @@
-Note from the developers: We are currently in the process of moving our documentation and so the below documentation is only partially correct. For more information on this tool please checkout our [plugin documentation](https://github.com/bitops-plugins/aws) 
+> ⚠️ Note from the developers: We are currently in the process of moving our documentation and so the below documentation is only partially correct. For more information on this tool please checkout our [plugin documentation](https://github.com/bitops-plugins/aws).
 
 # AWS
 
-`bitops.config.yaml` is not yet supported for AWS ([TODO](https://github.com/bitovi/bitops/issues/15)). All configuration must be done with environment variables
+> ⚠️ `bitops.config.yaml` is not yet supported for AWS ([TODO](https://github.com/bitovi/bitops/issues/15)). All configuration must be done with environment variables.
 
 ## Configuration
 
@@ -13,7 +13,7 @@ Note from the developers: We are currently in the process of moving our document
 * **default:** `""`
 * **required:** yes
 
-AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
+Specifies an AWS access key associated with an IAM user or role. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 
 -------------------
 ### aws_secret_access_key
@@ -22,16 +22,7 @@ AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general
 * **default:** `""`
 * **required:** yes
 
-AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
-
--------------------
-### aws_session_token
-* **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
-* **Environment Variable:** `AWS_SESSION_TOKEN`
-* **default:** `""`
-* **required:** no
-
-AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
+Specifies the secret key associated with the access key. This is essentially the "password" for the access key. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 
 -------------------
 ### aws_default_region
@@ -40,6 +31,15 @@ AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general
 * **default:** `""`
 * **required:** yes
 
-AWS Access. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
+Specifies the AWS Region to send the request to. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
+
+-------------------
+### aws_session_token
+* **BitOps Property:** [TODO](https://github.com/bitovi/bitops/issues/15)
+* **Environment Variable:** `AWS_SESSION_TOKEN`
+* **default:** `""`
+* **required:** no
+
+Specifies the session token value that is required if you are using temporary security credentials that you retrieved directly from AWS STS operations. See [AWS official documentation](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys)
 
 -------------------

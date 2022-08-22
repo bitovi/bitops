@@ -1,6 +1,6 @@
 # Base Configuration
 
-Each deployment tool is traditionally controlled with a set of cli arguments. Instead of defining arguments within your pipeline configuration, they can instead either be defined with environment variables or in a `bitops.config.yml` file. While the core schema for a `bitops.config.yml` file is common between tools, the specific properties and environment variable equivilants vary from tool to tool.
+Each deployment tool is traditionally controlled with a set of CLI arguments. Instead of defining arguments within your pipeline configuration, they can instead either be defined with environment variables or in a `bitops.config.yaml` file. While the core schema for a `bitops.config.yaml` file is common between tools, the specific properties and environment variable equivalents vary from tool to tool.
 
 > For more information on tool configuration, see [plugins](plugins.md).
 
@@ -12,12 +12,13 @@ $tool
   cli: {}
   options: {}
 ```
+
 * `$tool` - identifies the deployment tool
-* `cli` - object that contains cli arguments
-* `options` - object that offers additional control over how a tool executes
+* `cli` - object that contains CLI arguments
+* `options` - an object that offers additional control over how a tool executes
 
 ## Arbitrary Environment Variables
-During the docker run command, you can specify a ENV var and it will be accessible during all processing stages of BitOps. 
+During the docker run command, you can specify an ENV var and it will be accessible during all processing stages of BitOps. 
 
 ## Common Configuration
 There are some global configuration options that are shared among all tools and cloud providers during a BitOps run. These are set via environment variables
@@ -25,7 +26,6 @@ There are some global configuration options that are shared among all tools and 
 -------------------
 ### environment
 * **Environment Variable:** `BITOPS_ENVIRONMENT`
-* **default:** `""`
 * **required:** yes
 
 Each BitOps run is done against a single environment. This property tells BitOps which environment to run. For more information on environments, see [Operations Repo Structure](operations-repo-structure.md#environment-directories).
@@ -36,7 +36,7 @@ Each BitOps run is done against a single environment. This property tells BitOps
 * **default:** `""`
 * **required:** no
 
-Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a kubernetes cluster
+Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a Kubernetes cluster.
 
 -------------------
 ## Cloud Providers

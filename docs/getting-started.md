@@ -27,20 +27,20 @@ See [configuration](configuration-base.md)
 
 ## Run BitOps
 
-BitOps is packaged as a docker image and is available on [dockerhub](https://hub.docker.com/r/bitovi/bitops).
+BitOps is packaged as a docker image and is available on [docker hub](https://hub.docker.com/r/bitovi/bitops).
 
 ```
 docker pull bitovi/bitops
 cd $YOUR_OPERATIONS_REPO
 docker run bitovi/bitops -v $(pwd):/opt/bitops_deployment
 ```
-If you need specific version of BitOps, please check the [BitOps versioning](versioning.md).
+If you need a specific version of BitOps, please check the [BitOps versioning](versioning.md).
 
 ## Supported Tools
 * [Provision infrastructure with CloudFormation](tool-configuration/configuration-cloudformation.md)
 * [Provision infrastructure with Terraform](tool-configuration/configuration-terraform.md)
 * [Configure infrastructure with Ansible](tool-configuration/configuration-ansible.md)
-* [Deploy to kubernetes with Helm](tool-configuration/configuration-helm.md)
+* [Deploy to Kubernetes with Helm](tool-configuration/configuration-helm.md)
 
 ## Supported Cloud Providers
 
@@ -51,4 +51,3 @@ If you need specific version of BitOps, please check the [BitOps versioning](ver
 ## Guides and Other Resources
 
 BitOps already has several guides demonstrating deploying a web server or a pre-configured application using different combinations of the available BitOps tools. If you're looking for a quick start, check out some of the options available in the [Examples](examples.md) section.
-
