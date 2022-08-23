@@ -16,6 +16,9 @@ on:
       - "prebuilt-config/bitops-tag.yaml"
       - ".github/workflows/build-and-publish-prebuilt.yaml"
 
+  release:
+    types: [ published ]
+
 jobs:
   # Separated workflow, as 'bitops-tags.yaml' values could be overwriten
   build-publish-dev:
@@ -97,7 +100,7 @@ jobs:
         output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
         strict: true
         variables: |
-          bitops_base=${{ env.VERSION_TAG }}
+          bitops_base_tag=${{ env.VERSION_TAG }}
       if: github.event_name == 'workflow_dispatch'
 
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
@@ -120,4 +123,4 @@ jobs:
       run: |
         echo "running .github/workflows/scripts/docker-publish.sh"
         ./.github/workflows/scripts/docker-publish.sh
-      if: github.event_name == 'release'
+      if: github.event_name == 'release' || github.event.release.prerelease
