@@ -89,15 +89,15 @@ jobs:
     - name: Update VERSION_TAG with input (workflow_dispatch)
       run: |
         echo "VERSION_TAG=${{ github.event.inputs.image_tag}}" >> $GITHUB_ENV
+        sed -i "s/bitops_base:.*/bitops_base: ${{ github.event.inputs.image_tag}}-base/" ./prebuilt-config/bitops-tag.yaml
       if: github.event_name == 'workflow_dispatch'
 
     - uses: cuchi/jinja2-action@v1.2.0
       with:
         template: prebuilt-config/dockerfile.template
         output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
-        strict: true
-        variables: |
-          bitops_base=${{ env.VERSION_TAG }}
+        data_file: prebuilt-config/bitops-tag.yaml
+        data_format: yaml
       if: github.event_name == 'workflow_dispatch'
 
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
@@ -109,7 +109,7 @@ jobs:
         cp ./prebuilt-config/${{ matrix.target }}/Dockerfile ./Dockerfile
         cp ./prebuilt-config/${{ matrix.target }}/bitops.config.yaml ./bitops.config.yaml
 
-    - name: Publish Docker Image (Release)
+    - name: Publish Docker Image (Workflow Dispatch)
       env:
         REGISTRY_URL: "bitovi/bitops"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
@@ -117,6 +117,11 @@ jobs:
         # On a versioned release push '2.0.0-omnibus', '2.0.0-aws-ansible', etc Docker tags
         IMAGE_TAG: ${{ env.VERSION_TAG }}-${{ matrix.target }}
       run: |
+        # Additionally tag versioned 'omnibus' as 'X.Y.Z' and 'latest' 
+        if [[ "${{ matrix.target }}" == "omnibus" ]]; then
+          export ADDITIONAL_IMAGE_TAGS="${{ env.VERSION_TAG }} latest"
+        fi
+
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
-      if: github.event_name == 'release'
+      if: github.event_name == 'workflow_dispatch'
