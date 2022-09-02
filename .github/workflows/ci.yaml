@@ -1,8 +1,9 @@
 name: CI
 
 on:
-  - push
-  - pull_request
+  push:
+    branches: [master]
+  pull_request:
 
 jobs:
   # Lint checks which don't depend on any service containes, etc. to be running.
