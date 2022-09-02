@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  # Lint checks which don't depend on any service containes, etc. to be running.
+  lint-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up latest Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+          cache: 'pip'
+
+      - name: Cache Python Dependencies and Env
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+            .tox
+          key: ${{ runner.os }}-v1-python-3.8-${{ hashFiles('requirements.txt', 'test-requirements.txt', 'pyproject.toml', 'tox.ini') }}
+
+      - name: Install Python test dependencies
+        run: python -m pip install tox
+
+      - name: Run black formatting
+        run: |
+          tox -e black
