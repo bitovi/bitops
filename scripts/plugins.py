@@ -16,16 +16,17 @@ if __name__ == "__main__":
         mode = None
 
     bitops_figlet = pyfiglet.figlet_format("BitOps")
-    bitops_description = \
-    """
+    bitops_description = """
     BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an Operations Repo.
     """
-    logger.info("\n\n{figlet}{description}"
-        .format(
-            figlet=bitops_figlet,
-            description=bitops_description))
-    
-    logger.info("\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
+    logger.info(
+        "\n\n{figlet}{description}".format(
+            figlet=bitops_figlet, description=bitops_description
+        )
+    )
+
+    logger.info(
+        "\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
     \n\tFAIL FAST:              [{fail_fast}]                   \
     \n\tRUN MODE:               [{run_mode}]                    \
     \n\tDEFAULT RUN MODE:       [{mode}]                        \
@@ -35,14 +36,15 @@ if __name__ == "__main__":
     \n\tBITOPS CONFIG FILE:     [{config_file}]                 \
     \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n                   \
     ".format(
-        fail_fast=plugins.settings.BITOPS_fast_fail_mode, 
-        run_mode=plugins.settings.BITOPS_run_mode, 
-        mode=mode,
-        log_level=plugins.settings.BITOPS_logging_level,
-        log_color=plugins.settings.BITOPS_logging_color,
-        config_file=plugins.settings.BITOPS_config_file
-    ))
-    
+            fail_fast=plugins.settings.BITOPS_fast_fail_mode,
+            run_mode=plugins.settings.BITOPS_run_mode,
+            mode=mode,
+            log_level=plugins.settings.BITOPS_logging_level,
+            log_color=plugins.settings.BITOPS_logging_color,
+            config_file=plugins.settings.BITOPS_config_file,
+        )
+    )
+
     if mode == "deploy":
         Deploy_Plugins()
     elif mode == "install":
@@ -56,4 +58,3 @@ if __name__ == "__main__":
         exit(0)
     else:
         print("Mode is not specified. Please use [plugins.py install|deploy]")
-
