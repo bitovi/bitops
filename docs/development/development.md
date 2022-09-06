@@ -125,6 +125,12 @@ If you're unable to solve the merge conflicts, don't worry you'll still be able 
 
 Give your PR a meaningful title and provide details about the change in the description, including a link to the issue(s) relating to your PR. All that's left is to click the 'Create pull request' button and wait for our eager review of your code!
 
+### Python Style guide
+* Use 4 spaces for a tab.
+* We use [`black` code formatter](https://github.com/psf/black) which automatically enforces consistent style on the whole code base.
+* You can verify that your modifications don’t break any rules by running the lint script - `tox -e black`.
+* You can autoformat the python code by running `black` manually or by configuring your favorite editor to do it for you. [Here](https://dev.to/adamlombard/how-to-use-the-black-python-code-formatter-in-vscode-3lo0) is an example for VSCode.
+
 ### Bash Style guide
 
 The BitOps container uses the Bourne shell during execution, please ensure all functions used in your submission exist for `sh`. Submissions that utilize alternate shells (`zsh`,`ksh`,`csh`, etc.) will not be accepted.
