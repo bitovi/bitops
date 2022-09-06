@@ -26,15 +26,5 @@ In most cases, you can add this signoff to your commit automatically with the
 `-s` flag to `git commit`. You must use your real name and a reachable email
 address (sorry, no pseudonyms or anonymous contributions).
 
-
 ## Code reviews
 All submissions, including submissions by project members, require review. We use GitHub pull requests for this purpose.
-
-
-## Coding Conventions
-|   |   |
-|---|---|
-| Indents  | 2 spaces (Soft)  |
-| Spaces after list items  | ["item1", "item2", "item3"]  |
-| variable naming  | snake_case  |
-

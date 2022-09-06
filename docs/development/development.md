@@ -138,7 +138,7 @@ The BitOps container uses the Bourne shell during execution, please ensure all f
 BitOps comes packaged with [`shyaml`](https://pypi.org/project/shyaml/) which can be used to parse YAML config files from stdout.
 
 When contributing Bash code segments to BitOps please keep these concepts in mind:
-
+* Use 2 spaces for a tab.
 * Add `echo` statements during plugin execution to give verbosity and debugging during execution
 * Update any related documentation to the code or feature you are modifying
 * Avoid multiple commands per line if possible. Replace `;` with whitespace and newline characters where appropriate.
