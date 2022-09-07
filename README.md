@@ -2,10 +2,12 @@
 
 ---------------------
 
+[![Build Status](https://github.com/bitovi/bitops/actions/workflows/ci.yaml/badge.svg)](https://github.com/bitovi/bitops/actions/workflows/ci.yaml)
 [![LICENSE](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
+![Python 3.8](https://img.shields.io/badge/python-3.8-blue)
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![GitHub Discussions](https://img.shields.io/github/discussions/bitovi/bitops)](https://github.com/bitovi/bitops/discussions)
-[![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg?logo=slack)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### tl;dr
 BitOps is an automated [orchestrator](docs/about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/).

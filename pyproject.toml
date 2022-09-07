@@ -1,0 +1,6 @@
+# Black code formatter configuration
+# https://black.readthedocs.io/en/stable/
+[tool.black]
+target_version = ['py38']
+include = '\.pyi?$'
+color = true
