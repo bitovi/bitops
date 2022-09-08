@@ -2,9 +2,9 @@
 
 Welcome to Bitops! This serves as a starting point for deploying your application to the cloud.
 
-This repo can be run as is with
 
-See our blog post [Getting started with BitOps v2.0 - Terraform](https://bitovi.com/blog) on how this is used
+
+See our blog post [Getting started with BitOps v2.0 - Terraform](https://www.bitovi.com/blog/getting-started-with-bitops-v2-terraform) on how this is used
 
 ```
 docker run --rm \
