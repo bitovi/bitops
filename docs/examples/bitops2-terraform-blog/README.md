@@ -1,6 +1,6 @@
 # Bitops Operations Repo
 
-Welcome to Bitops! This serves as a starting point for deploying your application to the cloud.
+This example shows a minimal Terraform configuration that creates an EKS cluster in `test` environment with a shared `_default` dir as an introduction to BitOps v2.0.
 
 
 
