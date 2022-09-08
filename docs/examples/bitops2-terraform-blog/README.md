@@ -3,6 +3,9 @@
 Welcome to Bitops! This serves as a starting point for deploying your application to the cloud.
 
 This repo can be run as is with
+
+See our blog post [Getting started with BitOps v2.0 - Terraform](https://bitovi.com/blog) on how this is used
+
 ```
 docker run --rm \
 -e BITOPS_ENVIRONMENT="test" \
