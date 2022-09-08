@@ -4,6 +4,12 @@
 *.gz
 *.logs
 
+# VS code
+.vscode/settings.json
+
+# Mac
+**/.DS_Store
+
 # Security
 credentials
 .pem
