@@ -131,6 +131,7 @@ Give your PR a meaningful title and provide details about the change in the desc
 * We use [`black` code formatter](https://github.com/psf/black) which automatically enforces consistent style on the whole code base.
 * You can verify that your modifications don’t break any rules by running the lint script - `tox -e black`.
 * You can autoformat the python code by running `black` manually or by configuring your favorite editor to do it for you. [Here](https://dev.to/adamlombard/how-to-use-the-black-python-code-formatter-in-vscode-3lo0) is an example for VSCode.
+* [Pylint](https://pylint.pycqa.org/en/latest/) is used as a static code analyzer for quick checking for common mistakes and enhancing the python coding standards. You can run it with `tox -e pylint`. You can [enable pylint in VSCode](https://code.visualstudio.com/docs/python/linting#_enable-linting) and [other IDEs](https://pylint.pycqa.org/en/latest/user_guide/installation/ide_integration/index.html).
 
 ### Bash Style guide
 

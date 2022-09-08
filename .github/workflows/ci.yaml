@@ -33,3 +33,7 @@ jobs:
       - name: Run black formatting
         run: |
           tox -e black
+
+      - name: Run pylint
+        run: |
+          tox -e pylint
