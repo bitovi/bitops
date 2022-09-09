@@ -183,7 +183,7 @@ def Install_Plugins():
                             doc_link=Get_Doc("missing_plugin_dependency"),
                         )
                     )
-                    exit(10)
+                    sys.exit(10)
 
             # install plugin dependencies (install.sh)
             plugin_install_script_path = (

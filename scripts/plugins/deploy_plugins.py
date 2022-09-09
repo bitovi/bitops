@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from telnetlib import theNULL
 import yaml
@@ -73,19 +74,19 @@ def Deploy_Plugins():
             "The 'BITOPS_ENVIRONMENT' variable must be set! Exiting...\n"
             "For more information on this issue please check out [https://bitovi.github.io/bitops/configuration-base/#environment]"
         )
-        quit(1)
+        sys.exit(1)
 
     # Move to temp directory
     if not os.path.isdir(bitops_deployment_dir):
         logger.error(
             "An operations repo needs to be mounted to the Docker container with the path `/opt/bitops_deployment/`... Exiting.\n\t\tFor more information on this issue please checkout our doc [https://bitovi.github.io/bitops/about/#how-bitops-works]"
         )
-        quit(1)
+        sys.exit(1)
     copy_tree(bitops_deployment_dir, temp_dir)
 
     if bitops_deployment_configuration is None:
         logger.error("No deployments config found. Exiting... {}".format(__file__))
-        quit(1)
+        sys.exit(1)
 
     logger.info(
         "\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~            \
@@ -283,7 +284,7 @@ def Deploy_Plugins():
                 except Exception as exc:
                     logger.error(exc)
                     if BITOPS_fast_fail_mode:
-                        quit(101)
+                        sys.exit(101)
 
                 if result.returncode == 0:
                     logger.info(
@@ -319,7 +320,7 @@ def Deploy_Plugins():
                         plugin_deploy_script_path
                     )
                 )
-                quit(1)
+                sys.exit(1)
         else:
             logger.warning(
                 "Opsrepo environment directory does not exist: [{}]".format(

@@ -2,6 +2,7 @@ from distutils.command.config import config
 from inspect import Parameter
 import yaml
 import os
+import sys
 import subprocess
 import re
 
@@ -301,7 +302,7 @@ def Get_Config_List(config_file, schema_file):
                 )
             )
             logger.debug(item)
-            quit()
+            sys.exit()
 
     return cli_config_list, options_config_list
 
@@ -341,7 +342,7 @@ def Handle_Hooks(mode, hooks_folder):
         except Exception as exc:
             logger.error(exc)
             if BITOPS_fast_fail_mode:
-                quit(101)
+                sys.exit(101)
 
         if result.returncode == 0:
             logger.info(
