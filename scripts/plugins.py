@@ -19,30 +19,18 @@ if __name__ == "__main__":
     bitops_description = """
     BitOps is a way to describe the infrastructure and things deployed onto that infrastructure for multiple environments in a single place called an Operations Repo.
     """
-    logger.info(
-        "\n\n{figlet}{description}".format(
-            figlet=bitops_figlet, description=bitops_description
-        )
-    )
+    logger.info(f"\n\n{bitops_figlet}{bitops_description}")
 
     logger.info(
-        "\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
-    \n\tFAIL FAST:              [{fail_fast}]                   \
-    \n\tRUN MODE:               [{run_mode}]                    \
+        f"\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
+    \n\tFAIL FAST:              [{plugins.settings.BITOPS_fast_fail_mode}]                   \
+    \n\tRUN MODE:               [{plugins.settings.BITOPS_run_mode}]                    \
     \n\tDEFAULT RUN MODE:       [{mode}]                        \
-    \n\tLOGGING LEVEL:          [{log_level}]                   \
-    \n\tLOGGING COLOR:          [{log_color}]                   \
+    \n\tLOGGING LEVEL:          [{plugins.settings.BITOPS_logging_level}]                   \
+    \n\tLOGGING COLOR:          [{plugins.settings.BITOPS_logging_color}]                   \
     \
-    \n\tBITOPS CONFIG FILE:     [{config_file}]                 \
-    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n                   \
-    ".format(
-            fail_fast=plugins.settings.BITOPS_fast_fail_mode,
-            run_mode=plugins.settings.BITOPS_run_mode,
-            mode=mode,
-            log_level=plugins.settings.BITOPS_logging_level,
-            log_color=plugins.settings.BITOPS_logging_color,
-            config_file=plugins.settings.BITOPS_config_file,
-        )
+    \n\tBITOPS CONFIG FILE:     [{plugins.settings.BITOPS_config_file}]                 \
+    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n"
     )
 
     if mode == "deploy":

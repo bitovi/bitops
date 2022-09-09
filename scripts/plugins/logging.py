@@ -46,9 +46,7 @@ class ColoredFormatter(logging.Formatter):
     def format(self, record):
         levelname = record.levelname
         if self.use_color and levelname in COLORS:
-            levelname_color = (
-                COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
-            )
+            levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
             record.levelname = levelname_color
         return logging.Formatter.format(self, record)
 
@@ -75,8 +73,6 @@ if BITOPS_logging_filename is not None:
 
     BITOPS_logging_filename.replace(".logs", "").replace(".log", "")
 
-    fileHandler = logging.FileHandler(
-        "{0}/{1}.log".format(BITOPS_logging_path, BITOPS_logging_filename)
-    )
+    fileHandler = logging.FileHandler(f"{BITOPS_logging_path}/{BITOPS_logging_filename}.log")
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)

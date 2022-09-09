@@ -26,14 +26,12 @@ def Install_Plugins():
     plugin_list = [item for item in bitops_plugins_configuration]
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
-        logger.info(
-            "\n\n\n~#~#~#~PROCESSING STAGE [{}]~#~#~#~\n".format(plugin_config.upper())
-        )
+        logger.info(f"\n\n\n~#~#~#~PROCESSING STAGE [{plugin_config.upper()}]~#~#~#~\n")
         # for plugin in bitops_plugins_configuration[plugin_config]:
 
         plugin_source = bitops_plugins_configuration[plugin_config].source
 
-        logger.info("\n\n\n~#~#~#~PLUGIN SOURCE [{}]~#~#~#~\n".format(plugin_source))
+        logger.info(f"\n\n\n~#~#~#~PLUGIN SOURCE [{plugin_source}]~#~#~#~\n")
 
         if plugin_source is not None:
             # ~#~#~#~#~#~#~#~#~#~#~#~#~#
@@ -52,17 +50,11 @@ def Install_Plugins():
             )
 
             logger.info(
-                "\n\n\n~#~#~#~CLONING PLUGIN [{plugin_config}]~#~#~#~  \
+                f"\n\n\n~#~#~#~CLONING PLUGIN [{plugin_config.upper()}]~#~#~#~  \
             \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
             \n\t PLUGIN_TAG:            [{plugin_tag}]                  \
             \n\t PLUGIN_BRANCH:         [{plugin_branch}]                \
-            \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                \
-            ".format(
-                    plugin_config=plugin_config.upper(),
-                    plugin_source=plugin_source,
-                    plugin_tag=plugin_tag,
-                    plugin_branch=plugin_branch,
-                )
+            \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
             )
 
             try:
@@ -77,9 +69,7 @@ def Install_Plugins():
                     )
 
                 else:
-                    plugin_pull_branch = (
-                        plugin_tag if plugin_branch is None else plugin_branch
-                    )
+                    plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
                     git.Repo.clone_from(
                         plugin_source,
                         plugin_dir + plugin_config,
@@ -87,24 +77,16 @@ def Install_Plugins():
                     )
 
                 logger.info(
-                    "\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~".format(
-                        plugin_config=plugin_config
-                    )
+                    f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~"
                 )
 
-            except git.exc.GitCommandError as exc:
-                logger.error(
-                    "\n~#~#~#~CLONING PLUGIN [{plugin_config}] FAILED~#~#~#~\n\t{stderr}".format(
-                        plugin_config=plugin_config, stderr=exc
-                    )
-                )
+            except git.exc.GitCommandError as err:
+                logger.error(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] FAILED~#~#~#~\n\t{err}")
                 sys.exit(1)
 
-            except Exception as exc:
+            except Exception as err:
                 logger.error(
-                    "\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{stderr}".format(
-                        plugin_config=plugin_config, stderr=exc
-                    )
+                    f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}"
                 )
                 sys.exit(1)
 
@@ -113,24 +95,14 @@ def Install_Plugins():
             # ~#~#~#~#~#~#~#~#~#~#~#~#~#
 
             # Once the plugin is cloned, begin using its config + schema
-            plugin_configuration_path = (
-                plugin_dir + plugin_config + "/plugin.config.yaml"
-            )
-            logger.info(
-                "plugin_configuration_path ==>[{}]".format(plugin_configuration_path)
-            )
+            plugin_configuration_path = plugin_dir + plugin_config + "/plugin.config.yaml"
+            logger.info(f"plugin_configuration_path ==>[{plugin_configuration_path}]")
             try:
                 with open(plugin_configuration_path, "r") as stream:
-                    plugin_configuration_yaml = yaml.load(
-                        stream, Loader=yaml.FullLoader
-                    )
+                    plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
-            except FileNotFoundError as e:
-                logger.warning(
-                    "No plugin file was found at path: [{}]".format(
-                        plugin_configuration_path
-                    )
-                )
+            except FileNotFoundError:
+                logger.warning(f"No plugin file was found at path: [{plugin_configuration_path}]")
                 plugin_configuration_yaml = {"plugin": {"install": {}}}
 
             plugin_configuration = (
@@ -165,7 +137,8 @@ def Install_Plugins():
                 else None
             )
 
-            # Checking that any dependency for a plugin is found within the bitops.config.yaml plugins section
+            # Checking that any dependency for a plugin is found within
+            # the bitops.config.yaml plugins section
             if plugin_install_dependencies:
                 missing_dependencies = list(
                     set(plugin_install_dependencies).difference(plugin_list)
@@ -173,37 +146,24 @@ def Install_Plugins():
 
                 if missing_dependencies:
                     logger.critical(
-                        "MISSING DEPENDENCY \
-                    \n\t NEEDED DEPENDENCY: [{}] \
-                    \n\t PLUGIN LIST:       [{}] \
-                    \n\t\t {doc_link} \
-                    ".format(
-                            missing_dependencies,
-                            plugin_list,
-                            doc_link=Get_Doc("missing_plugin_dependency"),
-                        )
+                        f"MISSING DEPENDENCY \
+                    \n\t NEEDED DEPENDENCY: [{missing_dependencies}] \
+                    \n\t PLUGIN LIST:       [{plugin_list}] \
+                    \n\t\t {Get_Doc('missing_plugin_dependency')}"
                     )
                     sys.exit(10)
 
             # install plugin dependencies (install.sh)
-            plugin_install_script_path = (
-                plugin_dir + plugin_config + "/{}".format(plugin_install_script)
-            )
+            plugin_install_script_path = plugin_dir + plugin_config + f"/{plugin_install_script}"
 
             logger.info(
-                "\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin_config}]~#~#~#~   \
+                f"\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin_config}]~#~#~#~   \
             \n\t PLUGIN_INSTALL_SCRIPT:             [{plugin_install_script}]          \
             \n\t PLUGIN_INSTALL_LANGUAGE:           [{plugin_install_language}]        \
             \n\t PLUGIN_DEPENDENCIES:               [{plugin_install_dependencies}]        \
             \n\t PLUGIN_CONFIG_PATH:                [{plugin_configuration_path}]        \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                    \
-            ".format(
-                    plugin_config=plugin_config,
-                    plugin_install_script=plugin_install_script,
-                    plugin_install_language=plugin_install_language,
-                    plugin_install_dependencies=plugin_install_dependencies,
-                    plugin_configuration_path=plugin_configuration_path,
-                )
+            "
             )
 
             os.chmod(plugin_install_script_path, 775)
@@ -216,37 +176,25 @@ def Install_Plugins():
                 )
                 if result.returncode == 0:
                     logger.info(
-                        "\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~".format(
-                            plugin_config=plugin_config
-                        )
+                        f"~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~"
                     )
                     logger.debug(
-                        "\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(
-                            stdout=result.stdout, stderr=result.stderr, result=result
-                        )
+                        f"\n\tSTDOUT:[{result.stdout}]\n"
+                        f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]"
                     )
                 else:
-                    logger.error(
-                        "\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] FAILED~#~#~#~".format(
-                            plugin_config=plugin_config
-                        )
-                    )
+                    logger.error(f"\n~#~#~#~INSTALLING PLUGIN [{plugin_config}] FAILED~#~#~#~")
                     logger.debug(
-                        "\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(
-                            stdout=result.stdout, stderr=result.stderr, result=result
-                        )
+                        f"\n\tSTDOUT:[{result.stdout}]\n"
+                        f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]"
                     )
                     sys.exit(result.returncode)
 
             else:
-                logger.error(
-                    "File does not exist: [{}]".format(plugin_install_script_path)
-                )
+                logger.error(f"File does not exist: [{plugin_install_script_path}]")
                 sys.exit(1)
         else:
             logger.error(
-                "Plugin source cannot be empty. Plugin: [{}] Download did not run".format(
-                    plugin_config
-                )
+                f"Plugin source cannot be empty. Plugin: [{plugin_config}] Download did not run"
             )
             sys.exit(1)

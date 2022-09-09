@@ -5,9 +5,7 @@ import argparse
 from munch import DefaultMunch
 
 parser = argparse.ArgumentParser(description="Add BitOps Usage")
-parser.add_argument(
-    "--bitops_config_file", "-c", help="BitOps source usage information here"
-)
+parser.add_argument("--bitops_config_file", "-c", help="BitOps source usage information here")
 
 BITOPS_CL_args, unknowns = parser.parse_known_args()
 
@@ -25,9 +23,7 @@ with open(BITOPS_config_file, "r") as stream:
 
 BITOPS_ENV_schema_file = os.environ.get("BITOPS_BUILD_SCHEMA_YAML")
 BITOPS_schema_file = (
-    BITOPS_ENV_schema_file
-    if BITOPS_ENV_schema_file is not None
-    else "bitops.schema.yaml"
+    BITOPS_ENV_schema_file if BITOPS_ENV_schema_file is not None else "bitops.schema.yaml"
 )
 with open(BITOPS_schema_file, "r") as stream:
     BITOPS_schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
@@ -45,9 +41,7 @@ BITOPS_ENV_plugin_dir = os.environ.get("BITOPS_PLUGIN_DIR")
 BITOPS_ENV_default_folder = os.environ.get("BITOPS_DEFAULT_FOLDER")
 # v2.0.0: Fallback to 'ENVIRONMENT' in case when 'BITOPS_ENVIRONMENT' is not set
 # TODO: Drop 'ENVIRONMENT' backward-compatibility in the future versions
-BITOPS_ENV_environment = os.environ.get(
-    "BITOPS_ENVIRONMENT", os.environ.get("ENVIRONMENT", None)
-)
+BITOPS_ENV_environment = os.environ.get("BITOPS_ENVIRONMENT", os.environ.get("ENVIRONMENT", None))
 BITOPS_ENV_timeout = os.environ.get("BITOPS_TIMEOUT")
 
 if not bitops_build_configuration.bitops:
@@ -57,7 +51,8 @@ if not bitops_build_configuration.bitops:
     sys.exit(1)
 
 # WASHED VALUES
-# This is just stacked ternary operators. Don't be scared. All this does is X if X is set, Y if Y is set, else default value
+# This is just stacked ternary operators. Don't be scared.
+# All this does is X if X is set, Y if Y is set, else default value
 BITOPS_fast_fail_mode = (
     BITOPS_ENV_fast_fail_mode
     if BITOPS_ENV_fast_fail_mode is not None

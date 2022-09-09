@@ -1,0 +1,3 @@
+[FORMAT]
+max-line-length=100
+disable=logging-fstring-interpolation
