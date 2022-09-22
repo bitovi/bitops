@@ -51,12 +51,12 @@ class SchemaObject:
                     else:
                         continue
 
-        logger.info(f"\n\tNEW SCHEMA:{self.PrintSchema()}")
+        logger.info(f"\n\tNEW SCHEMA:{self.print_schema()}")
 
     def __str__(self):
-        return f"\n\tSCHEMA:{self.PrintSchema()}"
+        return f"\n\tSCHEMA:{self.print_schema()}"
 
-    def PrintSchema(self):
+    def print_schema(self):
         return f"\n\t\tName:         [{self.name}]\
             \n\t\tSchema Key:   [{self.schema_key}]\
             \n\t\tConfig_Key:   [{self.config_key}]\
@@ -72,12 +72,12 @@ class SchemaObject:
             \n                      \
             \n\t\tValue Set:    [{self.value}]"
 
-    def ProcessConfig(self, config_yaml):
+    def process_config(self, config_yaml):
         if self.type == "object":
             return
-        result = Get_Nested_Item(config_yaml, self.config_key)
+        result = get_nested_item(config_yaml, self.config_key)
         logger.info(f"\n\tSearching for: [{self.config_key}]\n\t\tResult Found: [{result}]")
-        found_config_value = Apply_Data_Type(self.type, result)
+        found_config_value = apply_data_type(self.type, result)
 
         if found_config_value:
             logger.info(
@@ -88,14 +88,14 @@ class SchemaObject:
         else:
             self.value = self.default
 
-        AddValueToEnv(self.export_env, self.value)
+        add_value_to_env(self.export_env, self.value)
 
 
-def Parse_Values(item):
+def parse_values(item):
     return item.replace("properties.", "")
 
 
-def Load_Yaml(yaml_file):
+def load_yaml(yaml_file):
     with open(yaml_file, "r") as stream:
         try:
             plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
@@ -106,13 +106,13 @@ def Load_Yaml(yaml_file):
     return plugins_yml
 
 
-def Load_Build_Config():
+def load_build_config():
     logger.info(f"Loading {BITOPS_config_file}")
     # Load plugin config yml
-    return Load_Yaml(BITOPS_config_file)
+    return load_yaml(BITOPS_config_file)
 
 
-def Apply_Data_Type(data_type, convert_value):
+def apply_data_type(data_type, convert_value):
     if data_type == "object" or convert_value == None:
         return None
 
@@ -134,7 +134,7 @@ def Apply_Data_Type(data_type, convert_value):
             return None
 
 
-def AddValueToEnv(export_env, value):
+def add_value_to_env(export_env, value):
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
 
@@ -143,7 +143,7 @@ def AddValueToEnv(export_env, value):
     logger.info("Setting environment variable: [{export_env}], to value: [{value}]")
 
 
-def Get_Nested_Item(search_dict, key):
+def get_nested_item(search_dict, key):
     logger.debug(
         f"\n\t\tSEARCHING FOR KEY:  [{key}]    \
                   \n\t\tSEARCH_DICT:        [{search_dict}]"
@@ -159,7 +159,7 @@ def Get_Nested_Item(search_dict, key):
     return obj
 
 
-def Parse_Yaml_Keys_To_List(schema, root_key, key_chain=None):
+def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
     keys_list = []
     if key_chain is None:
         key_chain = root_key
@@ -169,14 +169,14 @@ def Parse_Yaml_Keys_To_List(schema, root_key, key_chain=None):
         key_value = f"{key_chain}.{property}"
         keys_list.append(key_value)
         try:
-            keys_list += Parse_Yaml_Keys_To_List(inner_schema, property, key_value)
-        except AttributeError as e:
+            keys_list += parse_yaml_keys_to_list(inner_schema, property, key_value)
+        except AttributeError:
             # End of keys for property, move on to next key
             continue
     return keys_list
 
 
-def Get_Config_List(config_file, schema_file):
+def get_config_list(config_file, schema_file):
     logger.info(
         f"\n\n\n~#~#~#~CONVERTING: \
     \n\t PLUGIN CONFIGURATION FILE PATH:    [{config_file}]    \
@@ -200,7 +200,7 @@ def Get_Config_List(config_file, schema_file):
     root_key = schema_root_keys[0]
     schema_keys_list.append(root_key)
 
-    schema_keys_list += Parse_Yaml_Keys_To_List(schema, root_key)
+    schema_keys_list += parse_yaml_keys_to_list(schema, root_key)
 
     logger.debug(f"Schema keys: [{schema_keys_list}]")
 
@@ -224,10 +224,10 @@ def Get_Config_List(config_file, schema_file):
         logger.debug("Starting a new property search")
         property_name = schema_properties.split(".")[-1]
 
-        result = Get_Nested_Item(schema, schema_properties)
+        result = get_nested_item(schema, schema_properties)
 
         schema_object = SchemaObject(property_name, schema_properties, result)
-        schema_object.ProcessConfig(config_yaml)
+        schema_object.process_config(config_yaml)
         schema_list.append(schema_object)
 
     bad_config_list = [item for item in schema_list if item.value == "BAD_CONFIG"]
@@ -261,13 +261,13 @@ def Get_Config_List(config_file, schema_file):
     return cli_config_list, options_config_list
 
 
-def Generate_Cli_Command(cli_config_list):
+def generate_cli_command(cli_config_list):
     logger.info("Generating CLI options")
     for item in cli_config_list:
         logger.info(item)
 
 
-def Handle_Hooks(mode, hooks_folder):
+def handle_hooks(mode, hooks_folder):
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
         return

@@ -6,7 +6,7 @@ import yaml
 
 from munch import DefaultMunch
 from distutils.dir_util import copy_tree
-from .utilities import Get_Config_List, Handle_Hooks
+from .utilities import get_config_list, handle_hooks
 from .settings import (
     BITOPS_fast_fail_mode,
     bitops_build_configuration,
@@ -17,7 +17,7 @@ from .settings import (
 from .logging import logger
 
 
-def Deploy_Plugins():
+def deploy_plugins():
     # ~#~#~#~#~#~# STAGE 1 - ENVIRONMENT LOADING #~#~#~#~#~#~#
     # Temp directory setup
     temp_dir = tempfile.mkdtemp()
@@ -37,8 +37,7 @@ def Deploy_Plugins():
     bitops_operations_dir = f"{temp_dir}/{BITOPS_ENV_environment}"
     bitops_scripts_dir = f"{bitops_dir}/scripts"
 
-    PATH = os.environ.get("PATH")
-    PATH += ":/root/.local/bin"
+    sys.path.append('/root/.local/bin')
 
     # Cleanup - Call all teardown scripts - TODO
 
@@ -50,7 +49,6 @@ def Deploy_Plugins():
     os.environ["BITOPS_PLUGINS_DIR"] = bitops_plugins_dir
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
     os.environ["BITOPS_KUBE_CONFIG_FILE"] = f"{temp_dir}/.kube/config"
-    os.environ["PATH"] = PATH
     os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
 
     # Global environment evaluation
@@ -138,7 +136,7 @@ def Deploy_Plugins():
                 with open(plugin_configuration_path, "r") as stream:
                     plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 logger.warning(f"No plugin file was found at path: [{plugin_configuration_path}]")
                 plugin_configuration_yaml = {"plugin": {"deployment": {}}}
 
@@ -190,7 +188,7 @@ def Deploy_Plugins():
             if os.path.isfile(plugin_deploy_script_path):
                 if plugin_deploy_schema_parsing_flag:
                     logger.debug("running bitops schema parsing...")
-                    cli_config_list, options_config_list = Get_Config_List(
+                    cli_config_list, options_config_list = get_config_list(
                         opsrepo_config_file, plugin_schema_file
                     )
 
@@ -222,7 +220,7 @@ def Deploy_Plugins():
                 # Check whether a plugin is using the before hook
                 if plugin_deploy_before_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir + "/bitops.before-deploy.d"
-                    Handle_Hooks("before", hooks_folder)
+                    handle_hooks("before", hooks_folder)
 
                 else:
                     logger.warning("BitOps Core isn't invoking before hooks")
@@ -271,7 +269,7 @@ def Deploy_Plugins():
                 # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
                 if plugin_deploy_after_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
-                    Handle_Hooks("after", hooks_folder)
+                    handle_hooks("after", hooks_folder)
 
                 else:
                     logger.warning("BitOps Core isn't invoking after hooks")

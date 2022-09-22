@@ -7,7 +7,7 @@ fh = open("scripts/plugins/documentation.json")
 jh = json.load(fh)
 
 
-def Get_Doc(lookup_key):
+def get_doc(lookup_key):
     try:
         msg = (
             f"\n\t{jh[lookup_key]['msg']}\n"

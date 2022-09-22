@@ -8,12 +8,12 @@ import git
 import yaml
 
 from munch import DefaultMunch
-from .doc import Get_Doc
+from .doc import get_doc
 from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 
 
-def Install_Plugins():
+def install_plugins():
     bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
     bitops_plugins_configuration = DefaultMunch.fromDict(
         bitops_build_configuration.bitops.plugins, None
@@ -146,7 +146,7 @@ def Install_Plugins():
                         f"MISSING DEPENDENCY \
                     \n\t NEEDED DEPENDENCY: [{missing_dependencies}] \
                     \n\t PLUGIN LIST:       [{plugin_list}] \
-                    \n\t\t {Get_Doc('missing_plugin_dependency')}"
+                    \n\t\t {get_doc('missing_plugin_dependency')}"
                     )
                     sys.exit(10)
 
