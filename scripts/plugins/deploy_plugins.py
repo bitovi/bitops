@@ -4,8 +4,9 @@ import subprocess
 import tempfile
 import yaml
 
-from munch import DefaultMunch
 from distutils.dir_util import copy_tree
+from munch import DefaultMunch
+
 from .utilities import get_config_list, handle_hooks
 from .settings import (
     BITOPS_fast_fail_mode,
@@ -37,7 +38,7 @@ def deploy_plugins():
     bitops_operations_dir = f"{temp_dir}/{BITOPS_ENV_environment}"
     bitops_scripts_dir = f"{bitops_dir}/scripts"
 
-    sys.path.append('/root/.local/bin')
+    sys.path.append("/root/.local/bin")
 
     # Cleanup - Call all teardown scripts - TODO
 
