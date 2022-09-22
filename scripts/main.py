@@ -1,13 +1,13 @@
 import sys
-import os
+import pyfiglet
 
 import plugins.settings
-import pyfiglet
 
 from plugins.logging import logger
 from plugins.deploy_plugins import Deploy_Plugins
 from plugins.install_plugins import Install_Plugins
 from plugins.utilities import Get_Config_List
+
 
 if __name__ == "__main__":
     try:
@@ -45,4 +45,4 @@ if __name__ == "__main__":
         print("Plugins Load complete. Exiting...")
         sys.exit(0)
     else:
-        print("Mode is not specified. Please use [plugins.py install|deploy]")
+        print("Mode is not specified. Please use [main.py install|deploy]")

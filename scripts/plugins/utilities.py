@@ -1,21 +1,15 @@
-from distutils.command.config import config
-from inspect import Parameter
-import yaml
 import os
 import sys
 import subprocess
 import re
+import yaml
 
 from munch import DefaultMunch
-from itertools import chain
-from logging import root
-from xml.etree.ElementTree import tostring
+from .logging import logger
 from .settings import (
     BITOPS_fast_fail_mode,
     BITOPS_config_file,
-    bitops_schema_configuration,
 )
-from .logging import logger
 
 
 class SchemaObject:

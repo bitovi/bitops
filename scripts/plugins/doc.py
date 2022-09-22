@@ -2,6 +2,7 @@
 # Provides a function to access the documentation
 import json
 
+
 fh = open("scripts/plugins/documentation.json")
 jh = json.load(fh)
 

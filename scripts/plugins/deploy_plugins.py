@@ -1,27 +1,20 @@
 import os
 import sys
 import subprocess
-from telnetlib import theNULL
-import yaml
-import envbash
 import tempfile
-import git
+import yaml
 
-from pickle import GLOBAL
-from shutil import rmtree
+from munch import DefaultMunch
 from distutils.dir_util import copy_tree
 from .utilities import Get_Config_List, Handle_Hooks
 from .settings import (
-    BITOPS_config_yaml,
     BITOPS_fast_fail_mode,
-    BITOPS_config_yaml,
     bitops_build_configuration,
     BITOPS_ENV_environment,
     BITOPS_default_folder,
     BITOPS_timeout,
 )
 from .logging import logger
-from munch import DefaultMunch
 
 
 def Deploy_Plugins():

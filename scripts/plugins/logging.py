@@ -1,12 +1,5 @@
 import logging
 import sys
-from .settings import BITOPS_logging_level
-
-# Logging levels
-# 1. DEBUG
-# 2. INFO
-# 3. WARN
-# 4. ERROR
 
 from .settings import (
     BITOPS_logging_level,
@@ -14,6 +7,13 @@ from .settings import (
     BITOPS_logging_filename,
     BITOPS_logging_path,
 )
+
+
+# Logging levels
+# 1. DEBUG
+# 2. INFO
+# 3. WARN
+# 4. ERROR
 
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 RESET_SEQ = "\033[0m"

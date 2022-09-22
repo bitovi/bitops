@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 
-import shutil
-import yaml
+import sys
 import subprocess
-import glob
 import os.path
 import os
 import git
-import sys
+import yaml
 
-from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
-from .logging import logger
+from munch import DefaultMunch
 from .doc import Get_Doc
-from ast import Load
-from munch import DefaultMunch, Munch
+from .logging import logger
+from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 
 
 def Install_Plugins():
