@@ -77,10 +77,6 @@ def install_plugins():
                     f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~"
                 )
 
-            except git.exc.GitCommandError as err:
-                logger.error(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] FAILED~#~#~#~\n\t{err}")
-                sys.exit(1)
-
             except Exception as err:
                 logger.error(
                     f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}"
