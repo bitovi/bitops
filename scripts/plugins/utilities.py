@@ -41,15 +41,13 @@ class SchemaObject:
         self.required = False
 
         if schema_property_values:
-            for property in self.properties:
+            for _property in self.properties:
                 try:
-                    setattr(self, property, schema_property_values[property])
+                    setattr(self, _property, schema_property_values[_property])
                 except KeyError as exc:
-                    setattr(self, property, None)
+                    setattr(self, _property, None)
                     if BITOPS_fast_fail_mode:
                         raise exc
-                    else:
-                        continue
 
         logger.info(f"\n\tNEW SCHEMA:{self.print_schema()}")
 
@@ -113,25 +111,25 @@ def load_build_config():
 
 
 def apply_data_type(data_type, convert_value):
-    if data_type == "object" or convert_value == None:
+    if data_type == "object" or convert_value is None:
         return None
 
     if re.search("list", data_type, re.IGNORECASE):
         return list(convert_value)
-    elif re.search("string", data_type, re.IGNORECASE):
+    if re.search("string", data_type, re.IGNORECASE):
         return str(convert_value)
-    elif re.search("int", data_type, re.IGNORECASE):
+    if re.search("int", data_type, re.IGNORECASE):
         return int(convert_value)
-    elif re.search("boolean", data_type, re.IGNORECASE) or re.search(
+    if re.search("boolean", data_type, re.IGNORECASE) or re.search(
         "bool", data_type, re.IGNORECASE
     ):
         return bool(convert_value)
-    else:
-        if BITOPS_fast_fail_mode:
-            raise ValueError(f"Data type not supported: [{data_type}]")
-        else:
-            logger.warn(f"Data type not supported: [{data_type}]")
-            return None
+
+    if BITOPS_fast_fail_mode:
+        raise ValueError(f"Data type not supported: [{data_type}]")
+
+    logger.warning(f"Data type not supported: [{data_type}]")
+    return None
 
 
 def add_value_to_env(export_env, value):
@@ -164,12 +162,12 @@ def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
     if key_chain is None:
         key_chain = root_key
 
-    for property in schema[root_key].keys():
+    for _property in schema[root_key].keys():
         inner_schema = schema[root_key]
-        key_value = f"{key_chain}.{property}"
+        key_value = f"{key_chain}.{_property}"
         keys_list.append(key_value)
         try:
-            keys_list += parse_yaml_keys_to_list(inner_schema, property, key_value)
+            keys_list += parse_yaml_keys_to_list(inner_schema, _property, key_value)
         except AttributeError:
             # End of keys for property, move on to next key
             continue
@@ -193,7 +191,6 @@ def get_config_list(config_file, schema_file):
         logger.error(f"REQUIRED FILE NOT FOUND: [{err.filename}]")
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
-    config = DefaultMunch.fromDict(config_yaml, None)
 
     schema_keys_list = []
     schema_root_keys = list(schema.keys())
@@ -235,7 +232,7 @@ def get_config_list(config_file, schema_file):
     cli_config_list = [item for item in schema_list if item.schema_property_type == "cli"]
     options_config_list = [item for item in schema_list if item.schema_property_type == "options"]
     required_config_list = [
-        item for item in schema_list if item.required == True and not item.value
+        item for item in schema_list if item.required is True and not item.value
     ]
 
     logger.debug("\n~~~~~ CLI OPTIONS ~~~~~")

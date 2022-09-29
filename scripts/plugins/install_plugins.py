@@ -20,7 +20,7 @@ def install_plugins():
     )
 
     plugin_dir = BITOPS_plugin_dir
-    plugin_list = [item for item in bitops_plugins_configuration]
+    plugin_list = list(bitops_plugins_configuration)
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
         logger.info(f"\n\n\n~#~#~#~PROCESSING STAGE [{plugin_config.upper()}]~#~#~#~\n")

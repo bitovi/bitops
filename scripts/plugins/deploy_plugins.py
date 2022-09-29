@@ -33,8 +33,6 @@ def deploy_plugins():
     bitops_root_dir = temp_dir
 
     bitops_envroot_dir = f"{bitops_root_dir}/{BITOPS_ENV_environment}"
-    # What is the difference between this and bitops_operations_dir ...
-    bitops_default_envroot = f"{bitops_root_dir}/{BITOPS_default_folder}"
     bitops_operations_dir = f"{temp_dir}/{BITOPS_ENV_environment}"
     bitops_scripts_dir = f"{bitops_dir}/scripts"
 
@@ -189,7 +187,7 @@ def deploy_plugins():
             if os.path.isfile(plugin_deploy_script_path):
                 if plugin_deploy_schema_parsing_flag:
                     logger.debug("running bitops schema parsing...")
-                    cli_config_list, options_config_list = get_config_list(
+                    cli_config_list, _ = get_config_list(
                         opsrepo_config_file, plugin_schema_file
                     )
 
