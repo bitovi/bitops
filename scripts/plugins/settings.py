@@ -20,14 +20,14 @@ BITOPS_config_file = (
     if BITOPS_CL_args.bitops_config_file is not None
     else "bitops.config.yaml"
 )
-with open(BITOPS_config_file, "r") as stream:
+with open(BITOPS_config_file, "r", encoding="utf8") as stream:
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
 BITOPS_ENV_schema_file = os.environ.get("BITOPS_BUILD_SCHEMA_YAML")
 BITOPS_schema_file = (
     BITOPS_ENV_schema_file if BITOPS_ENV_schema_file is not None else "bitops.schema.yaml"
 )
-with open(BITOPS_schema_file, "r") as stream:
+with open(BITOPS_schema_file, "r", encoding="utf8") as stream:
     BITOPS_schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
 # Updating from Bitops build config

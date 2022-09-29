@@ -96,7 +96,7 @@ def parse_values(item):
 
 
 def load_yaml(yaml_file):
-    with open(yaml_file, "r") as stream:
+    with open(yaml_file, "r", encoding="utf8") as stream:
         try:
             plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
@@ -185,9 +185,9 @@ def get_config_list(config_file, schema_file):
     )
 
     try:
-        with open(schema_file, "r") as stream:
+        with open(schema_file, "r", encoding="utf8") as stream:
             schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-        with open(config_file, "r") as stream:
+        with open(config_file, "r", encoding="utf8") as stream:
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as err:
         logger.error(f"REQUIRED FILE NOT FOUND: [{err.filename}]")

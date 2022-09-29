@@ -91,7 +91,7 @@ def install_plugins():
             plugin_configuration_path = plugin_dir + plugin_config + "/plugin.config.yaml"
             logger.info(f"plugin_configuration_path ==>[{plugin_configuration_path}]")
             try:
-                with open(plugin_configuration_path, "r") as stream:
+                with open(plugin_configuration_path, "r", encoding="utf8") as stream:
                     plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
             except FileNotFoundError:

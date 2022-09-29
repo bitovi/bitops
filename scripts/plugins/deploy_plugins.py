@@ -134,7 +134,7 @@ def deploy_plugins():
             # logic related to plugin.config.yaml
             plugin_configuration_path = plugin_dir + "/plugin.config.yaml"
             try:
-                with open(plugin_configuration_path, "r") as stream:
+                with open(plugin_configuration_path, "r", encoding="utf8") as stream:
                     plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
             except FileNotFoundError:
