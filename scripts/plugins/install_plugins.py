@@ -165,6 +165,7 @@ def install_plugins():
                     [plugin_install_language, plugin_install_script_path],
                     universal_newlines=True,
                     capture_output=True,
+                    check=False,
                     # shell=True
                 )
                 if result.returncode == 0:

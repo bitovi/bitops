@@ -291,6 +291,7 @@ def handle_hooks(mode, hooks_folder):
                 ["bash", plugin_before_hook_script_path],
                 universal_newlines=True,
                 capture_output=True,
+                check=False,
             )
 
         except Exception as exc:

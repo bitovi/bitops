@@ -2,10 +2,10 @@ import os
 import sys
 import subprocess
 import tempfile
-import yaml
-
 from distutils.dir_util import copy_tree
 from munch import DefaultMunch
+import yaml
+
 
 from .utilities import get_config_list, handle_hooks
 from .settings import (
@@ -245,6 +245,7 @@ def deploy_plugins():
                         ],
                         universal_newlines=True,
                         capture_output=True,
+                        check=False,
                     )
 
                 except Exception as exc:
