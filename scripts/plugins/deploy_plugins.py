@@ -252,7 +252,7 @@ def Deploy_Plugins():
                 # Check whether a plugin is using the before hook
                 if plugin_deploy_before_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir + "/bitops.before-deploy.d"
-                    Handle_Hooks("before", hooks_folder)
+                    Handle_Hooks("before", hooks_folder, opsrepo_environment_dir)
 
                 else:
                     logger.warning("BitOps Core isn't invoking before hooks")
@@ -308,7 +308,7 @@ def Deploy_Plugins():
                 # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
                 if plugin_deploy_after_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
-                    Handle_Hooks("after", hooks_folder)
+                    Handle_Hooks("after", hooks_folder, opsrepo_environment_dir)
 
                 else:
                     logger.warning("BitOps Core isn't invoking after hooks")
