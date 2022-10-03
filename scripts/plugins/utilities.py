@@ -2,6 +2,7 @@ from distutils.command.config import config
 from inspect import Parameter
 import yaml
 import os
+import sys
 import subprocess
 import re
 
@@ -231,6 +232,7 @@ def Get_Config_List(config_file, schema_file):
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as e:
         logger.error("REQUIRED FILE NOT FOUND: [{}]".format(e.filename))
+        sys.exit(1)
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
     config = DefaultMunch.fromDict(config_yaml, None)
