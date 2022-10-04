@@ -312,10 +312,13 @@ def Generate_Cli_Command(cli_config_list):
         logger.info(item)
 
 
-def Handle_Hooks(mode, hooks_folder):
+def Handle_Hooks(mode, hooks_folder, source_folder):
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
         return
+
+    original_directory = os.getcwd()
+    os.chdir(source_folder)
 
     umode = mode.upper()
     logger.info("INVOKING {} HOOKS".format(umode))
@@ -355,3 +358,4 @@ def Handle_Hooks(mode, hooks_folder):
                 "~#~#~#~{} HOOK [{}] FAILED~#~#~#~".format(umode, hook_script)
             )
             logger.debug(result.stdout)
+    os.chdir(original_directory)
