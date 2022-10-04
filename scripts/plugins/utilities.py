@@ -316,7 +316,7 @@ def Handle_Hooks(mode, hooks_folder, source_folder):
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
         return
-    
+
     original_directory = os.getcwd()
     os.chdir(source_folder)
 
