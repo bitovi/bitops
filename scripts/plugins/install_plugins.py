@@ -14,6 +14,15 @@ from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 
 
 def install_plugins():
+    """
+    Install plugins function:
+
+    1) Processes the BitOps config, pulling out any plugins for install
+    2) Loops through the plugins
+        - clones source repo
+        - installs plugin dependencies (if any)
+        - runs install (bash/python) script
+    """
     bitops_build_configuration = DefaultMunch.fromDict(BITOPS_config_yaml, None)
     bitops_plugins_configuration = DefaultMunch.fromDict(
         bitops_build_configuration.bitops.plugins, None

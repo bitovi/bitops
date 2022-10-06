@@ -13,6 +13,12 @@ from .settings import (
 
 
 class SchemaObject:
+    """
+    The SchemaObject is a class that is used to parse the bitops.schema.yaml into a python object.
+    Further functionality will parse the object against a bitops.config.yaml.
+    If a match is found between the bitops.schema and the bitops.config,
+    the config value is loaded into the SchemaObject.
+    """
     properties = [
         "export_env",
         "default",
@@ -55,6 +61,9 @@ class SchemaObject:
         return f"\n\tSCHEMA:{self.print_schema()}"
 
     def print_schema(self):
+        """
+        Visual representation of the schema object parsed.
+        """
         return f"\n\t\tName:         [{self.name}]\
             \n\t\tSchema Key:   [{self.schema_key}]\
             \n\t\tConfig_Key:   [{self.config_key}]\
@@ -71,6 +80,11 @@ class SchemaObject:
             \n\t\tValue Set:    [{self.value}]"
 
     def process_config(self, config_yaml):
+        """
+        Function that processes the bitops.config against the SchemaObject,
+        with the defaults loaded from the bitops.schema.
+        It also checks that the type for the SchemaObject matches that in the configuration.
+        """
         if self.type == "object":
             return
         result = get_nested_item(config_yaml, self.config_key)
@@ -90,10 +104,18 @@ class SchemaObject:
 
 
 def parse_values(item):
+    """
+    Convert the yaml properties value loaded from bitops schema into yaml properties
+    value for bitops configuration.
+    Example
+        bitops.schema: bitops.properties.options.properties.file
+         ->
+        bitops.config: bitops.options.file
+    """
     return item.replace("properties.", "")
 
-
 def load_yaml(yaml_file):
+    """Loads yaml from file"""
     with open(yaml_file, "r", encoding="utf8") as stream:
         try:
             plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
@@ -103,14 +125,18 @@ def load_yaml(yaml_file):
             logger.error(exc)
     return plugins_yml
 
-
 def load_build_config():
+    """
+    Returns yaml object for a BitOps config
+    """
     logger.info(f"Loading {BITOPS_config_file}")
     # Load plugin config yml
     return load_yaml(BITOPS_config_file)
 
-
 def apply_data_type(data_type, convert_value):
+    """
+    Converts incoming variable into `type of` based on SchemaObject.type property.
+    """
     if data_type == "object" or convert_value is None:
         return None
 
@@ -133,6 +159,13 @@ def apply_data_type(data_type, convert_value):
 
 
 def add_value_to_env(export_env, value):
+    """
+    Takes a variable name and value and loads them into an environment variable,
+    prefixing with BITOPS_.
+
+    Example:
+        TERRAFORM_VERSION=123 -> BITOPS_TERRAFORM_VERSION=123
+    """
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
 
@@ -140,8 +173,10 @@ def add_value_to_env(export_env, value):
     os.environ[export_env] = str(value)
     logger.info("Setting environment variable: [{export_env}], to value: [{value}]")
 
-
 def get_nested_item(search_dict, key):
+    """
+    Parses yaml (schema/config) based on SchemaObject properties path.
+    """
     logger.debug(
         f"\n\t\tSEARCHING FOR KEY:  [{key}]    \
                   \n\t\tSEARCH_DICT:        [{search_dict}]"
@@ -156,8 +191,11 @@ def get_nested_item(search_dict, key):
     logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
     return obj
 
-
 def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
+    """
+    Recursive function that iterates over a schema and generates
+    a configuration property path list.
+    """
     keys_list = []
     if key_chain is None:
         key_chain = root_key
@@ -173,8 +211,11 @@ def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
             continue
     return keys_list
 
-
 def get_config_list(config_file, schema_file):
+    """
+    Top level function that handles the parsing of a schema and loading of a configuration file.
+    Results in a list of all schema values, their defaults and their configuration value (if set).
+    """
     logger.info(
         f"\n\n\n~#~#~#~CONVERTING: \
     \n\t PLUGIN CONFIGURATION FILE PATH:    [{config_file}]    \
@@ -257,14 +298,10 @@ def get_config_list(config_file, schema_file):
 
     return cli_config_list, options_config_list
 
-
-def generate_cli_command(cli_config_list):
-    logger.info("Generating CLI options")
-    for item in cli_config_list:
-        logger.info(item)
-
-
 def handle_hooks(mode, hooks_folder):
+    """
+    Processes a bitops before/after hook by invoking bash script(s) within the hooks folder(s).
+    """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
         return

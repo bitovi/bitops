@@ -19,6 +19,19 @@ from .logging import logger
 
 
 def deploy_plugins():
+    """
+    The deploy plugins function:
+
+    1) Generates a temporary directory
+    2) Preps processing paths
+    3) Loads environment variables
+    4) Checks that processing paths exist within folder structure
+    5) Parses operation repo level bitops config against plugin schema
+    6) Loops deployment sequence
+        - runs before hooks
+        - runs deploy.sh
+        - runs after hooks
+    """
     # ~#~#~#~#~#~# STAGE 1 - ENVIRONMENT LOADING #~#~#~#~#~#~#
     # Temp directory setup
     temp_dir = tempfile.mkdtemp()

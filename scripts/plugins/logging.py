@@ -22,6 +22,10 @@ BOLD_SEQ = "\033[1m"
 
 
 def formatter_message(message, use_color=BITOPS_logging_color):
+    """
+    Formats messages replaces $RESET and $BOLD placeholders
+    with the respective bash color sequences.
+    """
     if use_color:
         message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
     else:
@@ -39,11 +43,18 @@ COLORS = {
 
 
 class ColoredFormatter(logging.Formatter):
+    """
+    Class that controls the formatting of logging text, adds colors if enabled.
+    Settings are contained within "bitops.config.yaml:bitops.logging".
+    """
     def __init__(self, msg, use_color=BITOPS_logging_color):
         logging.Formatter.__init__(self, msg)
         self.use_color = use_color
 
     def format(self, record):
+        """
+        Adds color to the logging text
+        """
         levelname = record.levelname
         if self.use_color and levelname in COLORS:
             levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
