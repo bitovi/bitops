@@ -7,6 +7,21 @@ We'd love to accept your patches and contributions to this project. There are ju
 
 When you are ready to get started developing, see our [development guide](development/development.md) for how to get started!
 
+## BitOps Community Meetings
+Join bi-weekly community meetups organized by the BitOps core team and contributors.
+Every `2nd Wednesday` at `12:00 PM US East` we’re gathering for `1 hour` to discuss the ongoing BitOps work, issues, plans, and ideas.
+
+General Agenda:
+
+- Roadmap and Milestones
+- Issues and Discussions
+- Features and Proposals
+- Use cases and user Adoption
+
+See [BitOps Community Meetings](https://github.com/bitovi/bitops/discussions/288) for more info how to join.
+
+We would like to invite everyone interested to join us!
+
 ## Developer Certificate of Origin
 
 To contribute to this project, you must agree to the Developer Certificate of

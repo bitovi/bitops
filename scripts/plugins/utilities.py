@@ -298,13 +298,16 @@ def get_config_list(config_file, schema_file):
 
     return cli_config_list, options_config_list
 
-def handle_hooks(mode, hooks_folder):
+def handle_hooks(mode, hooks_folder, source_folder):
     """
     Processes a bitops before/after hook by invoking bash script(s) within the hooks folder(s).
     """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
         return
+
+    original_directory = os.getcwd()
+    os.chdir(source_folder)
 
     umode = mode.upper()
     logger.info(f"INVOKING {umode} HOOKS")
@@ -339,3 +342,4 @@ def handle_hooks(mode, hooks_folder):
         else:
             logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
+    os.chdir(original_directory)
