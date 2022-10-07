@@ -117,3 +117,4 @@ cython_debug/
 
 # Developers
 Notes.md
+Dockerfile.local
