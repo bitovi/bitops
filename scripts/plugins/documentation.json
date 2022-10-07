@@ -2,5 +2,17 @@
     "missing_plugin_dependency": {
         "msg": "Missing plugin dependency. To Fix this update the bitops/bitops.config.yaml file by adding the dependent into the bitops.plugins block.",
         "link": ""
+    },
+    "missing_file": {
+        "msg": "Required file was not found. To fix this please add the following file:",
+        "link": "",
+        "number": 2,
+        "code": "ENOENT"
+    },
+    "missing_ops_repo": {
+        "msg": "Opsrepo environment directory does not exist:",
+        "link": "",
+        "number": 2,
+        "code": "ENOENT"
     }
 }

@@ -9,6 +9,7 @@ import git
 from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
+from .doc import Get_Doc
 from .utilities import Get_Config_List, Handle_Hooks
 from .settings import (
     BITOPS_config_yaml,
@@ -166,11 +167,9 @@ def Deploy_Plugins():
                     )
 
             except FileNotFoundError as e:
-                logger.warning(
-                    "No plugin file was found at path: [{}]".format(
-                        plugin_configuration_path
-                    )
-                )
+                msg, return_number = Get_Doc('missing_file')
+                logger.warning("{} [{}]".format(msg, plugin_configuration_path))
+                logger.debug(e)
                 plugin_configuration_yaml = {"plugin": {"deployment": {}}}
 
             # plugin.config.yaml
@@ -321,8 +320,6 @@ def Deploy_Plugins():
                 )
                 quit(1)
         else:
-            logger.warning(
-                "Opsrepo environment directory does not exist: [{}]".format(
-                    opsrepo_environment_dir
-                )
-            )
+            msg, return_number = Get_Doc("missing_ops_repo")
+            logger.error("{} [{}]".format(msg, opsrepo_environment_dir))
+            exit(return_number)

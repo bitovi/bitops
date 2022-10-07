@@ -126,13 +126,10 @@ def Install_Plugins():
                     )
 
             except FileNotFoundError as e:
-                logger.warning(
-                    "No plugin file was found at path: [{}]".format(
-                        plugin_configuration_path
-                    )
-                )
+                msg, return_number = Get_Doc('missing_file')
+                logger.warning("{} [{}]".format(msg, plugin_configuration_path))
+                logger.debug(e)
                 plugin_configuration_yaml = {"plugin": {"install": {}}}
-
             plugin_configuration = (
                 None
                 if plugin_configuration_yaml is None
