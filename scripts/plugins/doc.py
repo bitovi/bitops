@@ -20,12 +20,12 @@ def Get_Doc(lookup_key):
         # Returns 1 by default, exit and report issue at developer level
         return (
             "DEVELOPER NOTE: Check lookup code and confirm that it is in the documentation config. Something has gone wrong.", 
-            1
+            1,
         )
     
     try:
         exit_code = jh[lookup_key]["exit_code"]
     except KeyError:
-        exit_code=0
+        exit_code = 0
 
     return msg, exit_code
