@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from telnetlib import theNULL
 import yaml
@@ -321,5 +322,4 @@ def Deploy_Plugins():
                 quit(1)
         else:
             msg, exit_code = Get_Doc("missing_ops_repo")
-            logger.error("{} [{}]".format(msg, opsrepo_environment_dir))
-            exit(exit_code)
+            logger.warning("{} [{}]".format(msg, opsrepo_environment_dir))

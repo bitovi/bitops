@@ -22,7 +22,6 @@ def Get_Doc(lookup_key):
     
     try:
         exit_code = jh[lookup_key]["exit_code"]
-        logger.debug(f"INC STRING: [{exit_code}]")
     except KeyError:
         exit_code=0
 

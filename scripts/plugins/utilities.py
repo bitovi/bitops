@@ -5,6 +5,7 @@ import os
 import sys
 import subprocess
 import re
+import sys
 
 from munch import DefaultMunch
 from itertools import chain
@@ -239,7 +240,7 @@ def Get_Config_List(config_file, schema_file):
             )
         )
         logger.debug(e)
-        exit(exit_code)
+        sys.exit(exit_code)
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
 

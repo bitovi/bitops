@@ -55,6 +55,6 @@ if __name__ == "__main__":
         Get_Config_List(config_file, schema_file)
     elif mode == "setting-test":
         print("Plugins Load complete. Exiting...")
-        exit(0)
+        sys.exit(0)
     else:
         print("Mode is not specified. Please use [plugins.py install|deploy]")

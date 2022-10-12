@@ -98,7 +98,7 @@ def Install_Plugins():
                         plugin_config=plugin_config, stderr=exc
                     )
                 )
-                sys.exit(1)
+                sys.sys.exit(1)
 
             except Exception as exc:
                 logger.error(
@@ -106,7 +106,7 @@ def Install_Plugins():
                         plugin_config=plugin_config, stderr=exc
                     )
                 )
-                sys.exit(1)
+                sys.sys.exit(1)
 
             # ~#~#~#~#~#~#~#~#~#~#~#~#~#
             # RUN PLUGIN INSTALL SCRIPT
@@ -180,7 +180,7 @@ def Install_Plugins():
                             doc_link=Get_Doc("missing_plugin_dependency"),
                         )
                     )
-                    exit(10)
+                    sys.exit(10)
 
             # install plugin dependencies (install.sh)
             plugin_install_script_path = (
@@ -233,17 +233,17 @@ def Install_Plugins():
                             stdout=result.stdout, stderr=result.stderr, result=result
                         )
                     )
-                    sys.exit(result.returncode)
+                    sys.sys.exit(result.returncode)
 
             else:
                 logger.error(
                     "File does not exist: [{}]".format(plugin_install_script_path)
                 )
-                sys.exit(1)
+                sys.sys.exit(1)
         else:
             logger.error(
                 "Plugin source cannot be empty. Plugin: [{}] Download did not run".format(
                     plugin_config
                 )
             )
-            sys.exit(1)
+            sys.sys.exit(1)

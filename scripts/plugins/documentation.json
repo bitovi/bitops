@@ -12,7 +12,6 @@
     "missing_ops_repo": {
         "msg": "Opsrepo environment directory does not exist:",
         "link": "",
-        "exit_code": 2,
         "code": "ENOENT"
     }
 }
