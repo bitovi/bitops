@@ -16,7 +16,15 @@ bitops:
   default_folder: _default
 
   # https://bitovi.github.io/bitops/plugins/#bitopsconfigyaml
-  plugins: {}
-
-  # https://bitovi.github.io/bitops/plugins/#bitopsconfigyaml
-  deployments: {}
+  plugins:    
+    aws:
+      source: https://github.com/bitops-plugins/aws
+    terraform:
+      source: https://github.com/bitops-plugins/terraform
+    cloudformation:
+      source: https://github.com/bitops-plugins/cloudformation
+  deployments:
+    cloudformation:
+      plugin: cloudformation
+    terraform:
+      plugin: terraform

@@ -167,7 +167,7 @@ def Deploy_Plugins():
                     )
 
             except FileNotFoundError as e:
-                msg, return_number = Get_Doc("missing_file")
+                msg, exit_code = Get_Doc("missing_file")
                 logger.warning("{} [{}]".format(msg, plugin_configuration_path))
                 logger.debug(e)
                 plugin_configuration_yaml = {"plugin": {"deployment": {}}}
@@ -320,6 +320,6 @@ def Deploy_Plugins():
                 )
                 quit(1)
         else:
-            msg, return_number = Get_Doc("missing_ops_repo")
+            msg, exit_code = Get_Doc("missing_ops_repo")
             logger.error("{} [{}]".format(msg, opsrepo_environment_dir))
-            exit(return_number)
+            exit(exit_code)

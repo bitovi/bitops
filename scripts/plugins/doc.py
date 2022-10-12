@@ -11,7 +11,7 @@ def Get_Doc(lookup_key):
     try:
         msg = "\n\t{}".format(jh[lookup_key]["msg"])
         link = jh[lookup_key]["link"]
-        return_number = 0
+        exit_code = 0
         if link:
             msg += "\n\tFor more information checkout the Bitops Documentation: [{}]".format(
                 link
@@ -21,10 +21,9 @@ def Get_Doc(lookup_key):
         return "DEVELOPER NOTE: Check lookup code and confirm that it is in the documentation config. Something has gone wrong.", 1
     
     try:
-        return_number = jh[lookup_key]["number"]
-        logger.debug(f"INC STRING: [{return_number}]")
-        if return_number: return_number = return_number
+        exit_code = jh[lookup_key]["exit_code"]
+        logger.debug(f"INC STRING: [{exit_code}]")
     except KeyError:
-        return_number=0
+        exit_code=0
 
-    return msg, return_number
+    return msg, exit_code
