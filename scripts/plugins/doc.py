@@ -11,7 +11,9 @@ def Get_Doc(lookup_key):
         msg = "\n\t{}".format(jh[lookup_key]["msg"])
         link = jh[lookup_key]["link"]
         if link:
-            msg += "\n\tFor more information checkout the Bitops Documentation: [{}]".format(link)
+            msg += "\n\tFor more information checkout the Bitops Documentation: [{}]".format(
+                link
+            )
         return_number = jh[lookup_key]["number"]
 
     except KeyError:

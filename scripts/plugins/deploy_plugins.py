@@ -167,7 +167,7 @@ def Deploy_Plugins():
                     )
 
             except FileNotFoundError as e:
-                msg, return_number = Get_Doc('missing_file')
+                msg, return_number = Get_Doc("missing_file")
                 logger.warning("{} [{}]".format(msg, plugin_configuration_path))
                 logger.debug(e)
                 plugin_configuration_yaml = {"plugin": {"deployment": {}}}
