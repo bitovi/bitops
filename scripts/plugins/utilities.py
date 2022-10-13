@@ -19,6 +19,7 @@ class SchemaObject:
     If a match is found between the bitops.schema and the bitops.config,
     the config value is loaded into the SchemaObject.
     """
+
     properties = [
         "export_env",
         "default",
@@ -114,6 +115,7 @@ def parse_values(item):
     """
     return item.replace("properties.", "")
 
+
 def load_yaml(yaml_file):
     """Loads yaml from file"""
     with open(yaml_file, "r", encoding="utf8") as stream:
@@ -125,6 +127,7 @@ def load_yaml(yaml_file):
             logger.error(exc)
     return plugins_yml
 
+
 def load_build_config():
     """
     Returns yaml object for a BitOps config
@@ -132,6 +135,7 @@ def load_build_config():
     logger.info(f"Loading {BITOPS_config_file}")
     # Load plugin config yml
     return load_yaml(BITOPS_config_file)
+
 
 def apply_data_type(data_type, convert_value):
     """
@@ -173,6 +177,7 @@ def add_value_to_env(export_env, value):
     os.environ[export_env] = str(value)
     logger.info("Setting environment variable: [{export_env}], to value: [{value}]")
 
+
 def get_nested_item(search_dict, key):
     """
     Parses yaml (schema/config) based on SchemaObject properties path.
@@ -190,6 +195,7 @@ def get_nested_item(search_dict, key):
         return None
     logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
     return obj
+
 
 def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
     """
@@ -210,6 +216,7 @@ def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
             # End of keys for property, move on to next key
             continue
     return keys_list
+
 
 def get_config_list(config_file, schema_file):
     """
@@ -298,6 +305,7 @@ def get_config_list(config_file, schema_file):
             sys.exit()
 
     return cli_config_list, options_config_list
+
 
 def handle_hooks(mode, hooks_folder, source_folder):
     """

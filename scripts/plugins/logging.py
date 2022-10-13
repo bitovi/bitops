@@ -47,6 +47,7 @@ class ColoredFormatter(logging.Formatter):
     Class that controls the formatting of logging text, adds colors if enabled.
     Settings are contained within "bitops.config.yaml:bitops.logging".
     """
+
     def __init__(self, msg, use_color=BITOPS_logging_color):
         logging.Formatter.__init__(self, msg)
         self.use_color = use_color

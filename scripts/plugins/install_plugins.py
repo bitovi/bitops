@@ -75,9 +75,7 @@ def install_plugins():
 
             # If the plugin branch and tag are specified, default to branch
             elif plugin_branch is not None and plugin_tag is not None:
-                git.Repo.clone_from(
-                    plugin_source, plugin_dir + plugin_config, branch=plugin_branch
-                )
+                git.Repo.clone_from(plugin_source, plugin_dir + plugin_config, branch=plugin_branch)
 
             else:
                 plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
@@ -87,9 +85,7 @@ def install_plugins():
                     branch=plugin_pull_branch,
                 )
 
-            logger.info(
-                f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~"
-            )
+            logger.info(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
 
         except Exception as err:
             logger.error(
@@ -147,9 +143,7 @@ def install_plugins():
         # Checking that any dependency for a plugin is found within
         # the bitops.config.yaml plugins section
         if plugin_install_dependencies:
-            missing_dependencies = list(
-                set(plugin_install_dependencies).difference(plugin_list)
-            )
+            missing_dependencies = list(set(plugin_install_dependencies).difference(plugin_list))
 
             if missing_dependencies:
                 logger.critical(
@@ -186,9 +180,7 @@ def install_plugins():
             # shell=True
         )
         if result.returncode == 0:
-            logger.info(
-                f"~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~"
-            )
+            logger.info(f"~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(
                 f"\n\tSTDOUT:[{result.stdout}]\n"
                 f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]"

@@ -209,9 +209,7 @@ def deploy_plugins():
 
         if plugin_deploy_schema_parsing_flag:
             logger.debug("running bitops schema parsing...")
-            cli_config_list, _ = get_config_list(
-                opsrepo_config_file, plugin_schema_file
-            )
+            cli_config_list, _ = get_config_list(opsrepo_config_file, plugin_schema_file)
 
             stack_action = ""
             for item in cli_config_list:
@@ -274,9 +272,7 @@ def deploy_plugins():
                 sys.exit(101)
 
         if result.returncode == 0:
-            logger.info(
-                f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~"
-            )
+            logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(result.stdout)
             # TODO: DEEP DEBUG
             # logger.debug("\n\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
