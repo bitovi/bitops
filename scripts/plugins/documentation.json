@@ -6,12 +6,10 @@
     "missing_file": {
         "msg": "Required file was not found. To fix this please add the following file:",
         "link": "",
-        "exit_code": 2,
-        "code": "ENOENT"
+        "exit_code": 2
     },
     "missing_ops_repo": {
         "msg": "Opsrepo environment directory does not exist:",
-        "link": "",
-        "code": "ENOENT"
+        "link": ""
     }
 }
