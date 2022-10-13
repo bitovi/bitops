@@ -123,174 +123,175 @@ def deploy_plugins():
         )  # Sourced from Operations repo
         os.environ["BITOPS_PLUGIN_DIR"] = plugin_dir
         os.environ["BITOPS_OPSREPO_ENVIRONMENT_DIR"] = opsrepo_environment_dir
-        if os.path.isdir(opsrepo_environment_dir):
-            # Reconcile BitOps config using existing shell scripts
-            opsrepo_env_file = opsrepo_environment_dir + "/" + "ENV_FILE"
-            os.environ["BITOPS_OPSREPO_ENV_FILE"] = opsrepo_env_file
 
-            opsrepo_config_file = opsrepo_environment_dir + "/" + "bitops.config.yaml"
-            plugin_schema_file = plugin_dir + "/bitops.schema.yaml"
-
-            logger.info(
-                f"\n\n\n~#~#~#~{deployment.upper()} DEPLOYMENT CONFIGURATION~#~#~#~  \
-            \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
-            \n\t ENVIRONMENT_DIR:       [{opsrepo_environment_dir}]         \
-            \n\t ENVIRONMENT_FILE_PATH: [{opsrepo_env_file}]                \
-            \n\t CONFIG_FILE_PATH:      [{opsrepo_config_file}]        \
-            \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
-            )
-            logger.info(f"loading config file: [{opsrepo_config_file}]")
-            logger.debug(f"loading ENV_FILE   : [{opsrepo_env_file}]")
-
-            # logic related to plugin.config.yaml
-            plugin_configuration_path = plugin_dir + "/plugin.config.yaml"
-            try:
-                with open(plugin_configuration_path, "r", encoding="utf8") as stream:
-                    plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-
-            except FileNotFoundError:
-                logger.warning(f"No plugin file was found at path: [{plugin_configuration_path}]")
-                plugin_configuration_yaml = {"plugin": {"deployment": {}}}
-
-            # plugin.config.yaml
-            plugin_configuration = (
-                None
-                if plugin_configuration_yaml is None
-                else DefaultMunch.fromDict(plugin_configuration_yaml, None)
-            )
-
-            # plugin.deployment.deployment_script
-            plugin_deploy_script = (
-                plugin_configuration.plugin.deployment.deployment_script
-                if plugin_configuration.plugin.deployment.deployment_script is not None
-                else "deploy.sh"
-            )
-
-            # plugin.deployment.language
-            plugin_deploy_language = (
-                plugin_configuration.plugin.deployment.language
-                if plugin_configuration.plugin.deployment.language is not None
-                else "bash"
-            )
-
-            plugin_deploy_script_path = plugin_dir + f"/{plugin_deploy_script}"
-
-            # plugin.deployment.schema_parsing
-            plugin_deploy_schema_parsing_flag = (
-                plugin_configuration.plugin.deployment.core_schema_parsing
-                if plugin_configuration.plugin.deployment.core_schema_parsing is not None
-                else "true"
-            )
-
-            # plugin.deployment.before_hook_scripts
-            plugin_deploy_before_hook_scripts_flag = (
-                plugin_configuration.plugin.deployment.before_hook_scripts
-                if plugin_configuration.plugin.deployment.before_hook_scripts is not None
-                else "true"
-            )
-
-            # plugin.deployment.after_hook_scripts
-            plugin_deploy_after_hook_scripts_flag = (
-                plugin_configuration.plugin.deployment.after_hook_scripts
-                if plugin_configuration.plugin.deployment.after_hook_scripts is not None
-                else "true"
-            )
-
-            # Check if deploy script is present
-            if os.path.isfile(plugin_deploy_script_path):
-                if plugin_deploy_schema_parsing_flag:
-                    logger.debug("running bitops schema parsing...")
-                    cli_config_list, _ = get_config_list(
-                        opsrepo_config_file, plugin_schema_file
-                    )
-
-                    stack_action = ""
-                    for item in cli_config_list:
-                        if item.name == "stack-action":
-                            stack_action = item.value
-                            break
-                else:
-                    logger.warning("setting null value for stack_action....")
-                    stack_action = ""
-
-                # Adding print env logging
-                bitops_env_vars = [item for item in os.environ if "BITOPS_" in item]
-                bitops_env_vars.sort()
-                env_vars_msg = "\n\n~#~#~#~BITOPS ENVIRONMENT VARIABLES~#~#~#~"
-                for item in bitops_env_vars:
-                    value = os.environ.get(item)
-                    env_vars_msg += f"\n\t{item}={value}"
-                logger.debug(env_vars_msg)
-
-                # ~#~#~#~#~#~# STAGE 3 - BEFORE HOOKS #~#~#~#~#~#~#
-                # Summary
-                #   The reason the before hooks have been placed here is because I'd like to ensure
-                # that the plugin level environment loading has been completed. This will ensure
-                # the before hook have access to all the same environment variables as the
-                # deployment invoking stage does.
-
-                # Check whether a plugin is using the before hook
-                if plugin_deploy_before_hook_scripts_flag:
-                    hooks_folder = opsrepo_environment_dir + "/bitops.before-deploy.d"
-                    handle_hooks("before", hooks_folder, opsrepo_environment_dir)
-
-                else:
-                    logger.warning("BitOps Core isn't invoking before hooks")
-
-                # ~#~#~#~#~#~# STAGE 4 - PLUGIN DEPLOYMENT INVOKE #~#~#~#~#~#~#
-                # Add executable flag to deploy.sh
-                os.chmod(plugin_deploy_script_path, 775)
-                logger.info(
-                    f"\n\t\tRUNNING DEPLOYMENT SCRIPT    \
-                                \n\t\t\tLANGUAGE:       [{plugin_deploy_language}]    \
-                                \n\t\t\tSCRIPT PATH:    [{plugin_deploy_script_path}]    \
-                                \n\t\t\tSTACK ACTION:   [{stack_action}]"
-                )
-
-                try:
-                    result = subprocess.run(
-                        [
-                            plugin_deploy_language,
-                            plugin_deploy_script_path,
-                            stack_action,
-                        ],
-                        universal_newlines=True,
-                        capture_output=True,
-                        check=False,
-                    )
-
-                except Exception as exc:
-                    logger.error(exc)
-                    if BITOPS_fast_fail_mode:
-                        sys.exit(101)
-
-                if result.returncode == 0:
-                    logger.info(
-                        f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~"
-                    )
-                    logger.debug(result.stdout)
-                    # TODO: DEEP DEBUG
-                    # logger.debug("\n\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
-                else:
-                    logger.warning(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~")
-                    logger.debug(result.stdout)
-                    logger.error(result.stderr)
-                    # TODO: DEEP DEBUG
-                    # logger.debug(f"\n\tSTDOUT:[{result.stdout}]\n"
-                    #              f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
-
-                # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
-                if plugin_deploy_after_hook_scripts_flag:
-                    hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
-                    handle_hooks("after", hooks_folder, opsrepo_environment_dir)
-
-                else:
-                    logger.warning("BitOps Core isn't invoking after hooks")
-
-            else:
-                logger.error(f"Plugin deploy script missing. Exiting[{plugin_deploy_script_path}]")
-                sys.exit(1)
-        else:
+        if not os.path.isdir(opsrepo_environment_dir):
             logger.warning(
                 f"Opsrepo environment directory does not exist: [{opsrepo_environment_dir}]"
             )
+            continue
+
+        # Reconcile BitOps config using existing shell scripts
+        opsrepo_env_file = opsrepo_environment_dir + "/" + "ENV_FILE"
+        os.environ["BITOPS_OPSREPO_ENV_FILE"] = opsrepo_env_file
+
+        opsrepo_config_file = opsrepo_environment_dir + "/" + "bitops.config.yaml"
+        plugin_schema_file = plugin_dir + "/bitops.schema.yaml"
+
+        logger.info(
+            f"\n\n\n~#~#~#~{deployment.upper()} DEPLOYMENT CONFIGURATION~#~#~#~  \
+        \n\t PLUGIN_DIR:            [{plugin_dir}]                      \
+        \n\t ENVIRONMENT_DIR:       [{opsrepo_environment_dir}]         \
+        \n\t ENVIRONMENT_FILE_PATH: [{opsrepo_env_file}]                \
+        \n\t CONFIG_FILE_PATH:      [{opsrepo_config_file}]        \
+        \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
+        )
+        logger.info(f"loading config file: [{opsrepo_config_file}]")
+        logger.debug(f"loading ENV_FILE   : [{opsrepo_env_file}]")
+
+        # logic related to plugin.config.yaml
+        plugin_configuration_path = plugin_dir + "/plugin.config.yaml"
+        try:
+            with open(plugin_configuration_path, "r", encoding="utf8") as stream:
+                plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+
+        except FileNotFoundError:
+            logger.warning(f"No plugin file was found at path: [{plugin_configuration_path}]")
+            plugin_configuration_yaml = {"plugin": {"deployment": {}}}
+
+        # plugin.config.yaml
+        plugin_configuration = (
+            None
+            if plugin_configuration_yaml is None
+            else DefaultMunch.fromDict(plugin_configuration_yaml, None)
+        )
+
+        # plugin.deployment.deployment_script
+        plugin_deploy_script = (
+            plugin_configuration.plugin.deployment.deployment_script
+            if plugin_configuration.plugin.deployment.deployment_script is not None
+            else "deploy.sh"
+        )
+
+        # plugin.deployment.language
+        plugin_deploy_language = (
+            plugin_configuration.plugin.deployment.language
+            if plugin_configuration.plugin.deployment.language is not None
+            else "bash"
+        )
+
+        plugin_deploy_script_path = plugin_dir + f"/{plugin_deploy_script}"
+
+        # plugin.deployment.schema_parsing
+        plugin_deploy_schema_parsing_flag = (
+            plugin_configuration.plugin.deployment.core_schema_parsing
+            if plugin_configuration.plugin.deployment.core_schema_parsing is not None
+            else "true"
+        )
+
+        # plugin.deployment.before_hook_scripts
+        plugin_deploy_before_hook_scripts_flag = (
+            plugin_configuration.plugin.deployment.before_hook_scripts
+            if plugin_configuration.plugin.deployment.before_hook_scripts is not None
+            else "true"
+        )
+
+        # plugin.deployment.after_hook_scripts
+        plugin_deploy_after_hook_scripts_flag = (
+            plugin_configuration.plugin.deployment.after_hook_scripts
+            if plugin_configuration.plugin.deployment.after_hook_scripts is not None
+            else "true"
+        )
+
+        # Check if deploy script is present
+        if not os.path.isfile(plugin_deploy_script_path):
+            logger.error(f"Plugin deploy script missing. Exiting[{plugin_deploy_script_path}]")
+            sys.exit(1)
+
+        if plugin_deploy_schema_parsing_flag:
+            logger.debug("running bitops schema parsing...")
+            cli_config_list, _ = get_config_list(
+                opsrepo_config_file, plugin_schema_file
+            )
+
+            stack_action = ""
+            for item in cli_config_list:
+                if item.name == "stack-action":
+                    stack_action = item.value
+                    break
+        else:
+            logger.warning("setting null value for stack_action....")
+            stack_action = ""
+
+        # Adding print env logging
+        bitops_env_vars = [item for item in os.environ if "BITOPS_" in item]
+        bitops_env_vars.sort()
+        env_vars_msg = "\n\n~#~#~#~BITOPS ENVIRONMENT VARIABLES~#~#~#~"
+        for item in bitops_env_vars:
+            value = os.environ.get(item)
+            env_vars_msg += f"\n\t{item}={value}"
+        logger.debug(env_vars_msg)
+
+        # ~#~#~#~#~#~# STAGE 3 - BEFORE HOOKS #~#~#~#~#~#~#
+        # Summary
+        #   The reason the before hooks have been placed here is because I'd like to ensure
+        # that the plugin level environment loading has been completed. This will ensure
+        # the before hook have access to all the same environment variables as the
+        # deployment invoking stage does.
+
+        # Check whether a plugin is using the before hook
+        if plugin_deploy_before_hook_scripts_flag:
+            hooks_folder = opsrepo_environment_dir + "/bitops.before-deploy.d"
+            handle_hooks("before", hooks_folder, opsrepo_environment_dir)
+
+        else:
+            logger.warning("BitOps Core isn't invoking before hooks")
+
+        # ~#~#~#~#~#~# STAGE 4 - PLUGIN DEPLOYMENT INVOKE #~#~#~#~#~#~#
+        # Add executable flag to deploy.sh
+        os.chmod(plugin_deploy_script_path, 775)
+        logger.info(
+            f"\n\t\tRUNNING DEPLOYMENT SCRIPT    \
+                        \n\t\t\tLANGUAGE:       [{plugin_deploy_language}]    \
+                        \n\t\t\tSCRIPT PATH:    [{plugin_deploy_script_path}]    \
+                        \n\t\t\tSTACK ACTION:   [{stack_action}]"
+        )
+
+        try:
+            result = subprocess.run(
+                [
+                    plugin_deploy_language,
+                    plugin_deploy_script_path,
+                    stack_action,
+                ],
+                universal_newlines=True,
+                capture_output=True,
+                check=False,
+            )
+
+        except Exception as exc:
+            logger.error(exc)
+            if BITOPS_fast_fail_mode:
+                sys.exit(101)
+
+        if result.returncode == 0:
+            logger.info(
+                f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~"
+            )
+            logger.debug(result.stdout)
+            # TODO: DEEP DEBUG
+            # logger.debug("\n\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
+        else:
+            logger.warning(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~")
+            logger.debug(result.stdout)
+            logger.error(result.stderr)
+            # TODO: DEEP DEBUG
+            # logger.debug(f"\n\tSTDOUT:[{result.stdout}]\n"
+            #              f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
+
+        # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
+        if plugin_deploy_after_hook_scripts_flag:
+            hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
+            handle_hooks("after", hooks_folder, opsrepo_environment_dir)
+
+        else:
+            logger.warning("BitOps Core isn't invoking after hooks")
