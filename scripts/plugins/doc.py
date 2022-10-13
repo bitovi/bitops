@@ -11,7 +11,6 @@ def Get_Doc(lookup_key):
     try:
         msg = "\n\t{}".format(jh[lookup_key]["msg"])
         link = jh[lookup_key]["link"]
-        exit_code = 0
         if link:
             msg += "\n\tFor more information checkout the Bitops Documentation: [{}]".format(
                 link

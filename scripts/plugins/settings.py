@@ -54,7 +54,7 @@ if not bitops_build_configuration.bitops:
     sys.stderr.write(
         f"Error: Invalid {BITOPS_config_file}: 'bitops' at the root level definition is required!"
     )
-    sys.sys.exit(1)
+    sys.exit(1)
 
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared. All this does is X if X is set, Y if Y is set, else default value
