@@ -126,7 +126,7 @@ def Install_Plugins():
                     )
 
             except FileNotFoundError as e:
-                msg, exit_code = Get_Doc("missing_file")
+                msg, _ = Get_Doc("missing_optional_file")
                 logger.warning("{} [{}]".format(msg, plugin_configuration_path))
                 logger.debug(e)
                 plugin_configuration_yaml = {"plugin": {"install": {}}}

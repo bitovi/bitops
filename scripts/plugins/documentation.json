@@ -3,7 +3,12 @@
         "msg": "Missing plugin dependency. To Fix this update the bitops/bitops.config.yaml file by adding the dependent into the bitops.plugins block.",
         "link": ""
     },
-    "missing_file": {
+    "missing_optional_file": {
+        "msg": "Optional file was not found. Consider adding the following file: [{}]",
+        "link": "",
+        "exit_code": 2
+    },
+    "missing_required_file": {
         "msg": "Required file was not found. To fix this please add the following file:",
         "link": "",
         "exit_code": 2

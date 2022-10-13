@@ -233,7 +233,7 @@ def Get_Config_List(config_file, schema_file):
         with open(config_file, "r") as stream:
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as e:
-        msg, exit_code = Get_Doc("missing_file")
+        msg, exit_code = Get_Doc("missing_required_file")
         logger.error(
             "{doc_string} [{missing_file}]".format(
                 doc_string=msg, missing_file=e.filename
