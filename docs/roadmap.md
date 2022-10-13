@@ -15,6 +15,7 @@ Create an Issue, open a Discussion, join our Community and we'll be happy to wor
 - **Core:** Automated testing
 - **Plugins:** Automated testing and validation
 - **Core:** Run a deployment sub-step per tool
+- **Core:** Schema validation and error reporting
 - **Plugins:** Support for private repositories
 - **Core:** Schema validation and enhancements
 - **Security:** Secrets masking
