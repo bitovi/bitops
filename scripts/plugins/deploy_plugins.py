@@ -167,10 +167,10 @@ def Deploy_Plugins():
                         stream, Loader=yaml.FullLoader
                     )
 
-            except FileNotFoundError as e:
+            except FileNotFoundError as err:
                 msg, _ = Get_Doc("missing_optional_file")
-                logger.warning("{} [{}]".format(msg, plugin_configuration_path))
-                logger.debug(e)
+                logger.warning(f"{msg} [{plugin_configuration_path}]")
+                logger.debug(err)
                 plugin_configuration_yaml = {"plugin": {"deployment": {}}}
 
             # plugin.config.yaml
@@ -322,4 +322,4 @@ def Deploy_Plugins():
                 quit(1)
         else:
             msg, _ = Get_Doc("missing_ops_repo")
-            logger.warning("{} [{}]".format(msg, opsrepo_environment_dir))
+            logger.warning(f"{msg} [{opsrepo_environment_dir}]")

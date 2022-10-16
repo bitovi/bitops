@@ -125,10 +125,10 @@ def Install_Plugins():
                         stream, Loader=yaml.FullLoader
                     )
 
-            except FileNotFoundError as e:
+            except FileNotFoundError as err:
                 msg, _ = Get_Doc("missing_optional_file")
-                logger.warning("{} [{}]".format(msg, plugin_configuration_path))
-                logger.debug(e)
+                logger.warning(f"{msg} [{plugin_configuration_path}]")
+                logger.debug(err)
                 plugin_configuration_yaml = {"plugin": {"install": {}}}
             plugin_configuration = (
                 None

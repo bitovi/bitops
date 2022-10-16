@@ -232,14 +232,10 @@ def Get_Config_List(config_file, schema_file):
             schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
         with open(config_file, "r") as stream:
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-    except FileNotFoundError as e:
+    except FileNotFoundError as err:
         msg, exit_code = Get_Doc("missing_required_file")
-        logger.error(
-            "{doc_string} [{missing_file}]".format(
-                doc_string=msg, missing_file=e.filename
-            )
-        )
-        logger.debug(e)
+        logger.error(f"{msg} [{err.filename}]")
+        logger.debug(err)
         sys.exit(exit_code)
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
