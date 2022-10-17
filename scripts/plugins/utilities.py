@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import re
+from typing import Union
 import yaml
 
 from munch import DefaultMunch
@@ -335,19 +336,8 @@ def handle_hooks(mode, hooks_folder, source_folder):
 
         plugin_before_hook_script_path = hooks_folder + "/" + hook_script
         os.chmod(plugin_before_hook_script_path, 775)
-        try:
-            result = subprocess.run(
-                ["bash", plugin_before_hook_script_path],
-                universal_newlines=True,
-                capture_output=True,
-                check=False,
-            )
 
-        except Exception as exc:
-            logger.error(exc)
-            if BITOPS_fast_fail_mode:
-                sys.exit(101)
-
+        result = run_cmd(["bash", plugin_before_hook_script_path])
         if result.returncode == 0:
             logger.info(f"~#~#~#~{umode} HOOK [{hook_script}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(result.stdout)
@@ -355,3 +345,20 @@ def handle_hooks(mode, hooks_folder, source_folder):
             logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
     os.chdir(original_directory)
+
+
+def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
+    """Run a linux command and return CompletedProcess instance as a result"""
+    try:
+        result = subprocess.run(
+            command,
+            universal_newlines=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception as e:
+        logger.error(e)
+        if BITOPS_fast_fail_mode:
+            sys.exit(101)
+
+    return result

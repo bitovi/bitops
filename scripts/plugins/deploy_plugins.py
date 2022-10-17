@@ -1,6 +1,5 @@
 import os
 import sys
-import subprocess
 import tempfile
 from distutils.dir_util import copy_tree
 from munch import DefaultMunch
@@ -8,7 +7,7 @@ import yaml
 
 
 from .doc import get_doc
-from .utilities import get_config_list, handle_hooks
+from .utilities import get_config_list, handle_hooks, run_cmd
 from .settings import (
     BITOPS_fast_fail_mode,
     bitops_build_configuration,
@@ -242,7 +241,6 @@ def deploy_plugins():
         if plugin_deploy_before_hook_scripts_flag:
             hooks_folder = opsrepo_environment_dir + "/bitops.before-deploy.d"
             handle_hooks("before", hooks_folder, opsrepo_environment_dir)
-
         else:
             logger.warning("BitOps Core isn't invoking before hooks")
 
@@ -256,23 +254,13 @@ def deploy_plugins():
                         \n\t\t\tSTACK ACTION:   [{stack_action}]"
         )
 
-        try:
-            result = subprocess.run(
-                [
-                    plugin_deploy_language,
-                    plugin_deploy_script_path,
-                    stack_action,
-                ],
-                universal_newlines=True,
-                capture_output=True,
-                check=False,
-            )
-
-        except Exception as exc:
-            logger.error(exc)
-            if BITOPS_fast_fail_mode:
-                sys.exit(101)
-
+        result = run_cmd(
+            [
+                plugin_deploy_language,
+                plugin_deploy_script_path,
+                stack_action,
+            ]
+        )
         if result.returncode == 0:
             logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(result.stdout)
@@ -290,6 +278,5 @@ def deploy_plugins():
         if plugin_deploy_after_hook_scripts_flag:
             hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
             handle_hooks("after", hooks_folder, opsrepo_environment_dir)
-
         else:
             logger.warning("BitOps Core isn't invoking after hooks")

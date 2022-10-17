@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import sys
-import subprocess
 import os.path
 import os
 import git
 import yaml
 
 from munch import DefaultMunch
+
+from .utilities import run_cmd
 from .doc import get_doc
 from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
@@ -174,13 +175,7 @@ def install_plugins():
             logger.error(f"File does not exist: [{plugin_install_script_path}]")
             sys.exit(1)
 
-        result = subprocess.run(
-            [plugin_install_language, plugin_install_script_path],
-            universal_newlines=True,
-            capture_output=True,
-            check=False,
-            # shell=True
-        )
+        result = run_cmd([plugin_install_language, plugin_install_script_path])
         if result.returncode == 0:
             logger.info(f"~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(
