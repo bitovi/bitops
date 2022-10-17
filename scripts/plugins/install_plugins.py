@@ -104,8 +104,10 @@ def install_plugins():
             with open(plugin_configuration_path, "r", encoding="utf8") as stream:
                 plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
-        except FileNotFoundError:
-            logger.warning(f"No plugin file was found at path: [{plugin_configuration_path}]")
+        except FileNotFoundError as e:
+            msg, _ = get_doc("missing_optional_file")
+            logger.warning(f"{msg}: [{plugin_configuration_path}]")
+            logger.debug(e)
             plugin_configuration_yaml = {"plugin": {"install": {}}}
 
         plugin_configuration = (
@@ -150,7 +152,7 @@ def install_plugins():
                     f"MISSING DEPENDENCY \
                 \n\t NEEDED DEPENDENCY: [{missing_dependencies}] \
                 \n\t PLUGIN LIST:       [{plugin_list}] \
-                \n\t\t {get_doc('missing_plugin_dependency')}"
+                \n\t\t {get_doc('missing_plugin_dependency')[0]}"
                 )
                 sys.exit(10)
 

@@ -5,6 +5,7 @@ import re
 import yaml
 
 from munch import DefaultMunch
+from .doc import get_doc
 from .logging import logger
 from .settings import (
     BITOPS_fast_fail_mode,
@@ -236,8 +237,10 @@ def get_config_list(config_file, schema_file):
         with open(config_file, "r", encoding="utf8") as stream:
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as e:
-        logger.error("REQUIRED FILE NOT FOUND: [{}]".format(e.filename))
-        sys.exit(1)
+        msg, exit_code = get_doc("missing_required_file")
+        logger.error(f"{msg} [{e.filename}]")
+        logger.debug(e)
+        sys.exit(exit_code)
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
 

@@ -7,6 +7,7 @@ from munch import DefaultMunch
 import yaml
 
 
+from .doc import get_doc
 from .utilities import get_config_list, handle_hooks
 from .settings import (
     BITOPS_fast_fail_mode,
@@ -125,9 +126,8 @@ def deploy_plugins():
         os.environ["BITOPS_OPSREPO_ENVIRONMENT_DIR"] = opsrepo_environment_dir
 
         if not os.path.isdir(opsrepo_environment_dir):
-            logger.warning(
-                f"Opsrepo environment directory does not exist: [{opsrepo_environment_dir}]"
-            )
+            msg, _ = get_doc("missing_ops_repo")
+            logger.warning(f"{msg} [{opsrepo_environment_dir}]")
             continue
 
         # Reconcile BitOps config using existing shell scripts
@@ -154,8 +154,10 @@ def deploy_plugins():
             with open(plugin_configuration_path, "r", encoding="utf8") as stream:
                 plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
-        except FileNotFoundError:
-            logger.warning(f"No plugin file was found at path: [{plugin_configuration_path}]")
+        except FileNotFoundError as e:
+            msg, _ = get_doc("missing_optional_file")
+            logger.warning(f"{msg} [{plugin_configuration_path}]")
+            logger.debug(e)
             plugin_configuration_yaml = {"plugin": {"deployment": {}}}
 
         # plugin.config.yaml
