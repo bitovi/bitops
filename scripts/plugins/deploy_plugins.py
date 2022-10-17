@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from telnetlib import theNULL
 import yaml
@@ -9,6 +10,7 @@ import git
 from pickle import GLOBAL
 from shutil import rmtree
 from distutils.dir_util import copy_tree
+from .doc import Get_Doc
 from .utilities import Get_Config_List, Handle_Hooks
 from .settings import (
     BITOPS_config_yaml,
@@ -165,12 +167,10 @@ def Deploy_Plugins():
                         stream, Loader=yaml.FullLoader
                     )
 
-            except FileNotFoundError as e:
-                logger.warning(
-                    "No plugin file was found at path: [{}]".format(
-                        plugin_configuration_path
-                    )
-                )
+            except FileNotFoundError as err:
+                msg, _ = Get_Doc("missing_optional_file")
+                logger.warning(f"{msg} [{plugin_configuration_path}]")
+                logger.debug(err)
                 plugin_configuration_yaml = {"plugin": {"deployment": {}}}
 
             # plugin.config.yaml
@@ -321,8 +321,5 @@ def Deploy_Plugins():
                 )
                 quit(1)
         else:
-            logger.warning(
-                "Opsrepo environment directory does not exist: [{}]".format(
-                    opsrepo_environment_dir
-                )
-            )
+            msg, _ = Get_Doc("missing_ops_repo")
+            logger.warning(f"{msg} [{opsrepo_environment_dir}]")
