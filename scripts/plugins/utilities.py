@@ -14,7 +14,7 @@ from .settings import (
 )
 
 
-class SchemaObject:
+class SchemaObject: # pylint: disable=too-many-instance-attributes
     """
     The SchemaObject is a class that is used to parse the bitops.schema.yaml into a python object.
     Further functionality will parse the object against a bitops.config.yaml.
@@ -219,8 +219,9 @@ def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
             continue
     return keys_list
 
-
-def get_config_list(config_file, schema_file):
+# TODO: Refactor this function. Fix pylint R0914: Too many local variables (23/15) (too-many-locals)
+# See: https://github.com/bitovi/bitops/issues/327
+def get_config_list(config_file, schema_file): # pylint: disable=too-many-locals
     """
     Top level function that handles the parsing of a schema and loading of a configuration file.
     Results in a list of all schema values, their defaults and their configuration value (if set).
