@@ -22,7 +22,7 @@ from .logging import logger
 # TODO: Refactor this function. Fix R0912: Too many branches (19/12) (too-many-branches)
 # TODO: Refactor this function. Fix R0915: Too many statements (104/50) (too-many-statements)
 # See: https://github.com/bitovi/bitops/issues/328
-def deploy_plugins(): # pylint: disable=too-many-locals,too-many-branches,too-many-statements,R0801
+def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-many-statements,R0801
     """
     The deploy plugins function:
 
