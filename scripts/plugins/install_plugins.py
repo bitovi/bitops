@@ -14,7 +14,10 @@ from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 
 
-def install_plugins():
+# TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
+# TODO: Refactor this function. Fix pylint R0915: Too many statements (59/50) (too-many-statements)
+# See: https://github.com/bitovi/bitops/issues/329
+def install_plugins(): # pylint: disable=too-many-locals,too-many-statements
     """
     Install plugins function:
 
