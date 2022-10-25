@@ -270,28 +270,60 @@ def Deploy_Plugins():
                 )
 
                 try:
-                    result = subprocess.run(
-                        [
-                            plugin_deploy_language,
-                            plugin_deploy_script_path,
-                            stack_action,
-                        ],
-                        universal_newlines=True,
-                        capture_output=True,
+                    # error_file = "stderr_{}.log".format(plugin_name)
+                    # with open(error_file,"wb") as err:
+                    process = subprocess.Popen([
+                        plugin_deploy_language,
+                        plugin_deploy_script_path,
+                        stack_action,
+                    ],
+                    # stdout=subprocess.PIPE,
+                    # TODO: adding any form of stderr to the above call causes the below polling to not work properly for real time output
+                    #       instead, it causes the script to wait until everything is complete before outputting anything
+                    #       tried: stderr=err, stderr=subprocess.PIPE, stderr=subprocess.STDOUT
+                    #       for stderr=err, err is a file: with open(error_file,"wb") as err: 
+                    # stderr=err,
+                    # stderr=subprocess.STDOUT,
+
+                    # TODO: oddly, if you set only stderr=subprocess.PIPE and NOT stdout, 
+                    #       the process.poll() below being focused on stderr does seem to output both stdout and stderr in real time
+                    stderr=subprocess.PIPE,
+                    universal_newlines=True
                     )
+
+                    while True:
+                        # output_stdout = process.stdout.readline()
+                        output_stderr = process.stderr.readline()
+
+                        # if we have a return code, exit the while loop
+                        if process.poll() is not None:
+                            break
+
+                        # if output_stdout:
+                        #     # TODO: parse output for secrets
+                        #     # TODO: specify plugin and output tight output (no extra newlines)
+                        #     # logger.info(output_stdout)
+                        #     print(output_stdout)
+
+                        if output_stderr:
+                            # TODO: parse output for secrets
+                            # TODO: specify plugin and output tight output (no extra newlines)
+                            # logger.info(plugin_name + " " + output_stderr) (can we modify a specific handler to add handler.terminator = "")
+                            print(output_stderr)
+
+                    rc = process.poll()
 
                 except Exception as exc:
                     logger.error(exc)
                     if BITOPS_fast_fail_mode:
                         quit(101)
 
-                if result.returncode == 0:
+                if process.returncode == 0:
                     logger.info(
                         "\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~".format(
                             deployment=deployment
                         )
                     )
-                    logger.debug(result.stdout)
                     # TODO: DEEP DEBUG
                     # logger.debug("\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
                 else:
@@ -300,11 +332,11 @@ def Deploy_Plugins():
                             deployment=deployment
                         )
                     )
-                    logger.debug(result.stdout)
-                    logger.error(result.stderr)
+
                     # TODO: DEEP DEBUG
                     # logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
 
+                
                 # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
                 if plugin_deploy_after_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
