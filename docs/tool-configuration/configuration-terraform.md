@@ -101,7 +101,7 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 
 -------------------
 ### SKIP_DEPLOY_TERRAFORM
-Will skill all terraform executions. This superseeds all other configuration
+Will skip all terraform executions. This superseeds all other configuration
 
 -------------------
 ### TERRAFORM_APPLY

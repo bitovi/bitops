@@ -175,7 +175,7 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 
 -------------------
 ### SKIP_DEPLOY_HELM
-Will skill all helm executions. This superseeds all other configuration
+Will skip all helm executions. This superseeds all other configuration
 
 -------------------
 ### HELM_UNINSTALL_CHARTS

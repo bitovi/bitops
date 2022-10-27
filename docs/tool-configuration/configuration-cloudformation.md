@@ -129,4 +129,4 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 
 -------------------
 ### SKIP_DEPLOY_CLOUDFORMATION
-Will skill all cloudformation executions. This superseeds all other configuration
+Will skip all cloudformation executions. This superseeds all other configuration
