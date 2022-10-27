@@ -125,8 +125,8 @@ The directory within the ansible workspace that contains json files that will be
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
 
 -------------------
 ### SKIP_DEPLOY_CLOUDFORMATION
-Will skill all cloudformation executions. This superseeds all other configuration
+Will skip all cloudformation executions. This superseeds all other configuration.
