@@ -50,4 +50,4 @@ Before Ansible playbook execution, BitOps will look for an `extra_env` file cont
 
 -------------------
 ### SKIP_DEPLOY_ANSIBLE
-Will skill all ansible executions. This superseeds all other configuration.
+Will skip all ansible executions. This superseeds all other configuration.

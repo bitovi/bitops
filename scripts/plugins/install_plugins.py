@@ -125,14 +125,11 @@ def Install_Plugins():
                         stream, Loader=yaml.FullLoader
                     )
 
-            except FileNotFoundError as e:
-                logger.warning(
-                    "No plugin file was found at path: [{}]".format(
-                        plugin_configuration_path
-                    )
-                )
+            except FileNotFoundError as err:
+                msg, _ = Get_Doc("missing_optional_file")
+                logger.warning(f"{msg} [{plugin_configuration_path}]")
+                logger.debug(err)
                 plugin_configuration_yaml = {"plugin": {"install": {}}}
-
             plugin_configuration = (
                 None
                 if plugin_configuration_yaml is None
@@ -183,7 +180,7 @@ def Install_Plugins():
                             doc_link=Get_Doc("missing_plugin_dependency"),
                         )
                     )
-                    exit(10)
+                    sys.exit(10)
 
             # install plugin dependencies (install.sh)
             plugin_install_script_path = (

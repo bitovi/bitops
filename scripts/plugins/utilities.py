@@ -5,11 +5,13 @@ import os
 import sys
 import subprocess
 import re
+import sys
 
 from munch import DefaultMunch
 from itertools import chain
 from logging import root
 from xml.etree.ElementTree import tostring
+from .doc import Get_Doc
 from .settings import (
     BITOPS_fast_fail_mode,
     BITOPS_config_file,
@@ -230,12 +232,13 @@ def Get_Config_List(config_file, schema_file):
             schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
         with open(config_file, "r") as stream:
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-    except FileNotFoundError as e:
-        logger.error("REQUIRED FILE NOT FOUND: [{}]".format(e.filename))
-        sys.exit(1)
+    except FileNotFoundError as err:
+        msg, exit_code = Get_Doc("missing_required_file")
+        logger.error(f"{msg} [{err.filename}]")
+        logger.debug(err)
+        sys.exit(exit_code)
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
-    config = DefaultMunch.fromDict(config_yaml, None)
 
     schema_keys_list = []
     schema_root_keys = list(schema.keys())

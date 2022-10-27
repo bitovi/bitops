@@ -70,11 +70,11 @@ Configure [helm s3 plugin](https://github.com/hypnoglow/helm-s3) with the follow
 
 -------------------
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
 
 -------------------
 ### SKIP_DEPLOY_HELM
-Will skill all helm executions. This superseeds all other configuration
+Will skip all helm executions. This superseeds all other configuration.
 
 -------------------
 ### HELM_UNINSTALL_CHARTS

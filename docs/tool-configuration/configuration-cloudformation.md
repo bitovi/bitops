@@ -52,7 +52,7 @@ Allows for param files to be used. Has the following child-properties
 
 -------------------
 
-## Additional Environment Variable Configuration
+
 Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize the behaviour
 
 -------------------
