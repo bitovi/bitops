@@ -270,25 +270,44 @@ def Deploy_Plugins():
                 )
 
                 try:
+                    # Tried this approach, and the output was not live output
+                    #  tested by adding the following in mounted plugin code
+                    #      sleep 3; echo "hello"; sleep 3; echo "hello 2";
+                    #  expected to see "hello" and then a pause, and then "hello 2"
+                    #  result: no output was shown until after the plugin deploy script finished
+                    # process = subprocess.Popen(
+                    #     [
+                    #         plugin_deploy_language,
+                    #         plugin_deploy_script_path,
+                    #         stack_action,
+                    #     ],
+                    #     stdout=subprocess.PIPE,
+                    #     stderr=subprocess.STDOUT
+                    # )
+
+                    # for combined_output in process.stdout:
+                    #     print(combined_output)
+
                     # error_file = "stderr_{}.log".format(plugin_name)
                     # with open(error_file,"wb") as err:
-                    process = subprocess.Popen([
-                        plugin_deploy_language,
-                        plugin_deploy_script_path,
-                        stack_action,
-                    ],
-                    # stdout=subprocess.PIPE,
-                    # TODO: adding any form of stderr to the above call causes the below polling to not work properly for real time output
-                    #       instead, it causes the script to wait until everything is complete before outputting anything
-                    #       tried: stderr=err, stderr=subprocess.PIPE, stderr=subprocess.STDOUT
-                    #       for stderr=err, err is a file: with open(error_file,"wb") as err: 
-                    # stderr=err,
-                    # stderr=subprocess.STDOUT,
 
-                    # TODO: oddly, if you set only stderr=subprocess.PIPE and NOT stdout, 
-                    #       the process.poll() below being focused on stderr does seem to output both stdout and stderr in real time
-                    stderr=subprocess.PIPE,
-                    universal_newlines=True
+                    process = subprocess.Popen(
+                        [
+                            plugin_deploy_language,
+                            plugin_deploy_script_path,
+                            stack_action,
+                        ],
+                        # stdout=subprocess.PIPE,
+                        # TODO: adding any form of stderr to the above call causes the below polling to not work properly for real time output
+                        #       instead, it causes the script to wait until everything is complete before outputting anything
+                        #       tried: stderr=err, stderr=subprocess.PIPE, stderr=subprocess.STDOUT
+                        #       for stderr=err, err is a file: with open(error_file,"wb") as err:
+                        # stderr=err,
+                        # stderr=subprocess.STDOUT,
+                        # TODO: oddly, if you set only stderr=subprocess.PIPE and NOT stdout,
+                        #       the process.poll() below being focused on stderr does seem to output both stdout and stderr in real time
+                        stderr=subprocess.PIPE,
+                        universal_newlines=True,
                     )
 
                     while True:
@@ -336,7 +355,6 @@ def Deploy_Plugins():
                     # TODO: DEEP DEBUG
                     # logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
 
-                
                 # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
                 if plugin_deploy_after_hook_scripts_flag:
                     hooks_folder = opsrepo_environment_dir + "/bitops.after-deploy.d"
