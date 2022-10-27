@@ -101,16 +101,16 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 
 -------------------
 ### SKIP_DEPLOY_TERRAFORM
-Will skip all terraform executions. This superseeds all other configuration
+Will skip all terraform executions. This superseeds all other configuration.
 
 -------------------
 ### TERRAFORM_APPLY
-Will force call `terraform apply`
+Will force call `terraform apply`.
 
 -------------------
 ### TERRAFORM_DESTROY
-Will force call `terraform destroy`
+Will force call `terraform destroy`.
 
 -------------------
 ### INIT_UPGRADE
-Will add `--upgrade` flag to the init command
+Will add `--upgrade` flag to the init command.
