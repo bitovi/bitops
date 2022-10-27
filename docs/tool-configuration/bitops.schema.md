@@ -1,6 +1,6 @@
 # Summary
 ## Schema
-```
+```yaml
 bitops:
   ops_repo:
     source: <value>

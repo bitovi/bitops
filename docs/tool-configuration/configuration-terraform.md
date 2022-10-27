@@ -34,65 +34,20 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 
 [bitops.schema.yaml](https://github.com/bitops-plugins/terraform/blob/main/bitops.schema.yaml)
 
--------------------
-### var-file
-* **BitOps Property:** `var-file`
-* **CLI Argument:** `--var-file`
-* **Environment Variable:** `BITOPS_TF_VAR_FILE`
-* **default:** `""`
-* **Required:** `false`
-* **Description:** Terraform Varaible file
-
--------------------
-### target
-* **BitOps Property:** `target`
-* **CLI Argument:** `--target`
-* **Environment Variable:** `BITOPS_TF_TARGET`
-* **default:** `""`
-* **Required:** `false`
-* **Description:**
-
--------------------
-### backend-config
-* **BitOps Property:** `backend-config`
-* **CLI Argument:** `--KEY1=foo --KEY2=bar`
-* **Environment Variable:** ``
-* **default:** `""`
-* **Required:** `false`
-* **Description:**
-
--------------------
+| Property       | Environment Variable | CLI Argument          | Description             | Default | Required |
+| -------------- | -------------------- | --------------------- | ----------------------- | ------- | -------- |
+| var-file       | BITOPS_TF_VAR_FILE   | --var-file            | Terraform Varaible file | `null`  | No       |
+| target         | BITOPS_TF_TARGET     | --target              |                         | `null`  | No       |
+| backend-config |                      | --KEY1=foo --KEY2=bar |                         | `null`  | No       |
 
 
 ## Options Configuration
 
--------------------
-
-### stack-action
-* **BitOps Property:** `stack-action`
-* **Environment Variable:** `BITOPS_TERRAFORM_COMMAND`
-* **default:** `"plan"`
-* **Required:** `false`
-* **Description:** Controls what terraform command to run. e.g. `apply`, `destroy`, etc. 
-
-
--------------------
-<!-- ### version
-* **BitOps Property:** `version`
-* **Environment Variable:** `BITOPS_TERRAFORM_VERSION`
-* **default:** `"1.2.2"`
-* **Required:** `false`
-* **Description:** Allows customziation of which version of terraform to run
-
-* **NOTE:** `This feature currently not supported.`  -->
-
--------------------
-### workspace
-* **BitOps Property:** `workspace`
-* **Environment Variable:** `BITOPS_TERRAFORM_WORKSPACE`
-* **default:** `""`
-* **Required:** `false`
-* **Description:** Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE || terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands.
+| Property     | Environment Variable       | Description                                                  | Default | Required |
+| ------------ | -------------------------- | ------------------------------------------------------------ | ------- | -------- |
+| stack-action | BITOPS_TERRAFORM_COMMAND   | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
+| version      | BITOPS_TERRAFORM_VERSION   | Allows customization of which version of terraform to run. **NOTE:** `This feature is currently not supported.` | `1.2.2` | No       |
+| workspace    | BITOPS_TERRAFORM_WORKSPACE | Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE ||terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands. | `null`  | No       |
 
 -------------------
 
