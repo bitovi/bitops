@@ -1,0 +1,14 @@
+[FORMAT]
+max-line-length=100
+disable=logging-fstring-interpolation
+
+[MESSAGES CONTROL]
+# C0111 Used when a warning note as FIXME or TODO is detected (fixme)
+# C0114 Missing module docstring (missing-module-docstring)
+# W0703: Catching too general exception Exception (broad-except)
+disable=W0511,C0114,W0703
+
+[BASIC]
+# Enhance C0103 to allow 1-2 letter variables (invalid-name)
+# https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#good-names-rgxs
+good-names-rgxs=^[_a-z][_a-z0-9]?$
