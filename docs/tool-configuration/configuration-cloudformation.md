@@ -37,9 +37,10 @@ cloudformation:
 
 -------------------
 ## cfn-files
-* **BitOps Property:** `cfn-files`
+**BitOps Property:** `cfn-files`
 
 Allows for param files to be used. Has the following child-properties
+
 | Property                                 | Environmental Variable       | Description                                                  | Default      | Required |
 | ---------------------------------------- | ---------------------------- | ------------------------------------------------------------ | ------------ | -------- |
 | cfn-files.template-file                  |                              | Template file to apply the params against                    |              |          |
