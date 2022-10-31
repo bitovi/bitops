@@ -28,6 +28,6 @@ RUN pip3 install -r requirements.txt
 
 ONBUILD WORKDIR /opt/bitops
 ONBUILD COPY bitops.config.yaml .
-ONBUILD RUN python3 scripts/plugins.py install
+ONBUILD RUN python3 scripts/main.py install
 
-ENTRYPOINT ["python3", "/opt/bitops/scripts/plugins.py", "deploy"]
+ENTRYPOINT ["python3", "/opt/bitops/scripts/main.py", "deploy"]

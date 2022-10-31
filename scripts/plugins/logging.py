@@ -1,12 +1,5 @@
 import logging
 import sys
-from .settings import BITOPS_logging_level
-
-# Logging levels
-# 1. DEBUG
-# 2. INFO
-# 3. WARN
-# 4. ERROR
 
 from .settings import (
     BITOPS_logging_level,
@@ -15,6 +8,13 @@ from .settings import (
     BITOPS_logging_path,
 )
 
+
+# Logging levels
+# 1. DEBUG
+# 2. INFO
+# 3. WARN
+# 4. ERROR
+
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 RESET_SEQ = "\033[0m"
 COLOR_SEQ = "\033[1;%dm"
@@ -22,6 +22,10 @@ BOLD_SEQ = "\033[1m"
 
 
 def formatter_message(message, use_color=BITOPS_logging_color):
+    """
+    Formats messages replaces $RESET and $BOLD placeholders
+    with the respective bash color sequences.
+    """
     if use_color:
         message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
     else:
@@ -39,16 +43,22 @@ COLORS = {
 
 
 class ColoredFormatter(logging.Formatter):
+    """
+    Class that controls the formatting of logging text, adds colors if enabled.
+    Settings are contained within "bitops.config.yaml:bitops.logging".
+    """
+
     def __init__(self, msg, use_color=BITOPS_logging_color):
         logging.Formatter.__init__(self, msg)
         self.use_color = use_color
 
     def format(self, record):
+        """
+        Adds color to the logging text
+        """
         levelname = record.levelname
         if self.use_color and levelname in COLORS:
-            levelname_color = (
-                COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
-            )
+            levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
             record.levelname = levelname_color
         return logging.Formatter.format(self, record)
 
@@ -75,8 +85,6 @@ if BITOPS_logging_filename is not None:
 
     BITOPS_logging_filename.replace(".logs", "").replace(".log", "")
 
-    fileHandler = logging.FileHandler(
-        "{0}/{1}.log".format(BITOPS_logging_path, BITOPS_logging_filename)
-    )
+    fileHandler = logging.FileHandler(f"{BITOPS_logging_path}/{BITOPS_logging_filename}.log")
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)
