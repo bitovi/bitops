@@ -1,6 +1,7 @@
 ## Using alpine fails on awscli install
 FROM python:3.8.6-alpine
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
 RUN apk add --no-cache bash
 RUN apk update
 
