@@ -5,6 +5,7 @@
 [![Build Status](https://github.com/bitovi/bitops/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/bitovi/bitops/actions/workflows/ci.yaml)
 [![LICENSE](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
 ![Python 3.8](https://img.shields.io/badge/python-3.8-blue)
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/PyCQA/pylint)
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/bitovi/bitops)](https://hub.docker.com/r/bitovi/bitops)
 [![GitHub Discussions](https://img.shields.io/github/discussions/bitovi/bitops)](https://github.com/bitovi/bitops/discussions)

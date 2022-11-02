@@ -1,26 +1,27 @@
-from distutils.command.config import config
-from inspect import Parameter
-import yaml
 import os
 import sys
 import subprocess
 import re
-import sys
+from typing import Union
+import yaml
 
 from munch import DefaultMunch
-from itertools import chain
-from logging import root
-from xml.etree.ElementTree import tostring
-from .doc import Get_Doc
+from .doc import get_doc
+from .logging import logger
 from .settings import (
     BITOPS_fast_fail_mode,
     BITOPS_config_file,
-    bitops_schema_configuration,
 )
-from .logging import logger
 
 
-class SchemaObject:
+class SchemaObject:  # pylint: disable=too-many-instance-attributes
+    """
+    The SchemaObject is a class that is used to parse the bitops.schema.yaml into a python object.
+    Further functionality will parse the object against a bitops.config.yaml.
+    If a match is found between the bitops.schema and the bitops.config,
+    the config value is loaded into the SchemaObject.
+    """
+
     properties = [
         "export_env",
         "default",
@@ -49,80 +50,77 @@ class SchemaObject:
         self.required = False
 
         if schema_property_values:
-            for property in self.properties:
+            for _property in self.properties:
                 try:
-                    setattr(self, property, schema_property_values[property])
+                    setattr(self, _property, schema_property_values[_property])
                 except KeyError as exc:
-                    setattr(self, property, None)
+                    setattr(self, _property, None)
                     if BITOPS_fast_fail_mode:
                         raise exc
-                    else:
-                        continue
 
-        logger.info("\n\tNEW SCHEMA:{}".format(self.PrintSchema()))
+        logger.info(f"\n\tNEW SCHEMA:{self.print_schema()}")
 
     def __str__(self):
-        return "\n\tSCHEMA:{}".format(self.PrintSchema())
+        return f"\n\tSCHEMA:{self.print_schema()}"
 
-    def PrintSchema(self):
-        return "\n\t\tName:         [{}]\
-            \n\t\tSchema Key:   [{}]\
-            \n\t\tConfig_Key:   [{}]\
-            \n\t\tSchema Type:  [{}]\
+    def print_schema(self):
+        """
+        Visual representation of the schema object parsed.
+        """
+        return f"\n\t\tName:         [{self.name}]\
+            \n\t\tSchema Key:   [{self.schema_key}]\
+            \n\t\tConfig_Key:   [{self.config_key}]\
+            \n\t\tSchema Type:  [{self.schema_property_type}]\
             \n                      \
-            \n\t\tExport Env:   [{}]\
-            \n\t\tDefault:      [{}]\
-            \n\t\tEnabled:      [{}]\
-            \n\t\tType:         [{}]\
-            \n\t\tParameter:    [{}]\
-            \n\t\tDash Type:    [{}]\
-            \n\t\tRequired:     [{}]\
+            \n\t\tExport Env:   [{self.export_env}]\
+            \n\t\tDefault:      [{self.default}]\
+            \n\t\tEnabled:      [{self.enabled}]\
+            \n\t\tType:         [{self.type}]\
+            \n\t\tParameter:    [{self.parameter}]\
+            \n\t\tDash Type:    [{self.dash_type}]\
+            \n\t\tRequired:     [{self.required}]\
             \n                      \
-            \n\t\tValue Set:    [{}]".format(
-            self.name,
-            self.schema_key,
-            self.config_key,
-            self.schema_property_type,
-            self.export_env,
-            self.default,
-            self.enabled,
-            self.type,
-            self.parameter,
-            self.dash_type,
-            self.required,
-            self.value,
-        )
+            \n\t\tValue Set:    [{self.value}]"
 
-    def ProcessConfig(self, config_yaml):
+    def process_config(self, config_yaml):
+        """
+        Function that processes the bitops.config against the SchemaObject,
+        with the defaults loaded from the bitops.schema.
+        It also checks that the type for the SchemaObject matches that in the configuration.
+        """
         if self.type == "object":
             return
-        result = Get_Nested_Item(config_yaml, self.config_key)
-        logger.info(
-            "\n\tSearching for: [{}]\n\t\tResult Found: [{}]".format(
-                self.config_key, result
-            )
-        )
-        found_config_value = Apply_Data_Type(self.type, result)
+        result = get_nested_item(config_yaml, self.config_key)
+        logger.info(f"\n\tSearching for: [{self.config_key}]\n\t\tResult Found: [{result}]")
+        found_config_value = apply_data_type(self.type, result)
 
         if found_config_value:
             logger.info(
-                "Override found for: [{}], default: [{}], new value: [{}]".format(
-                    self.name, self.default, found_config_value
-                )
+                f"Override found for: [{self.name}], default: [{self.default}], "
+                f"new value: [{found_config_value}]"
             )
             self.value = found_config_value
         else:
             self.value = self.default
 
-        AddValueToEnv(self.export_env, self.value)
+        add_value_to_env(self.export_env, self.value)
 
 
-def Parse_Values(item):
+def parse_values(item):
+    """
+    Convert the yaml properties value loaded from bitops schema into yaml properties
+    value for bitops configuration.
+    Example
+        bitops.schema: bitops.properties.options.properties.file
+         ->
+        bitops.config: bitops.options.file
+    """
     return item.replace("properties.", "")
 
 
-def Load_Yaml(yaml_file):
-    with open(yaml_file, "r") as stream:
+def load_yaml(yaml_file):
+    """Loads yaml from file"""
+    with open(yaml_file, "r", encoding="utf8") as stream:
         try:
             plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
@@ -132,57 +130,63 @@ def Load_Yaml(yaml_file):
     return plugins_yml
 
 
-def Load_Build_Config():
-    logger.info("Loading {}".format(BITOPS_config_file))
+def load_build_config():
+    """
+    Returns yaml object for a BitOps config
+    """
+    logger.info(f"Loading {BITOPS_config_file}")
     # Load plugin config yml
-    return Load_Yaml(BITOPS_config_file)
+    return load_yaml(BITOPS_config_file)
 
 
-def Apply_Data_Type(data_type, convert_value):
-    if data_type == "object" or convert_value == None:
+def apply_data_type(data_type, convert_value):
+    """
+    Converts incoming variable into `type of` based on SchemaObject.type property.
+    """
+    if data_type == "object" or convert_value is None:
         return None
 
     if re.search("list", data_type, re.IGNORECASE):
         return list(convert_value)
-    elif re.search("string", data_type, re.IGNORECASE):
+    if re.search("string", data_type, re.IGNORECASE):
         return str(convert_value)
-    elif re.search("int", data_type, re.IGNORECASE):
+    if re.search("int", data_type, re.IGNORECASE):
         return int(convert_value)
-    elif re.search("boolean", data_type, re.IGNORECASE) or re.search(
+    if re.search("boolean", data_type, re.IGNORECASE) or re.search(
         "bool", data_type, re.IGNORECASE
     ):
         return bool(convert_value)
-    else:
-        if BITOPS_fast_fail_mode:
-            raise ValueError("Data type not supported: [{}]".format(data_type))
-        else:
-            logger.warn("Data type not supported: [{}]".format(data_type))
-            return None
+
+    if BITOPS_fast_fail_mode:
+        raise ValueError(f"Data type not supported: [{data_type}]")
+
+    logger.warning(f"Data type not supported: [{data_type}]")
+    return None
 
 
-def AddValueToEnv(export_env, value):
-    if (
-        value is None
-        or value == ""
-        or value == "None"
-        or export_env is None
-        or export_env == ""
-    ):
+def add_value_to_env(export_env, value):
+    """
+    Takes a variable name and value and loads them into an environment variable,
+    prefixing with BITOPS_.
+
+    Example:
+        TERRAFORM_VERSION=123 -> BITOPS_TERRAFORM_VERSION=123
+    """
+    if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
 
     export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
-    logger.info(
-        "Setting environment variable: [{}], to value: [{}]".format(export_env, value)
-    )
+    logger.info("Setting environment variable: [{export_env}], to value: [{value}]")
 
 
-def Get_Nested_Item(search_dict, key):
+def get_nested_item(search_dict, key):
+    """
+    Parses yaml (schema/config) based on SchemaObject properties path.
+    """
     logger.debug(
-        "\n\t\tSEARCHING FOR KEY:  [{}]    \
-                  \n\t\tSEARCH_DICT:        [{}]".format(
-            key, search_dict
-        )
+        f"\n\t\tSEARCHING FOR KEY:  [{key}]    \
+                  \n\t\tSEARCH_DICT:        [{search_dict}]"
     )
     obj = search_dict
     key_list = key.split(".")
@@ -191,51 +195,54 @@ def Get_Nested_Item(search_dict, key):
             obj = obj[k]
     except KeyError:
         return None
-    logger.debug(
-        "\n\t\tKEY [{}] \
-                  \n\t\tRESULT FOUND:   [{}]".format(
-            key, obj
-        )
-    )
+    logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
     return obj
 
 
-def Parse_Yaml_Keys_To_List(schema, root_key, key_chain=None):
+def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
+    """
+    Recursive function that iterates over a schema and generates
+    a configuration property path list.
+    """
     keys_list = []
     if key_chain is None:
         key_chain = root_key
 
-    for property in schema[root_key].keys():
+    for _property in schema[root_key].keys():
         inner_schema = schema[root_key]
-        key_value = "{}.{}".format(key_chain, property)
+        key_value = f"{key_chain}.{_property}"
         keys_list.append(key_value)
         try:
-            keys_list += Parse_Yaml_Keys_To_List(inner_schema, property, key_value)
-        except AttributeError as e:
+            keys_list += parse_yaml_keys_to_list(inner_schema, _property, key_value)
+        except AttributeError:
             # End of keys for property, move on to next key
             continue
     return keys_list
 
 
-def Get_Config_List(config_file, schema_file):
+# TODO: Refactor this function. Fix pylint R0914: Too many local variables (23/15) (too-many-locals)
+# See: https://github.com/bitovi/bitops/issues/327
+def get_config_list(config_file, schema_file):  # pylint: disable=too-many-locals
+    """
+    Top level function that handles the parsing of a schema and loading of a configuration file.
+    Results in a list of all schema values, their defaults and their configuration value (if set).
+    """
     logger.info(
-        "\n\n\n~#~#~#~CONVERTING: \
-    \n\t PLUGIN CONFIGURATION FILE PATH:    [{}]    \
-    \n\t PLUGIN SCHEMA FILE PATH:           [{}]    \
-    \n\n".format(
-            config_file, schema_file
-        )
+        f"\n\n\n~#~#~#~CONVERTING: \
+    \n\t PLUGIN CONFIGURATION FILE PATH:    [{config_file}]    \
+    \n\t PLUGIN SCHEMA FILE PATH:           [{schema_file}]    \
+    \n\n"
     )
 
     try:
-        with open(schema_file, "r") as stream:
+        with open(schema_file, "r", encoding="utf8") as stream:
             schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-        with open(config_file, "r") as stream:
+        with open(config_file, "r", encoding="utf8") as stream:
             config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-    except FileNotFoundError as err:
-        msg, exit_code = Get_Doc("missing_required_file")
-        logger.error(f"{msg} [{err.filename}]")
-        logger.debug(err)
+    except FileNotFoundError as e:
+        msg, exit_code = get_doc("missing_required_file")
+        logger.error(f"{msg} [{e.filename}]")
+        logger.debug(e)
         sys.exit(exit_code)
 
     schema = DefaultMunch.fromDict(schema_yaml, None)
@@ -245,9 +252,9 @@ def Get_Config_List(config_file, schema_file):
     root_key = schema_root_keys[0]
     schema_keys_list.append(root_key)
 
-    schema_keys_list += Parse_Yaml_Keys_To_List(schema, root_key)
+    schema_keys_list += parse_yaml_keys_to_list(schema, root_key)
 
-    logger.debug("Schema keys: [{}]".format(schema_keys_list))
+    logger.debug(f"Schema keys: [{schema_keys_list}]")
 
     ignore_values = ["type", "properties", "cli", "options", root_key]
 
@@ -269,22 +276,18 @@ def Get_Config_List(config_file, schema_file):
         logger.debug("Starting a new property search")
         property_name = schema_properties.split(".")[-1]
 
-        result = Get_Nested_Item(schema, schema_properties)
+        result = get_nested_item(schema, schema_properties)
 
         schema_object = SchemaObject(property_name, schema_properties, result)
-        schema_object.ProcessConfig(config_yaml)
+        schema_object.process_config(config_yaml)
         schema_list.append(schema_object)
 
     bad_config_list = [item for item in schema_list if item.value == "BAD_CONFIG"]
     schema_list = [item for item in schema_list if item not in bad_config_list]
-    cli_config_list = [
-        item for item in schema_list if item.schema_property_type == "cli"
-    ]
-    options_config_list = [
-        item for item in schema_list if item.schema_property_type == "options"
-    ]
+    cli_config_list = [item for item in schema_list if item.schema_property_type == "cli"]
+    options_config_list = [item for item in schema_list if item.schema_property_type == "options"]
     required_config_list = [
-        item for item in schema_list if item.required == True and not item.value
+        item for item in schema_list if item.required is True and not item.value
     ]
 
     logger.debug("\n~~~~~ CLI OPTIONS ~~~~~")
@@ -301,23 +304,19 @@ def Get_Config_List(config_file, schema_file):
         logger.warning("\n~~~~~ REQUIRED CONFIG ~~~~~")
         for item in required_config_list:
             logger.error(
-                "Configuration value: [{}] is required. Please ensure you set this configuration value in the plugins `bitops.config.yaml`".format(
-                    item.name
-                )
+                f"Configuration value: [{item.name}] is required. Please ensure you "
+                "set this configuration value in the plugins `bitops.config.yaml`"
             )
             logger.debug(item)
-            quit()
+            sys.exit()
 
     return cli_config_list, options_config_list
 
 
-def Generate_Cli_Command(cli_config_list):
-    logger.info("Generating CLI options")
-    for item in cli_config_list:
-        logger.info(item)
-
-
-def Handle_Hooks(mode, hooks_folder, source_folder):
+def handle_hooks(mode, hooks_folder, source_folder):
+    """
+    Processes a bitops before/after hook by invoking bash script(s) within the hooks folder(s).
+    """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
         return
@@ -326,10 +325,10 @@ def Handle_Hooks(mode, hooks_folder, source_folder):
     os.chdir(source_folder)
 
     umode = mode.upper()
-    logger.info("INVOKING {} HOOKS".format(umode))
+    logger.info(f"INVOKING {umode} HOOKS")
     # Check what's in the ops_repo/<plugin>/bitops.before-deploy.d/
     hooks = sorted(os.listdir(hooks_folder))
-    msg = "\n\n~#~#~#~BITOPS {} HOOKS~#~#~#~".format(umode)
+    msg = f"\n\n~#~#~#~BITOPS {umode} HOOKS~#~#~#~"
     for hook in hooks:
         msg += "\n\t" + hook
     logger.debug(msg)
@@ -339,28 +338,29 @@ def Handle_Hooks(mode, hooks_folder, source_folder):
 
         plugin_before_hook_script_path = hooks_folder + "/" + hook_script
         os.chmod(plugin_before_hook_script_path, 775)
-        try:
-            result = subprocess.run(
-                ["bash", plugin_before_hook_script_path],
-                universal_newlines=True,
-                capture_output=True,
-            )
 
-        except Exception as exc:
-            logger.error(exc)
-            if BITOPS_fast_fail_mode:
-                quit(101)
-
+        result = run_cmd(["bash", plugin_before_hook_script_path])
         if result.returncode == 0:
-            logger.info(
-                "~#~#~#~{} HOOK [{}] SUCCESSFULLY COMPLETED~#~#~#~".format(
-                    umode, hook_script
-                )
-            )
+            logger.info(f"~#~#~#~{umode} HOOK [{hook_script}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(result.stdout)
         else:
-            logger.warning(
-                "~#~#~#~{} HOOK [{}] FAILED~#~#~#~".format(umode, hook_script)
-            )
+            logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
     os.chdir(original_directory)
+
+
+def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
+    """Run a linux command and return CompletedProcess instance as a result"""
+    try:
+        result = subprocess.run(
+            command,
+            universal_newlines=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception as e:
+        logger.error(e)
+        if BITOPS_fast_fail_mode:
+            sys.exit(101)
+
+    return result
