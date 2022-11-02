@@ -352,15 +352,23 @@ def handle_hooks(mode, hooks_folder, source_folder):
 def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
     """Run a linux command and return CompletedProcess instance as a result"""
     try:
-        result = subprocess.run(
+        process = subprocess.Popen(
             command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             universal_newlines=True,
-            capture_output=True,
-            check=False,
         )
-    except Exception as e:
-        logger.error(e)
-        if BITOPS_fast_fail_mode:
-            sys.exit(101)
 
-    return result
+        for combined_output in process.stdout:
+            # TODO: parse output for secrets
+            # TODO: specify plugin and output tight output (no extra newlines)
+            # TODO: can we modify a specific handler to add handler.terminator = "" ?
+            sys.stdout.write(combined_output)
+
+    except Exception as exc:
+        logger.error(exc)
+        if BITOPS_fast_fail_mode:
+            quit(101)
+
+    process.communicate() # This polls the async function to get information about the status of the process execution. Namely the return code which is used elsewhere. 
+    return process
