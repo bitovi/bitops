@@ -370,5 +370,6 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
         if BITOPS_fast_fail_mode:
             quit(101)
 
-    process.communicate() # This polls the async function to get information about the status of the process execution. Namely the return code which is used elsewhere. 
+    # This polls the async function to get information about the status of the process execution. Namely the return code which is used elsewhere.
+    process.communicate()
     return process
