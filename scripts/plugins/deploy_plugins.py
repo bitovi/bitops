@@ -278,7 +278,7 @@ def Deploy_Plugins():
                         ],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
-                        universal_newlines=True
+                        universal_newlines=True,
                     )
 
                     for combined_output in process.stdout:
