@@ -284,7 +284,7 @@ def Deploy_Plugins():
                     for combined_output in process.stdout:
                         # TODO: parse output for secrets
                         # TODO: specify plugin and output tight output (no extra newlines)
-                        # logger.info(plugin_name + " " + output_stderr) (can we modify a specific handler to add handler.terminator = "")
+                        # TODO: can we modify a specific handler to add handler.terminator = "" ?
                         sys.stdout.write(combined_output)
 
                 except Exception as exc:
@@ -298,17 +298,12 @@ def Deploy_Plugins():
                             deployment=deployment
                         )
                     )
-                    # TODO: DEEP DEBUG
-                    # logger.debug("\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
                 else:
                     logger.warning(
                         "\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~".format(
                             deployment=deployment
                         )
                     )
-
-                    # TODO: DEEP DEBUG
-                    # logger.debug("\n\tSTDOUT:[{stdout}]\n\tSTDERR: [{stderr}]\n\tRESULTS: [{result}]".format(stdout=result.stdout, stderr=result.stderr, result=result))
 
                 # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
                 if plugin_deploy_after_hook_scripts_flag:
