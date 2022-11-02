@@ -267,16 +267,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         )
         if result.returncode == 0:
             logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")
-            logger.debug(result.stdout)
-            # TODO: DEEP DEBUG
-            # logger.debug("\n\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
         else:
             logger.warning(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~")
-            logger.debug(result.stdout)
-            logger.error(result.stderr)
-            # TODO: DEEP DEBUG
-            # logger.debug(f"\n\tSTDOUT:[{result.stdout}]\n"
-            #              f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]")
 
         # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
         if plugin_deploy_after_hook_scripts_flag:
