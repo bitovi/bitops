@@ -51,20 +51,14 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.  Set the value of the environental variable to `true` to enable its behavior.
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behavior.  Set the value of the environmental variable to `true` to enable its behavior.
 
 -------------------
-### SKIP_DEPLOY_TERRAFORM
-Will skip all terraform executions. This superseeds all other configuration.
+| Variable              | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| SKIP_DEPLOY_TERRAFORM | Will skip all terraform executions. This supersedes all other configurations. |
+| TERRAFORM_APPLY       | Will force call `terraform apply`.                           |
+| TERRAFORM_DESTROY     | Will force call `terraform destroy`.                         |
+| INIT_UPGRADE          | Will add `--upgrade` flag to the init command.               |
 
--------------------
-### TERRAFORM_APPLY
-Will force call `terraform apply`.
-
--------------------
-### TERRAFORM_DESTROY
-Will force call `terraform destroy`.
-
--------------------
-### INIT_UPGRADE
-Will add `--upgrade` flag to the init command.
+### 

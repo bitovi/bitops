@@ -54,8 +54,10 @@ Allows for param files to be used. Has the following child-properties
 -------------------
 
 
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize the behaviour
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize the behavior
 
 -------------------
-### SKIP_DEPLOY_CLOUDFORMATION
-Will skill all CloudFormation executions. This supersedes all other configuration
+| Environmental Variable     | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| SKIP_DEPLOY_CLOUDFORMATION | Will skill all CloudFormation executions. This supersedes all other configuration |
+

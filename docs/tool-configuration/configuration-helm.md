@@ -70,12 +70,12 @@ Configure [helm s3 plugin](https://github.com/hypnoglow/helm-s3) with the follow
 
 -------------------
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behavior.
 
--------------------
-### SKIP_DEPLOY_HELM
-Will skip all helm executions. This superseeds all other configuration.
+| Environmental Variable | Description                                                  |
+| ---------------------- | ------------------------------------------------------------ |
+| SKIP_DEPLOY_HELM       | Will skip all helm executions. This supersedes all other configurations. |
+| HELM_UNINSTALL_CHARTS  | Comma-separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded. |
 
--------------------
-### HELM_UNINSTALL_CHARTS
-Comma separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded.
+
+

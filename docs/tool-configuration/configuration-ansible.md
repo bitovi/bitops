@@ -42,12 +42,12 @@ ansible:
 | verbosity | ANSIBLE_VERBOSITY      | Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v` flags. Will override a pre-existing `ANSIBLE_VERBOSITY` environmental variable or `[default]` `verbosity=` setting in ansible.cfg. | N/A     |          |
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behavior.
 
--------------------
-### EXTRA_ENV
-Before Ansible playbook execution, BitOps will look for an `extra_env` file containing additional environment parameters (`FOO=val1`) in the Ansible plugin directory. If found, the values will be exported to the BitOps environment.
+| Environmental Variable | Description                                                  |
+| ---------------------- | ------------------------------------------------------------ |
+| EXTRA_ENV              | Before Ansible playbook execution, BitOps will look for an `extra_env` file containing additional environment parameters (`FOO=val1`) in the Ansible plugin directory. If found, the values will be exported to the BitOps environment. |
+| SKIP_DEPLOY_ANSIBLE    | Will skip all ansible executions. This supersedes all other configurations. |
 
--------------------
-### SKIP_DEPLOY_ANSIBLE
-Will skip all ansible executions. This superseeds all other configuration.
+
+
