@@ -270,121 +270,22 @@ def Deploy_Plugins():
                 )
 
                 try:
-                    # TROUBLESHOOTING DETAILS
-                    #   adding any form of stderr to the above call causes the below polling to not work properly for real time output
-                    #   instead, it causes the script to wait until everything is complete before outputting anything
-                    #   tried: stderr=err, stderr=subprocess.PIPE, stderr=subprocess.STDOUT
-                    #   for stderr=err, err is a file: with open(error_file,"wb") as err:
-                    # END TROUBLESHOOTING DETAILS
-
-                    ################ APPROACH 0 ################
-                    # The following works
-                    # TODO: oddly, if you set only stderr=subprocess.PIPE and NOT stdout,
-                    #       the process.poll() below being focused on stderr does seem to output both stdout and stderr in real time
                     process = subprocess.Popen(
                         [
                             plugin_deploy_language,
                             plugin_deploy_script_path,
                             stack_action,
                         ],
-                        stderr=subprocess.PIPE,
-                        universal_newlines=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        universal_newlines=True
                     )
 
-                    while True:
-                        output_stderr = process.stderr.readline()
-
-                        # if we have a return code, exit the while loop
-                        if process.poll() is not None:
-                            break
-
-                        if output_stderr:
-                            # TODO: parse output for secrets
-                            # TODO: specify plugin and output tight output (no extra newlines)
-                            # logger.info(plugin_name + " " + output_stderr) (can we modify a specific handler to add handler.terminator = "")
-                            print(output_stderr)
-
-                    rc = process.poll()
-                    ################ END APPROACH 0 ################
-
-                    ################ APPROACH 1 ################
-                    # Tried this approach, and the output was not live output
-                    #  tested by adding the following in mounted plugin code
-                    #      sleep 3; echo "hello"; sleep 3; echo "hello 2";
-                    #  expected to see "hello" and then a pause, and then "hello 2"
-                    #  result: no output was shown until after the plugin deploy script finished
-                    # process = subprocess.Popen(
-                    #     [
-                    #         plugin_deploy_language,
-                    #         plugin_deploy_script_path,
-                    #         stack_action,
-                    #     ],
-                    #     stdout=subprocess.PIPE,
-                    #     stderr=subprocess.STDOUT
-                    # )
-
-                    # for combined_output in process.stdout:
-                    #     print(combined_output)
-                    ################ END APPROACH 1 ################
-
-                    ################ APPROACH 2 ################
-                    # did not work - no real time
-                    # process = subprocess.Popen(
-                    #     [
-                    #         plugin_deploy_language,
-                    #         plugin_deploy_script_path,
-                    #         stack_action,
-                    #     ],
-                    #     stdout=subprocess.PIPE,
-                    #     stderr=subprocess.PIPE,
-                    #     universal_newlines=True
-                    # )
-
-                    # while True:
-                    #     output_stdout = process.stdout.readline()
-                    #     output_stderr = process.stderr.readline()
-
-                    #     # if we have a return code, exit the while loop
-                    #     if process.poll() is not None:
-                    #         break
-
-                    #     if output_stdout:
-                    #         print(output_stdout)
-
-                    #     if output_stderr:
-                    #         print(output_stderr)
-
-                    # rc = process.poll()
-                    ################ END APPROACH 2 ################
-
-                    ################ APPROACH 3 ################
-                    # did not work - no real time
-                    # process = subprocess.Popen(
-                    #     [
-                    #         plugin_deploy_language,
-                    #         plugin_deploy_script_path,
-                    #         stack_action,
-                    #     ],
-                    #     stdout=subprocess.PIPE,
-                    #     stderr=subprocess.STDOUT,
-                    #     universal_newlines=True
-                    # )
-
-                    # while True:
-                    #     output_stdout = process.stdout.readline()
-
-                    #     # if we have a return code, exit the while loop
-                    #     if process.poll() is not None:
-                    #         break
-
-                    #     if output_stdout:
-                    #         # TODO: parse output for secrets
-                    #         # TODO: specify plugin and output tight output (no extra newlines)
-                    #         # logger.info(output_stdout)
-                    #         print(output_stdout)
-
-                    # rc = process.poll()
-                    ################ END APPROACH 3 ################
+                    for combined_output in process.stdout:
+                        # TODO: parse output for secrets
+                        # TODO: specify plugin and output tight output (no extra newlines)
+                        # logger.info(plugin_name + " " + output_stderr) (can we modify a specific handler to add handler.terminator = "")
+                        sys.stdout.write(combined_output)
 
                 except Exception as exc:
                     logger.error(exc)
