@@ -8,7 +8,7 @@ from .settings import (
     BITOPS_logging_color,
     BITOPS_logging_filename,
     BITOPS_logging_path,
-    bitops_build_configuration
+    bitops_build_configuration,
 )
 
 
@@ -35,22 +35,21 @@ COLORS = {
 def get_mask_config():
     # read the root bitops config
     bitops_dir = "/opt/bitops"
-    return DefaultMunch.fromDict(
-        bitops_build_configuration.bitops.logging.masks, None
-    )
+    return DefaultMunch.fromDict(bitops_build_configuration.bitops.logging.masks, None)
+
 
 # TODO: move to its own file so it can be used by plugins and before/after hooks
 def mask_message(message):
     if message is None:
         return message
 
-    res_str=message
+    res_str = message
     for config_item in get_mask_config():
         # TODO: use a library here?
         res_str = re.sub(rf"{config_item.search}", config_item.replace, str(res_str))
     # String after replacement
     return res_str
-  
+
 
 def formatter_message(message, use_color=BITOPS_logging_color):
     """
@@ -63,6 +62,7 @@ def formatter_message(message, use_color=BITOPS_logging_color):
         message = message.replace("$RESET", "").replace("$BOLD", "")
 
     return message
+
 
 class BITOPS_Formatter(logging.Formatter):
     """
@@ -87,6 +87,7 @@ class BITOPS_Formatter(logging.Formatter):
         record.msg = mask_message(record.msg)
 
         return logging.Formatter.format(self, record)
+
 
 formatter = BITOPS_Formatter(
     formatter_message("%(asctime)s %(name)-12s %(levelname)-8s %(message)s")
