@@ -365,7 +365,8 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
                 # TODO: can we modify a specific handler to add handler.terminator = "" ?
                 sys.stdout.write(mask_message(combined_output))
 
-            # This polls the async function to get information about the status of the process execution.
+            # This polls the async function to get information 
+            # about the status of the process execution.
             # Namely the return code which is used elsewhere.
             process.communicate()
     except Exception as exc:
