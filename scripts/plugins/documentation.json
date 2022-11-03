@@ -4,7 +4,7 @@
         "link": ""
     },
     "missing_optional_file": {
-        "msg": "Optional file was not found. Consider adding the following file: [{}]",
+        "msg": "Optional file was not found. Consider adding the following file:",
         "link": "",
         "exit_code": 2
     },
