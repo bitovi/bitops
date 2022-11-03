@@ -122,3 +122,9 @@ BITOPS_timeout = (
     if bitops_build_configuration.bitops.timeout is not None
     else 600
 )
+
+BITOPS_logging_masks = (
+    bitops_build_configuration.bitops.logging.masks
+    if bitops_build_configuration.bitops.logging.masks is not None
+    else None
+)

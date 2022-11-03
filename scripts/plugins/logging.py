@@ -8,7 +8,7 @@ from .settings import (
     BITOPS_logging_color,
     BITOPS_logging_filename,
     BITOPS_logging_path,
-    bitops_build_configuration,
+    BITOPS_logging_masks,
 )
 
 
@@ -32,19 +32,13 @@ COLORS = {
 }
 
 
-def get_mask_config():
-    # read the root bitops config
-    bitops_dir = "/opt/bitops"
-    return DefaultMunch.fromDict(bitops_build_configuration.bitops.logging.masks, None)
-
-
 # TODO: move to its own file so it can be used by plugins and before/after hooks
 def mask_message(message):
     if message is None:
         return message
 
     res_str = message
-    for config_item in get_mask_config():
+    for config_item in BITOPS_logging_masks:
         # TODO: use a library here?
         res_str = re.sub(rf"{config_item.search}", config_item.replace, str(res_str))
     # String after replacement
