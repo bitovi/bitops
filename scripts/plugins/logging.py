@@ -1,11 +1,14 @@
 import logging
+import re
 import sys
+from munch import DefaultMunch
 
 from .settings import (
     BITOPS_logging_level,
     BITOPS_logging_color,
     BITOPS_logging_filename,
     BITOPS_logging_path,
+    bitops_build_configuration
 )
 
 
@@ -20,6 +23,34 @@ RESET_SEQ = "\033[0m"
 COLOR_SEQ = "\033[1;%dm"
 BOLD_SEQ = "\033[1m"
 
+COLORS = {
+    "DEBUG": BLUE,
+    "INFO": GREEN,
+    "WARNING": YELLOW,
+    "ERROR": RED,
+    "CRITICAL": MAGENTA,
+}
+
+
+def get_mask_config():
+    # read the root bitops config
+    bitops_dir = "/opt/bitops"
+    return DefaultMunch.fromDict(
+        bitops_build_configuration.bitops.logging.masks, None
+    )
+
+# TODO: move to its own file so it can be used by plugins and before/after hooks
+def mask_message(message):
+    if message is None:
+        return message
+
+    res_str=message
+    for config_item in get_mask_config():
+        # TODO: use a library here?
+        res_str = re.sub(rf"{config_item.search}", config_item.replace, str(res_str))
+    # String after replacement
+    return res_str
+  
 
 def formatter_message(message, use_color=BITOPS_logging_color):
     """
@@ -30,19 +61,10 @@ def formatter_message(message, use_color=BITOPS_logging_color):
         message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
     else:
         message = message.replace("$RESET", "").replace("$BOLD", "")
+
     return message
 
-
-COLORS = {
-    "DEBUG": BLUE,
-    "INFO": GREEN,
-    "WARNING": YELLOW,
-    "ERROR": RED,
-    "CRITICAL": MAGENTA,
-}
-
-
-class ColoredFormatter(logging.Formatter):
+class BITOPS_Formatter(logging.Formatter):
     """
     Class that controls the formatting of logging text, adds colors if enabled.
     Settings are contained within "bitops.config.yaml:bitops.logging".
@@ -60,7 +82,15 @@ class ColoredFormatter(logging.Formatter):
         if self.use_color and levelname in COLORS:
             levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
             record.levelname = levelname_color
+
+        # mask the output
+        record.msg = mask_message(record.msg)
+
         return logging.Formatter.format(self, record)
+
+formatter = BITOPS_Formatter(
+    formatter_message("%(asctime)s %(name)-12s %(levelname)-8s %(message)s")
+)
 
 
 logger = logging.getLogger()
@@ -68,12 +98,11 @@ logger.setLevel(BITOPS_logging_level)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(BITOPS_logging_level)
-formatter = ColoredFormatter(
-    formatter_message("%(asctime)s %(name)-12s %(levelname)-8s %(message)s")
-)
+
 
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
 
 if BITOPS_logging_filename is not None:
     # This assumes that the user wants to save output to a filename
