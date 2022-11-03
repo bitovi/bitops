@@ -1,7 +1,6 @@
 import logging
 import re
 import sys
-from munch import DefaultMunch
 
 from .settings import (
     BITOPS_logging_level,
@@ -34,6 +33,10 @@ COLORS = {
 
 # TODO: move to its own file so it can be used by plugins and before/after hooks
 def mask_message(message):
+    """
+    Given a message, applies a mask according to the
+    bitops level bitops.config.yaml's bitops.logging.mask property
+    """
     if message is None:
         return message
 
@@ -58,7 +61,7 @@ def formatter_message(message, use_color=BITOPS_logging_color):
     return message
 
 
-class BITOPS_Formatter(logging.Formatter):
+class BitOpsFormatter(logging.Formatter):
     """
     Class that controls the formatting of logging text, adds colors if enabled.
     Settings are contained within "bitops.config.yaml:bitops.logging".
@@ -83,7 +86,7 @@ class BITOPS_Formatter(logging.Formatter):
         return logging.Formatter.format(self, record)
 
 
-formatter = BITOPS_Formatter(
+formatter = BitOpsFormatter(
     formatter_message("%(asctime)s %(name)-12s %(levelname)-8s %(message)s")
 )
 
