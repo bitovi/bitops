@@ -46,3 +46,5 @@ if __name__ == "__main__":
         sys.exit(0)
     else:
         print("Mode is not specified. Please use [main.py install|deploy]")
+
+    print("BitOps has finished!")
