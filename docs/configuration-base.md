@@ -23,20 +23,10 @@ During the docker run command, you can specify an ENV var and it will be accessi
 ## Common Configuration
 There are some global configuration options that are shared among all tools and cloud providers during a BitOps run. These are set via environment variables
 
--------------------
-### environment
-* **Environment Variable:** `BITOPS_ENVIRONMENT`
-* **required:** yes
-
-Each BitOps run is done against a single environment. This property tells BitOps which environment to run. For more information on environments, see [Operations Repo Structure](operations-repo-structure.md#environment-directories).
-
--------------------
-### kubeconfig_base64
-* **Environment Variable:** `KUBECONFIG_BASE64`
-* **default:** `""`
-* **required:** no
-
-Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a Kubernetes cluster.
+| Property          | Environment Variable | Description                                                  | Default | Required |
+| ----------------- | -------------------- | ------------------------------------------------------------ | ------- | -------- |
+| environment       | BITOPS_ENVIRONMENT   | Each BitOps run is done against a single environment. This property tells BitOps which environment to run. For more information on environments, see [Operations Repo Structure](operations-repo-structure.md#environment-directories). |         | Yes      |
+| kubeconfig_base64 | KUBECONFIG_BASE64    | Base64 encoded `kubeconfig` file. Allows deployment tools to interact with a Kubernetes cluster. | `null`  | No       |
 
 -------------------
 ## Cloud Providers

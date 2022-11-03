@@ -2,32 +2,14 @@
 
 The following environment variables for Microsoft Azure are required. See [Microsoft Azure official documentation](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) for how to create them.
 
-All configuration must be done with environment variables
+All configurations must be done with environmental variables
 
 ## Configuration
 
--------------------
-### AZ_CLIENT_ID
-* **BitOps Property:** 
-* **Environment Variable:** `AZ_CLIENT_ID`
-* **default:** `""`
-* **required:** yes
-
-### AZ_CLIENT_SECRET
-* **BitOps Property:** 
-* **Environment Variable:** `AZ_CLIENT_SECRET`
-* **default:** `""`
-* **required:** yes
-
-### AZ_SUBSCRIPTION_ID
-* **BitOps Property:**
-* **Environment Variable:** `AZ_SUBSCRIPTION_ID`
-* **default:** `""`
-* **required:** yes
-
-### AZ_TENANT_ID
-* **BitOps Property:**
-* **Environment Variable:** `AZ_TENANT_ID`
-* **default:** `""`
-* **required:** yes
+| Item               | BitOps Property | Environmental Variable | Description | Default | Req  |
+| ------------------ | --------------- | ---------------------- | ----------- | ------- | ---- |
+| AZ_CLIENT_ID       |                 | AZ_CLIENT_ID           |             | `null`  | Yes  |
+| AZ_CLIENT_SECRET   |                 | AZ_CLIENT_SECRET       |             | `null`  | Yes  |
+| AZ_SUBSCRIPTION_ID |                 | AZ_SUBSCRIPTION_ID     |             | `null`  | Yes  |
+| AZ_TENANT_ID       |                 | AZ_TENANT_ID           |             | `null`  | Yes  |
 

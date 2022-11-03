@@ -29,154 +29,53 @@ helm:
 
 ## CLI Configuration
 
--------------------
-### namespace
-* **BitOps Property:** `namespace`
-* **Environment Variable:** `NAMESPACE`
-* **default:** `""`
-* **required:** yes
-
-namespace scope for this request
-
--------------------
-### timeout
-* **BitOps Property:** `timeout`
-* **Environment Variable:** `TIMEOUT`
-* **default:** `"500s"`
-
-time to wait for any individual Kubernetes operation (like Jobs for hooks) 
-
--------------------
-### set
-* **BitOps Property:** `set`
-* **Environment Variable:** `HELM_SET_FLAG`
-* **default:** `{}`
-
-list of "key=value" strings to pass in to `helm` via `--set`
-
--------------------
-### debug
-* **BitOps Property:** `debug`
-* **Environment Variable:** `HELM_DEBUG`
-* **default:** `""`
-
-enable verbose helm output
-
--------------------
-### atomic
-* **BitOps Property:** `atomic`
-* **Environment Variable:** `TODO`
-* **default:** `""`
-
-if set, the installation process deletes the installation on failure
-
--------------------
-### force
-* **BitOps Property:** `force`
-* **Environment Variable:** `TODO`
-* **default:** `""`
-
-sets helm's `--force` flag
-
--------------------
-### dry-run
-* **BitOps Property:** `dry-run`
-* **Environment Variable:** `TODO`
-* **default:** `""`
-
-simulate an install
+| Property  | Environment Variable | Description                                                  | Default | Required |
+| --------- | -------------------- | ------------------------------------------------------------ | ------- | -------- |
+| namespace | NAMESPACE            | Namespace scope for this project                             | `null`  | Yes      |
+| timeout   | TIMEOUT              | Time to wait for any individual Kubernetes operation (like Jobs for hooks) | `500s`  |          |
+| set       | HELM_SET_FLAG        | List of "key=value" strings to pass in to `helm` via `--set` | `{}`    |          |
+| debug     | HELM_DEBUG           | Enable verbose helm output                                   | `null`  |          |
+| atomic    |                      | If set, the installation process deletes the installation on failure | `null`  |          |
+| force     |                      | Sets helm's `--force` flag                                   | `null`  |          |
+| dry-run   |                      | Simulate an install                                          | `null`  |          |
 
 -------------------
 ## Options Configuration
 
--------------------
-### skip-deploy
-* **BitOps Property:** `skip-deploy`
-* **Environment Variable:** `SKIP_DEPLOY`
-* **default:** `""`
-
-will skip helm execution
-
--------------------
-### release-name
-* **BitOps Property:** `release-name`
-* **Environment Variable:** `HELM_RELEASE_NAME`
-* **default:** `""`
-
-sets helm release name
-
--------------------
-### uninstall
-* **BitOps Property:** `uninstall`
-* **Environment Variable:** `HELM_UNINSTALL`
-* **default:** `""`
-
-If true, this chart will be uninstalled instead of deployed/upgraded. If the environment variable `HELM_UNINSTALL` is passed in to the container, all BitOps managed charts for a given environment will be uninstalled.
-
--------------------
-### kubeconfig
-* **BitOps Property:** `kubeconfig`
-
-configure cluster access. Has the following child-properties. Should provide one of `path` or `fetch`. Defaults to `fetch`
-
-### path
-* **BitOps Property:** `kubeconfig.path`
-* **Environment Variable:** `KUBE_CONFIG_PATH`
-* **default:** `""`
-
-relative file path to .kubeconfig file
-
-#### fetch
-* **BitOps Property:** `kubeconfig.fetch`
-
-fetch kubeconfig using cloud provider auth
-
-##### enabled
-* **BitOps Property:** `kubeconfig.fetch.enabled`
-* **Environment Variable:** `FETCH_KUBECONFIG`
-* **default:** `true`
-
-enables/disables kubeconfig.fetch
-
-##### cluster-name
-* **BitOps Property:** `kubeconfig.fetch.cluster-name`
-* **Environment Variable:** `CLUSTER_NAME`
-* **default:** `""`
-
-cloud kubernetes cluster name for kubeconfig fetching.
+| Property                      | Environment Variable | Description                                                  | Default | Required |
+| ----------------------------- | -------------------- | ------------------------------------------------------------ | ------- | -------- |
+| skip-deploy                   | SKIP_DEPLOY          | Will skip helm execution                                     | `null`  |          |
+| release-name                  | HELM_RELEASE_NAME    | Sets helm release name                                       | `null`  |          |
+| uninstall                     | HELM_UNINSTALL       | If true, this chart will be uninstalled instead of deployed/upgraded. If the environment variable `HELM_UNINSTALL` is passed into the container, all BitOps-managed charts for a given environment will be uninstalled. | `null`  |          |
+| kubeconfig                    |                      | configure cluster access. Has the following child-properties. Should provide one of `path` or `fetch`. Defaults to `fetch` | `fetch` |          |
+| kubeconfig.path               | KUBE_CONFIG_PATH     | Relative file path to .kubeconfig file                       | `null`  |          |
+| kubeconfig.fetch              |                      | Fetch kubeconfig using cloud provider auth                   |         |          |
+| kubeconfig.fetch.enabled      | FETCH_KUBECONFIG     | enables/disables kubeconfig.fetch                            | `true`  |          |
+| kubeconfig.fetch.cluster-name | CLUSTER_NAME         | Cloud kubernetes cluster name for kubeconfig fetching.       | `null`  |          |
 
 -------------------
 ## Plugin Configuration
 This section of `bitops.config.yaml` is unique to helm and allows the customization of helm plugins
 
--------------------
 ### S3 Plugin
-* **BitOps Property:** `s3`
 
 Configure [helm s3 plugin](https://github.com/hypnoglow/helm-s3) with the following properties
 
--------------------
-#### region
-* **BitOps Property:** `s3.region`
-* **Environment Variable:** `HELM_PLUGIN_S3_REGION`
+| Property  | Environment Variable  | Description                     | Default | Required |
+| --------- | --------------------- | ------------------------------- | ------- | -------- |
+| s3.region | HELM_PLUGIN_S3_REGION | AWS region containing s3 bucket |         |          |
+| s3.bucket | HELM_CHARTS_S3_BUCKET | AWS s3 bucket name              |         |          |
 
-AWS region containing s3 bucket
 
--------------------
-#### bucket
-* **BitOps Property:** `s3.bucket`
-* **Environment Variable:** `HELM_CHARTS_S3_BUCKET`
-
-AWS s3 bucket name
 
 -------------------
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behavior.
 
--------------------
-### SKIP_DEPLOY_HELM
-Will skip all helm executions. This superseeds all other configuration.
+| Environmental Variable | Description                                                  |
+| ---------------------- | ------------------------------------------------------------ |
+| SKIP_DEPLOY_HELM       | Will skip all helm executions. This supersedes all other configurations. |
+| HELM_UNINSTALL_CHARTS  | Comma-separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded. |
 
--------------------
-### HELM_UNINSTALL_CHARTS
-Comma separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded.
+
+

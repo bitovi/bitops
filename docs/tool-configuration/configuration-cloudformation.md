@@ -3,7 +3,7 @@
 # Cloudformation
 
 ## Example bitops.config.yaml
-```
+```yaml
 cloudformation:
   cli:
     validate-cfn: true
@@ -20,113 +20,44 @@ cloudformation:
 
 ## CLI Configuration
 
--------------------
-### validate-cfn
-* **BitOps Property:** `validate-cfn`
-* **Environment Variable:** `CFN_TEMPLATE_VALIDATION`
-* **default:** `true`
-
-Calls `aws cloudformation validate-template` 
-
--------------------
-### cfn-stack-action
-* **BitOps Property:** `cfn-stack-action`
-* **Environment Variable:** `CFN_STACK_ACTION`
-* **default:** `deploy`
-
-Controls what cloudformation action to apply on the stack
-
--------------------
+| Property         | Environmental Variable | Description                                               | Default  | Required |
+| ---------------- | ---------------------- | --------------------------------------------------------- | -------- | -------- |
+| validate-cfn     | FN_TEMPLATE_VALIDATION | Calls `aws cloudformation validate-template`              | `true`   |          |
+| cfn-stack-action | CFN_STACK_ACTION       | Controls what CloudFormation action to apply on the stack | `deploy` |          |
 
 ## Options Configuration
 
--------------------
-### cfn-stack-action
-* **BitOps Property:** `cfn-stack-name`
-* **Environment Variable:** `CFN_STACK_NAME`
-* **default:** `""`
-
-Cloudformation stack name
-
--------------------
-### cfn-stack-action
-* **BitOps Property:** `cfn-stack-name`
-* **Environment Variable:** `CFN_STACK_NAME`
-* **default:** `""`
-
-Cloudformation stack name
+| Property             | Environmental Variable | Description                                                  | Default | Required |
+| -------------------- | ---------------------- | ------------------------------------------------------------ | ------- | -------- |
+| cfn-stack-name       | CFN_STACK_NAME         | Cloudformation stack name                                    | `null`  |          |
+| capabilities         | CFN_CAPABILITY         | Allows you to use CloudFormation nested stacks. Both properties must be set in order to use nested stacks. | `null`  |          |
+| cfn-s3-bucket        | CFN_TEMPLATE_S3_BUCKET |                                                              | `null`  |          |
+| cfn-s3-prefix        | CFN_S3_PREFIX          |                                                              | `null`  |          |
+| cfn-merge-parameters |                        | Cloudformation capabilities                                  |         |          |
 
 -------------------
-### capabilities
-* **BitOps Property:** `capabilities`
-* **Environment Variable:** `CFN_CAPABILITY`
-* **default:** `""`
-
-Allows you to use CloudFormation nested stacks. Both properties must be set in order to use nested stacks.
-
--------------------
-
-### cfn-s3-bucket
-* **BitOps Property:** `cfn-s3-bucket`
-* **Environment Variable:** `CFN_TEMPLATE_S3_BUCKET`
-* **default:** `""`
-
-### cfn-s3-prefix
-* **BitOps Property:** `cfn-s3-prefix`
-* **Environment Variable:** `CFN_S3_PREFIX`
-* **default:** `""`
-
-### cfn-merge-parameters
-* **BitOps Property:** `cfn-merge-parameters`
-
-
-Cloudformation capabilities
-
--------------------
-### cfn-files
-* **BitOps Property:** `cfn-files`
+## cfn-files
+**BitOps Property:** `cfn-files`
 
 Allows for param files to be used. Has the following child-properties
-#### template-file
-* **BitOps Property:** `cfn-files.template-file`
 
-Template file to apply the params against
-#### parameters
-* **BitOps Property:** `cfn-files.parameters`
-
-Additional parameters.
-###### enabled
-* **BitOps Property:** `cfn-files.parameters.enabled`
-* **Environment Variable:** `CFN_PARAMS_FLAG`
-* **default:** `true`
-###### template-param-file
-* **BitOps Property:** `cfn-files.parameters.template-param-file`
-* **Environment Variable:** `CFN_TEMPLATE_PARAMS_FILENAME`
-* **default:** `""`
-
--------------------
-### cfn-merge-parameters
-* **BitOps Property:** `cfn-merge-parameters`
-
-Allows for param files to be used. Has the following child-properties
-#### enabled
-* **BitOps Property:** `cfn-files.enabled`
-* **Environment Variable:** `CFN_MERGE_PARAMETER`
-* **default:** `false`
-
-True if optional option should be used.
-#### directory
-* **BitOps Property:** `cfn-files.directory`
-* **Environment Variable:** `CFN_MERGE_DIRECTORY`
-* **default:** `parameters`
-
-The directory within the ansible workspace that contains json files that will be merged.
+| Property                                 | Environmental Variable       | Description                                                  | Default      | Required |
+| ---------------------------------------- | ---------------------------- | ------------------------------------------------------------ | ------------ | -------- |
+| cfn-files.template-file                  |                              | Template file to apply the params against                    |              |          |
+| cfn-files.parameters                     |                              | Additional parameters.                                       |              |          |
+| cfn-files.parameters.enabled             | CFN_PARAMS_FLAG              |                                                              | `true`       |          |
+| cfn-files.parameters.template-param-file | CFN_TEMPLATE_PARAMS_FILENAME |                                                              | `null`       |          |
+| cfn-merge-parameters                     |                              | Allows for param files to be used. Has the following child-properties |              |          |
+| cfn-files.enabled                        | CFN_MERGE_PARAMETER          | True if optional option should be used.                      | `false`      |          |
+| cfn-files.directory                      | CFN_MERGE_DIRECTORY          | The directory within the ansible workspace that contains json files that will be merged. | `parameters` |          |
 
 -------------------
 
-## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.
+
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize the behavior
 
 -------------------
-### SKIP_DEPLOY_CLOUDFORMATION
-Will skip all cloudformation executions. This superseeds all other configuration.
+| Environmental Variable     | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| SKIP_DEPLOY_CLOUDFORMATION | Will skill all CloudFormation executions. This supersedes all other configuration |
+

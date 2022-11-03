@@ -1,6 +1,6 @@
 # Summary
 ## Schema
-```
+```yaml
 bitops:
   ops_repo:
     source: <value>
@@ -26,115 +26,14 @@ bitops:
 
 # <ins>Configuration explanation</ins>
 ---
-## <ins>ops_repo</ins>
-## ops_repo.source
-#### *Expected Values*
-  - "local"
-  - A https url to project code (Github)
-    - example: https://github.com/PhillypHenning/test-opsrepo.git
-#### *Usage*
-  ````
-  ```
-  bitops:
-    source: local
-  ```
-  ````
----
 
-## <ins>fail_fast</ins>
-Sets a internal flag which if true will exit the application if an exception occurs. 
 
-#### *Expected Values*
-  - [`True or False`]
-#### *Usage*
-  ````
-  ```
-  bitops:
-    fail_fast: True
-  ```
-  ````
----
+| Property                            | Values allowed                                               | Description                                                  | Default | Required |
+| ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------- | -------- |
+| bitops.ops_repo.source              | `local` or URL to Project code example: https://github.com/PhillypHenning/test-opsrepo.git | Location of the Operations Repository                        |         |          |
+| bitops.failfast                     | `True` or `False`                                            | Sets an internal flag which if true will exit the application if an exception occurs. |         |          |
+| bitops.logging.level                | `DEBUG`, `INFO`, `WARN`, `ERROR`,  `CRITICAL`                | The logging level                                            |         |          |
+| bitops.plugins.plugin_seq           | List of values using the same alias names given to the deployment tools. | The sequence of execution for the plugins                    |         |          |
+| bitops.plugins.tools.cloudproviders |                                                              | Describes the cloud provider that will be installed and used to deploy |         |          |
+| bitops.plugins.tools.deployment     |                                                              | Describes the deployment tools that will be installed and used to deploy |         |          |
 
-## <ins>logging</ins>
-Describes the logging configuration BitOps will use during execution.
-## logging.level
-What logging level BitOps will run with.
-
-#### *Expected Values*
-  - DEBUG
-  - INFO
-  - WARN
-  - ERROR
-  - CRITICAL
-
-#### *Usage*
-  ````
-  ```
-  bitops:
-    logging:
-      level: DEBUG
-  ```
-  ````
-  ---
-
-## **<ins>plugins</ins>**
-## plugins.plugin_seq
-Describes the sequence of execution that will be performed during the deployment tools execution.
-
-#### *Expected Values*
-- Should use the same values as the alias names given to the deployment tools.
-
-#### *Usage*
-  ````
-  ```
-  bitops:
-    plugins:
-      plugin_seq:
-        - deployment_tool1
-        - deployment_tool2
-      tools:
-        deployment:
-          deployment_tool1:
-            source: foobar
-          deployment_tool2:
-            source: foobar
-  ```
-  ````
-  ---
-
-## **plugins.tools**
-## plugins.tools.cloudproviders
-Describes the cloudprovider that will be installed and used to deploy
-
-#### *Usage*
-````
-  ```
-  bitops:
-    plugins:
-      tools:
-        cloudproviders:
-          aws:
-            source: foobar
-  ```
-  ````
-  ---
-
-## plugins.tools.deployment
-Describes the deployment tools that will be installed and used to deploy
-
-#### *Usage*
-````
-  ```
-  bitops:
-    plugins:
-      plugin_seq:
-        - deployment_tool1
-        - deployment_tool2
-      tools:
-        deployment:
-          deployment_tool1:
-            source: foobar
-          deployment_tool2:
-            source: foobar
-  ```
-  ````
