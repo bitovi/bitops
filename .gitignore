@@ -4,6 +4,9 @@
 *.gz
 *.logs
 
+# Executable
+bitops
+
 # VS code
 .vscode/settings.json
 
