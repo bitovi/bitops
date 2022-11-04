@@ -39,7 +39,6 @@ def mask_message(message):
     """
     if message is None:
         return message
-    
     if BITOPS_logging_masks is None:
         return message
 

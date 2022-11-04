@@ -125,7 +125,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         plugin_name = bitops_deployment_configuration[deployment].plugin
 
         # Set plugin vars
-        plugin_dir = bitops_installed_plugins_dir + plugin_name  # Sourced from BitOps Core + plugin install
+        plugin_dir = (
+            bitops_installed_plugins_dir + plugin_name
+        )  # Sourced from BitOps Core + plugin install
         opsrepo_environment_dir = (
             bitops_operations_dir + "/" + deployment
         )  # Sourced from Operations repo

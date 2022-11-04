@@ -79,7 +79,9 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
 
             # If the plugin branch and tag are specified, default to branch
             elif plugin_branch is not None and plugin_tag is not None:
-                git.Repo.clone_from(plugin_source, installed_plugins_dir + plugin_config, branch=plugin_branch)
+                git.Repo.clone_from(
+                    plugin_source, installed_plugins_dir + plugin_config, branch=plugin_branch
+                )
 
             else:
                 plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
@@ -161,7 +163,9 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
                 sys.exit(10)
 
         # install plugin dependencies (install.sh)
-        plugin_install_script_path = installed_plugins_dir + plugin_config + f"/{plugin_install_script}"
+        plugin_install_script_path = (
+            installed_plugins_dir + plugin_config + f"/{plugin_install_script}"
+        )
 
         logger.info(
             f"\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin_config}]~#~#~#~   \
