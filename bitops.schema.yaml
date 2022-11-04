@@ -34,6 +34,9 @@ bitops:
     plugins:
       type: object
       properties:
+        installed_plugins_dir:
+          type: sring
+          description: "Name of the directory where plugins will be installed"
         tool-name:  # Unique name of tool
           type: object
           properties:
