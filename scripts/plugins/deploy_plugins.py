@@ -1,5 +1,6 @@
 import os
 import sys
+import stat
 import tempfile
 from distutils.dir_util import copy_tree
 from munch import DefaultMunch
@@ -14,6 +15,8 @@ from .settings import (
     BITOPS_ENV_environment,
     BITOPS_default_folder,
     BITOPS_timeout,
+    BITOPS_plugin_dir,
+    BITOPS_installed_plugins_dir,
 )
 from .logging import logger
 
@@ -45,7 +48,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
     bitops_dir = "/opt/bitops"
     bitops_deployment_dir = "/opt/bitops_deployment/"
-    bitops_plugins_dir = bitops_dir + "/scripts/plugins/"
+    bitops_plugins_dir = BITOPS_plugin_dir
+    bitops_installed_plugins_dir = BITOPS_installed_plugins_dir
 
     bitops_root_dir = temp_dir
 
@@ -62,7 +66,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     os.environ["BITOPS_ENVROOT"] = bitops_operations_dir
     os.environ["BITOPS_DIR"] = bitops_dir
     os.environ["BITOPS_SCRIPTS_DIR"] = bitops_scripts_dir
-    os.environ["BITOPS_PLUGINS_DIR"] = bitops_plugins_dir
+    os.environ["BITOPS_PLUGINS_DIR"] = bitops_installed_plugins_dir
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
     os.environ["BITOPS_KUBE_CONFIG_FILE"] = f"{temp_dir}/.kube/config"
     os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
@@ -121,7 +125,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         plugin_name = bitops_deployment_configuration[deployment].plugin
 
         # Set plugin vars
-        plugin_dir = bitops_plugins_dir + plugin_name  # Sourced from BitOps Core + plugin install
+        plugin_dir = bitops_installed_plugins_dir + plugin_name  # Sourced from BitOps Core + plugin install
         opsrepo_environment_dir = (
             bitops_operations_dir + "/" + deployment
         )  # Sourced from Operations repo
@@ -224,6 +228,10 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         else:
             logger.warning("setting null value for stack_action....")
             stack_action = ""
+
+        # Ensure execute bit is present on deploy script
+        st = os.stat(plugin_deploy_script_path)
+        os.chmod(plugin_deploy_script_path, st.st_mode | stat.S_IEXEC)
 
         # Adding print env logging
         bitops_env_vars = [item for item in os.environ if "BITOPS_" in item]
