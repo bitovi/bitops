@@ -7,7 +7,7 @@ import yaml
 
 from munch import DefaultMunch
 from .doc import get_doc
-from .logging import logger
+from .logging import logger, mask_message
 from .settings import (
     BITOPS_fast_fail_mode,
     BITOPS_config_file,
@@ -363,9 +363,10 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
                 # TODO: parse output for secrets
                 # TODO: specify plugin and output tight output (no extra newlines)
                 # TODO: can we modify a specific handler to add handler.terminator = "" ?
-                sys.stdout.write(combined_output)
+                sys.stdout.write(mask_message(combined_output))
 
-            # This polls the async function to get information about the status of the process execution.
+            # This polls the async function to get information
+            # about the status of the process execution.
             # Namely the return code which is used elsewhere.
             process.communicate()
     except Exception as exc:
