@@ -110,8 +110,8 @@ BITOPS_plugin_dir = (
 BITOPS_installed_plugins_dir = (
     BITOPS_ENV_installed_plugin_dir
     if BITOPS_ENV_installed_plugin_dir is not None
-    else bitops_build_configuration.bitops.plugins.installed_plugins_dir
-    if bitops_build_configuration.bitops.plugins.installed_plugins_dir is not None
+    else bitops_build_configuration.bitops.installed_plugins_dir
+    if bitops_build_configuration.bitops.installed_plugins_dir is not None
     else "/opt/bitops/scripts/installed_plugins/"
 )
 
