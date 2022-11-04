@@ -91,6 +91,16 @@ docker-compose -f docker-compose.docs.yaml up
 ```
 Then load [http://localhost:8000](http://localhost:8000)
 
+### The CLI Plugin
+The BitOps CLI plugin is in beta. It can build an operations repo from scratch in the directory it was ran in.
+It is written using GoLang.
+
+#### Usage
+```
+go build bitops.go
+./bitops
+```
+
 ## Release History
 
 See [Releases](https://github.com/bitovi/bitops/releases).
