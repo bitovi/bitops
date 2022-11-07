@@ -3,10 +3,10 @@
 import sys
 import os.path
 import os
+import re
+from distutils.dir_util import copy_tree
 import git
 import yaml
-from distutils.dir_util import copy_tree
-import re
 from munch import DefaultMunch
 
 from .utilities import run_cmd
@@ -16,6 +16,9 @@ from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 
 
 def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, plugin_branch):
+    """
+    Fetch plugins from a remote source
+    """
     logger.info(
         f"\n\n\n~#~#~#~CLONING PLUGIN [{plugin_config.upper()}]~#~#~#~  \
     \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
@@ -49,9 +52,11 @@ def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, pl
 
 
 def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
-
+    """
+    Fetch (i.e. copy) plugins from a local source (one the starts with file://)
+    """
     try:
-        src = re.sub(rf"^file://", "", plugin_source)
+        src = re.sub(r"^file://", "", plugin_source)
         dest = plugin_dir + plugin_config
 
         copy_tree(src, dest)
