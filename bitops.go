@@ -38,8 +38,23 @@ func askForConfirmation(s string) bool {
 	}
 }
 
+// exists returns whether the given file or directory exists
+func exists(path string) (bool, error) {
+    _, err := os.Stat(path)
+    if err == nil { return true, nil }
+    if os.IsNotExist(err) { return false, nil }
+    return false, err
+}
+
 func main() {
+	// BitOps Commands
 	initCommand := flag.NewFlagSet("init", flag.ExitOnError)
+	
+	// Init SubCommands
+	initSubCommandHelp := initCommand.Bool("help", false, "Prints out `Bitops init` command help.")
+	
+	// Init SubOptions
+	initSubOptionRootDirectory := initCommand.String("directory", "", "Path to directory to create the operations repo in. (Default is the current directory)")
 
 	// Verify that a subcommand has been provided
     // os.Arg[0] is the main command
@@ -58,7 +73,32 @@ func main() {
     }
 	
 	if initCommand.Parsed() {
-        // Supported plugins
+		var rootFolderPath string = "."
+		
+		// Help command
+		if *initSubCommandHelp == true {
+            initCommand.PrintDefaults()
+            os.Exit(1)
+        }
+
+		// Directory SubCommand
+		if *initSubOptionRootDirectory != "" {
+			// Returns: Bool, Err - Checks if path to folder/file exists
+			rootFolderCreate, err := exists(*initSubOptionRootDirectory)
+			
+			if err == nil { }
+			if rootFolderCreate {
+				rootFolderPath = *initSubOptionRootDirectory
+			}else{
+				fmt.Println("Not a valid path: ["+*initSubOptionRootDirectory+"]")
+				initCommand.PrintDefaults()
+            	os.Exit(1)
+			}
+		}
+
+		fmt.Println("Using root directory: [" + rootFolderPath + "]")
+		
+		// Supported plugins
 		supportPlugins := []string{"aws", "cloudformation", "terraform", "ansible", "helm"}
 		
 		// Generate Ops Repo
