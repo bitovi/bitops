@@ -96,6 +96,14 @@ func CreateEnvironment(plugins []string, projectpath string) {
 	for _, element := range plugins {
 		plugginprojectpath :=  projectpath + "/" + element
 		fmt.Println("Creating ["+plugginprojectpath+"]")
+		
+		exists, aerr := exists(plugginprojectpath)
+		if aerr == nil {}
+		if exists == true { 
+			fmt.Println("Tool [" + element+ "] folder already exists... skipping")
+			continue
+		}
+
 		os.MkdirAll(plugginprojectpath, os.ModePerm)
 
 		// Creating README
@@ -232,8 +240,7 @@ func main() {
 
 	// ADD-NEW COMMAND
 	if addNewCommand.Parsed() {	
-		var opsRepoPath string = ""
-		addNewCommandUsage := `Usage: bitops add-new (env|tool)`
+		addNewCommandUsage := `Usage: bitops add-new (env|tool) <operations_repo>`
 		
 		if addNewCommand.Arg(0) == "" {
 			fmt.Println(addNewCommandUsage)
@@ -242,59 +249,50 @@ func main() {
 		}
 		
 		addNewSubCommand := addNewCommand.Arg(0)
+		opsRepoName := addNewCommand.Arg(1)
+
+		if opsRepoName == "" {
+			fmt.Println("Usage: bitops add-new (env|tool) <operations_repo>")
+			os.Exit(1)
+		}
+		// Ensure Operations Repo exists
+		exists, err := exists(opsRepoName)
+		if err == nil {}
+		if exists == false {
+			fmt.Println("Usage: bitops add-new (env|tool) <operations_repo>")
+			os.Exit(1)
+		}
+
+
 		switch addNewSubCommand{
 		case "env":
-			opsRepoPath := addNewCommand.Arg(1)
-			exists, err := exists(opsRepoPath)
-			if err == nil {}
-			if exists == false {
-				fmt.Println("Usage: bitops add-new env /path/to/operations_repo")
-				os.Exit(1)
-			}
-
 			fmt.Println("Adding new Environment")
 
 			environment := ConfirmEnvironment()
 			plugins := ConfirmTools()
-			addNewpath := opsRepoPath + "/" + environment
+			addNewpath := opsRepoName + "/" + environment
 
 			CreateEnvironment(plugins, addNewpath)
 
 		case "tool":
-			
-			
-			fmt.Println("Adding new tool to Environment folder")
+			environment := addNewCommand.Arg(2)
+
+			if environment == "" {
+				fmt.Println("Usage: bitops add-new tool <operations_repo> <Environment>")
+				os.Exit(1)
+			}
+
+			addNewPath := opsRepoName + "/" + environment
+			plugins := ConfirmTools()
+			fmt.Println("Adding new tools to Environment folder: ["+environment+"]")
+			CreateEnvironment(plugins, addNewPath)
+
+
 		default:
 			fmt.Println(addNewCommandUsage)
 			addNewCommand.PrintDefaults()
 			os.Exit(1)
 		}
-		
-		os.Exit(1)
-		
-		opsRepoPath = addNewCommand.Arg(0)
-		opsRepoExists, err := exists(opsRepoPath)
-
-		if err == nil {}
-		if opsRepoExists == false {
-			fmt.Println("Operations Repo Path doesn't exist. ["+opsRepoPath+"]")
-			fmt.Println(addNewCommandUsage)
-			addNewCommand.PrintDefaults()
-			os.Exit(1)
-		}
-		fmt.Println("Updating Operations Repo: [" + opsRepoPath + "]")
-
-		
-		// for _, element := range supportPlugins {
-		// 	response := askForConfirmation("Are you using [" + element + "]?")
-		// 	if response {
-		// 		fmt.Println("Creating [" + element + "]")
-		// 	}else{
-		// 		fmt.Println("Skipping [" + element + "]")
-		// 	}
-		// 	fmt.Println(loopBreak)
-		// }
-
 	}
 
 	fmt.Println("Bitops is Finished!")
