@@ -158,12 +158,12 @@ func main() {
 		}
 
 		// Make folders
-		var projectpath = fullprojectname + "/" + environment
+		var projectpath = rootFolderPath + "/" + fullprojectname + "/" + environment
 		fmt.Println("Creating ["+projectpath+"]")
 		os.MkdirAll(projectpath, os.ModePerm)
 		
 		for _, element := range plugins {
-			plugginprojectpath := fullprojectname + "/" + environment + "/" + element
+			plugginprojectpath :=  projectpath + "/" + element
 			fmt.Println("Creating ["+plugginprojectpath+"]")
 			os.MkdirAll(plugginprojectpath, os.ModePerm)
 
