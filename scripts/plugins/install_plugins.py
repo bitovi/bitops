@@ -44,16 +44,14 @@ def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, pl
         logger.info(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
 
     except Exception as err:
-        logger.error(
-            f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}"
-        )
+        logger.error(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}")
         sys.exit(1)
 
 
 def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
 
     try:
-        src =  re.sub(rf"^file://", "", plugin_source)
+        src = re.sub(rf"^file://", "", plugin_source)
         dest = plugin_dir + plugin_config
 
         copy_tree(src, dest)
@@ -61,10 +59,9 @@ def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
         logger.info(f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
 
     except Exception as err:
-        logger.error(
-            f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}"
-        )
+        logger.error(f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}")
         sys.exit(1)
+
 
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
 # TODO: Refactor this function. Fix pylint R0915: Too many statements (59/50) (too-many-statements)
