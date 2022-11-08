@@ -39,11 +39,8 @@ def mask_message(message):
     """
     if message is None:
         return message
-    if BITOPS_logging_masks is None:
-        return message
 
     res_str = message
-
     for config_item in BITOPS_logging_masks:
         # TODO: use a library here?
         res_str = re.sub(rf"{config_item.search}", config_item.replace, str(res_str))
