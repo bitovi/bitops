@@ -15,7 +15,7 @@ var confirmResponse string = "Is this correct?"
 var helpResponse string = `
 BitOps:
   init 		- Initializes a new Operations Repo
-  add-new	- Add a new environment to an existing Operations Repo
+  add-new	- Add a new environment or tool to an existing Operations Repo
 `
 var supportPlugins []string = []string{"aws", "cloudformation", "terraform", "ansible", "helm"}
 
@@ -150,6 +150,9 @@ func main() {
 
 	// #~# ADD-NEW #~#
 	// addNewSubCommandOpsRepo := addNewCommand.String("Operations Repo", "", "Path to the Operations Repo being updated (Required).")
+	addNewSubCommandHelp := addNewCommand.Bool("help", false, "Prints out `Bitops add-new` command help.")
+	addNewSubOptionRootDirectory := addNewCommand.String("directory", "", "Path to directory to create the operations repo in. (Default is the current directory)")
+
 	// #~#~#~#~#~#~#~#
 
 
@@ -240,26 +243,62 @@ func main() {
 
 	// ADD-NEW COMMAND
 	if addNewCommand.Parsed() {	
-		addNewCommandUsage := `Usage: bitops add-new (env|tool) <operations_repo>`
-		
+		addNewCommandUsage := `Usage: "bitops add-new <add-new options> <add-new action> <Operations Repos Name>"
+  Actions:
+    env		- Add a new environment to an existing Operations Repo
+    tool	- Add a new tool to an existing Operations Repo Environment
+`
+		// Help command
+		if *addNewSubCommandHelp == true {
+            fmt.Println(addNewCommandUsage)
+			addNewCommand.PrintDefaults()
+            os.Exit(1)
+        }
+
 		if addNewCommand.Arg(0) == "" {
+			fmt.Println("Error: No action selected.")
 			fmt.Println(addNewCommandUsage)
 			addNewCommand.PrintDefaults()
 			os.Exit(1)
 		}
+
+		var rootFolderPath string = "."
+		// Directory SubCommand
+		if *addNewSubOptionRootDirectory != "" {
+			// Returns: Bool, Err - Checks if path to folder/file exists
+			rootFolderCreate, err := exists(*addNewSubOptionRootDirectory)
+			
+			if err == nil { }
+			if rootFolderCreate {
+				rootFolderPath = *addNewSubOptionRootDirectory
+			}else{
+				fmt.Println("Not a valid path: ["+*addNewSubOptionRootDirectory+"]")
+				addNewCommand.PrintDefaults()
+            	os.Exit(1)
+			}
+		}
+
+		fmt.Println("Using root directory: [" + rootFolderPath + "]")
 		
 		addNewSubCommand := addNewCommand.Arg(0)
 		opsRepoName := addNewCommand.Arg(1)
 
 		if opsRepoName == "" {
-			fmt.Println("Usage: bitops add-new (env|tool) <operations_repo>")
+			fmt.Println("Error: No Operations Repo specified")
+			fmt.Println(addNewCommandUsage)
+			addNewCommand.PrintDefaults()
 			os.Exit(1)
 		}
+
+		opsRepoPath := rootFolderPath + "/" + opsRepoName
+
 		// Ensure Operations Repo exists
-		exists, err := exists(opsRepoName)
+		exists, err := exists(opsRepoPath)
 		if err == nil {}
 		if exists == false {
-			fmt.Println("Usage: bitops add-new (env|tool) <operations_repo>")
+			fmt.Println("Error: Operations Repo doesn't exist")
+			fmt.Println(addNewCommandUsage)
+			addNewCommand.PrintDefaults()
 			os.Exit(1)
 		}
 
@@ -270,7 +309,7 @@ func main() {
 
 			environment := ConfirmEnvironment()
 			plugins := ConfirmTools()
-			addNewpath := opsRepoName + "/" + environment
+			addNewpath := opsRepoPath + "/" + environment
 
 			CreateEnvironment(plugins, addNewpath)
 
@@ -278,7 +317,8 @@ func main() {
 			environment := addNewCommand.Arg(2)
 
 			if environment == "" {
-				fmt.Println("Usage: bitops add-new tool <operations_repo> <Environment>")
+				fmt.Println(`Error: Environment value is missing.
+Usage: "bitops add-new tool <Operations Repos Name> <Environment>`)
 				os.Exit(1)
 			}
 
