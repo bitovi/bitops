@@ -44,7 +44,7 @@ helm:
 
 | Property                      | Environment Variable | Description                                                  | Default | Required |
 | ----------------------------- | -------------------- | ------------------------------------------------------------ | ------- | -------- |
-| skip-deploy                   | SKIP_DEPLOY          | Will skip helm execution                                     | `null`  |          |
+| skip-deploy                   | HELM_SKIP_DEPLOY          | Will skip helm execution                                     | `null`  |          |
 | release-name                  | HELM_RELEASE_NAME    | Sets helm release name                                       | `null`  |          |
 | uninstall                     | HELM_UNINSTALL       | If true, this chart will be uninstalled instead of deployed/upgraded. If the environment variable `HELM_UNINSTALL` is passed into the container, all BitOps-managed charts for a given environment will be uninstalled. | `null`  |          |
 | kubeconfig                    |                      | configure cluster access. Has the following child-properties. Should provide one of `path` or `fetch`. Defaults to `fetch` | `fetch` |          |
