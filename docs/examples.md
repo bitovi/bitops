@@ -51,14 +51,14 @@ bitovi/bitops:latest
 ```
 
 ### Force skip over ansible
-If there is a `./dev/ansible/` directory, ansible execution can be skipped with `SKIP_DEPLOY_ANSIBLE=true`:
+If there is a `./dev/ansible/` directory, ansible execution can be skipped with `ANSIBLE_SKIP_DEPLOY=true`:
 ```
 docker run \
 -e BITOPS_ENVIRONMENT="dev" \
 -e AWS_ACCESS_KEY_ID=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY> \
 -e AWS_DEFAULT_REGION="us-east-1" \
--e SKIP_DEPLOY_ANSIBLE=true \
+-e ANSIBLE_SKIP_DEPLOY=true \
 -v $(pwd):/opt/bitops_deployment \
 bitovi/bitops:latest
 ```
