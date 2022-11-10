@@ -46,6 +46,7 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 | Property     | Environment Variable       | Description                                                  | Default | Required |
 | ------------ | -------------------------- | ------------------------------------------------------------ | ------- | -------- |
 | stack-action | BITOPS_TERRAFORM_COMMAND   | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
+| skip-deploy | TERRAFORM_SKIP_DEPLOY   | If set to true, regardless of the stack-action, deployment actions will be skipped. | false  | No       |
 | workspace    | BITOPS_TERRAFORM_WORKSPACE | Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE ||terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands. | `null`  | No       |
 
 -------------------
@@ -56,7 +57,7 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 -------------------
 | Variable              | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
-| SKIP_DEPLOY_TERRAFORM | Will skip all terraform executions. This supersedes all other configurations. |
+| TERRAFORM_SKIP_DEPLOY | Will skip all terraform executions. This supersedes all other configurations. |
 | TERRAFORM_APPLY       | Will force call `terraform apply`.                           |
 | TERRAFORM_DESTROY     | Will force call `terraform destroy`.                         |
 | INIT_UPGRADE          | Will add `--upgrade` flag to the init command.               |
