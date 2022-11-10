@@ -74,7 +74,7 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 
 | Environmental Variable | Description                                                  |
 | ---------------------- | ------------------------------------------------------------ |
-| SKIP_DEPLOY_HELM       | Will skip all helm executions. This supersedes all other configurations. |
+| HELM_SKIP_DEPLOY       | Will skip all helm executions. This supersedes all other configurations. |
 | HELM_UNINSTALL_CHARTS  | Comma-separated string. If any of the charts to be deployed match one of the chart names listed here, it will be uninstalled with `helm uninstall $HELM_RELEASE_NAME` instead of deployed/upgraded. |
 
 
