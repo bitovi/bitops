@@ -127,6 +127,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         )  # Sourced from Operations repo
         os.environ["BITOPS_PLUGIN_DIR"] = plugin_dir
         os.environ["BITOPS_OPSREPO_ENVIRONMENT_DIR"] = opsrepo_environment_dir
+        os.environ["BITOPS_PLUGIN_NAME"] = plugin_name
 
         if not os.path.isdir(opsrepo_environment_dir):
             msg, _ = get_doc("missing_ops_repo")
