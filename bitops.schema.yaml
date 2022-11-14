@@ -31,10 +31,6 @@ bitops:
           type: string
           description: "Path to log folder"
     
-    installed_plugins_dir:
-      type: sring
-      description: "Name of the directory where plugins will be installed"
-    
     plugins:
       type: object
       properties:
