@@ -59,5 +59,5 @@ Although not captured in `bitops.config.yaml`, the following environment variabl
 -------------------
 | Environmental Variable     | Description                                                  |
 | -------------------------- | ------------------------------------------------------------ |
-| SKIP_DEPLOY_CLOUDFORMATION | Will skill all CloudFormation executions. This supersedes all other configuration |
+| CFN_SKIP_DEPLOY | Will skill all CloudFormation executions. This supersedes all other configuration |
 
