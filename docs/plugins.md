@@ -46,7 +46,6 @@ bitops:
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
   default_folder: _default
-  installed_plugins_dir: installed-plugins
   plugins:  
     aws:
       source: https://github.com/bitops-plugins/aws

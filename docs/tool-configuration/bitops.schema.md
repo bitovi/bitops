@@ -7,7 +7,6 @@ bitops:
   fail_fast: <value>
   logging:
     level: <value>
-  installed_plugins_dir: <value>
   plugins:
     plugin_seq:
       - <value>
