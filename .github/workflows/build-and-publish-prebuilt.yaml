@@ -9,7 +9,7 @@ on:
         default: base
         required: true
   push:
-    branches: ["main", "fix/dev-tag-publish"]
+    branches: ["main"]
     tags:
       - "*"
 
