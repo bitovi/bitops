@@ -12,9 +12,6 @@ on:
     branches: [ main ]
     tags:
       - "*"
-    paths:
-      - "prebuilt-config/bitops-tag.yaml"
-      - ".github/workflows/build-and-publish-prebuilt.yaml"
 
 jobs:
   # Separated workflow, as 'bitops-tags.yaml' values could be overwriten
