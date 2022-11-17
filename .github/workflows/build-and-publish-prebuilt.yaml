@@ -9,12 +9,9 @@ on:
         default: base
         required: true
   push:
-    branches: [ main ]
+    branches: ["main"]
     tags:
       - "*"
-    paths:
-      - "prebuilt-config/bitops-tag.yaml"
-      - ".github/workflows/build-and-publish-prebuilt.yaml"
 
 jobs:
   # Separated workflow, as 'bitops-tags.yaml' values could be overwriten
@@ -44,6 +41,7 @@ jobs:
 
   build-publish-prebuilds:
     name: Publish image for ${{ matrix.target }}
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix: 
@@ -55,33 +53,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
-    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
-    #                   PUSH                   #
-    # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
-    # Loads VERSION_TAG from prebuilt-config/bitops-tag.yaml
-    - name: Parse bitops_base from yaml
-      id: yaml-data
-      uses: KJ002/read-yaml@main
-      with:
-        file: 'prebuilt-config/bitops-tag.yaml'    
-        key-path: '["tags", "plugins_base"]'
-      if: github.event_name == 'push'
-    
-    - name: Update VERSION_TAG with input (Push)
-      run: |
-        echo "VERSION_TAG=${{ steps.yaml-data.outputs.data }}" >> $GITHUB_ENV
-      if: github.event_name == 'push'
-    
-     # Apply jinja to tag
-    - uses: cuchi/jinja2-action@v1.2.0
-      with:
-        template: prebuilt-config/dockerfile.template
-        output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
-        data_file: prebuilt-config/bitops-tag.yaml
-        data_format: yaml
-      if: github.event_name == 'push'
-
+  
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #           Workflow dispatch              #
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
@@ -90,7 +62,6 @@ jobs:
       run: |
         echo "VERSION_TAG=${{ github.event.inputs.image_tag}}" >> $GITHUB_ENV
         sed -i "s/bitops_base:.*/bitops_base: ${{ github.event.inputs.image_tag}}-base/" ./prebuilt-config/bitops-tag.yaml
-      if: github.event_name == 'workflow_dispatch'
 
     - uses: cuchi/jinja2-action@v1.2.0
       with:
@@ -98,7 +69,6 @@ jobs:
         output_file: prebuilt-config/${{ matrix.target }}/Dockerfile
         data_file: prebuilt-config/bitops-tag.yaml
         data_format: yaml
-      if: github.event_name == 'workflow_dispatch'
 
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     #                   ALL                    #
@@ -124,4 +94,3 @@ jobs:
 
         echo "running scripts/ci/publish.sh"
         ./scripts/ci/publish.sh
-      if: github.event_name == 'workflow_dispatch'
