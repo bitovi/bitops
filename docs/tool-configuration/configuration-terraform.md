@@ -19,8 +19,8 @@ terraform:
         backend-config:
             - KEY1=foo
             - KEY2=bar
-    options:
         stack-action: "plan"
+    options:
         workspace: test
 ```
 
