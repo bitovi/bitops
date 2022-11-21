@@ -39,7 +39,6 @@ BITOPS_ENV_fast_fail_mode = os.environ.get("BITOPS_FAST_FAIL")
 BITOPS_ENV_run_mode = os.environ.get("BITOPS_MODE")
 BITOPS_ENV_logging_level = os.environ.get("BITOPS_LOGGING_LEVEL")
 BITOPS_ENV_plugin_dir = os.environ.get("BITOPS_PLUGIN_DIR")
-BITOPS_ENV_installed_plugin_dir = os.environ.get("BITOPS_INSTALLED_PLUGIN_DIR")
 
 BITOPS_ENV_default_folder = os.environ.get("BITOPS_DEFAULT_FOLDER")
 # v2.0.0: Fallback to 'ENVIRONMENT' in case when 'BITOPS_ENVIRONMENT' is not set
@@ -107,11 +106,7 @@ BITOPS_plugin_dir = (
     else "/opt/bitops/scripts/plugins/"
 )
 
-BITOPS_installed_plugins_dir = (
-    BITOPS_ENV_installed_plugin_dir
-    if BITOPS_ENV_installed_plugin_dir is not None
-    else "/opt/bitops/scripts/installed_plugins/"
-)
+BITOPS_installed_plugins_dir = "/opt/bitops/scripts/installed_plugins/"
 
 BITOPS_default_folder = (
     BITOPS_ENV_default_folder
