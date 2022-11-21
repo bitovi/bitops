@@ -39,13 +39,13 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 | var-file       | BITOPS_TF_VAR_FILE   | --var-file            | Terraform Varaible file | `null`  | No       |
 | target         | BITOPS_TF_TARGET     | --target              |                         | `null`  | No       |
 | backend-config |                      | --KEY1=foo --KEY2=bar |                         | `null`  | No       |
+| stack-action | BITOPS_TERRAFORM_COMMAND   | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
 
 
 ## Options Configuration
 
 | Property     | Environment Variable       | Description                                                  | Default | Required |
 | ------------ | -------------------------- | ------------------------------------------------------------ | ------- | -------- |
-| stack-action | BITOPS_TERRAFORM_COMMAND   | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
 | skip-deploy | TERRAFORM_SKIP_DEPLOY   | If set to true, regardless of the stack-action, deployment actions will be skipped. | false  | No       |
 | workspace    | BITOPS_TERRAFORM_WORKSPACE | Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE ||terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands. | `null`  | No       |
 
