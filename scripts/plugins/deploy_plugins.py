@@ -48,7 +48,6 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
     bitops_dir = "/opt/bitops"
     bitops_deployment_dir = "/opt/bitops_deployment/"
-    bitops_plugins_dir = BITOPS_plugin_dir
 
     bitops_root_dir = temp_dir
 
@@ -110,7 +109,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             \n                                                                  \
             \n\t BITOPS_DIR:              [{bitops_dir}]                        \
             \n\t BITOPS_DEPLOYMENT_DIR:   [{bitops_deployment_dir}]             \
-            \n\t BITOPS_PLUGIN_DIR:       [{bitops_plugins_dir}]                 \
+            \n\t BITOPS_PLUGIN_DIR:       [{BITOPS_plugin_dir}]                 \
             \n\t BITOPS_ENVROOT_DIR:      [{bitops_envroot_dir}]                \
             \n\t BITOPS_OPERATIONS_DIR:   [{bitops_operations_dir}]             \
             \n\t BITOPS_SCRIPTS_DIR:      [{bitops_scripts_dir}]                \
@@ -130,7 +129,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         opsrepo_environment_dir = (
             bitops_operations_dir + "/" + deployment
         )  # Sourced from Operations repo
-        os.environ["BITOPS_PLUGIN_DIR"] = plugin_dir
+        os.environ["BITOPS_INSTALLED_PLUGIN_DIR"] = plugin_dir
+        os.environ["BITOPS_PLUGIN_DIR"] = BITOPS_plugin_dir
         os.environ["BITOPS_OPSREPO_ENVIRONMENT_DIR"] = opsrepo_environment_dir
 
         if not os.path.isdir(opsrepo_environment_dir):
