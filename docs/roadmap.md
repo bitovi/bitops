@@ -23,6 +23,10 @@ Create an Issue, open a Discussion, join our Community and we'll be happy to wor
 Check the [`main`](https://github.com/bitovi/bitops) repository branch to see the ongoing development.
 
 ## Release History
+### Done in v2.2.0
+  - **Core** Real-time command output streaming
+  - **Code** `pylint` static code analyser for improving the python standards
+
 ### Done in v2.1.0
   - **Community:** Start bi-weekly [BitOps Community Meetings](https://github.com/bitovi/bitops/discussions?discussions_q=label%3Atype%3Ameeting)
   - **Plugins:** Package the latest tools versions by default in the official BitOps image
