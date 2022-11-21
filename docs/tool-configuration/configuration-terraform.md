@@ -39,7 +39,7 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 | var-file       | BITOPS_TF_VAR_FILE   | --var-file            | Terraform Varaible file | `null`  | No       |
 | target         | BITOPS_TF_TARGET     | --target              |                         | `null`  | No       |
 | backend-config |                      | --KEY1=foo --KEY2=bar |                         | `null`  | No       |
-| stack-action | BITOPS_TERRAFORM_COMMAND   | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
+| stack-action | BITOPS_TERRAFORM_COMMAND |  | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
 
 
 ## Options Configuration
