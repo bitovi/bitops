@@ -46,7 +46,7 @@ bitops:
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
   default_folder: _default
-  plugins:    
+  plugins:  
     aws:
       source: https://github.com/bitops-plugins/aws
     terraform:

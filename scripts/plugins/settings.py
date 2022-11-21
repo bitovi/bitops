@@ -106,6 +106,7 @@ BITOPS_plugin_dir = (
     else "/opt/bitops/scripts/plugins/"
 )
 
+BITOPS_INSTALLED_PLUGINS_DIR = "/opt/bitops/scripts/installed_plugins/"
 
 BITOPS_default_folder = (
     BITOPS_ENV_default_folder
