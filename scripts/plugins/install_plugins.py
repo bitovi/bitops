@@ -11,7 +11,7 @@ from munch import DefaultMunch
 from .utilities import run_cmd
 from .doc import get_doc
 from .logging import logger
-from .settings import BITOPS_config_yaml, BITOPS_installed_plugins_dir
+from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR
 
 
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
@@ -74,19 +74,21 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         try:
             # Non-Entry default
             if plugin_branch == "latest" and plugin_tag == "main":
-                git.Repo.clone_from(plugin_source, BITOPS_installed_plugins_dir + plugin_config)
+                git.Repo.clone_from(plugin_source, BITOPS_INSTALLED_PLUGINS_DIR + plugin_config)
 
             # If the plugin branch and tag are specified, default to branch
             elif plugin_branch is not None and plugin_tag is not None:
                 git.Repo.clone_from(
-                    plugin_source, BITOPS_installed_plugins_dir + plugin_config, branch=plugin_branch
+                    plugin_source,
+                    BITOPS_INSTALLED_PLUGINS_DIR + plugin_config,
+                    branch=plugin_branch,
                 )
 
             else:
                 plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
                 git.Repo.clone_from(
                     plugin_source,
-                    BITOPS_installed_plugins_dir + plugin_config,
+                    BITOPS_INSTALLED_PLUGINS_DIR + plugin_config,
                     branch=plugin_pull_branch,
                 )
 
@@ -103,7 +105,9 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
 
         # Once the plugin is cloned, begin using its config + schema
-        plugin_configuration_path = BITOPS_installed_plugins_dir + plugin_config + "/plugin.config.yaml"
+        plugin_configuration_path = (
+            BITOPS_INSTALLED_PLUGINS_DIR + plugin_config + "/plugin.config.yaml"
+        )
         logger.info(f"plugin_configuration_path ==>[{plugin_configuration_path}]")
         try:
             with open(plugin_configuration_path, "r", encoding="utf8") as stream:
@@ -163,7 +167,7 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
 
         # install plugin dependencies (install.sh)
         plugin_install_script_path = (
-            BITOPS_installed_plugins_dir + plugin_config + f"/{plugin_install_script}"
+            BITOPS_INSTALLED_PLUGINS_DIR + plugin_config + f"/{plugin_install_script}"
         )
 
         logger.info(

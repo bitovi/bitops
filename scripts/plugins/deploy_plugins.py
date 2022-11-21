@@ -16,7 +16,7 @@ from .settings import (
     BITOPS_default_folder,
     BITOPS_timeout,
     BITOPS_plugin_dir,
-    BITOPS_installed_plugins_dir,
+    BITOPS_INSTALLED_PLUGINS_DIR,
 )
 from .logging import logger
 
@@ -64,7 +64,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     os.environ["BITOPS_ENVROOT"] = bitops_operations_dir
     os.environ["BITOPS_DIR"] = bitops_dir
     os.environ["BITOPS_SCRIPTS_DIR"] = bitops_scripts_dir
-    os.environ["BITOPS_PLUGINS_DIR"] = BITOPS_installed_plugins_dir
+    os.environ["BITOPS_PLUGINS_DIR"] = BITOPS_INSTALLED_PLUGINS_DIR
     os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
     os.environ["BITOPS_KUBE_CONFIG_FILE"] = f"{temp_dir}/.kube/config"
     os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
@@ -124,7 +124,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
         # Set plugin vars
         plugin_dir = (
-            BITOPS_installed_plugins_dir + plugin_name
+            BITOPS_INSTALLED_PLUGINS_DIR + plugin_name
         )  # Sourced from BitOps Core + plugin install
         opsrepo_environment_dir = (
             bitops_operations_dir + "/" + deployment
