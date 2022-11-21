@@ -7,7 +7,7 @@
 cloudformation:
   cli:
     validate-cfn: true
-    cfn-stack-action: deploy
+    stack-action: deploy
   options:
     cfn-stack-name: bitops-edgelambda-test
     capabilities: CAPABILITY_NAMED_IAM
