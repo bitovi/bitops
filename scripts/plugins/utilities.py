@@ -193,7 +193,7 @@ def get_nested_item(search_dict, key):
     try:
         for k in key_list:
             obj = obj[k]
-    except KeyError:
+    except (KeyError, TypeError):
         return None
     logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
     return obj

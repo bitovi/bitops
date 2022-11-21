@@ -43,8 +43,8 @@ docker run --rm --name bitops \
 -e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
 -e BITOPS_ENVIRONMENT="prod" \
 -e BITOPS_ENVIRONMENT_HELM_SUBDIRECTORY="aws-auth" \
--e SKIP_DEPLOY_TERRAFORM="true" \
--e SKIP_DEPLOY_HELM="" \
+-e TERRAFORM_SKIP_DEPLOY="true" \
+-e HELM_SKIP_DEPLOY="" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -v /path/to/operations-repo:/opt/bitops_deployment \
 -v /path/to/bitops:/opt/bitops \
@@ -65,7 +65,7 @@ bitovi/bitops:2.1.0
 | -e AWS_ACCESS_KEY_ID="\${AWS_ACCESS_KEY_ID}" \ <br/> -e AWS_SECRET_ACCESS_KEY="\${AWS_SECRET_ACCESS_KEY}" \ <br/> -e AWS_SESSION_TOKEN="\${AWS_SESSION_TOKEN}" \ | AWS credentials/config|
 | `-e BITOPS_ENVIRONMENT="prod" \` | Set the BitOps environment to deploy (in this example, prod) |
 | `-e BITOPS_ENVIRONMENT_HELM_SUBDIRECTORY="aws-auth" \` | Set the specific Helm chart to deploy (in this example, aws-auth). | This is quite useful for iterating quickly if you’ve got an ops repo environment with many Helm charts but only want to focus on a single one. | 
-| -e SKIP_DEPLOY_TERRAFORM="true" \ <br/> -e SKIP_DEPLOY_HELM="" \ | Skip the Terraform deployment but not the Helm deployment (you could also omit SKIP_DEPLOY_HELM). | This is useful if you want to deploy only a single tool in the environment. | 
+| -e TERRAFORM_SKIP_DEPLOY="true" \ <br/> -e HELM_SKIP_DEPLOY="" \ | Skip the Terraform deployment but not the Helm deployment (you could also omit HELM_SKIP_DEPLOY). | This is useful if you want to deploy only a single tool in the environment. | 
 | `-e DEFAULT_FOLDER_NAME="_default" \` | Define the directory to pull defaults from.  Default should be _default, so this could be omitted if your default environment is _default. |
 | -v /path/to/operations-repo:/opt/bitops_deployment \ | Mount your local operations repo to the location BitOps expects it to be. |
 | -v /path/to/bitops:/opt/bitops \ | Mount your local BitOps repo to the location BitOps expects it to be (i.e. /opt/bitops).  This way, you can make changes to the BitOps code locally, and changes will be reflected when you run the docker run command. |
