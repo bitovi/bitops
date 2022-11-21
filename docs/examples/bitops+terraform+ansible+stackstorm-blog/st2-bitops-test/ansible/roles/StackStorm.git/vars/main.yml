@@ -1,9 +1,0 @@
----
-# Default GitHub username for private repos
-github_username: "dylan-bitovi"
-
-repositories: 
-  - url: "https://{{ github_username }}:{% raw %}{{ st2kv.system.github_token | decrypt_kv }}{% endraw %}@github.com/{{ github_username }}/my_st2_pack.git" 
-    branch: "main"
-  - url: "https://{{ github_username }}:{% raw %}{{ st2kv.system.github_token | decrypt_kv }}{% endraw %}@github.com/{{ github_username }}/my_st2_jira.git" 
-    branch: "main"
