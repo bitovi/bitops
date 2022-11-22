@@ -1,5 +1,0 @@
-- name: git clone heyemoji
-  git:
-    repo: "{{ heyemoji_repo }}"
-    dest: "{{ heyemoji_path }}"
-  become: no

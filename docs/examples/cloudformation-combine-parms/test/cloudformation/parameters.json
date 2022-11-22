@@ -1,7 +1,0 @@
-[
-    {
-      "ParameterKey": "BucketName",
-      "ParameterValue": "bitops-s3-bucket",
-      "UsePreviousValue": false
-    }
-]
