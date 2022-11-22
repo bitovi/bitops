@@ -7,7 +7,7 @@
 cloudformation:
   cli:
     validate-cfn: true
-    cfn-stack-action: deploy
+    stack-action: deploy
   options:
     cfn-stack-name: bitops-edgelambda-test
     capabilities: CAPABILITY_NAMED_IAM
@@ -23,7 +23,7 @@ cloudformation:
 | Property         | Environmental Variable | Description                                               | Default  | Required |
 | ---------------- | ---------------------- | --------------------------------------------------------- | -------- | -------- |
 | validate-cfn     | FN_TEMPLATE_VALIDATION | Calls `aws cloudformation validate-template`              | `true`   |          |
-| cfn-stack-action | CFN_STACK_ACTION       | Controls what CloudFormation action to apply on the stack | `deploy` |          |
+| stack-action | CFN_STACK_ACTION       | Controls what CloudFormation action to apply on the stack | `deploy` |          |
 
 ## Options Configuration
 

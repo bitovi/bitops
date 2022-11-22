@@ -39,8 +39,7 @@ nav:
   - Releases:
     - Versioning: versioning.md
     - Roadmap: roadmap.md
-    - Upgrade:
-      - v2.0: migration/2.0-migration.md
+    - Upgrade: migration.md
   - Development:
     - Local development: development-local.md
     - Custom Images: custom-image.md
@@ -70,3 +69,5 @@ markdown_extensions:
   - attr_list
   - meta
   - pymdownx.extra
+  - toc:
+      permalink: "#"
