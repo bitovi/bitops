@@ -1,7 +1,4 @@
 terraform:
-    cli: {}
-    options:
-        command: apply
-        version: "0.13.2"
-        fetch-kubeconfig: false
-        workspace: test
+    cli:
+        stack-action: apply
+    options: {}
