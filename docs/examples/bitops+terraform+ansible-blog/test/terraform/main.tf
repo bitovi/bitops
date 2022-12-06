@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "YOUR_BUCKET_NAME"
+    bucket = "ansible_terraform_blog"
     key    = "state"
   }
 }
