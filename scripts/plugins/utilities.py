@@ -370,7 +370,7 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
             # Namely the return code which is used elsewhere.
             process.communicate()
             process_return_code = process.returncode
-            if process_return_code != 0:
+            if process_return_code != 0 and BITOPS_fast_fail_mode:
                 logger.error(process)
                 sys.exit(process_return_code)
 
