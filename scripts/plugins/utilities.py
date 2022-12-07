@@ -374,7 +374,6 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
                 logger.error(process)
                 sys.exit(process_return_code)
 
-
     except Exception as exc:
         logger.error(exc)
         if BITOPS_fast_fail_mode:
