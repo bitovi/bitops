@@ -47,7 +47,7 @@ ansible:
 
 | Property  | Environmental Variable | Description                                                  | Default | Required |
 | --------- | ---------------------- | ------------------------------------------------------------ | ------- | -------- |
-| dryrun    | BITOPS_ANSIBLE_DRYRUN  | Will run `--list-tasks` but won't actually execute playbook(s) |         |          |
+| dryrun    | BITOPS_ANSIBLE_DRYRUN  | Will run `--list-tasks` but won't actually execute playbook(s) |  `false` |          |
 | verbosity | ANSIBLE_VERBOSITY      | Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v` flags. Will override a pre-existing `ANSIBLE_VERBOSITY` environmental variable or `[default]` `verbosity=` setting in ansible.cfg. | N/A     |          |
 
 ## Additional Environment Variable Configuration
