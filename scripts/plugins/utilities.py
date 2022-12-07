@@ -369,6 +369,12 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
             # about the status of the process execution.
             # Namely the return code which is used elsewhere.
             process.communicate()
+            process_return_code = process.returncode
+            if process_return_code != 0:
+                logger.error(process)
+                sys.exit(process_return_code)
+
+
     except Exception as exc:
         logger.error(exc)
         if BITOPS_fast_fail_mode:
