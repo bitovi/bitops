@@ -1,7 +1,7 @@
 heyemoji_repo: "https://github.com/mmcdole/heyemoji.git"
 heyemoji_path: /home/ubuntu/heyemoji
 
-heyemoji_bot_name:	heyemoji-dev
+heyemoji_bot_name: heyemoji-dev
 heyemoji_database_path:	./data/
 heyemoji_slack_api_token: "{{ lookup('env', 'HEYEMOJI_SLACK_API_TOKEN') }}"
 heyemoji_slack_emoji:	star:1
@@ -11,5 +11,4 @@ heyemoji_websocket_port: "3334"
 create_containers: 1
 default_container_image: heyemoji:latest
 default_container_name: heyemoji
-default_container_image: ubuntu
 default_container_command: /heyemoji
