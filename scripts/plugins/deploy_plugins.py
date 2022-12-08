@@ -275,10 +275,12 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
                 stack_action,
             ]
         )
-        if result.returncode == 0:
-            logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")
-        else:
+        if result.returncode != 0:
             logger.warning(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~")
+            if BITOPS_fast_fail_mode:
+                sys.exit(result.returncode)
+        else:
+            logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")
 
         # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
         if plugin_deploy_after_hook_scripts_flag:

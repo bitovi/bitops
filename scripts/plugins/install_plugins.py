@@ -11,7 +11,7 @@ from munch import DefaultMunch
 from .utilities import run_cmd
 from .doc import get_doc
 from .logging import logger
-from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR
+from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR, BITOPS_fast_fail_mode
 
 
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
@@ -198,4 +198,5 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
                 f"\n\tSTDOUT:[{result.stdout}]\n"
                 f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]"
             )
-            sys.exit(result.returncode)
+            if BITOPS_fast_fail_mode:
+                sys.exit(result.returncode)

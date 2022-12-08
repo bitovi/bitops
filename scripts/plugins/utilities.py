@@ -346,6 +346,9 @@ def handle_hooks(mode, hooks_folder, source_folder):
         else:
             logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
+            if BITOPS_fast_fail_mode:
+                sys.exit(result.returncode)
+
     os.chdir(original_directory)
 
 
@@ -368,15 +371,9 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
             # This polls the async function to get information
             # about the status of the process execution.
             # Namely the return code which is used elsewhere.
-            process.communicate()
-            process_return_code = process.returncode
-            if process_return_code != 0 and BITOPS_fast_fail_mode:
-                logger.error(process)
-                sys.exit(process_return_code)
+            return process.communicate()
 
     except Exception as exc:
         logger.error(exc)
         if BITOPS_fast_fail_mode:
             sys.exit(101)
-
-    return process
