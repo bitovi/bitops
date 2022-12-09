@@ -55,8 +55,9 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
                     setattr(self, _property, schema_property_values[_property])
                 except KeyError as exc:
                     setattr(self, _property, None)
+                    logger.error(exc)
                     if BITOPS_fast_fail_mode:
-                        raise exc
+                        sys.exit(101)
 
         logger.info(f"\n\tNEW SCHEMA:{self.print_schema()}")
 
@@ -158,7 +159,8 @@ def apply_data_type(data_type, convert_value):
         return bool(convert_value)
 
     if BITOPS_fast_fail_mode:
-        raise ValueError(f"Data type not supported: [{data_type}]")
+        logger.error(f"Data type not supported: [{data_type}]")
+        sys.exit(101)
 
     logger.warning(f"Data type not supported: [{data_type}]")
     return None
