@@ -2,10 +2,18 @@
 
 # Ansible
 
-## Example bitops.config.yaml
+### Example `bitops.config.yaml`, minimum required: 
+```
+ansible:
+    cli: {}
+    options: {}
+```
+
+## Example complete `bitops.config.yaml`:
 ```yaml
 ansible:
   cli:
+    main-playbook: playbook.yaml
     extra-vars: "@extra-vars.json"
     flush-cache: true
     force-handlers: true
@@ -24,6 +32,7 @@ ansible:
 
 | Property            | Environmental Variable             | Description                                                  | Default | Required |
 | ------------------- | ---------------------------------- | ------------------------------------------------------------ | ------- | -------- |
+| main-playbook       | BITOPS_ANSIBLE_MAIN_SCRIPT         | Specify an entry playbook to run ansible-playbook with. |   `playbook.yaml` | Yes |
 | extra-vars          | BITOPS_ANSIBLE_EXTRA_VARS          | Add additional ansible playbook parameters directly or load via JSON/YAML file. |         |          |
 | flush-cache         | BITOS_ANSIBLE_FLUSH_CACHE          | Clear the fact cache for every host in the inventory.        |         |          |
 | force-handlers      | BITOPS_ANSIBLE_FORCE_HANDLERS      | Clear the fact cache for every host in the inventory.        |         |          |
@@ -38,7 +47,7 @@ ansible:
 
 | Property  | Environmental Variable | Description                                                  | Default | Required |
 | --------- | ---------------------- | ------------------------------------------------------------ | ------- | -------- |
-| dryrun    | BITOPS_ANSIBLE_DRYRUN  | Will run `--list-tasks` but won't actually execute playbook(s) |         |          |
+| dryrun    | BITOPS_ANSIBLE_DRYRUN  | Will run `--list-tasks` but won't actually execute playbook(s) |  `false` |          |
 | verbosity | ANSIBLE_VERBOSITY      | Acceptable values `0|1|2|3|4`. Equivalent to adding `-verbose` or repeating `-v` flags. Will override a pre-existing `ANSIBLE_VERBOSITY` environmental variable or `[default]` `verbosity=` setting in ansible.cfg. | N/A     |          |
 
 ## Additional Environment Variable Configuration
