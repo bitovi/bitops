@@ -352,7 +352,7 @@ def handle_hooks(mode, hooks_folder, source_folder):
     os.chdir(original_directory)
 
 
-def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
+def run_cmd(command: Union[list, str]) -> subprocess.Popen:
     """Run a linux command and return CompletedProcess instance as a result"""
     try:
         with subprocess.Popen(
