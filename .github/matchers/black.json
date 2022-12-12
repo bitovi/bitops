@@ -5,10 +5,10 @@
         "column": 1,
         "line": 1,
         "code": "W",
+        "message":"Reformat this file with `black`!",
         "pattern": [
           {
             "regexp": "^would reformat (.*)$",
-            "message": "Reformat this file with `black`!\n",
             "file": 1
           }
         ],
