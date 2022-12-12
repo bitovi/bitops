@@ -11,5 +11,3 @@
     include_tasks: tasks/build.yml
   - name: Include start
     include_tasks: tasks/start.yml
-  - debug: 
-      msg: "Hello from Ansible!"
