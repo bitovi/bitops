@@ -44,7 +44,8 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         logger.info(f"\n\n\n~#~#~#~PLUGIN SOURCE [{plugin_source}]~#~#~#~\n")
 
         if not plugin_source:
-            logger.error(f"Plugin source cannot be empty. Plugin: [{plugin_config}] Download did not run"
+            logger.error(
+                f"Plugin source cannot be empty. Plugin: [{plugin_config}] Download did not run"
             )
             sys.exit(1)
 
