@@ -14,7 +14,6 @@ from .doc import get_doc
 from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR
 
-
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
 # TODO: Refactor this function. Fix pylint R0915: Too many statements (59/50) (too-many-statements)
 # See: https://github.com/bitovi/bitops/issues/329
