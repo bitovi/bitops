@@ -1,7 +1,7 @@
 terraform {
     required_version = ">= 0.12"
     backend "s3" {
-        bucket = "heyemoji_blog"
+        bucket = "heyemoji-blog"
         key = "state"
     }
 }

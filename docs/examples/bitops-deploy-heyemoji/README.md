@@ -9,7 +9,7 @@ docker run \
 -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
 -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
 -e AWS_DEFAULT_REGION="us-east-2" \
--e TF_STATE_BUCKET="heyemoji_blog" \
+-e TF_STATE_BUCKET="heyemoji-blog" \
 -e HEYEMOJI_SLACK_API_TOKEN="$HEYEMOJI_SLACK_API_TOKEN" \
 -v $(pwd):/opt/bitops_deployment \
 bitovi/bitops:latest
