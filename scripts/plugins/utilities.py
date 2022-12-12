@@ -348,11 +348,14 @@ def handle_hooks(mode, hooks_folder, source_folder):
         else:
             logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
+            if BITOPS_fast_fail_mode:
+                sys.exit(result.returncode)
+
     os.chdir(original_directory)
 
 
-def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
-    """Run a linux command and return CompletedProcess instance as a result"""
+def run_cmd(command: Union[list, str]) -> subprocess.Popen:
+    """Run a linux command and return Popen instance as a result"""
     try:
         with subprocess.Popen(
             command,
@@ -371,9 +374,8 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
             # about the status of the process execution.
             # Namely the return code which is used elsewhere.
             process.communicate()
+
     except Exception as exc:
         logger.error(exc)
-        if BITOPS_fast_fail_mode:
-            sys.exit(101)
-
+        sys.exit(101)
     return process
