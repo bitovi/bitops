@@ -14,6 +14,7 @@ from .doc import get_doc
 from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR
 
+
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
 # TODO: Refactor this function. Fix pylint R0915: Too many statements (59/50) (too-many-statements)
 # See: https://github.com/bitovi/bitops/issues/329
@@ -43,8 +44,7 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         logger.info(f"\n\n\n~#~#~#~PLUGIN SOURCE [{plugin_source}]~#~#~#~\n")
 
         if not plugin_source:
-            logger.error(
-                f"Plugin source cannot be empty. Plugin: [{plugin_config}] Download did not run"
+            logger.error(f"Plugin source cannot be empty. Plugin: [{plugin_config}] Download did not run"
             )
             sys.exit(1)
 
