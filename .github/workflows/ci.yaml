@@ -34,7 +34,7 @@ jobs:
       # See: https://github.com/actions/toolkit/blob/master/docs/problem-matchers.md
       - name: Add problem matchers to highlight errors in Github PRs
         run: |
-          MATCHERS=${GITHUB_ACTION_PATH}/.github/matchers/*.json
+          MATCHERS=.github/matchers/*.json
           for matcher in ${MATCHERS}; do
             echo "::add-matcher::${matcher}"
           done
