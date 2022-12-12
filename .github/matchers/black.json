@@ -6,10 +6,10 @@
         "code": "W",
         "pattern": [
           {
-            "regexp": "^((Warning|Error)*): would reformat (.*)$\\n([\\s\\S]*)(Oh)",
+            "regexp": "^((Warning|Error)*): (would reformat) (.*)$",
             "severity": 1,
-            "file": 2,
-            "message": 3
+            "file": 3,
+            "message": 2
           }
         ],
         "owner": "black_severity"
@@ -21,7 +21,7 @@
         "code": "W",
         "pattern": [
           {
-            "regexp": "^(would reformat) (.*)$",
+            "regexp": "^would (reformat) (.*)$",
             "message": 1,
             "file": 2
           }
