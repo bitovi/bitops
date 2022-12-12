@@ -6,8 +6,9 @@ on:
   pull_request:
 
 jobs:
-  # Lint checks which don't depend on any service containes, etc. to be running.
-  lint-checks:
+  # Run black linting
+  # https://github.com/psf/black
+  lint-black:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,25 +26,42 @@ jobs:
           path: |
             ~/.cache/pip
             .tox
-          key: ${{ runner.os }}-v1-python-3.8-${{ hashFiles('requirements.txt', 'test-requirements.txt', 'pyproject.toml', 'tox.ini') }}
+          key: ${{ runner.os }}-v1-python-3.8-black-${{ hashFiles('test-requirements.txt', 'pyproject.toml', 'tox.ini') }}
 
       - name: Install Python test dependencies
         run: python -m pip install tox
 
-      # See: https://github.com/actions/toolkit/blob/master/docs/commands.md#problem-matchers
-      # See: https://github.com/actions/toolkit/blob/master/docs/problem-matchers.md
-      - name: Add problem matchers to highlight errors in Github PRs
-        run: |
-          MATCHERS=.github/matchers/*.json
-          for matcher in ${MATCHERS}; do
-            echo adding matcher ${matcher}
-            echo "::add-matcher::${matcher}"
-          done
-
       - name: Run black formatting
         run: |
+          echo "::add-matcher::.github/matchers/black.json"
           tox -e black
+
+  # Run pylint static code analysis
+  # https://www.pylint.org/
+  lint-pylint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+          cache: 'pip'
+
+      - name: Cache Python Dependencies and Env
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+            .tox
+          key: ${{ runner.os }}-v1-python-3.8-pylint-${{ hashFiles('requirements.txt', 'test-requirements.txt', 'tox.ini') }}
+
+      - name: Install Python test dependencies
+        run: python -m pip install tox
 
       - name: Run pylint
         run: |
+          echo "::add-matcher::.github/matchers/pylint.json"
           tox -e pylint
