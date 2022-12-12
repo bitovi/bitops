@@ -30,6 +30,15 @@ jobs:
       - name: Install Python test dependencies
         run: python -m pip install tox
 
+      # See: https://github.com/actions/toolkit/blob/master/docs/commands.md#problem-matchers
+      # See: https://github.com/actions/toolkit/blob/master/docs/problem-matchers.md
+      - name: Add problem matchers to highlight errors in Github PRs
+        run: |
+          MATCHERS=${GITHUB_ACTION_PATH}/.github/matchers/*.json
+          for matcher in ${MATCHERS}; do
+            echo "::add-matcher::${matcher}"
+          done
+
       - name: Run black formatting
         run: |
           tox -e black
