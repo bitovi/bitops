@@ -1,29 +1,15 @@
 {
     "problemMatcher": [
       {
-        "column": 1,
-        "line": 1,
-        "code": "W",
-        "pattern": [
-          {
-            "regexp": "^((Warning|Error)*): (would reformat) (.*)$",
-            "severity": 1,
-            "file": 3,
-            "message": 2
-          }
-        ],
-        "owner": "black_severity"
-      },
-      {
         "severity": "warning",
         "column": 1,
         "line": 1,
         "code": "W",
         "pattern": [
           {
-            "regexp": "^would (reformat) (.*)$",
-            "message": 1,
-            "file": 2
+            "regexp": "^would reformat (.*)$",
+            "message": "Reformat this file with `black`!\n",
+            "file": 1
           }
         ],
         "owner": "black"
