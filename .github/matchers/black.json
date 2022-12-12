@@ -1,6 +1,20 @@
 {
     "problemMatcher": [
       {
+        "column": 1,
+        "line": 1,
+        "code": "W",
+        "pattern": [
+          {
+            "regexp": "^((Warning|Error)*): would reformat (.*)$\\n([\\s\\S]*)(Oh)",
+            "severity": 1,
+            "file": 2,
+            "message": 3
+          }
+        ],
+        "owner": "black_severity"
+      },
+      {
         "severity": "warning",
         "column": 1,
         "line": 1,
@@ -8,8 +22,8 @@
         "pattern": [
           {
             "regexp": "^(would reformat) (.*)$",
-            "file": 2,
-            "message": 1
+            "message": 1,
+            "file": 2
           }
         ],
         "owner": "black"

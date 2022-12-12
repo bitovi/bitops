@@ -15,7 +15,7 @@ BITOPS_CL_args, unknowns = parser.parse_known_args()
 BITOPS_ENV_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML")
 BITOPS_config_file = (
     BITOPS_ENV_config_file
-    if BITOPS_ENV_config_file is not None
+     if BITOPS_ENV_config_file is not None
     else BITOPS_CL_args.bitops_config_file
     if BITOPS_CL_args.bitops_config_file is not None
     else "bitops.config.yaml"
