@@ -36,6 +36,7 @@ jobs:
         run: |
           MATCHERS=.github/matchers/*.json
           for matcher in ${MATCHERS}; do
+            echo adding matcher ${matcher}
             echo "::add-matcher::${matcher}"
           done
 
