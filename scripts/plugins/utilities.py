@@ -177,9 +177,12 @@ def add_value_to_env(export_env, value):
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
 
+    if isinstance(value, bool):
+        value = str(value).lower()
+
     export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
-    logger.info("Setting environment variable: [{export_env}], to value: [{value}]")
+    logger.info(f"Setting environment variable: [{export_env}], to value: [{value}]")
 
 
 def get_nested_item(search_dict, key):
