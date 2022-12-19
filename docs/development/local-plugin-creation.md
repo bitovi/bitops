@@ -13,8 +13,9 @@ More information on what goes in a plugin [here](../plugins.md).
 > Note: If the plugin needs to install tools, you will need to build and run a local version of BitOps.  The first portion of this guide assumes the install.sh script **DOES NOT** needs to be run.  For more information about how to set up BitOps for local development with a plugin that requires an installation, skip to step 5 below.
 
 
-For this example, we'll keep to a really simple plugin:
-`bitops.schema.yaml`
+For this example, we'll keep to a really simple plugin.
+
+To start with, create a file called `bitops.schema.yaml` and add the following content.
 ```
 duplicate-environment:
     type: object
@@ -29,7 +30,7 @@ duplicate-environment:
             default: bar
 ```
 
-`deploy.sh`
+Next, create a simple `deploy.sh` script.  This script does some checks and shows how to use some of the available environment variables then outputs a configuration value defined by the `bitops.schema.yaml`.
 ```
 #!/bin/bash
 set -ex
@@ -68,7 +69,9 @@ echo "$DUPLICATE_ENVIRONMENT_FOO"
 ```
 > **Note:** Much of the above is best practice boilerplate and is not strictly necessary.
 
-`scripts/validate_env.sh`
+> **Important:** Be sure to `chmod +x deploy.sh`
+
+Create `scripts/validate.sh` as follows.  This script simply checks any necessary preconditions before continuing.
 ```
 #!/bin/bash
 set -e 
@@ -79,7 +82,7 @@ if [ -z "$BITOPS_ENVIRONMENT" ]; then
 fi
 ```
 
-`plugin.config.yaml`
+Finally, create a `plugin.config.yaml` to configure how BitOps uses the plugin.
 ```
 plugin:
   deployment:
