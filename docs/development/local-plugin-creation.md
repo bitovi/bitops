@@ -154,7 +154,7 @@ If your new plugin needs to run some install scripts (e.g. to install a CLI tool
 
 
 ### 5.1. Update the Plugin to Add an Install Script
-Add the `install` information to your plugin's `plugin.config.yaml`
+Add the `install` configuration to your plugin's `plugin.config.yaml`
 ```
 plugin:
   install: 
