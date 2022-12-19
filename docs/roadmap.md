@@ -18,11 +18,14 @@ Create an Issue, open a Discussion, join our Community and we'll be happy to wor
 - **Core:** Schema validation and error reporting
 - **Plugins:** Support for private repositories
 - **Core:** Schema validation and enhancements
-- **Security:** Secrets masking
 
 Check the [`main`](https://github.com/bitovi/bitops) repository branch to see the ongoing development.
 
 ## Release History
+### Done in v2.3.0
+  - **Security:** Secrets masking
+  - **Core:** Local plugin install via `file://`
+
 ### Done in v2.2.0
   - **Core** Real-time command output streaming
   - **Code** `pylint` static code analyser for improving the python standards
