@@ -5,7 +5,6 @@ import os.path
 import os
 import git
 import yaml
-import non_existent_module
 
 from munch import DefaultMunch
 
