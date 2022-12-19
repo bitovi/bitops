@@ -26,7 +26,7 @@ duplicate-environment:
           foo:
             type: string
             export_env: DUPLICATE_ENVIRONMENT_FOO
-            required: True
+            required: true
             default: bar
 ```
 
