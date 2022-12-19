@@ -141,7 +141,7 @@ docker run --rm --name bitops \
 -v /path/to/bitops-level/bitops.config.yaml:/opt/bitops/bitops.config.yaml \
 -v /opt/bitops/scripts/plugins/terraform \
 -v /path/to/bitops-plugins/duplicate-environment:/opt/bitops/scripts/plugins/duplicate-environment \
-bitovi/bitops:2.1.0
+bitovi/bitops:dev
 ```
 
 > **Note:** To see the full code so far, see [docs/examples/plugin-examples/plugin-no-install/duplicate-environment](../docs/examples/plugin-examples/plugin-no-install/duplicate-environment)
