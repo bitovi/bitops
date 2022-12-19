@@ -264,7 +264,7 @@ docker run --rm --name bitops \
 -v /path/to/ops-repo/plugin-install:/opt/bitops_deployment \
 -v /path/to/bitops-level/bitops.config.yaml:/opt/bitops/bitops.config.yaml \
 -v /opt/bitops/scripts/plugins/terraform \
--v /path/to/bitops-plugins/duplicate-environment:/opt/bitops/scripts/plugins/duplicate-environment \
+-v /path/to/bitops-plugins/duplicate-environment:/opt/bitops/scripts/installed_plugins/duplicate-environment \
 bitops:local-custom
 ```
 
