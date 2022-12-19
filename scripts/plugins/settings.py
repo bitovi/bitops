@@ -97,7 +97,6 @@ BITOPS_logging_path = (
     else "/var/log/bitops"
 )
 
-
 BITOPS_plugin_dir = (
     BITOPS_ENV_plugin_dir
     if BITOPS_ENV_plugin_dir is not None
