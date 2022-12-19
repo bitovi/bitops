@@ -259,7 +259,6 @@ docker build bitops --tag bitovi/bitops:local-custom --progress=plain --no-cache
 ```
 docker run --rm --name bitops \
 -e BITOPS_ENVIRONMENT="duplicate-environment" \
--e PYTHONUNBUFFERED=1 \
 -v /path/to/bitops:/opt/bitops \
 -v /path/to/ops-repo/plugin-install:/opt/bitops_deployment \
 -v /path/to/bitops-level/bitops.config.yaml:/opt/bitops/bitops.config.yaml \
