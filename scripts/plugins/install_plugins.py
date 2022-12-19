@@ -17,7 +17,7 @@ from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
 
 def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, plugin_branch):
     """
-    Fetch plugins from a remote source
+    Fetch plugin from a remote git source
     """
     logger.info(
         f"\n\n\n~#~#~#~CLONING PLUGIN [{plugin_config.upper()}]~#~#~#~  \
