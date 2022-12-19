@@ -135,7 +135,6 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
 ```
 docker run --rm --name bitops \
 -e BITOPS_ENVIRONMENT="duplicate-environment" \
--e PYTHONUNBUFFERED=1 \
 -v /path/to/bitops:/opt/bitops \
 -v /path/to/ops-repo/plugin-no-install:/opt/bitops_deployment \
 -v /path/to/bitops-level/bitops.config.yaml:/opt/bitops/bitops.config.yaml \
