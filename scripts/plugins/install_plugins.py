@@ -124,15 +124,19 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,to
                 if bitops_plugins_configuration[plugin_config].source_tag is not None
                 else "latest"
             )
-            
+
             plugin_branch = (
                 bitops_plugins_configuration[plugin_config].source_branch
                 if bitops_plugins_configuration[plugin_config].source_branch is not None
                 else "main"
             )
-            fetch_plugin_remote(plugin_config, plugin_source, BITOPS_INSTALLED_PLUGINS_DIR, plugin_tag, plugin_branch)
-
-
+            fetch_plugin_remote(
+                plugin_config,
+                plugin_source,
+                BITOPS_INSTALLED_PLUGINS_DIR,
+                plugin_tag,
+                plugin_branch,
+            )
 
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
         # RUN PLUGIN INSTALL SCRIPT
