@@ -107,7 +107,7 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         # CLONE PLUGIN FROM LOCAL SOURCE
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
         if plugin_source.startswith("file://"):
-            print(f"copy source from local {plugin_source}")
+            logger.info(f"copy source from local {plugin_source}")
             fetch_plugin_local(plugin_config, plugin_source, plugin_dir)
         else:
             # ~#~#~#~#~#~#~#~#~#~#~#~#~#
