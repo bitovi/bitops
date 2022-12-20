@@ -12,7 +12,7 @@ from munch import DefaultMunch
 from .utilities import run_cmd
 from .doc import get_doc
 from .logging import logger
-from .settings import BITOPS_config_yaml, BITOPS_plugin_dir
+from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR, BITOPS_fast_fail_mode
 
 
 def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, plugin_branch):
@@ -34,7 +34,11 @@ def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, pl
 
         # If the plugin branch and tag are specified, default to branch
         elif plugin_branch is not None and plugin_tag is not None:
-            git.Repo.clone_from(plugin_source, plugin_dir + plugin_config, branch=plugin_branch)
+            git.Repo.clone_from(
+                plugin_source,
+                plugin_dir + plugin_config,
+                branch=plugin_branch,
+            )
 
         else:
             plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
@@ -55,6 +59,10 @@ def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
     """
     Fetch (i.e. copy) plugins from a local source (one the starts with file://)
     """
+    logger.info(
+        f"\n\n\n~#~#~#~COPY PLUGIN SOURCE FROM LOCAL [{plugin_config.upper()}]~#~#~#~  \
+    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
+    )
     try:
         src = re.sub(r"^file://", "", plugin_source)
         dest = plugin_dir + plugin_config
@@ -71,7 +79,7 @@ def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
 # TODO: Refactor this function. Fix pylint R0915: Too many statements (59/50) (too-many-statements)
 # See: https://github.com/bitovi/bitops/issues/329
-def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
+def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     """
     Install plugins function:
 
@@ -86,7 +94,6 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         bitops_build_configuration.bitops.plugins, None
     )
 
-    plugin_dir = BITOPS_plugin_dir
     plugin_list = list(bitops_plugins_configuration)
     # Loop through plugins and clone
     for plugin_config in bitops_plugins_configuration:
@@ -107,8 +114,7 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
         # CLONE PLUGIN FROM LOCAL SOURCE
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
         if plugin_source.startswith("file://"):
-            logger.info(f"copy source from local {plugin_source}")
-            fetch_plugin_local(plugin_config, plugin_source, plugin_dir)
+            fetch_plugin_local(plugin_config, plugin_source, BITOPS_INSTALLED_PLUGINS_DIR)
         else:
             # ~#~#~#~#~#~#~#~#~#~#~#~#~#
             # CLONE PLUGIN FROM SOURCE
@@ -118,19 +124,24 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
                 if bitops_plugins_configuration[plugin_config].source_tag is not None
                 else "latest"
             )
+            
             plugin_branch = (
                 bitops_plugins_configuration[plugin_config].source_branch
                 if bitops_plugins_configuration[plugin_config].source_branch is not None
                 else "main"
             )
-            fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, plugin_branch)
+            fetch_plugin_remote(plugin_config, plugin_source, BITOPS_INSTALLED_PLUGINS_DIR, plugin_tag, plugin_branch)
+
+
 
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
         # RUN PLUGIN INSTALL SCRIPT
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
 
         # Once the plugin is cloned, begin using its config + schema
-        plugin_configuration_path = plugin_dir + plugin_config + "/plugin.config.yaml"
+        plugin_configuration_path = (
+            BITOPS_INSTALLED_PLUGINS_DIR + plugin_config + "/plugin.config.yaml"
+        )
         logger.info(f"plugin_configuration_path ==>[{plugin_configuration_path}]")
         try:
             with open(plugin_configuration_path, "r", encoding="utf8") as stream:
@@ -189,7 +200,9 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
                 sys.exit(10)
 
         # install plugin dependencies (install.sh)
-        plugin_install_script_path = plugin_dir + plugin_config + f"/{plugin_install_script}"
+        plugin_install_script_path = (
+            BITOPS_INSTALLED_PLUGINS_DIR + plugin_config + f"/{plugin_install_script}"
+        )
 
         logger.info(
             f"\n\n\n~#~#~#~INSTALLING PLUGIN [{plugin_config}]~#~#~#~   \
@@ -219,4 +232,5 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements
                 f"\n\tSTDOUT:[{result.stdout}]\n"
                 f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]"
             )
-            sys.exit(result.returncode)
+            if BITOPS_fast_fail_mode:
+                sys.exit(result.returncode)

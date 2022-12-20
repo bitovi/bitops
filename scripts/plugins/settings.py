@@ -97,7 +97,6 @@ BITOPS_logging_path = (
     else "/var/log/bitops"
 )
 
-
 BITOPS_plugin_dir = (
     BITOPS_ENV_plugin_dir
     if BITOPS_ENV_plugin_dir is not None
@@ -106,6 +105,7 @@ BITOPS_plugin_dir = (
     else "/opt/bitops/scripts/plugins/"
 )
 
+BITOPS_INSTALLED_PLUGINS_DIR = "/opt/bitops/scripts/installed_plugins/"
 
 BITOPS_default_folder = (
     BITOPS_ENV_default_folder
@@ -121,4 +121,10 @@ BITOPS_timeout = (
     else bitops_build_configuration.bitops.timeout
     if bitops_build_configuration.bitops.timeout is not None
     else 600
+)
+
+BITOPS_logging_masks = (
+    bitops_build_configuration.bitops.logging.masks
+    if bitops_build_configuration.bitops.logging.masks is not None
+    else None
 )

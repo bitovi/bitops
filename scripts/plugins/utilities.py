@@ -7,7 +7,7 @@ import yaml
 
 from munch import DefaultMunch
 from .doc import get_doc
-from .logging import logger
+from .logging import logger, mask_message
 from .settings import (
     BITOPS_fast_fail_mode,
     BITOPS_config_file,
@@ -55,8 +55,9 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
                     setattr(self, _property, schema_property_values[_property])
                 except KeyError as exc:
                     setattr(self, _property, None)
+                    logger.error(exc)
                     if BITOPS_fast_fail_mode:
-                        raise exc
+                        sys.exit(101)
 
         logger.info(f"\n\tNEW SCHEMA:{self.print_schema()}")
 
@@ -158,7 +159,8 @@ def apply_data_type(data_type, convert_value):
         return bool(convert_value)
 
     if BITOPS_fast_fail_mode:
-        raise ValueError(f"Data type not supported: [{data_type}]")
+        logger.error(f"Data type not supported: [{data_type}]")
+        sys.exit(101)
 
     logger.warning(f"Data type not supported: [{data_type}]")
     return None
@@ -175,9 +177,12 @@ def add_value_to_env(export_env, value):
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
 
+    if isinstance(value, bool):
+        value = str(value).lower()
+
     export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
-    logger.info("Setting environment variable: [{export_env}], to value: [{value}]")
+    logger.info(f"Setting environment variable: [{export_env}], to value: [{value}]")
 
 
 def get_nested_item(search_dict, key):
@@ -193,7 +198,7 @@ def get_nested_item(search_dict, key):
     try:
         for k in key_list:
             obj = obj[k]
-    except KeyError:
+    except (KeyError, TypeError):
         return None
     logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
     return obj
@@ -346,11 +351,14 @@ def handle_hooks(mode, hooks_folder, source_folder):
         else:
             logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
+            if BITOPS_fast_fail_mode:
+                sys.exit(result.returncode)
+
     os.chdir(original_directory)
 
 
-def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
-    """Run a linux command and return CompletedProcess instance as a result"""
+def run_cmd(command: Union[list, str]) -> subprocess.Popen:
+    """Run a linux command and return Popen instance as a result"""
     try:
         with subprocess.Popen(
             command,
@@ -363,14 +371,14 @@ def run_cmd(command: Union[list, str]) -> subprocess.CompletedProcess:
                 # TODO: parse output for secrets
                 # TODO: specify plugin and output tight output (no extra newlines)
                 # TODO: can we modify a specific handler to add handler.terminator = "" ?
-                sys.stdout.write(combined_output)
+                sys.stdout.write(mask_message(combined_output))
 
-            # This polls the async function to get information about the status of the process execution.
+            # This polls the async function to get information
+            # about the status of the process execution.
             # Namely the return code which is used elsewhere.
             process.communicate()
+
     except Exception as exc:
         logger.error(exc)
-        if BITOPS_fast_fail_mode:
-            sys.exit(101)
-
+        sys.exit(101)
     return process

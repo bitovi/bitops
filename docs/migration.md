@@ -1,12 +1,38 @@
-Here is the list of major breaking changes that you need to be aware of when migrating from BitOps `v1.0` to `v2.0`.
+Here is the list of upgrade notes for major breaking changes that you need to be aware of when migrating between the BitOps versions.
 
-## BitOps Core
+## v2.2
+* Terraform plugin `stack-action` was moved from `options` to `cli` section in `bitops.config.yaml`.
+You need to update your configuration from old:
+```yaml
+terraform:
+  cli: {}
+  options:
+    stack-action: "plan"
+```
+to the new format:
+```yaml
+terraform:
+  cli:
+    stack-action: "plan"
+  options: {}
+```
 
-### CHANGED: `ENVIRONMENT` -> `BITOPS_ENVIRONMENT` var
+* ENV variables used to skip an individual plugin deployment were updated to follow a common consistent format:
+    - `SKIP_DEPLOY_TERRAFORM` -> `TERRAFORM_SKIP_DEPLOY`
+    - `SKIP_DEPLOY_HELM` -> `HELM_SKIP_DEPLOY`
+    - `SKIP_DEPLOY_ANSIBLE` -> `ANSIBLE_SKIP_DEPLOY`
+    - `SKIP_DEPLOY_CLOUDFORMATION` -> `CFN_SKIP_DEPLOY`
+
+---------
+## v2.0
+
+### BitOps Core
+
+#### CHANGED: `ENVIRONMENT` -> `BITOPS_ENVIRONMENT` var
 BitOps is no longer using the `ENVIRONMENT` value, it instead uses `BITOPS_ENVIRONMENT`.
 Please rename your variables.
 
-### CHANGED: `BITOPS_` Export Prefixes
+#### CHANGED: `BITOPS_` Export Prefixes
 BitOps core exported environment variables now have a prefix of `BITOPS_`.
 
 **Examples**
@@ -14,7 +40,7 @@ BitOps core exported environment variables now have a prefix of `BITOPS_`.
 - `BITOPS_TERRAFORM_ENV_VAR`
 - `BITOPS_ANSIBLE_ENV_VAR`
 
-### CHANGED: `bitops.config.yaml` stack-action
+#### CHANGED: `bitops.config.yaml` stack-action
 Ops repo level `bitops.config.yaml` have had one important update; The CLI attribute `stack-action` has been added. This attribute is used to tell the BitOps plugin which method it is invoking.
 
 For example, the terraform plugin has 3 stack-actions: `plan`, `apply`, `destroy`.
@@ -37,7 +63,7 @@ terraform:
 
 This pattern is now used by BitOps to standardize how a plugin specifies an action.
 
-### NEW: Default Folder Configuration
+#### NEW: Default Folder Configuration
 A new attribute was added to `bitops.config.yaml` to define the default folder name. This attribute is evaluated when building a BitOps custom image.
 
 **New method**
@@ -48,9 +74,8 @@ bitops:
 
 The compatible environment variable to override this setting is `BITOPS_DEFAULT_FOLDER`.
 
-
-## Plugins
-### Ansible
+### Plugins
+#### Ansible
 *depreciated attributes*
 
 - `ansible.cli.vault_id`
@@ -59,14 +84,14 @@ The compatible environment variable to override this setting is `BITOPS_DEFAULT_
 
 <hr/>
 
-### Terraform
+#### Terraform
 *new attributes*
 
 - `ansible.options.init-upgrade`
 
 <hr/>
 
-### Helm
+#### Helm
 *changed attributes*
 
 - `helm.options.uninstall-charts` --> Changed to --> `helm.options.uninstall`
@@ -80,7 +105,7 @@ The compatible environment variable to override this setting is `BITOPS_DEFAULT_
 
 <hr/>
 
-### Cloudformation
+#### Cloudformation
 *changed attributes*
 
 - `cloudformation.options.cfn-files.parameters.enabled` --> Changed to --> `cloudformation.options.cfn-files.parameters.template-param-flag`

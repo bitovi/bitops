@@ -19,8 +19,8 @@ terraform:
         backend-config:
             - KEY1=foo
             - KEY2=bar
-    options:
         stack-action: "plan"
+    options:
         workspace: test
 ```
 
@@ -34,83 +34,32 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 
 [bitops.schema.yaml](https://github.com/bitops-plugins/terraform/blob/main/bitops.schema.yaml)
 
--------------------
-### var-file
-* **BitOps Property:** `var-file`
-* **CLI Argument:** `--var-file`
-* **Environment Variable:** `BITOPS_TF_VAR_FILE`
-* **default:** `""`
-* **Required:** `false`
-* **Description:** Terraform Varaible file
-
--------------------
-### target
-* **BitOps Property:** `target`
-* **CLI Argument:** `--target`
-* **Environment Variable:** `BITOPS_TF_TARGET`
-* **default:** `""`
-* **Required:** `false`
-* **Description:**
-
--------------------
-### backend-config
-* **BitOps Property:** `backend-config`
-* **CLI Argument:** `--KEY1=foo --KEY2=bar`
-* **Environment Variable:** ``
-* **default:** `""`
-* **Required:** `false`
-* **Description:**
-
--------------------
+| Property       | Environment Variable | CLI Argument          | Description             | Default | Required |
+| -------------- | -------------------- | --------------------- | ----------------------- | ------- | -------- |
+| var-file       | BITOPS_TF_VAR_FILE   | --var-file            | Terraform Varaible file | `null`  | No       |
+| target         | BITOPS_TF_TARGET     | --target              |                         | `null`  | No       |
+| backend-config |                      | --KEY1=foo --KEY2=bar |                         | `null`  | No       |
+| stack-action | BITOPS_TERRAFORM_COMMAND |  | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
 
 
 ## Options Configuration
 
--------------------
-
-### stack-action
-* **BitOps Property:** `stack-action`
-* **Environment Variable:** `BITOPS_TERRAFORM_COMMAND`
-* **default:** `"plan"`
-* **Required:** `false`
-* **Description:** Controls what terraform command to run. e.g. `apply`, `destroy`, etc. 
-
-
--------------------
-<!-- ### version
-* **BitOps Property:** `version`
-* **Environment Variable:** `BITOPS_TERRAFORM_VERSION`
-* **default:** `"1.2.2"`
-* **Required:** `false`
-* **Description:** Allows customziation of which version of terraform to run
-
-* **NOTE:** `This feature currently not supported.`  -->
-
--------------------
-### workspace
-* **BitOps Property:** `workspace`
-* **Environment Variable:** `BITOPS_TERRAFORM_WORKSPACE`
-* **default:** `""`
-* **Required:** `false`
-* **Description:** Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE || terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands.
+| Property     | Environment Variable       | Description                                                  | Default | Required |
+| ------------ | -------------------------- | ------------------------------------------------------------ | ------- | -------- |
+| skip-deploy | TERRAFORM_SKIP_DEPLOY   | If set to true, regardless of the stack-action, deployment actions will be skipped. | false  | No       |
+| workspace    | BITOPS_TERRAFORM_WORKSPACE | Will select a terraform workspace using `terraform workspace new $TERRAFORM_WORKSPACE ||terraform workspace select $TERRAFORM_WORKSPACE` prior to running other terraform commands. | `null`  | No       |
 
 -------------------
 
 ## Additional Environment Variable Configuration
-Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behaviour.  Set the value of the environental variable to `true` to enable its behavior.
+Although not captured in `bitops.config.yaml`, the following environment variables can be set to further customize behavior.  Set the value of the environmental variable to `true` to enable its behavior.
 
 -------------------
-### SKIP_DEPLOY_TERRAFORM
-Will skip all terraform executions. This superseeds all other configuration.
+| Variable              | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| TERRAFORM_SKIP_DEPLOY | Will skip all terraform executions. This supersedes all other configurations. |
+| TERRAFORM_APPLY       | Will force call `terraform apply`.                           |
+| TERRAFORM_DESTROY     | Will force call `terraform destroy`.                         |
+| INIT_UPGRADE          | Will add `--upgrade` flag to the init command.               |
 
--------------------
-### TERRAFORM_APPLY
-Will force call `terraform apply`.
-
--------------------
-### TERRAFORM_DESTROY
-Will force call `terraform destroy`.
-
--------------------
-### INIT_UPGRADE
-Will add `--upgrade` flag to the init command.
+### 
