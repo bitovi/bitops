@@ -3,15 +3,77 @@
 import sys
 import os.path
 import os
+import re
+from distutils.dir_util import copy_tree
 import git
 import yaml
-
 from munch import DefaultMunch
 
 from .utilities import run_cmd
 from .doc import get_doc
 from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR, BITOPS_fast_fail_mode
+
+
+def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, plugin_branch):
+    """
+    Fetch plugin from a remote git source
+    """
+    logger.info(
+        f"\n\n\n~#~#~#~CLONING PLUGIN [{plugin_config.upper()}]~#~#~#~  \
+    \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
+    \n\t PLUGIN_TAG:            [{plugin_tag}]                  \
+    \n\t PLUGIN_BRANCH:         [{plugin_branch}]                \
+    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
+    )
+
+    try:
+        # Non-Entry default
+        if plugin_branch == "latest" and plugin_tag == "main":
+            git.Repo.clone_from(plugin_source, plugin_dir + plugin_config)
+
+        # If the plugin branch and tag are specified, default to branch
+        elif plugin_branch is not None and plugin_tag is not None:
+            git.Repo.clone_from(
+                plugin_source,
+                plugin_dir + plugin_config,
+                branch=plugin_branch,
+            )
+
+        else:
+            plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
+            git.Repo.clone_from(
+                plugin_source,
+                plugin_dir + plugin_config,
+                branch=plugin_pull_branch,
+            )
+
+        logger.info(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
+
+    except Exception as err:
+        logger.error(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}")
+        sys.exit(1)
+
+
+def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
+    """
+    Fetch (i.e. copy) plugins from a local source (one the starts with file://)
+    """
+    logger.info(
+        f"\n\n\n~#~#~#~COPY PLUGIN SOURCE FROM LOCAL [{plugin_config.upper()}]~#~#~#~  \
+    \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
+    )
+    try:
+        src = re.sub(r"^file://", "", plugin_source)
+        dest = plugin_dir + plugin_config
+
+        copy_tree(src, dest)
+
+        logger.info(f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
+
+    except Exception as err:
+        logger.error(f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}")
+        sys.exit(1)
 
 
 # TODO: Refactor this function. Fix pylint R0914: Too many local variables (22/15) (too-many-locals)
@@ -49,56 +111,32 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,to
             sys.exit(1)
 
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
-        # CLONE PLUGIN FROM SOURCE
+        # CLONE PLUGIN FROM LOCAL SOURCE
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
-
-        plugin_tag = (
-            bitops_plugins_configuration[plugin_config].source_tag
-            if bitops_plugins_configuration[plugin_config].source_tag is not None
-            else "latest"
-        )
-        plugin_branch = (
-            bitops_plugins_configuration[plugin_config].source_branch
-            if bitops_plugins_configuration[plugin_config].source_branch is not None
-            else "main"
-        )
-
-        logger.info(
-            f"\n\n\n~#~#~#~CLONING PLUGIN [{plugin_config.upper()}]~#~#~#~  \
-        \n\t PLUGIN_SOURCE:         [{plugin_source}]               \
-        \n\t PLUGIN_TAG:            [{plugin_tag}]                  \
-        \n\t PLUGIN_BRANCH:         [{plugin_branch}]                \
-        \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n"
-        )
-
-        try:
-            # Non-Entry default
-            if plugin_branch == "latest" and plugin_tag == "main":
-                git.Repo.clone_from(plugin_source, BITOPS_INSTALLED_PLUGINS_DIR + plugin_config)
-
-            # If the plugin branch and tag are specified, default to branch
-            elif plugin_branch is not None and plugin_tag is not None:
-                git.Repo.clone_from(
-                    plugin_source,
-                    BITOPS_INSTALLED_PLUGINS_DIR + plugin_config,
-                    branch=plugin_branch,
-                )
-
-            else:
-                plugin_pull_branch = plugin_tag if plugin_branch is None else plugin_branch
-                git.Repo.clone_from(
-                    plugin_source,
-                    BITOPS_INSTALLED_PLUGINS_DIR + plugin_config,
-                    branch=plugin_pull_branch,
-                )
-
-            logger.info(f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
-
-        except Exception as err:
-            logger.error(
-                f"\n~#~#~#~CLONING PLUGIN [{plugin_config}] CRITICAL ERROR~#~#~#~\n\t{err}"
+        if plugin_source.startswith("file://"):
+            fetch_plugin_local(plugin_config, plugin_source, BITOPS_INSTALLED_PLUGINS_DIR)
+        else:
+            # ~#~#~#~#~#~#~#~#~#~#~#~#~#
+            # CLONE PLUGIN FROM SOURCE
+            # ~#~#~#~#~#~#~#~#~#~#~#~#~#
+            plugin_tag = (
+                bitops_plugins_configuration[plugin_config].source_tag
+                if bitops_plugins_configuration[plugin_config].source_tag is not None
+                else "latest"
             )
-            sys.exit(1)
+
+            plugin_branch = (
+                bitops_plugins_configuration[plugin_config].source_branch
+                if bitops_plugins_configuration[plugin_config].source_branch is not None
+                else "main"
+            )
+            fetch_plugin_remote(
+                plugin_config,
+                plugin_source,
+                BITOPS_INSTALLED_PLUGINS_DIR,
+                plugin_tag,
+                plugin_branch,
+            )
 
         # ~#~#~#~#~#~#~#~#~#~#~#~#~#
         # RUN PLUGIN INSTALL SCRIPT

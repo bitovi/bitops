@@ -27,8 +27,20 @@ COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
 
+
+# temporarily set the working dir to `/opt/bitops-local-plugins`
+#    to copy local plugins from a custom bitops repo into the container
+#    at build time to allow installing dependencies
+ONBUILD WORKDIR /opt/bitops-local-plugins
+# optionally copy all local plugins to the `/opt/bitops-local-plugins`
+#    directory within the built container
+# bitops.config.yaml is set first to ensure docker does not fail even if
+#    the bitops repo's `plugins` directory does not exist
+ONBUILD COPY bitops.config.yaml ./plugins .
+
 ONBUILD WORKDIR /opt/bitops
 ONBUILD COPY bitops.config.yaml .
+
 ONBUILD RUN python3 scripts/main.py install
 
 ENTRYPOINT ["python3", "/opt/bitops/scripts/main.py", "deploy"]

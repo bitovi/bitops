@@ -90,3 +90,5 @@ Creating a plugin is easy, you only need 4 files:
 * `plugin.config.yaml` - A file used to describe the plugin configuration.
 
 > For more information, you can look at our [example plugin](https://github.com/bitops-plugins/example-plugin) repo that prints your name and favorite color!
+
+> For more information on developing with plugins locally, see [development/local-plugin-creation](./development/local-plugin-creation.md).
