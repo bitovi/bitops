@@ -13,6 +13,13 @@ bitops:
     filename: bitops-run      # log filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
+    # Define the secrets to mask
+    masks:
+      - # regex to search
+        # look for `AWS_ACCESS_KEY_ID={string}`
+        search: (AWS_ACCESS_KEY_ID=)(\S+)
+        # replace with `AWS_ACCESS_KEY_ID=*******`
+        replace: \1*******
   default_folder: _default
   plugins:    
     example-plugin:
