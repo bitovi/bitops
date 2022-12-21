@@ -18,6 +18,7 @@ RUN apk add \
 # install glibc compatibility for alpine
 ENV GLIBC_VER=2.31-r0
 RUN mkdir -p /opt/bitops
+RUN mkdir -p /opt/bitops-local-plugins
 
 WORKDIR /opt/bitops
 COPY scripts/ ./scripts
