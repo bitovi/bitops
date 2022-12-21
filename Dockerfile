@@ -34,9 +34,7 @@ RUN pip3 install -r requirements.txt
 ONBUILD WORKDIR /opt/bitops-local-plugins
 # optionally copy all local plugins to the `/opt/bitops-local-plugins`
 #    directory within the built container
-# bitops.config.yaml is set first to ensure docker does not fail even if
-#    the bitops repo's `plugins` directory does not exist
-ONBUILD COPY bitops.config.yaml ./plugins .
+ONBUILD COPY  plugins* .
 
 ONBUILD WORKDIR /opt/bitops
 ONBUILD COPY bitops.config.yaml .
