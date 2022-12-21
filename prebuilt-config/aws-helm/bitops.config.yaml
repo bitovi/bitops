@@ -13,6 +13,24 @@ bitops:
     filename: bitops-run      # log filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
+    # Define the secrets to mask
+    masks:
+      - # regex to search
+        # looks for `BITOPS_KUBECONFIG_BASE64={string}`
+        search: (.*BITOPS_KUBECONFIG_BASE64.*\=)(.*\n)
+        # replace the value part
+        replace: '\1*******\n'
+      - # regex to search
+        # looks for `The namespace kube-system exists`
+        search: (.*The namespace )(kube-system)( exists.*)
+        #replace kube-system
+        replace: '\1*******\3'
+      - # looks for `AWS_ACCESS_KEY_ID={string}`
+        search: (AWS_ACCESS_KEY_ID=)(\S+)
+        replace: \1*******
+      - # looks for `AWS_SECRET_ACCESS_KEY={string}`
+        search: (AWS_SECRET_ACCESS_KEY=)(\S+)
+        replace: \1*******
   default_folder: _default
   plugins:    
     aws:
