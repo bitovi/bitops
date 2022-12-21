@@ -30,7 +30,7 @@ To create your own BitOps, you will need two files:
 
 ### bitops.config.yaml
 Best explained with an example, The default `bitops.config.yaml` looks like this:
-```
+```yaml
 bitops:
   # The `bitops.config.yaml` file contains the configuration values for the BitOps core.
   #   - Changing values will require that a new image be built
@@ -45,6 +45,24 @@ bitops:
     filename: bitops-run      # log filename
     err: bitops.logs          # error logs filename
     path: /var/logs/bitops    # path to log folder
+    # Define the secrets to mask
+    masks:
+      - # regex to search
+        # looks for `BITOPS_KUBECONFIG_BASE64={string}`
+        search:  (.*BITOPS_KUBECONFIG_BASE64.*\=)(.*\n)
+        # replace the value part
+        replace: '\1*******\n'
+      - # looks for `The namespace kube-system exists`
+        search:  (.*The namespace )(kube-system)( exists.*)
+        #replace kube-system
+        replace: '\1*******\3'
+      - # see: https://regex101.com/r/44Ldz7/1
+        # looks for `AWS_ACCESS_KEY_ID={string}`
+        search: (AWS_ACCESS_KEY_ID=)(\S+)
+        replace: \1*******
+      - # looks for `AWS_SECRET_ACCESS_KEY={string}`
+        search: (AWS_SECRET_ACCESS_KEY=)(\S+)
+        replace: \1*******
   default_folder: _default
   plugins:  
     aws:
@@ -68,8 +86,8 @@ bitops:
       plugin: helm
     ansible:
       plugin: ansible
-
 ```
+
 The repo for each plugin must be a `git clone`-able URL. The name can be anything.
 
 The order that plugins run is dependent on the `deployments` section. If a `deployments` section isn't provided, it will attempt to process all folders in the `BITOPS_ENVIRONMENT` directory in alphabetical order.
