@@ -15,12 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        push: false
-        tags: bitovi/devops-mkdocs:latest
-        file: Dockerfile.docs
     - name: Publish Docs
       uses: mhausenblas/mkdocs-deploy-gh-pages@master
       env:

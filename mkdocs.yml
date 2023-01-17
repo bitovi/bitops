@@ -71,6 +71,3 @@ markdown_extensions:
   - pymdownx.extra
   - toc:
       permalink: "#"
-
-plugins:
-  - mkdocs-video
