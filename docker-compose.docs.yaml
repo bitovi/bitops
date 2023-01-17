@@ -3,7 +3,7 @@ version: '3'
 services:
   mkdocs:
     container_name: bitops-docs
-    image: squidfunk/mkdocs-material
+    image: bitovi/devops-mkdocs
     restart: always
     ports:
       - "8000:8000"

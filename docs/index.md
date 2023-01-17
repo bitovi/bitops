@@ -16,7 +16,10 @@ hide:
 <div class="bitovi-row">
     <div class="bitovi-column">
         <h1>BitOps centralizes, organizes, and deploys your Infrastructure-as-Code</h1>
-        <a class="md-button md-button--primary" href="getting-started">Show me how</a>
+        <div>
+        <a class="md-button md-button--primary" href="getting-started">Show me the doc</a>
+        <a class="md-button md-button--primary" href="https://youtu.be/BiytYu3EefY">Show me a video</a>
+        </div>
         <p>
             <a href="license/"><img alt="LICENSE" src="https://img.shields.io/badge/license-MIT-green"></a>
             <img alt="Python 3.8" src="https://img.shields.io/badge/python-3.8-blue">
