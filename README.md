@@ -16,6 +16,8 @@ BitOps is an automated [orchestrator](docs/about.md) for deployment tools using 
 
 It leverages a way to describe infrastructure for many environments and IaC tools called an [Operations Repository](docs/operations-repo-structure.md).
 
+[![Getting Started - Youtube](docs/assets/images/bitops-intro-video.png)](https://youtu.be/BiytYu3EefY)
+
 ---------------------
 
 ## Features

@@ -1,5 +1,8 @@
 # Getting Started
 
+<iframe width="1280" height="500" src="https://www.youtube.com/embed/BiytYu3EefY" title="Intro to BitOps" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
 ---------------------
 ## What is BitOps?
 
