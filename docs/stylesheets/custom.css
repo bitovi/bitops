@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     width: 100%;
   }
-  
+
 .bitovi-column {
     display: flex;
     flex-direction: column;
@@ -18,10 +18,31 @@
     flex: 1;
     margin: 20px;
   }
-  
+
 @media screen and (max-width: 800px) {
     .bitovi-row {
         flex-direction: column;
         align-items: center;
+        /* margin-left: -100px; */
     }
   }
+
+/* override to save the empty space in the header */
+.md-main__inner {
+    margin-top: -15px;
+}
+
+.bitovi-list {
+  margin-left: -50px;
+}
+
+.bitovi-list ul {
+    text-align: left;
+    list-style-type: none;
+}
+
+.bitovi-list ul li:before {
+    content: '✅';
+    margin-left: 50px;
+    margin-right: 10px
+}
