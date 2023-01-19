@@ -8,8 +8,20 @@ hide:
 
 <!-- Custom hero banner using docs/stylesheets/custom.css -->
 <div class="bitovi-row">
+    <div class="bitovi-column bitovi-list">
+        <img alt="BitOps Logo" float="middle" style="vertical-align: middle;" src="assets/images/logo/bitops_horizontal.png" width="300" height="75" />
+        <ul>
+            <li>Keeps the working environment clean</li>
+            <li><a href="/operations-repo-structure/" target="_blank">Organizes your deployment configuration</a></li>
+            <li>Faster developer onboarding</li>
+            <li><a href="https://github.com/bitops-plugins" target="_blank">Integrates with your favorite tools</a></li>
+            <li><a href="https://github.com/bitovi/bitops/tree/main/docs/examples" target="_blank">Saves weeks of engineering efforts</a></li>
+            <li>Encourages GitOps best practices</li>
+            <li><a href="https://github.com/bitovi/bitops" target="_blank">Open source and free</a></li>
+        </ul>
+    </div>
     <div class="bitovi-column">
-        <img alt="Logo" float="middle" style="vertical-align: middle;" src="assets/images/logo/Bitops%28RGB%29_L2_Full_4C.png" width="350" />
+        <iframe width="500" height="310" src="https://www.youtube.com/embed/BiytYu3EefY" title="Intro to BitOps" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
 </div>
 
