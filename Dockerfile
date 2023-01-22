@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apk add --no-cache bash
 RUN apk update
 
-RUN apk add \
+RUN apk add --no-cache \
     libsodium-dev \
     wget \
     unzip \
@@ -14,7 +14,7 @@ RUN apk add \
     curl \
     rsync \
     openssh
-    
+
 # install glibc compatibility for alpine
 ENV GLIBC_VER=2.31-r0
 RUN mkdir -p /opt/bitops
@@ -26,7 +26,7 @@ COPY bitops.config.yaml .
 COPY bitops.schema.yaml .
 COPY requirements.txt .
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # temporarily set the working dir to `/opt/bitops-local-plugins`
 #    to copy local plugins from a custom bitops repo into the container
