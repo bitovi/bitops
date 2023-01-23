@@ -8,6 +8,7 @@ theme:
     - navigation.tabs.sticky
     - toc.integrate
   name: material
+  custom_dir: docs/theme/
   font:
     text: Lato
   palette:
