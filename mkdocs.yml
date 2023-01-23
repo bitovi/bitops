@@ -1,6 +1,7 @@
 site_name: BitOps Documentation
-# Set site_url when we have a real domain
-site_url: https://bitops.sh
+site_url: https://bitops.sh/
+# Will be used for meta tags and previews in social media. 150-160 characters is recommendation.
+site_description: "BitOps is like bootstrap but for the infrastructure. It centralizes, organizes, and deploys your Infrastructure-as-Code."
 
 theme:
   features:
