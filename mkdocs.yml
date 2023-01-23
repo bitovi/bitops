@@ -73,3 +73,6 @@ markdown_extensions:
   - pymdownx.extra
   - toc:
       permalink: "#"
+
+extra_javascript:
+  - theme/js/hubspot.js
