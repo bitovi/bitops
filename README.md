@@ -93,9 +93,14 @@ docker-compose -f docker-compose.docs.yaml up
 ```
 Then load [http://localhost:8000](http://localhost:8000)
 
-## Release History
+## Community
+### 📅 Office Hours
+Join us for our bi-weekly office hours. We'll be there to answer any questions you have about BitOps, GitOps, project plans, and features.
+See https://github.com/bitovi/bitops/discussions/288 for the schedule and calendar link.
 
-See [Releases](https://github.com/bitovi/bitops/releases).
+### 📝 Survey
+We are always looking for ways to improve BitOps. If you have a few minutes, please fill out our user survey: https://forms.gle/mDLBE63UF9CdcqdG7
+By submitting you help us understand how BitOps is being used and what we can do to improve it like new features, documentation, and more.
 
 ## License
 
