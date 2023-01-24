@@ -46,3 +46,12 @@
     margin-left: 50px;
     margin-right: 10px
 }
+
+/* User survey button style */
+#user-survey {
+    margin-left: 120px;
+    padding: 7px;
+    border-radius: 7px;
+    background-color: #1b7bcf;
+    color: white;
+}
