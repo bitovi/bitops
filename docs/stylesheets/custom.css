@@ -55,9 +55,7 @@
     height: 0;
 }
 
-/* User survey button style */
-#user-survey {
-    margin-left: 120px;
+#user-survey-btn {
     padding: 7px;
     border-radius: 7px;
     background-color: #1b7bcf;

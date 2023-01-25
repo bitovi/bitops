@@ -8,6 +8,7 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - toc.integrate
+    - announce.dismiss
   name: material
   custom_dir: docs/theme/
   font:
@@ -55,7 +56,6 @@ nav:
       - DCO: development/DCO.md
       - Open Issues: https://github.com/bitovi/bitops/issues" target="_blank
     - License: license.md
-  - User Survey: https://forms.gle/mDLBE63UF9CdcqdG7" id="user-survey" target="_blank
 
 extra:
   social:
