@@ -8,6 +8,7 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - toc.integrate
+    - announce.dismiss
   name: material
   custom_dir: docs/theme/
   font:

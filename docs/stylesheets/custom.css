@@ -33,7 +33,7 @@
 }
 
 .bitovi-list {
-  margin-left: -50px;
+    margin-left: -50px;
 }
 
 .bitovi-list ul {
@@ -49,8 +49,15 @@
 
 /* Disable Hubspot chat widget */
 #hubspot-messages-iframe-container {
-  display: none !important;
-  opacity: 0;
-  width: 0;
-  height: 0;
+    display: none !important;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+#user-survey-btn {
+    padding: 7px;
+    border-radius: 7px;
+    background-color: #1b7bcf;
+    color: white;
 }
