@@ -165,6 +165,20 @@ def apply_data_type(data_type, convert_value):
     logger.warning(f"Data type not supported: [{data_type}]")
     return None
 
+def list_to_string(list):
+    """
+    This function takes a python list as an argument and returns a space deliminated string of values.
+
+    Parameters:
+    list (list): A python list
+
+    Returns:
+    string (str): A space deliminated string of the values in the list 
+    """
+    string = ""
+    for item in list:
+        string += str(item) + " "
+    return string.strip()
 
 def add_value_to_env(export_env, value):
     """
@@ -179,6 +193,9 @@ def add_value_to_env(export_env, value):
 
     if isinstance(value, bool):
         value = str(value).lower()
+
+    if isinstance(value, list):
+        value = list_to_string(value)
 
     export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
