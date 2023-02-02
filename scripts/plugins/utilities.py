@@ -165,20 +165,6 @@ def apply_data_type(data_type, convert_value):
     logger.warning(f"Data type not supported: [{data_type}]")
     return None
 
-def list_to_string(list):
-    """
-    This function takes a python list as an argument and returns a space deliminated string of values.
-
-    Parameters:
-    list (list): A python list
-
-    Returns:
-    string (str): A space deliminated string of the values in the list 
-    """
-    string = ""
-    for item in list:
-        string += str(item) + " "
-    return string.strip()
 
 def add_value_to_env(export_env, value):
     """
@@ -195,7 +181,7 @@ def add_value_to_env(export_env, value):
         value = str(value).lower()
 
     if isinstance(value, list):
-        value = list_to_string(value)
+        value = " ".join(value)
 
     export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
@@ -383,7 +369,6 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ) as process:
-
             for combined_output in process.stdout:
                 # TODO: parse output for secrets
                 # TODO: specify plugin and output tight output (no extra newlines)
