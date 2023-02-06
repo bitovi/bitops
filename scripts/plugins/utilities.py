@@ -176,6 +176,10 @@ def add_value_to_env(export_env, value):
     """
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
+    
+    if os.environ.get('BITOPS_'+export_env):
+        logger.info("Environment Varible alredy set. Configuration value ignored.")
+        return
 
     if isinstance(value, bool):
         value = str(value).lower()
