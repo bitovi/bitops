@@ -1,0 +1,20 @@
+name: Build and Publish custom image example
+
+on:
+  push:
+    branches: [ bitops-custom-image-example ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - id: docker-publish
+      uses:  bitovi/github-actions-docker-publish@v1.0.7
+      with:
+        docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+        docker_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        checkout: true
+        image_tag: custom_image_example
+    - run: |
+        echo "Image Created:  ${{ env.image }}"
+        echo "Tag Created: ${{ env.tag }}"
