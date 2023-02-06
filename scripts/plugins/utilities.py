@@ -176,8 +176,7 @@ def add_value_to_env(export_env, value):
     """
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
-    
-    if os.environ.get('BITOPS_'+export_env):
+    if os.environ.get("BITOPS_" + export_env):
         logger.info("Environment Varible alredy set. Configuration value ignored.")
         return
 
@@ -370,7 +369,6 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ) as process:
-
             for combined_output in process.stdout:
                 # TODO: parse output for secrets
                 # TODO: specify plugin and output tight output (no extra newlines)
