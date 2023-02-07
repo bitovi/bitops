@@ -178,7 +178,9 @@ def add_value_to_env(export_env, value):
         return
     export_env = "BITOPS_" + export_env
     if os.environ.get(export_env):
-        logger.info(f"Environment Varible [{export_env}] already set. BitOps Configuration value ignored.")
+        logger.info(
+            f"Environment variable [{export_env}] already set. BitOps configuration value ignored."
+        )
         return
 
     if isinstance(value, bool):
