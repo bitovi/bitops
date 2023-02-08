@@ -104,7 +104,7 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
             )
             self.value = os.environ[import_env]
             return
-        elif found_config_value:
+        if found_config_value:
             logger.info(
                 f"Config override found for: [{self.name}], default: [{self.default}], "
                 f"new value: [{found_config_value}]"
@@ -185,7 +185,7 @@ def add_value_to_env(export_env, value):
     """
     if value is None or value == "" or value == "None" or export_env is None or export_env == "":
         return
-    
+
     if isinstance(value, bool):
         value = str(value).lower()
 
