@@ -7,7 +7,7 @@ bitops:
   run_mode: default   # (Unused for now)
   # LEVELS: [ DEBUG, INFO, WARNING, ERROR, CRITICAL ]
   logging:      
-    level: DEBUG              # Sets the logging level
+    level: WARNING              # Sets the logging level
     color:
       enabled: true           # Enables colored logs
     filename: bitops-run      # log filename
