@@ -95,9 +95,18 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         logger.info(f"\n\tSearching for: [{self.config_key}]\n\t\tResult Found: [{result}]")
         found_config_value = apply_data_type(self.type, result)
 
-        if found_config_value:
+        # Priority: ENV > Config > Defaults
+        import_env = f"BITOPS_{self.export_env}"
+        if self.export_env and import_env in os.environ:
             logger.info(
-                f"Override found for: [{self.name}], default: [{self.default}], "
+                f"ENV override found for: [{self.name}] from [{import_env}], "
+                f"new value: [{os.environ[import_env]}]"
+            )
+            self.value = os.environ[import_env]
+            return
+        elif found_config_value:
+            logger.info(
+                f"Config override found for: [{self.name}], default: [{self.default}], "
                 f"new value: [{found_config_value}]"
             )
             self.value = found_config_value
