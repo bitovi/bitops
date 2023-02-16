@@ -8,7 +8,8 @@ import yaml
 
 
 from .doc import get_doc
-from .utilities import get_config_list, handle_hooks, run_cmd
+from .utilities import handle_hooks, run_cmd, get_config_list
+from .config.cli import PluginConfigCLI
 from .settings import (
     BITOPS_fast_fail_mode,
     bitops_build_configuration,
@@ -221,6 +222,11 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         if plugin_deploy_schema_parsing_flag:
             logger.debug("running bitops schema parsing...")
             cli_config_list, _ = get_config_list(opsrepo_config_file, plugin_schema_file)
+
+            # Compose a CLI and export it as "BITOPS_{PLUGIN_NAME}_CLI}"
+            cli = PluginConfigCLI(cli_config_list).get_command()
+            os.environ[f"BITOPS_{plugin_name.upper()}_CLI"] = cli
+            logger.debug(f"Exported CLI: {cli}")
 
             stack_action = ""
             for item in cli_config_list:
