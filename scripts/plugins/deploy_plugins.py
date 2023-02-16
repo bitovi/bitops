@@ -225,8 +225,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
             # Compose a CLI and export it as "BITOPS_{PLUGIN_NAME}_CLI}"
             cli = PluginConfigCLI(cli_config_list).get_command()
-            os.environ[f"BITOPS_{plugin_name.upper()}_CLI"] = cli
-            logger.debug(f"Exported CLI: {cli}")
+            cli_env = f"BITOPS_{plugin_name.upper()}_CLI"
+            os.environ[cli_env] = cli
+            logger.debug(f"Exported CLI ENV {cli_env}: [{cli}]")
 
             stack_action = ""
             for item in cli_config_list:
