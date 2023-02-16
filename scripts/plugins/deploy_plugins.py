@@ -223,11 +223,10 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             logger.debug("running bitops schema parsing...")
             cli_config_list, _ = get_config_list(opsrepo_config_file, plugin_schema_file)
 
-            # Compose a CLI and export it as "BITOPS_{PLUGIN_NAME}_CLI}"
-            cli = PluginConfigCLI(cli_config_list).get_command()
-            cli_env = f"BITOPS_{plugin_name.upper()}_CLI"
-            os.environ[cli_env] = cli
-            logger.debug(f"Exported CLI ENV {cli_env}: [{cli}]")
+            # Compose a CLI and export it as "BITOPS_{PLUGIN}_CLI}"
+            cli = PluginConfigCLI(cli_config_list)
+            os.environ[cli.env] = cli.command
+            logger.debug(f"Exported CLI ENV {cli.env}: [{cli.command}]")
 
             stack_action = ""
             for item in cli_config_list:

@@ -1,23 +1,42 @@
+import os
+
 from plugins.utilities import SchemaObject
 
 __all__ = ["PluginConfigCLI"]
 
 
-class PluginConfigCLI:  # pylint: disable=too-few-public-methods
+class PluginConfigCLI:
     """
-    Class with rules for converting a plugin configuration objects into a CLI command.
+    Class with rules for converting a list of plugin configuration objects into a CLI command.
     """
 
     def __init__(self, cli_config_list: [SchemaObject]):
         self.cli_config_list = cli_config_list
 
-    def get_command(self) -> str:
-        """Returns a composed CLI command string to be used in a plugin."""
-        # filter out any empty values
-        self.cli_config_list = list(filter(self._with_value, self.cli_config_list))
+    @property
+    def env(self) -> str:
+        """
+        Generate an ENV variable name to be exported to the plugin.
+        `BITOPS_<PLUGIN>_CLI`
+        """
+        if self.cli_config_list:
+            plugin = self.cli_config_list[0].plugin
+        else:
+            plugin = os.environ.get("BITOPS_PLUGIN_NAME")
 
+        if not plugin:
+            raise ValueError("No plugin name provided for CLI environment variable.")
+
+        return f"BITOPS_{plugin.upper()}_CLI"
+
+    @property
+    def command(self) -> str:
+        """Generate a composed CLI command string to be used in a plugin."""
         command = []
         for c in self.cli_config_list:
+            # filter out any empty values
+            if not c.value:
+                continue
             if c.parameter and c.value:
                 # bool params are passed as a CLI flag `--param`
                 if c.type in ["bool", "boolean"] and str(c.value).lower() == "true":
@@ -30,7 +49,3 @@ class PluginConfigCLI:  # pylint: disable=too-few-public-methods
                 command.append(c.value)
 
         return " ".join(command)
-
-    def _with_value(self, item: SchemaObject) -> bool:
-        """Returns True if the SchemaObject has a value."""
-        return item.value

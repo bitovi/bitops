@@ -20,7 +20,6 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
     """
 
     properties = [
-        "import_env",
         "export_env",
         "default",
         "enabled",
@@ -33,6 +32,8 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
 
     def __init__(self, name, schema_key, schema_property_values=None):
         self.name = name
+        self.plugin = schema_key.split(".")[0]
+
         self.schema_key = schema_key
         self.config_key = schema_key.replace(".properties", "")
 
@@ -40,7 +41,6 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
 
         self.schema_property_type = self.config_key.split(".")[1] or None
 
-        self.import_env = ""
         self.export_env = ""
         self.default = "NO DEFAULT FOUND"
         self.enabled = ""
@@ -83,6 +83,25 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
             \n                      \
             \n\t\tValue Set:    [{self.value}]"
 
+    @property
+    def env(self) -> str:
+        """
+        Environment Variable name automatically associated with config property.
+        Generated as "BITOPS_<PLUGIN>_<PROPERTY>", replacing all
+        "-" with "_" and converting to uppercase.
+        ENV variables specified by users take precedence over defaults and config values.
+
+        Example:
+        ```
+            schema_key = "ansible.properties.options.extra-vars"
+                =>
+            env = "BITOPS_ANSIBLE_EXTRA_VARS"
+        ```
+        """
+        plugin = self.plugin.replace("-", "_").upper()
+        prop = self.name.replace("-", "_").upper()
+        return f"BITOPS_{plugin}_{prop}"
+
     def process_config(self, config_yaml):
         """
         Function that processes the bitops.config against the SchemaObject,
@@ -96,9 +115,8 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         found_config_value = SchemaObject._apply_data_type(self.type, result)
 
         # Priority: ENV > Config > Defaults
-        import_env = f"BITOPS_{self.export_env}" if not self.import_env else self.import_env
-        if import_env in os.environ:
-            self.value = os.environ[import_env]
+        if self.env in os.environ:
+            self.value = os.environ[self.env]
             logger.info(f"ENV override found for: [{self.name}]." f" New value: [{self.value}]")
         elif found_config_value:
             logger.info(
@@ -109,7 +127,7 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         else:
             self.value = self.default
 
-        add_value_to_env(self.import_env, self.export_env, self.value)
+        add_value_to_env(self.export_env, self.value)
 
     @staticmethod
     def get_nested_item(search_dict, key):
@@ -157,17 +175,19 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         return None
 
 
-def add_value_to_env(import_env, export_env, value):
+def add_value_to_env(export_env, value):
     """
-    Takes a variable name and value and loads them into an environment variable,
-    prefixing with BITOPS_.
-    Old behavior:
-        export_env: TERRAFORM_VERSION
-        TERRAFORM_VERSION=123 -> BITOPS_TERRAFORM_VERSION=123
-    New behavior:
-        import_env: BITOPS_ANSIBLE_VERBOSITY
+    Takes a variable name and value and loads them into an environment variable.
+    This is used to pass variables to the plugins.
+
+    Old behavior: (TO BE DEPRECATED)
         export_env: ANSIBLE_VERBOSITY
-        BITOPS_ANSIBLE_VERBOSITY=1 -> ANSIBLE_VERBOSITY=1
+        export BITOPS_ANSIBLE_VERBOSITY=1
+    New behavior:
+        export_env: ANSIBLE_VERBOSITY
+        export ANSIBLE_VERBOSITY=1
+
+    We keep the old behavior for backwards compatibility.
     """
     if value is None or value == "" or value == "None" or not export_env:
         return
@@ -175,11 +195,18 @@ def add_value_to_env(import_env, export_env, value):
     if isinstance(value, bool):
         value = str(value).lower()
 
-    # apply BITOPS_ prefix to env var only if there is no "import_env" set (backward compatibility)
-    if not import_env:
-        export_env = "BITOPS_" + export_env
     os.environ[export_env] = str(value)
-    logger.info(f"Setting environment variable: [{export_env}], to value: [{value}]")
+    logger.info(f"Setting export environment variable: [{export_env}], to value: [{value}]")
+
+    # Normally, "export_env: TERRAFORM_VERSION" should be exported as is.
+    # Here we prefix with "BITOPS_" for backwards compatibility.
+    # TODO: Remove this in a future releases after updating all plugins
+    if not export_env.startswith("BITOPS_"):
+        export_env = f"BITOPS_{export_env}"
+        os.environ[export_env] = str(value)
+        logger.info(
+            f"Setting export environment variable: [{export_env}], to value: [{value}] (old)"
+        )
 
 
 def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
