@@ -3,15 +3,12 @@ import sys
 import subprocess
 import re
 from typing import Union
+from munch import DefaultMunch
 import yaml
 
-from munch import DefaultMunch
 from .doc import get_doc
 from .logging import logger, mask_message
-from .settings import (
-    BITOPS_fast_fail_mode,
-    BITOPS_config_file,
-)
+from .settings import BITOPS_fast_fail_mode
 
 
 class SchemaObject:  # pylint: disable=too-many-instance-attributes
@@ -30,10 +27,13 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         "parameter",
         "required",
         "dash_type",
+        "description",
     ]
 
     def __init__(self, name, schema_key, schema_property_values=None):
         self.name = name
+        self.plugin = schema_key.split(".")[0]
+
         self.schema_key = schema_key
         self.config_key = schema_key.replace(".properties", "")
 
@@ -83,6 +83,25 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
             \n                      \
             \n\t\tValue Set:    [{self.value}]"
 
+    @property
+    def env(self) -> str:
+        """
+        Environment Variable name automatically associated with config property.
+        Generated as "BITOPS_<PLUGIN>_<PROPERTY>", replacing all
+        "-" with "_" and converting to uppercase.
+        ENV variables specified by users take precedence over defaults and config values.
+
+        Example:
+        ```
+            schema_key = "ansible.properties.options.extra-vars"
+                =>
+            env = "BITOPS_ANSIBLE_EXTRA_VARS"
+        ```
+        """
+        plugin = self.plugin.replace("-", "_").upper()
+        prop = self.name.replace("-", "_").upper()
+        return f"BITOPS_{plugin}_{prop}"
+
     def process_config(self, config_yaml):
         """
         Function that processes the bitops.config against the SchemaObject,
@@ -91,13 +110,17 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         """
         if self.type == "object":
             return
-        result = get_nested_item(config_yaml, self.config_key)
+        result = SchemaObject.get_nested_item(config_yaml, self.config_key)
         logger.info(f"\n\tSearching for: [{self.config_key}]\n\t\tResult Found: [{result}]")
-        found_config_value = apply_data_type(self.type, result)
+        found_config_value = SchemaObject._apply_data_type(self.type, result)
 
-        if found_config_value:
+        # Priority: ENV > Config > Defaults
+        if self.env in os.environ:
+            self.value = os.environ[self.env]
+            logger.info(f"ENV override found for: [{self.name}]. New value: [{self.value}]")
+        elif found_config_value:
             logger.info(
-                f"Override found for: [{self.name}], default: [{self.default}], "
+                f"Config override found for: [{self.name}], default: [{self.default}], "
                 f"new value: [{found_config_value}]"
             )
             self.value = found_config_value
@@ -106,81 +129,67 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
 
         add_value_to_env(self.export_env, self.value)
 
-
-def parse_values(item):
-    """
-    Convert the yaml properties value loaded from bitops schema into yaml properties
-    value for bitops configuration.
-    Example
-        bitops.schema: bitops.properties.options.properties.file
-         ->
-        bitops.config: bitops.options.file
-    """
-    return item.replace("properties.", "")
-
-
-def load_yaml(yaml_file):
-    """Loads yaml from file"""
-    with open(yaml_file, "r", encoding="utf8") as stream:
+    @staticmethod
+    def get_nested_item(search_dict, key):
+        """
+        Parses yaml (schema/config) based on SchemaObject properties path.
+        """
+        logger.debug(
+            f"\n\t\tSEARCHING FOR KEY:  [{key}]    \
+                    \n\t\tSEARCH_DICT:        [{search_dict}]"
+        )
+        obj = search_dict
+        key_list = key.split(".")
         try:
-            plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
-        except yaml.YAMLError as exc:
-            logger.error(exc)
-        except Exception as exc:
-            logger.error(exc)
-    return plugins_yml
+            for k in key_list:
+                obj = obj[k]
+        except (KeyError, TypeError):
+            return None
+        logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
+        return obj
 
+    @staticmethod
+    def _apply_data_type(data_type, convert_value):
+        """
+        Converts incoming variable into `type of` based on SchemaObject.type property.
+        """
+        if data_type == "object" or convert_value is None:
+            return None
 
-def load_build_config():
-    """
-    Returns yaml object for a BitOps config
-    """
-    logger.info(f"Loading {BITOPS_config_file}")
-    # Load plugin config yml
-    return load_yaml(BITOPS_config_file)
+        if re.search("list", data_type, re.IGNORECASE):
+            return list(convert_value)
+        if re.search("string", data_type, re.IGNORECASE):
+            return str(convert_value)
+        if re.search("int", data_type, re.IGNORECASE):
+            return int(convert_value)
+        if re.search("boolean", data_type, re.IGNORECASE) or re.search(
+            "bool", data_type, re.IGNORECASE
+        ):
+            return bool(convert_value)
 
+        if BITOPS_fast_fail_mode:
+            logger.error(f"Data type not supported: [{data_type}]")
+            sys.exit(101)
 
-def apply_data_type(data_type, convert_value):
-    """
-    Converts incoming variable into `type of` based on SchemaObject.type property.
-    """
-    if data_type == "object" or convert_value is None:
+        logger.warning(f"Data type not supported: [{data_type}]")
         return None
-
-    if re.search("list", data_type, re.IGNORECASE):
-        return list(convert_value)
-    if re.search("string", data_type, re.IGNORECASE):
-        return str(convert_value)
-    if re.search("int", data_type, re.IGNORECASE):
-        return int(convert_value)
-    if re.search("boolean", data_type, re.IGNORECASE) or re.search(
-        "bool", data_type, re.IGNORECASE
-    ):
-        return bool(convert_value)
-
-    if BITOPS_fast_fail_mode:
-        logger.error(f"Data type not supported: [{data_type}]")
-        sys.exit(101)
-
-    logger.warning(f"Data type not supported: [{data_type}]")
-    return None
 
 
 def add_value_to_env(export_env, value):
     """
-    Takes a variable name and value and loads them into an environment variable,
-    prefixing with BITOPS_.
+    Takes a variable name and value and loads them into an environment variable.
+    This is used to pass variables to the plugins.
 
-    Example:
-        TERRAFORM_VERSION=123 -> BITOPS_TERRAFORM_VERSION=123
+    Old behavior: (TO BE DEPRECATED)
+        export_env: ANSIBLE_VERBOSITY
+        export BITOPS_ANSIBLE_VERBOSITY=1
+    New behavior:
+        export_env: ANSIBLE_VERBOSITY
+        export ANSIBLE_VERBOSITY=1
+
+    We keep the old behavior for backwards compatibility.
     """
-    if value is None or value == "" or value == "None" or export_env is None or export_env == "":
-        return
-    export_env = "BITOPS_" + export_env
-    if os.environ.get(export_env):
-        logger.info(
-            f"Environment variable [{export_env}] already set. BitOps configuration value ignored."
-        )
+    if value is None or value == "" or value == "None" or not export_env:
         return
 
     if isinstance(value, bool):
@@ -193,24 +202,18 @@ def add_value_to_env(export_env, value):
     os.environ[export_env] = str(value)
     logger.info(f"Setting environment variable: [{export_env}], to value: [{value}]")
 
+    os.environ[export_env] = str(value)
+    logger.info(f"Setting export environment variable: [{export_env}], to value: [{value}]")
 
-def get_nested_item(search_dict, key):
-    """
-    Parses yaml (schema/config) based on SchemaObject properties path.
-    """
-    logger.debug(
-        f"\n\t\tSEARCHING FOR KEY:  [{key}]    \
-                  \n\t\tSEARCH_DICT:        [{search_dict}]"
-    )
-    obj = search_dict
-    key_list = key.split(".")
-    try:
-        for k in key_list:
-            obj = obj[k]
-    except (KeyError, TypeError):
-        return None
-    logger.debug(f"\n\t\tKEY [{key}] \n\t\tRESULT FOUND:   [{obj}]")
-    return obj
+    # Normally, "export_env: TERRAFORM_VERSION" should be exported as is.
+    # Here we prefix with "BITOPS_" for backwards compatibility.
+    # TODO: Remove this in a future releases after updating all plugins
+    if not export_env.startswith("BITOPS_"):
+        export_env = f"BITOPS_{export_env}"
+        os.environ[export_env] = str(value)
+        logger.info(
+            f"Setting export environment variable: [{export_env}], to value: [{value}] (old)"
+        )
 
 
 def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
@@ -290,7 +293,7 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
         logger.debug("Starting a new property search")
         property_name = schema_properties.split(".")[-1]
 
-        result = get_nested_item(schema, schema_properties)
+        result = SchemaObject.get_nested_item(schema, schema_properties)
 
         schema_object = SchemaObject(property_name, schema_properties, result)
         schema_object.process_config(config_yaml)
