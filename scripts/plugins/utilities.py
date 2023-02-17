@@ -119,18 +119,6 @@ def parse_values(item):
     return item.replace("properties.", "")
 
 
-def load_yaml(yaml_file):
-    """Loads yaml from file"""
-    with open(yaml_file, "r", encoding="utf8") as stream:
-        try:
-            plugins_yml = yaml.load(stream, Loader=yaml.FullLoader)
-        except yaml.YAMLError as exc:
-            logger.error(exc)
-        except Exception as exc:
-            logger.error(exc)
-    return plugins_yml
-
-
 def load_build_config():
     """
     Returns yaml object for a BitOps config
@@ -229,33 +217,36 @@ def parse_yaml_keys_to_list(schema, root_key, key_chain=None):
     return keys_list
 
 
-# TODO: Refactor this function. Fix pylint R0914: Too many local variables (23/15) (too-many-locals)
-# See: https://github.com/bitovi/bitops/issues/327
-def get_config_list(config_file, schema_file):  # pylint: disable=too-many-locals
+def load_yaml(inc_yaml):
     """
-    Top level function that handles the parsing of a schema and loading of a configuration file.
-    Results in a list of all schema values, their defaults and their configuration value (if set).
+    This function attempts to load a YAML file from a given location,
+    and exits if the file is not found. It returns the loaded YAML file if successful.
     """
-    logger.info(
-        f"\n\n\n~#~#~#~CONVERTING: \
-    \n\t PLUGIN CONFIGURATION FILE PATH:    [{config_file}]    \
-    \n\t PLUGIN SCHEMA FILE PATH:           [{schema_file}]    \
-    \n\n"
-    )
-
+    out_yaml = None
     try:
-        with open(schema_file, "r", encoding="utf8") as stream:
-            schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-        with open(config_file, "r", encoding="utf8") as stream:
-            config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+        with open(inc_yaml, "r", encoding="utf8") as stream:
+            out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as e:
         msg, exit_code = get_doc("missing_required_file")
         logger.error(f"{msg} [{e.filename}]")
         logger.debug(e)
         sys.exit(exit_code)
+    return out_yaml
 
-    schema = DefaultMunch.fromDict(schema_yaml, None)
 
+def convert_yaml_to_dict(inc_yaml, null_replacement=None):
+    """
+    This function takes in a YAML object and converts it to a Python
+    Dictionary object, optionally replacing null values with a specified value.
+    """
+    return DefaultMunch.fromDict(inc_yaml, null_replacement)
+
+
+def generate_schema_keys(schema):
+    """
+    This function generates a list of properties from a given schema
+    by parsing it, and also removes certain values from the list.
+    """
     schema_keys_list = []
     schema_root_keys = list(schema.keys())
     root_key = schema_root_keys[0]
@@ -273,16 +264,18 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
         if item.split(".")[-1] not in ignore_values
         and item.split(".")[-1] not in SchemaObject.properties
     ]
+    return schema_properties_list
 
+
+def generate_populated_schema_list(schema, schema_properties_list, config_yaml):
+    """
+    This function takes a schema, a list of schema properties and a
+    configuration yaml file, and returns a populated list of schema objects.
+    """
     schema_list = []
 
-    # WASH
-    logger.debug("Washed schema values are")
-    for item in schema_properties_list:
-        logger.debug(item)
-
     for schema_properties in schema_properties_list:
-        logger.debug("Starting a new property search")
+        logger.debug(f"Starting a new property search for schema_property: [{schema_properties}]")
         property_name = schema_properties.split(".")[-1]
 
         result = get_nested_item(schema, schema_properties)
@@ -290,13 +283,23 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
         schema_object = SchemaObject(property_name, schema_properties, result)
         schema_object.process_config(config_yaml)
         schema_list.append(schema_object)
+    return schema_list
 
+
+def populate_parsed_configurations(schema_list):
+    """
+    This function takes a list of "schema_list" and parses it into
+    different lists based on the value, type and requirements of each item.
+    It also prints out messages to the logger as it goes.
+    """
     bad_config_list = [item for item in schema_list if item.value == "BAD_CONFIG"]
-    schema_list = [item for item in schema_list if item not in bad_config_list]
-    cli_config_list = [item for item in schema_list if item.schema_property_type == "cli"]
-    options_config_list = [item for item in schema_list if item.schema_property_type == "options"]
+    parsed_schema_list = [item for item in schema_list if item not in bad_config_list]
+    cli_config_list = [item for item in parsed_schema_list if item.schema_property_type == "cli"]
+    options_config_list = [
+        item for item in parsed_schema_list if item.schema_property_type == "options"
+    ]
     required_config_list = [
-        item for item in schema_list if item.required is True and not item.value
+        item for item in parsed_schema_list if item.required is True and not item.value
     ]
 
     logger.debug("\n~~~~~ CLI OPTIONS ~~~~~")
@@ -308,7 +311,39 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
     logger.debug("\n~~~~~ BAD SCHEMA CONFIG ~~~~~")
     for item in bad_config_list:
         logger.debug(item)
+    return (
+        parsed_schema_list,
+        cli_config_list,
+        options_config_list,
+        required_config_list,
+        bad_config_list,
+    )
 
+
+def get_config_list(config_file, schema_file):  # pylint: disable=too-many-locals
+    """
+    Top level function that handles the parsing of a schema and loading of a configuration file.
+    Results in a list of all schema values, their defaults and their configuration value (if set).
+    """
+    logger.info(
+        f"\n\n\n~#~#~#~CONVERTING: \
+    \n\t PLUGIN CONFIGURATION FILE PATH:    [{config_file}]    \
+    \n\t PLUGIN SCHEMA FILE PATH:           [{schema_file}]    \
+    \n\n"
+    )
+
+    schema_yaml = load_yaml(schema_file)
+    config_yaml = load_yaml(config_file)
+    schema = convert_yaml_to_dict(schema_yaml)
+    schema_properties_list = generate_schema_keys(schema)
+    schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)
+    (
+        _,
+        cli_config_list,
+        options_config_list,
+        required_config_list,
+        _,
+    ) = populate_parsed_configurations(schema_list)
     if required_config_list:
         logger.warning("\n~~~~~ REQUIRED CONFIG ~~~~~")
         for item in required_config_list:
@@ -318,7 +353,6 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
             )
             logger.debug(item)
             sys.exit()
-
     return cli_config_list, options_config_list
 
 
