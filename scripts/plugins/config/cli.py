@@ -45,7 +45,8 @@ class PluginConfigCLI:
             # filter out any empty values
             if not c.value:
                 continue
-            if c.parameter and c.value:
+
+            if c.parameter:
                 # bool params are passed as a CLI flag `--param`
                 if c.type in ["bool", "boolean"] and str(c.value).lower() == "true":
                     command.append(f"--{c.parameter}")
