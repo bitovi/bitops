@@ -195,6 +195,13 @@ def add_value_to_env(export_env, value):
     if isinstance(value, bool):
         value = str(value).lower()
 
+    if isinstance(value, list):
+        value = " ".join(value)
+
+    export_env = "BITOPS_" + export_env
+    os.environ[export_env] = str(value)
+    logger.info(f"Setting environment variable: [{export_env}], to value: [{value}]")
+
     os.environ[export_env] = str(value)
     logger.info(f"Setting export environment variable: [{export_env}], to value: [{value}]")
 
