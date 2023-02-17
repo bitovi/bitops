@@ -43,10 +43,10 @@ bitops:
                 sourced_from:
                   type: string
                   description: "Where the plugin will be sourced from"
-                branch: 
+                source_branch: 
                   type: string
                   description: "Github branch for versioned clone"
-                tag:
+                source_tag:
                   type: string
                   description: "Github tag for versioned clone"
     

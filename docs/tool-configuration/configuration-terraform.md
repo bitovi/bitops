@@ -15,7 +15,8 @@ terraform: {}
 terraform:
     cli:
         var-file: my-vars.tfvars
-        target: terraform.module.resource
+        targets: 
+            - terraform.module.resource
         backend-config:
             - KEY1=foo
             - KEY2=bar
@@ -37,7 +38,7 @@ Run BitOps with the environmental variable `TERRAFORM_APPLY` set to `true` or se
 | Property       | Environment Variable | CLI Argument          | Description             | Default | Required |
 | -------------- | -------------------- | --------------------- | ----------------------- | ------- | -------- |
 | var-file       | BITOPS_TF_VAR_FILE   | --var-file            | Terraform Varaible file | `null`  | No       |
-| target         | BITOPS_TF_TARGET     | --target              |                         | `null`  | No       |
+| targets        | BITOPS_TF_TARGETS    | --target <item>       |                         | `null`  | No       |
 | backend-config |                      | --KEY1=foo --KEY2=bar |                         | `null`  | No       |
 | stack-action | BITOPS_TERRAFORM_COMMAND |  | Controls what terraform command to run. e.g. `apply`, `destroy`, etc. | `plan`  | No       |
 
