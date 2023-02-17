@@ -117,7 +117,7 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         # Priority: ENV > Config > Defaults
         if self.env in os.environ:
             self.value = os.environ[self.env]
-            logger.info(f"ENV override found for: [{self.name}]." f" New value: [{self.value}]")
+            logger.info(f"ENV override found for: [{self.name}]. New value: [{self.value}]")
         elif found_config_value:
             logger.info(
                 f"Config override found for: [{self.name}], default: [{self.default}], "
