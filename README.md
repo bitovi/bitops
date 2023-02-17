@@ -9,7 +9,7 @@
 [![Latest Release](https://img.shields.io/github/v/release/bitovi/bitops)](https://github.com/bitovi/bitops/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/bitovi/bitops)](https://hub.docker.com/r/bitovi/bitops)
 [![GitHub Discussions](https://img.shields.io/github/discussions/bitovi/bitops)](https://github.com/bitovi/bitops/discussions)
-[![Join our Slack](https://img.shields.io/badge/slack-join%20chat-611f69.svg?logo=slack)](https://www.bitovi.com/community/slack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join our Community Discord](https://img.shields.io/badge/discord-join%20chat-611f69.svg?logo=discord)](https://discord.gg/J7ejFsZnJ4)
 
 ### tl;dr
 BitOps is an automated [orchestrator](docs/about.md) for deployment tools using [GitOps](https://about.gitlab.com/topics/gitops/).
@@ -80,7 +80,7 @@ Need a hand with implementation? We can [help](https://www.bitovi.com/devops-con
 
 We welcome any contributions from the community with open arms. Take a look at our [Contributing](docs/contributing/contributing.md) guide.
 
-Come hangout with us on [Slack](https://www.bitovi.com/community/slack)!
+Come hangout with us in [Discord](https://discord.gg/J7ejFsZnJ4)!
 
 ### Updating Documentation
 
