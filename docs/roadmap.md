@@ -22,6 +22,13 @@ Create an Issue, open a Discussion, join our Community and we'll be happy to wor
 Check the [`main`](https://github.com/bitovi/bitops) repository branch to see the ongoing development.
 
 ## Release History
+### Done in v2.4.0
+  - **Plugins:** ENV variable mapping based on plugin schema
+  - **Plugins:** Plugin CLI command generation based on schema (beta)
+  - **Website:** Revamp with new video and list of BitOps values
+  - **Community:** Switch from Slack to Discord
+  - **Community:** Add non-stop user survey
+
 ### Done in v2.3.0
   - **Security:** Secrets masking
   - **Core:** Local plugin install via `file://`
