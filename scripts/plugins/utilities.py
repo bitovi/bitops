@@ -332,15 +332,13 @@ def populate_parsed_configurations(schema_list):
     for item in bad_config_list:
         logger.debug(item)
     return (
-        parsed_schema_list,
         cli_config_list,
         options_config_list,
-        required_config_list,
-        bad_config_list,
+        required_config_list
     )
 
 
-def get_config_list(config_file, schema_file):  # pylint: disable=too-many-locals
+def get_config_list(config_file, schema_file):
     """
     Top level function that handles the parsing of a schema and loading of a configuration file.
     Results in a list of all schema values, their defaults and their configuration value (if set).
@@ -358,11 +356,9 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
     schema_properties_list = generate_schema_keys(schema)
     schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)
     (
-        _,
         cli_config_list,
         options_config_list,
         required_config_list,
-        _,
     ) = populate_parsed_configurations(schema_list)
     if required_config_list:
         logger.warning("\n~~~~~ REQUIRED CONFIG ~~~~~")
@@ -372,7 +368,7 @@ def get_config_list(config_file, schema_file):  # pylint: disable=too-many-local
                 "set this configuration value in the plugins `bitops.config.yaml`"
             )
             logger.debug(item)
-            sys.exit()
+            sys.exit(1)
     return cli_config_list, options_config_list
 
 
