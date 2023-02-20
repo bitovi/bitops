@@ -20,22 +20,23 @@ To start with, create a file called `bitops.schema.yaml` and add the following c
 duplicate-environment:
     type: object
     properties:
-      # CLI properties will composed into a CLI string and exported as "${BITOPS_MY_PLUGIN_CLI}"
+      # CLI properties will be composed into a string with
+      # arguments and exported as "${BITOPS_MY_PLUGIN_CLI}"
       cli:
         type: object
         properties:
-          # positional argument, if no `parameter` set
+          # positional argument, because no `parameter` is set
           # ex: "run"
           command:
             type: string
             default: run
             required: true
-          # cli argument
+          # typical cli argument
           # ex: "--key=value"
           key:
             parameter: key
             type: string
-          # boolean flag, set if value is `true`
+          # cli flag, added if value is set to `true`
           # ex: "--bar"
           bar:
             parameter: bar
@@ -51,7 +52,7 @@ duplicate-environment:
             default: foo_value
 ```
 
-Next, create a simple `deploy.sh` script.  This script does some checks and shows how to use some of the available environment variables then outputs a configuration value defined by the `bitops.schema.yaml`.
+Next, create a simple `deploy.sh` script.  This script does some checks and shows how to use some of the system `BITOPS_` available environment variables then outputs configuration values defined by the `bitops.schema.yaml` in `cli` and `options` sections.
 ```sh
 #!/bin/bash
 set -ex
@@ -62,11 +63,11 @@ echo "Running Duplicate Environment Plugin deployment script..."
 export BITOPS_SCHEMA_ENV_FILE="$BITOPS_OPSREPO_ENVIRONMENT_DIR/ENV_FILE"
 
 if [ ! -d "$BITOPS_OPSREPO_ENVIRONMENT_DIR" ]; then
-  echo "No duplicate-environment directory.  Skipping."
+  echo "No duplicate-environment directory. Skipping."
   exit 0
 fi
 
-printf "Deploying duplicate-environment..."
+echo "Deploying duplicate-environment..."
 
 if [ ! -f "$BITOPS_SCHEMA_ENV_FILE" ]; then 
   echo "No duplicate-environment ENV file found"
@@ -81,17 +82,16 @@ ls -al .
 
 
 echo "Running the plugin CLI:"
-# plugin_command run --key=value --bar
+# Expected result: "plugin_command run --key=value --bar"
 echo plugin_command "${BITOPS_MY_PLUGIN_CLI}"
 
 echo "Options:"
 echo "DUPLICATE_ENVIRONMENT_FOO"
+# Expected result: "foo_value"
 echo "$DUPLICATE_ENVIRONMENT_FOO"
 
 ```
 > **Note:** Much of the above is best practice boilerplate and is not strictly necessary.
-
-> **Important:** Be sure to `chmod +x deploy.sh`
 
 Finally, create a `plugin.config.yaml` to configure how BitOps uses the plugin.
 ```yaml
@@ -175,6 +175,7 @@ If your new plugin needs to run some install scripts (e.g. to install a CLI tool
 Add the `install` configuration to your plugin's `plugin.config.yaml`
 ```yaml
 plugin:
+  # this plugin has install instructions
   install: 
     language: bash
     install_script: install.sh
