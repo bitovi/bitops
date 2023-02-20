@@ -1,4 +1,4 @@
-# Local plugin development guide
+# Plugin creation guide
 
 So you wanna build a BitOps plugin, eh?  Follow along for how to do it locally!
 

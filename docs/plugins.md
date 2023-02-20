@@ -109,4 +109,4 @@ Creating a plugin is easy, you only need 4 files:
 
 > For more information, you can look at our [example plugin](https://github.com/bitops-plugins/example-plugin) repo that prints your name and favorite color!
 
-> For more information on developing with plugins locally, see [development/local-plugin-creation](./development/local-plugin-creation.md).
+> Here is [Plugin Creation](./development/local-plugin-creation.md) guide on developing plugin locally.
