@@ -1,2 +1,7 @@
 duplicate-environment:
-  foo: baz
+  cli:
+    command: run
+    key: value
+    bar: true
+  options:
+    foo: baz

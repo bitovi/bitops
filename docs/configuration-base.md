@@ -17,8 +17,13 @@ $tool
 * `cli` - object that contains CLI arguments
 * `options` - an object that offers additional control over how a tool executes
 
+## Environemnt Variables Defaulting
+Plugin environment variables are automatically mapped to the `bitops.config.yaml` keys. This means that you can use the same environment variable names as in the plugin config. For example, if you want to override the `ansible.cli.skip-tags` value, you can use the `BITOPS_ANSIBLE_SKIP_TAGS` environment variable. In this case, `BITOPS` is the prefix, `ANSIBLE` is the plugin name, and `SKIP_TAGS` is the key name (note hypens are replaced with underscores).
+
+The precedence order is: `ENV` vars > `bitops.config.yaml` values > `bitops.config.schema.yaml` defaults. This way, ENV variables specified by user are taking highest precedence over config values and defaults. We recommend using them dynamically in CI/CD pipelines to control the deployment based on condition (PR run, branch, etc) or manually passing to the the BitOps docker container.
+
 ## Arbitrary Environment Variables
-During the docker run command, you can specify an ENV var and it will be accessible during all processing stages of BitOps. 
+During the docker run command, you can specify an ENV var and it will be accessible during all processing stages of BitOps. This is useful for passing in secrets or other custom values used in the workflows.
 
 ## Common Configuration
 There are some global configuration options that are shared among all tools and cloud providers during a BitOps run. These are set via environment variables
