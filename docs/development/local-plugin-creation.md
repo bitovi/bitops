@@ -3,7 +3,7 @@
 So you wanna build a BitOps plugin, eh?  Follow along for how to do it locally!
 
 ## 1. Create a plugin repo
-```
+```sh
 cd /path/to/bitops-plugins
 mkdir my-plugin
 cd my-plugin
@@ -16,7 +16,7 @@ More information on what goes in a plugin [here](../plugins.md).
 For this example, we'll keep to a really simple plugin.
 
 To start with, create a file called `bitops.schema.yaml` and add the following content.
-```
+```yaml
 duplicate-environment:
     type: object
     properties:
@@ -52,7 +52,7 @@ duplicate-environment:
 ```
 
 Next, create a simple `deploy.sh` script.  This script does some checks and shows how to use some of the available environment variables then outputs a configuration value defined by the `bitops.schema.yaml`.
-```
+```sh
 #!/bin/bash
 set -ex
 
@@ -94,7 +94,7 @@ echo "$DUPLICATE_ENVIRONMENT_FOO"
 > **Important:** Be sure to `chmod +x deploy.sh`
 
 Finally, create a `plugin.config.yaml` to configure how BitOps uses the plugin.
-```
+```yaml
 plugin:
   deployment:
     language: bash
@@ -105,7 +105,7 @@ plugin:
 
 
 ## 2. Create an ops repo for testing
-```
+```sh
 cd /path/to/ops-repos
 mkdir duplicate-environment
 cd duplicate-environment
@@ -117,7 +117,7 @@ From there, you'll need to create an environment with a directory that matches y
 
 Populate the tool's `bitops.config.yaml` based on the schema defined above:
 `/path/to/ops-repo/plugin-no-install/duplicate-environment/bitops.config.yaml`
-```
+```yaml
 duplicate-environment:
   cli:
     command: run
@@ -133,7 +133,7 @@ duplicate-environment:
 To test your plugin, you'll need BitOps to run with a BitOps-level BitOps config that has your plugin defined in the `deployments`.
 
 Create a `bitops.config.yaml` somewhere (say: `/path/to/ops-repo/plugin-no-install/duplicate-environment/bitops-level/bitops.config.yaml`), and add a `plugins` and `deployments` reference to your plugin:
-```
+```yaml
 bitops:
   fail_fast: true
   logging:      
@@ -150,7 +150,7 @@ bitops:
 
 ### 3.2. Run your test
 To run BitOps against a local plugin, you'll need to mount the plugin to the location BitOps expects plugins to be.
-```
+```sh
 docker run --rm --name bitops \
 -e BITOPS_ENVIRONMENT="duplicate-environment" \
 -v /path/to/bitops:/opt/bitops \
@@ -173,7 +173,7 @@ If your new plugin needs to run some install scripts (e.g. to install a CLI tool
 
 ### 4.1. Update the Plugin to Add an Install Script
 Add the `install` configuration to your plugin's `plugin.config.yaml`
-```
+```yaml
 plugin:
   install: 
     language: bash
@@ -189,7 +189,7 @@ plugin:
 Add your install script:
 
 `install.sh`
-```
+```sh
 #!/bin/bash
 set -e
 
@@ -210,14 +210,14 @@ echo "Install your things here"
 ### 4.2. Build a BitOps image
 
 Create a new directory to hold your custom BitOps config:
-```
+```sh
 mkdir /path/to/bitops-custom
 cd /path/to/bitops-custom
 ```
 
 #### 4.2.1. Add the BitOps config
 First, add your BitOps level `bitops.config.yaml` and include a reference to your local file dependency (via `plugins`) and a reference in the `deployments` section:
-```
+```yaml
 bitops:
   fail_fast: true
   run_mode: default   # (Unused for now)
@@ -243,7 +243,7 @@ bitops:
 #### 4.2.2. Add your Dockerfile
 
 `Dockerfile`
-```
+```Dockerfile
 FROM bitovi/bitops:base
 ```
 
@@ -251,7 +251,7 @@ FROM bitovi/bitops:base
 In order for the build to have access to your local plugin files, they'll need to be in the same directory as the `Dockerfile`.  One quick way to do this is to set up a simple script to run prior to your docker build to clean and re-copy the plugin files:
 
 `copy-plugins.sh`
-```
+```sh
 #!/bin/bash
 
 mkdir -p /path/to/bitops-custom/plugins
@@ -265,13 +265,13 @@ cp -r /path/to/bitops-plugins/duplicate-environment /path/to/bitops-custom/plugi
 
 
 #### 4.2.4. Build the image
-```
+```sh
 ./copy-plugins.sh
 docker build bitops --tag bitovi/bitops:local-custom --progress=plain --no-cache .
 ```
 
 #### 4.2.5. Test your plugin
-```
+```sh
 docker run --rm --name bitops \
 -e BITOPS_ENVIRONMENT="duplicate-environment" \
 -v /path/to/bitops:/opt/bitops \
@@ -285,7 +285,7 @@ bitops:local-custom
 
 ## 5. Handling the Plugin Install Script (remote)
 As an alternative way to develop plugins locally is simply to host the plugin code/config remotely and specify the plugin via url instead of `file://` like:
-```
+```yaml
 bitops:
   fail_fast: true
   run_mode: default   # (Unused for now)
