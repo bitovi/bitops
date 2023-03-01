@@ -5,7 +5,9 @@
 *.logs
 
 # VS code
-.vscode/settings.json
+.vscode/
+# We include in the repo recommended settings file with configured Tests Suite
+!.vscode/settings.json
 
 # Mac
 **/.DS_Store

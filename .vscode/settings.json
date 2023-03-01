@@ -1,0 +1,17 @@
+// Configuration for running unit tests with the Python extension for VS Code
+// https://code.visualstudio.com/docs/python/unit-testing
+{
+    "python.testing.unittestArgs": [
+        "--verbose",
+        "--top-level-directory",
+        "scripts",
+        "--start-directory",
+        "./scripts/tests/unit",
+        "--pattern",
+        "test_*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    // Uses the unittest module
+    // https://docs.python.org/3/library/unittest.html
+    "python.testing.unittestEnabled": true
+}
