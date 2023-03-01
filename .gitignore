@@ -8,6 +8,10 @@
 .vscode/
 # We include in the repo recommended settings file with configured Tests Suite
 !.vscode/settings.json
+# You can override the project-level `settings.json` by creating a file `bitops.code-workspace`
+# See: https://code.visualstudio.com/docs/editor/workspaces
+# See: https://stackoverflow.com/a/57134632/4533625
+*.code-workspace
 
 # Mac
 **/.DS_Store
