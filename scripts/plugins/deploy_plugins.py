@@ -43,22 +43,13 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     # ~#~#~#~#~#~# STAGE 1 - ENVIRONMENT LOADING #~#~#~#~#~#~#
     # Temp directory setup
     temp_dir = tempfile.mkdtemp()
-    bitops_deployment_configuration = DefaultMunch.fromDict(
-        bitops_build_configuration.bitops.deployments, None
-    )
 
     bitops_dir = "/opt/bitops"
     bitops_deployment_dir = "/opt/bitops_deployment/"
-
-    bitops_root_dir = temp_dir
-
-    bitops_envroot_dir = f"{bitops_root_dir}/{BITOPS_ENV_environment}"
     bitops_operations_dir = f"{temp_dir}/{BITOPS_ENV_environment}"
     bitops_scripts_dir = f"{bitops_dir}/scripts"
 
     sys.path.append("/root/.local/bin")
-
-    # Cleanup - Call all teardown scripts - TODO
 
     # Set global variables
     os.environ["BITOPS_TEMPDIR"] = temp_dir
@@ -97,6 +88,23 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         sys.exit(1)
     copy_tree(bitops_deployment_dir, temp_dir)
 
+    bitops_deployment_configuration = DefaultMunch.fromDict(
+        bitops_build_configuration.bitops.deployments, None
+    )
+
+    # Check if application level bitops.config exists
+    application_bitops_configuration_path = f"{bitops_operations_dir}/bitops.config.yaml"
+    application_configuration = None
+    if os.path.exists(application_bitops_configuration_path):
+        with open(application_bitops_configuration_path, "r", encoding="utf8") as stream:
+            application_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+        application_configuration = DefaultMunch.fromDict(application_config_yaml, None)
+
+    # If application configuration exists, attempt to set deployment sequence
+    if application_configuration.bitops.deployments is not None:
+        logger.info("Application configuration found, attempting to parse deployment sequence")
+        bitops_deployment_configuration = application_configuration.bitops.deployments
+
     if bitops_deployment_configuration is None:
         logger.error(f"No deployments config found. Exiting... {__file__}")
         sys.exit(1)
@@ -111,7 +119,6 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             \n\t BITOPS_DIR:              [{bitops_dir}]                        \
             \n\t BITOPS_DEPLOYMENT_DIR:   [{bitops_deployment_dir}]             \
             \n\t BITOPS_PLUGIN_DIR:       [{BITOPS_plugin_dir}]                 \
-            \n\t BITOPS_ENVROOT_DIR:      [{bitops_envroot_dir}]                \
             \n\t BITOPS_OPERATIONS_DIR:   [{bitops_operations_dir}]             \
             \n\t BITOPS_SCRIPTS_DIR:      [{bitops_scripts_dir}]                \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                        \
