@@ -1,5 +1,10 @@
 Here is the list of upgrade notes for major breaking changes that you need to be aware of when migrating between the BitOps versions.
 
+## v2.4
+* `ANSIBLE_ROOT` ENV var in Ansible plugin was removed. Use `BITOPS_OPSREPO_ENVIRONMENT_DIR` instead, which is consistent across all plugins.
+* Plugin environment variables are now automatically mapped to the plugin schema. This means that you can now use the same environment variable names as in the plugin schema. For example, if you want to override the `ansible.cli.skip-tags` value, you can now use the `BITOPS_ANSIBLE_SKIP_TAGS` environment variable. This is true for all the plugins. The precedence order is: `ENV` vars > `bitops.config.yaml` values > `bitops.config.schema.yaml` defaults.
+Keep the new convention in mind when upgrading to `v2.4` as it may clash with your existing environment variables.
+
 ## v2.2
 * Terraform plugin `stack-action` was moved from `options` to `cli` section in `bitops.config.yaml`.
 You need to update your configuration from old:

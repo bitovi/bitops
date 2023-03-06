@@ -46,7 +46,9 @@ nav:
   - Development:
     - Local development: development-local.md
     - Custom Images: custom-image.md
-  - Plugins: plugins.md
+  - Plugins:
+    - Plugins: plugins.md
+    - Plugin creation guide: development/local-plugin-creation.md
   - Lifecycle: lifecycle.md
   - About:
     - About: about.md
