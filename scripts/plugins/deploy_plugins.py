@@ -11,6 +11,7 @@ from .doc import get_doc
 from .utilities import handle_hooks, run_cmd, get_config_list
 from .config.cli import PluginConfigCLI
 from .settings import (
+    parse_config,
     BITOPS_fast_fail_mode,
     bitops_build_configuration,
     BITOPS_ENV_environment,
@@ -18,6 +19,8 @@ from .settings import (
     BITOPS_timeout,
     BITOPS_plugin_dir,
     BITOPS_INSTALLED_PLUGINS_DIR,
+    bitops_user_configuration,
+    BITOPS_run_mode,
 )
 from .logging import logger
 
@@ -88,22 +91,16 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         sys.exit(1)
     copy_tree(bitops_deployment_dir, temp_dir)
 
-    bitops_deployment_configuration = DefaultMunch.fromDict(
-        bitops_build_configuration.bitops.deployments, None
+    bitops_deployment_configuration = (
+        # USER CONFIG
+        parse_config(bitops_user_configuration, "bitops.deployments")
+        if parse_config(bitops_user_configuration, "bitops.deployments", validate=True)
+        # BITOPS CONFIG
+        else parse_config(bitops_build_configuration, "bitops.deployments")
+        if parse_config(bitops_build_configuration, "bitops.deployments", validate=True)
+        # DEFAULT
+        else None
     )
-
-    # Check if application level bitops.config exists
-    application_bitops_configuration_path = f"{bitops_operations_dir}/bitops.config.yaml"
-    application_configuration = None
-    if os.path.exists(application_bitops_configuration_path):
-        with open(application_bitops_configuration_path, "r", encoding="utf8") as stream:
-            application_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-        application_configuration = DefaultMunch.fromDict(application_config_yaml, None)
-
-    # If application configuration exists, attempt to set deployment sequence
-    if application_configuration.bitops.deployments is not None:
-        logger.info("Application configuration found, attempting to parse deployment sequence")
-        bitops_deployment_configuration = application_configuration.bitops.deployments
 
     if bitops_deployment_configuration is None:
         logger.error(f"No deployments config found. Exiting... {__file__}")
@@ -112,9 +109,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     logger.info(
         f"\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~            \
             \n\t TEMP_DIR:                [{temp_dir}]                          \
-            \n\t DEFAULT_FOLDER_NAME:     [{BITOPS_default_folder}]               \
-            \n\t BITOPS_ENVIRONMENT:      [{BITOPS_ENV_environment}]               \
-            \n\t TIMEOUT:                 [{BITOPS_timeout}]                           \
+            \n\t DEFAULT_FOLDER_NAME:     [{BITOPS_default_folder}]             \
+            \n\t BITOPS_ENVIRONMENT:      [{BITOPS_ENV_environment}]            \
+            \n\t TIMEOUT:                 [{BITOPS_timeout}]                    \
             \n                                                                  \
             \n\t BITOPS_DIR:              [{bitops_dir}]                        \
             \n\t BITOPS_DEPLOYMENT_DIR:   [{bitops_deployment_dir}]             \
@@ -124,6 +121,10 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                        \
             "
     )
+    if BITOPS_run_mode == "validate_config":
+        logger.info("Validate Configuration complete.. Exiting.")
+        exit(0)
+
     # Loop through deployments and invoke each
     # ~#~#~#~#~#~# STAGE 2 - PLUGIN LOADING #~#~#~#~#~#~#
     for deployment in bitops_deployment_configuration:

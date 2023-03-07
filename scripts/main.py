@@ -24,8 +24,8 @@ if __name__ == "__main__":
     logger.info(
         f"\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
     \n\tFAIL FAST:              [{plugins.settings.BITOPS_fast_fail_mode}]                   \
-    \n\tRUN MODE:               [{plugins.settings.BITOPS_run_mode}]                    \
-    \n\tDEFAULT RUN MODE:       [{RUN_MODE}]                        \
+    \n\tBITOPS RUN MODE:        [{plugins.settings.BITOPS_run_mode}]                    \
+    \n\tPYTHON RUN MODE:        [{RUN_MODE}]                        \
     \n\tLOGGING LEVEL:          [{plugins.settings.BITOPS_logging_level}]                   \
     \n\tLOGGING COLOR:          [{plugins.settings.BITOPS_logging_color}]                   \
     \
@@ -33,17 +33,22 @@ if __name__ == "__main__":
     \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n"
     )
 
+    if plugins.settings.BITOPS_run_mode == "settings_test":
+        # Prints all variables from the settings.py file after it's loaded.
+        print("Plugins Load complete. Exiting...")
+        print(
+            {
+                item: getattr(plugins.settings, item)
+                for item in dir(plugins.settings)
+                if not item.startswith("__") and not item.endswith("__")
+            }
+        )
+        sys.exit(0)
+
     if RUN_MODE == "deploy":
         deploy_plugins()
     elif RUN_MODE == "install":
         install_plugins()
-    elif RUN_MODE == "schema_parsing":
-        config_file = sys.argv[2]
-        schema_file = sys.argv[3]
-        get_config_list(config_file, schema_file)
-    elif RUN_MODE == "setting-test":
-        print("Plugins Load complete. Exiting...")
-        sys.exit(0)
     else:
         print("Mode is not specified. Please use [main.py install|deploy]")
 
