@@ -1,10 +1,9 @@
 import os
 import sys
 import argparse
-import yaml
 import operator
+import yaml
 
-from typing import Any
 from munch import DefaultMunch
 
 
@@ -30,20 +29,23 @@ def load_user_bitops_config() -> DefaultMunch:
 
 
 def parse_config(dictionary, dotted_key_list, validate=False):
+    """
+    This function takes a dictionary, a list of keys in dotted notation,
+    and an optional boolean argument "validate". It uses the operator.attrgetter()
+    method to access the value in the dictionary associated with the dotted key list.
+    """
     try:
         item = operator.attrgetter(dotted_key_list)(dictionary)
-        if item == None and validate:
+        if item is None and validate:
             return False
-        elif item != None and validate:
+        if item is not None and validate:
             return True
-        elif item:
-            return item
+        return item
     except AttributeError:
         # Likely cause: Nested value doesn't exist
         if validate:
             return False
-        else:
-            return None
+        return None
 
 
 parser = argparse.ArgumentParser(description="Add BitOps Usage")
@@ -142,7 +144,7 @@ BITOPS_logging_level = (
     else "DEBUG"
 )
 
-BITOPS_logging_color = (
+BITOPS_LOGGING_COLOR = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.color.enabled")
     if parse_config(bitops_user_configuration, "bitops.logging.color.enabled", validate=True)
@@ -153,7 +155,7 @@ BITOPS_logging_color = (
     else False
 )
 
-BITOPS_logging_filename = (
+BITOPS_LOGGING_FILENAME = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.filename")
     if parse_config(bitops_user_configuration, "bitops.logging.filename", validate=True)
@@ -164,7 +166,7 @@ BITOPS_logging_filename = (
     else None
 )
 
-BITOPS_logging_path = (
+BITOPS_LOGGING_PATH = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.path")
     if parse_config(bitops_user_configuration, "bitops.logging.path", validate=True)
@@ -175,7 +177,7 @@ BITOPS_logging_path = (
     else "/var/log/bitops"
 )
 
-BITOPS_logging_masks = (
+BITOPS_LOGGING_MASKS = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.masks")
     if parse_config(bitops_user_configuration, "bitops.logging.masks", validate=True)

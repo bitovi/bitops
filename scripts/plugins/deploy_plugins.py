@@ -123,7 +123,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     )
     if BITOPS_run_mode == "validate_config":
         logger.info("Validate Configuration complete.. Exiting.")
-        exit(0)
+        sys.exit(0)
 
     # Loop through deployments and invoke each
     # ~#~#~#~#~#~# STAGE 2 - PLUGIN LOADING #~#~#~#~#~#~#

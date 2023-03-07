@@ -4,10 +4,10 @@ import sys
 
 from .settings import (
     BITOPS_logging_level,
-    BITOPS_logging_color,
-    BITOPS_logging_filename,
-    BITOPS_logging_path,
-    BITOPS_logging_masks,
+    BITOPS_LOGGING_COLOR,
+    BITOPS_LOGGING_FILENAME,
+    BITOPS_LOGGING_PATH,
+    BITOPS_LOGGING_MASKS,
 )
 
 
@@ -39,18 +39,18 @@ def mask_message(message):
     """
     if message is None:
         return message
-    if BITOPS_logging_masks is None:
+    if BITOPS_LOGGING_MASKS is None:
         return message
 
     res_str = message
-    for config_item in BITOPS_logging_masks:
+    for config_item in BITOPS_LOGGING_MASKS:
         # TODO: use a library here?
         res_str = re.sub(rf"{config_item.search}", config_item.replace, str(res_str))
     # String after replacement
     return res_str
 
 
-def formatter_message(message, use_color=BITOPS_logging_color):
+def formatter_message(message, use_color=BITOPS_LOGGING_COLOR):
     """
     Formats messages replaces $RESET and $BOLD placeholders
     with the respective bash color sequences.
@@ -69,7 +69,7 @@ class BitOpsFormatter(logging.Formatter):
     Settings are contained within "bitops.config.yaml:bitops.logging".
     """
 
-    def __init__(self, msg, use_color=BITOPS_logging_color):
+    def __init__(self, msg, use_color=BITOPS_LOGGING_COLOR):
         logging.Formatter.__init__(self, msg)
         self.use_color = use_color
 
@@ -104,16 +104,16 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-if BITOPS_logging_filename is not None:
+if BITOPS_LOGGING_FILENAME is not None:
     # This assumes that the user wants to save output to a filename
 
     # Create the directory if it doesn't exist
     from pathlib import Path
 
-    Path(BITOPS_logging_path).mkdir(parents=True, exist_ok=True)
+    Path(BITOPS_LOGGING_PATH).mkdir(parents=True, exist_ok=True)
 
-    BITOPS_logging_filename.replace(".logs", "").replace(".log", "")
+    BITOPS_LOGGING_FILENAME.replace(".logs", "").replace(".log", "")
 
-    fileHandler = logging.FileHandler(f"{BITOPS_logging_path}/{BITOPS_logging_filename}.log")
+    fileHandler = logging.FileHandler(f"{BITOPS_LOGGING_PATH}/{BITOPS_LOGGING_FILENAME}.log")
     fileHandler.setFormatter(formatter)
     logger.addHandler(fileHandler)

@@ -27,7 +27,7 @@ if __name__ == "__main__":
     \n\tBITOPS RUN MODE:        [{plugins.settings.BITOPS_run_mode}]                    \
     \n\tPYTHON RUN MODE:        [{RUN_MODE}]                        \
     \n\tLOGGING LEVEL:          [{plugins.settings.BITOPS_logging_level}]                   \
-    \n\tLOGGING COLOR:          [{plugins.settings.BITOPS_logging_color}]                   \
+    \n\tLOGGING COLOR:          [{plugins.settings.BITOPS_LOGGING_COLOR}]                   \
     \
     \n\tBITOPS CONFIG FILE:     [{plugins.settings.BITOPS_config_file}]                 \
     \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n"
