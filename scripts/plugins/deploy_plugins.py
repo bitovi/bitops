@@ -8,8 +8,8 @@ import yaml
 
 
 from .doc import get_doc
-from .bitops_utilities import handle_hooks, run_cmd
-from .cli import PluginConfigCLI
+from .config.parser import handle_hooks, run_cmd
+from .config.cli import PluginConfigCLI
 from .settings import (
     BITOPS_fast_fail_mode,
     bitops_build_configuration,

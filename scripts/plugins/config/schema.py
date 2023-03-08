@@ -2,9 +2,9 @@ import sys
 import os
 import re
 
-from .logging import logger
-from .settings import BITOPS_fast_fail_mode
-from .utilities import add_value_to_env
+from ..logging import logger
+from ..settings import BITOPS_fast_fail_mode
+from ..utilities import add_value_to_env
 
 
 class SchemaObject:  # pylint: disable=too-many-instance-attributes
