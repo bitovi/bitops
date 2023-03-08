@@ -8,7 +8,7 @@ import yaml
 
 
 from .doc import get_doc
-from .utilities import handle_hooks, run_cmd, get_config_list
+from .utilities import run_cmd, handle_hooks
 from .config.cli import PluginConfigCLI
 from .settings import (
     parse_config,
@@ -24,6 +24,7 @@ from .settings import (
     BITOPS_RUN_MODE,
 )
 from .logging import logger
+from .config.parser import get_config_list
 
 
 # TODO: Refactor this function. Fix R0914: Too many local variables (36/15) (too-many-locals)
@@ -93,7 +94,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
     copytree(bitops_deployment_dir, temp_dir, dirs_exist_ok=True)
 
-    bitops_deployment_configuration = get_first(
+    bitops_deployment_sequence = get_first(
         # USER CONFIG
         parse_config(bitops_user_configuration, "bitops.deployments"),
         # BITOPS CONFIG
@@ -102,8 +103,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         None,
     )
 
-    if bitops_deployment_configuration is None:
-        logger.error(f"No deployments config found. Exiting... {__file__}")
+    if bitops_deployment_sequence is None:
+        logger.error(f'No "deployments" config found. Exiting... {__file__}')
         sys.exit(1)
 
     logger.info(
@@ -127,9 +128,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
     # Loop through deployments and invoke each
     # ~#~#~#~#~#~# STAGE 2 - PLUGIN LOADING #~#~#~#~#~#~#
-    for deployment in bitops_deployment_configuration:
+    for deployment in bitops_deployment_sequence:
         logger.info(f"\n\n\n~#~#~#~PROCESSING STAGE [{deployment.upper()}]~#~#~#~\n")
-        plugin_name = bitops_deployment_configuration[deployment].plugin
+        plugin_name = bitops_deployment_sequence[deployment].plugin
 
         # Set plugin vars
         plugin_dir = (
