@@ -63,19 +63,14 @@ BITOPS_CL_args, unknowns = parser.parse_known_args()
 # BitOps Configuration file
 BITOPS_ENV_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML")
 BITOPS_config_file = get_first(
-    BITOPS_ENV_config_file,
-    BITOPS_CL_args.bitops_config_file,
-    "bitops.config.yaml"
+    BITOPS_ENV_config_file, BITOPS_CL_args.bitops_config_file, "bitops.config.yaml"
 )
 with open(BITOPS_config_file, "r", encoding="utf8") as stream:
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
 # BitOps Schema File
 BITOPS_ENV_schema_file = os.environ.get("BITOPS_BUILD_SCHEMA_YAML")
-BITOPS_schema_file = get_first(
-    BITOPS_ENV_schema_file,
-    "bitops.schema.yaml"
-)
+BITOPS_schema_file = get_first(BITOPS_ENV_schema_file, "bitops.schema.yaml")
 with open(BITOPS_schema_file, "r", encoding="utf8") as stream:
     BITOPS_schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
