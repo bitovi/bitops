@@ -3,7 +3,7 @@ import os
 import re
 
 from ..logging import logger
-from ..settings import BITOPS_fast_fail_mode
+from ..settings import BITOPS_FAST_FAIL_MODE
 from ..utilities import add_value_to_env
 
 
@@ -52,7 +52,7 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
                 except KeyError as exc:
                     setattr(self, _property, None)
                     logger.error(exc)
-                    if BITOPS_fast_fail_mode:
+                    if BITOPS_FAST_FAIL_MODE:
                         sys.exit(101)
 
         logger.info(f"\n\tNEW SCHEMA:{self.print_schema()}")
@@ -163,7 +163,7 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
         ):
             return bool(convert_value)
 
-        if BITOPS_fast_fail_mode:
+        if BITOPS_FAST_FAIL_MODE:
             logger.error(f"Data type not supported: [{data_type}]")
             sys.exit(101)
 

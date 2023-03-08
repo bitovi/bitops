@@ -1,10 +1,10 @@
 import os
 import sys
-import yaml
 import subprocess
-
 from typing import Union
-from .settings import BITOPS_fast_fail_mode
+import yaml
+
+from .settings import BITOPS_FAST_FAIL_MODE
 from .logging import logger, mask_message
 from .doc import get_doc
 
@@ -122,7 +122,7 @@ def handle_hooks(mode, hooks_folder, source_folder):
         else:
             logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
             logger.debug(result.stdout)
-            if BITOPS_fast_fail_mode:
+            if BITOPS_FAST_FAIL_MODE:
                 sys.exit(result.returncode)
 
     os.chdir(original_directory)

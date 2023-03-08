@@ -1,5 +1,4 @@
 import sys
-import os
 
 from munch import DefaultMunch
 from ..logging import logger
