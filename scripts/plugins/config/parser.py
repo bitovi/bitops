@@ -3,9 +3,8 @@ import os
 
 from munch import DefaultMunch
 from ..logging import logger
-from ..utilities import load_yaml, run_cmd
-from ..settings import BITOPS_fast_fail_mode
-from ..config.schema import SchemaObject
+from ..utilities import load_yaml
+from .schema import SchemaObject
 
 
 def parse_configuration(config_file, schema_file):
@@ -141,42 +140,3 @@ def populate_parsed_configurations(schema_list):
     for item in bad_config_list:
         logger.debug(item)
     return (cli_config_list, options_config_list, required_config_list)
-
-
-def handle_hooks(mode, hooks_folder, source_folder):
-    """
-    Processes a bitops before/after hook by invoking bash script(s) within the hooks folder(s).
-    """
-    # Checks if the folder exists, if not, move on
-    if not os.path.isdir(hooks_folder):
-        return
-
-    original_directory = os.getcwd()
-    os.chdir(source_folder)
-
-    umode = mode.upper()
-    logger.info(f"INVOKING {umode} HOOKS")
-    # Check what's in the ops_repo/<plugin>/bitops.before-deploy.d/
-    hooks = sorted(os.listdir(hooks_folder))
-    msg = f"\n\n~#~#~#~BITOPS {umode} HOOKS~#~#~#~"
-    for hook in hooks:
-        msg += "\n\t" + hook
-    logger.debug(msg)
-
-    for hook_script in hooks:
-        # Invoke the hook script
-
-        plugin_before_hook_script_path = hooks_folder + "/" + hook_script
-        os.chmod(plugin_before_hook_script_path, 775)
-
-        result = run_cmd(["bash", plugin_before_hook_script_path])
-        if result.returncode == 0:
-            logger.info(f"~#~#~#~{umode} HOOK [{hook_script}] SUCCESSFULLY COMPLETED~#~#~#~")
-            logger.debug(result.stdout)
-        else:
-            logger.warning(f"~#~#~#~{umode} HOOK [{hook_script}] FAILED~#~#~#~")
-            logger.debug(result.stdout)
-            if BITOPS_fast_fail_mode:
-                sys.exit(result.returncode)
-
-    os.chdir(original_directory)

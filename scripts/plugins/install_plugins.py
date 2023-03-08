@@ -9,7 +9,7 @@ import git
 import yaml
 from munch import DefaultMunch
 
-from .config.parser import run_cmd
+from .utilities import run_cmd
 from .doc import get_doc
 from .logging import logger
 from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR, BITOPS_FAST_FAIL_MODE

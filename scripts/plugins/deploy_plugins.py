@@ -8,7 +8,7 @@ import yaml
 
 
 from .doc import get_doc
-from .config.parser import handle_hooks, run_cmd
+from .utilities import run_cmd, handle_hooks
 from .config.cli import PluginConfigCLI
 from .settings import (
     parse_config,
