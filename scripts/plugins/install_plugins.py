@@ -4,7 +4,7 @@ import sys
 import os.path
 import os
 import re
-from distutils.dir_util import copy_tree
+from shutil import copytree
 import git
 import yaml
 from munch import DefaultMunch
@@ -12,7 +12,7 @@ from munch import DefaultMunch
 from .config.parser import run_cmd
 from .doc import get_doc
 from .logging import logger
-from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR, BITOPS_fast_fail_mode
+from .settings import BITOPS_config_yaml, BITOPS_INSTALLED_PLUGINS_DIR, BITOPS_FAST_FAIL_MODE
 
 
 def fetch_plugin_remote(plugin_config, plugin_source, plugin_dir, plugin_tag, plugin_branch):
@@ -67,7 +67,7 @@ def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
         src = re.sub(r"^file://", "", plugin_source)
         dest = plugin_dir + plugin_config
 
-        copy_tree(src, dest)
+        copytree(src, dest, dirs_exist_ok=True)
 
         logger.info(f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
 
@@ -236,5 +236,5 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,to
                 f"\n\tSTDOUT:[{result.stdout}]\n"
                 f"\tSTDERR: [{result.stderr}]\n\tRESULTS: [{result}]"
             )
-            if BITOPS_fast_fail_mode:
+            if BITOPS_FAST_FAIL_MODE:
                 sys.exit(result.returncode)

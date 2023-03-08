@@ -2,7 +2,7 @@ import os
 import sys
 import stat
 import tempfile
-from distutils.dir_util import copy_tree
+from shutil import copytree
 from munch import DefaultMunch
 import yaml
 
@@ -11,13 +11,17 @@ from .doc import get_doc
 from .config.parser import handle_hooks, run_cmd
 from .config.cli import PluginConfigCLI
 from .settings import (
-    BITOPS_fast_fail_mode,
+    parse_config,
+    get_first,
+    BITOPS_FAST_FAIL_MODE,
     bitops_build_configuration,
     BITOPS_ENV_environment,
-    BITOPS_default_folder,
-    BITOPS_timeout,
-    BITOPS_plugin_dir,
+    BITOPS_DEFAULT_FOLDER,
+    BITOPS_TIMEOUT,
+    BITOPS_PLUGIN_DIR,
     BITOPS_INSTALLED_PLUGINS_DIR,
+    bitops_user_configuration,
+    BITOPS_RUN_MODE,
 )
 from .logging import logger
 from .config.parser import parse_configuration
@@ -44,22 +48,13 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     # ~#~#~#~#~#~# STAGE 1 - ENVIRONMENT LOADING #~#~#~#~#~#~#
     # Temp directory setup
     temp_dir = tempfile.mkdtemp()
-    bitops_deployment_sequence = DefaultMunch.fromDict(
-        bitops_build_configuration.bitops.deployments, None
-    )
 
     bitops_dir = "/opt/bitops"
     bitops_deployment_dir = "/opt/bitops_deployment/"
-
-    bitops_root_dir = temp_dir
-
-    bitops_envroot_dir = f"{bitops_root_dir}/{BITOPS_ENV_environment}"
     bitops_operations_dir = f"{temp_dir}/{BITOPS_ENV_environment}"
     bitops_scripts_dir = f"{bitops_dir}/scripts"
 
     sys.path.append("/root/.local/bin")
-
-    # Cleanup - Call all teardown scripts - TODO
 
     # Set global variables
     os.environ["BITOPS_TEMPDIR"] = temp_dir
@@ -67,9 +62,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     os.environ["BITOPS_DIR"] = bitops_dir
     os.environ["BITOPS_SCRIPTS_DIR"] = bitops_scripts_dir
     os.environ["BITOPS_PLUGINS_DIR"] = BITOPS_INSTALLED_PLUGINS_DIR
-    os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
+    os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_FAST_FAIL_MODE)
     os.environ["BITOPS_KUBE_CONFIG_FILE"] = f"{temp_dir}/.kube/config"
-    os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
+    os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_DEFAULT_FOLDER
 
     # Global environment evaluation
     # TODO: Drop support for 'ENVIRONMENT' env var
@@ -96,7 +91,17 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             "[https://bitovi.github.io/bitops/about/#how-bitops-works]"
         )
         sys.exit(1)
-    copy_tree(bitops_deployment_dir, temp_dir)
+
+    copytree(bitops_deployment_dir, temp_dir, dirs_exist_ok=True)
+
+    bitops_deployment_configuration = get_first(
+        # USER CONFIG
+        parse_config(bitops_user_configuration, "bitops.deployments"),
+        # BITOPS CONFIG
+        parse_config(bitops_build_configuration, "bitops.deployments"),
+        # DEFAULT
+        None,
+    )
 
     if bitops_deployment_sequence is None:
         logger.error(f'No "deployments" config found. Exiting... {__file__}')
@@ -105,19 +110,22 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     logger.info(
         f"\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~            \
             \n\t TEMP_DIR:                [{temp_dir}]                          \
-            \n\t DEFAULT_FOLDER_NAME:     [{BITOPS_default_folder}]               \
-            \n\t BITOPS_ENVIRONMENT:      [{BITOPS_ENV_environment}]               \
-            \n\t TIMEOUT:                 [{BITOPS_timeout}]                           \
+            \n\t DEFAULT_FOLDER_NAME:     [{BITOPS_DEFAULT_FOLDER}]             \
+            \n\t BITOPS_ENVIRONMENT:      [{BITOPS_ENV_environment}]            \
+            \n\t TIMEOUT:                 [{BITOPS_TIMEOUT}]                    \
             \n                                                                  \
             \n\t BITOPS_DIR:              [{bitops_dir}]                        \
             \n\t BITOPS_DEPLOYMENT_DIR:   [{bitops_deployment_dir}]             \
-            \n\t BITOPS_PLUGIN_DIR:       [{BITOPS_plugin_dir}]                 \
-            \n\t BITOPS_ENVROOT_DIR:      [{bitops_envroot_dir}]                \
+            \n\t BITOPS_PLUGIN_DIR:       [{BITOPS_PLUGIN_DIR}]                 \
             \n\t BITOPS_OPERATIONS_DIR:   [{bitops_operations_dir}]             \
             \n\t BITOPS_SCRIPTS_DIR:      [{bitops_scripts_dir}]                \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                        \
             "
     )
+    if BITOPS_RUN_MODE == "validate_config":
+        logger.info("Validate Configuration complete.. Exiting.")
+        sys.exit(0)
+
     # Loop through deployments and invoke each
     # ~#~#~#~#~#~# STAGE 2 - PLUGIN LOADING #~#~#~#~#~#~#
     for deployment in bitops_deployment_sequence:
@@ -132,7 +140,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             bitops_operations_dir + "/" + deployment
         )  # Sourced from Operations repo
         os.environ["BITOPS_INSTALLED_PLUGIN_DIR"] = plugin_dir
-        os.environ["BITOPS_PLUGIN_DIR"] = BITOPS_plugin_dir
+        os.environ["BITOPS_PLUGIN_DIR"] = BITOPS_PLUGIN_DIR
         os.environ["BITOPS_OPSREPO_ENVIRONMENT_DIR"] = opsrepo_environment_dir
         os.environ["BITOPS_PLUGIN_NAME"] = plugin_name
 
@@ -179,40 +187,28 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         )
 
         # plugin.deployment.deployment_script
-        plugin_deploy_script = (
-            plugin_configuration.plugin.deployment.deployment_script
-            if plugin_configuration.plugin.deployment.deployment_script is not None
-            else "deploy.sh"
+        plugin_deploy_script = get_first(
+            plugin_configuration.plugin.deployment.deployment_script, "deploy.sh"
         )
 
         # plugin.deployment.language
-        plugin_deploy_language = (
-            plugin_configuration.plugin.deployment.language
-            if plugin_configuration.plugin.deployment.language is not None
-            else "bash"
-        )
+        plugin_deploy_language = get_first(plugin_configuration.plugin.deployment.language, "bash")
 
         plugin_deploy_script_path = plugin_dir + f"/{plugin_deploy_script}"
 
         # plugin.deployment.schema_parsing
-        plugin_deploy_schema_parsing_flag = (
-            plugin_configuration.plugin.deployment.core_schema_parsing
-            if plugin_configuration.plugin.deployment.core_schema_parsing is not None
-            else "true"
+        plugin_deploy_schema_parsing_flag = get_first(
+            plugin_configuration.plugin.deployment.core_schema_parsing, "true"
         )
 
         # plugin.deployment.before_hook_scripts
-        plugin_deploy_before_hook_scripts_flag = (
-            plugin_configuration.plugin.deployment.before_hook_scripts
-            if plugin_configuration.plugin.deployment.before_hook_scripts is not None
-            else "true"
+        plugin_deploy_before_hook_scripts_flag = get_first(
+            plugin_configuration.plugin.deployment.before_hook_scripts, "true"
         )
 
         # plugin.deployment.after_hook_scripts
-        plugin_deploy_after_hook_scripts_flag = (
-            plugin_configuration.plugin.deployment.after_hook_scripts
-            if plugin_configuration.plugin.deployment.after_hook_scripts is not None
-            else "true"
+        plugin_deploy_after_hook_scripts_flag = get_first(
+            plugin_configuration.plugin.deployment.after_hook_scripts, "true"
         )
 
         # Check if deploy script is present
@@ -284,7 +280,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         )
         if result.returncode != 0:
             logger.warning(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~")
-            if BITOPS_fast_fail_mode:
+            if BITOPS_FAST_FAIL_MODE:
                 sys.exit(result.returncode)
         else:
             logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")
