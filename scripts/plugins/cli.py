@@ -1,6 +1,6 @@
 import os
 
-from plugins.utilities import SchemaObject
+from .schema import SchemaObject
 
 __all__ = ["PluginConfigCLI"]
 

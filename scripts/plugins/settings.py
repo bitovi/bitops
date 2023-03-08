@@ -5,7 +5,6 @@ import yaml
 
 from munch import DefaultMunch
 
-
 parser = argparse.ArgumentParser(description="Add BitOps Usage")
 parser.add_argument("--bitops_config_file", "-c", help="BitOps source usage information here")
 

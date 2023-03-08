@@ -8,8 +8,8 @@ import yaml
 
 
 from .doc import get_doc
-from .utilities import handle_hooks, run_cmd, get_config_list
-from .config.cli import PluginConfigCLI
+from .bitops_utilities import handle_hooks, run_cmd
+from .cli import PluginConfigCLI
 from .settings import (
     BITOPS_fast_fail_mode,
     bitops_build_configuration,
@@ -20,6 +20,7 @@ from .settings import (
     BITOPS_INSTALLED_PLUGINS_DIR,
 )
 from .logging import logger
+from .decli import decli_parse_configuration
 
 
 # TODO: Refactor this function. Fix R0914: Too many local variables (36/15) (too-many-locals)
@@ -43,7 +44,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     # ~#~#~#~#~#~# STAGE 1 - ENVIRONMENT LOADING #~#~#~#~#~#~#
     # Temp directory setup
     temp_dir = tempfile.mkdtemp()
-    bitops_deployment_configuration = DefaultMunch.fromDict(
+    bitops_deployment_sequence = DefaultMunch.fromDict(
         bitops_build_configuration.bitops.deployments, None
     )
 
@@ -97,8 +98,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         sys.exit(1)
     copy_tree(bitops_deployment_dir, temp_dir)
 
-    if bitops_deployment_configuration is None:
-        logger.error(f"No deployments config found. Exiting... {__file__}")
+    if bitops_deployment_sequence is None:
+        logger.error(f'No "deployments" config found. Exiting... {__file__}')
         sys.exit(1)
 
     logger.info(
@@ -119,9 +120,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     )
     # Loop through deployments and invoke each
     # ~#~#~#~#~#~# STAGE 2 - PLUGIN LOADING #~#~#~#~#~#~#
-    for deployment in bitops_deployment_configuration:
+    for deployment in bitops_deployment_sequence:
         logger.info(f"\n\n\n~#~#~#~PROCESSING STAGE [{deployment.upper()}]~#~#~#~\n")
-        plugin_name = bitops_deployment_configuration[deployment].plugin
+        plugin_name = bitops_deployment_sequence[deployment].plugin
 
         # Set plugin vars
         plugin_dir = (
@@ -221,7 +222,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
         if plugin_deploy_schema_parsing_flag:
             logger.debug("running bitops schema parsing...")
-            cli_config_list, _ = get_config_list(opsrepo_config_file, plugin_schema_file)
+            cli_config_list, _ = decli_parse_configuration(opsrepo_config_file, plugin_schema_file)
 
             # Compose a CLI and export it as "BITOPS_{PLUGIN}_CLI}"
             cli = PluginConfigCLI(cli_config_list)
