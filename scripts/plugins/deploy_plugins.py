@@ -24,7 +24,7 @@ from .settings import (
     BITOPS_RUN_MODE,
 )
 from .logging import logger
-from .config.parser import parse_configuration
+from .config.parser import get_config_list
 
 
 # TODO: Refactor this function. Fix R0914: Too many local variables (36/15) (too-many-locals)
@@ -218,7 +218,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
         if plugin_deploy_schema_parsing_flag:
             logger.debug("running bitops schema parsing...")
-            cli_config_list, _ = parse_configuration(opsrepo_config_file, plugin_schema_file)
+            cli_config_list, _ = get_config_list(opsrepo_config_file, plugin_schema_file)
 
             # Compose a CLI and export it as "BITOPS_{PLUGIN}_CLI}"
             cli = PluginConfigCLI(cli_config_list)

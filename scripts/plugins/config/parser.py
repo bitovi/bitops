@@ -7,7 +7,7 @@ from ..utilities import load_yaml
 from .schema import SchemaObject
 
 
-def parse_configuration(config_file, schema_file):
+def get_config_list(config_file, schema_file):
     """
     Top level function that handles the parsing of a schema and loading of a configuration file.
     Results in a list of all schema values, their defaults and their configuration value (if set).
