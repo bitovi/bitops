@@ -6,7 +6,7 @@ import plugins.settings
 from plugins.logging import logger
 from plugins.deploy_plugins import deploy_plugins
 from plugins.install_plugins import install_plugins
-from plugins.decli import decli_parse_configuration
+from plugins.config.parser import parse_configuration
 
 
 if __name__ == "__main__":
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     elif RUN_MODE == "schema_parsing":
         config_file = sys.argv[2]
         schema_file = sys.argv[3]
-        decli_parse_configuration(config_file, schema_file)
+        parse_configuration(config_file, schema_file)
     elif RUN_MODE == "setting-test":
         print("Plugins Load complete. Exiting...")
         sys.exit(0)

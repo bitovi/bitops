@@ -1,16 +1,16 @@
 import sys
 
-from .logging import logger
-from .bitops_utilities import (
+from ..logging import logger
+from ..bitops_utilities import (
     convert_yaml_to_dict,
     generate_schema_keys,
     generate_populated_schema_list,
     populate_parsed_configurations,
 )
-from .utilities import load_yaml
+from ..utilities import load_yaml
 
 
-def decli_parse_configuration(config_file, schema_file):
+def parse_configuration(config_file, schema_file):
     """
     Top level function that handles the parsing of a schema and loading of a configuration file.
     Results in a list of all schema values, their defaults and their configuration value (if set).
