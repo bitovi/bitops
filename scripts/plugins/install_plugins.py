@@ -4,7 +4,7 @@ import sys
 import os.path
 import os
 import re
-from distutils.dir_util import copy_tree
+from shutil import copytree
 import git
 import yaml
 from munch import DefaultMunch
@@ -67,7 +67,7 @@ def fetch_plugin_local(plugin_config, plugin_source, plugin_dir):
         src = re.sub(r"^file://", "", plugin_source)
         dest = plugin_dir + plugin_config
 
-        copy_tree(src, dest)
+        copytree(src, dest, dirs_exist_ok=True)
 
         logger.info(f"\n~#~#~#~COPYING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
 
