@@ -94,7 +94,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
 
     copytree(bitops_deployment_dir, temp_dir, dirs_exist_ok=True)
 
-    bitops_deployment_configuration = get_first(
+    bitops_deployment_sequence = get_first(
         # USER CONFIG
         parse_config(bitops_user_configuration, "bitops.deployments"),
         # BITOPS CONFIG
