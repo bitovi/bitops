@@ -28,7 +28,7 @@ def load_user_bitops_config() -> DefaultMunch:
         return None
 
 
-def parse_config(dictionary, dotted_key_list, validate=False):
+def parse_config(dictionary, dotted_key_list):
     """
     This function takes a dictionary, a list of keys in dotted notation,
     and an optional boolean argument "validate". It uses the operator.attrgetter()
@@ -36,15 +36,9 @@ def parse_config(dictionary, dotted_key_list, validate=False):
     """
     try:
         item = operator.attrgetter(dotted_key_list)(dictionary)
-        if item is None and validate:
-            return False
-        if item is not None and validate:
-            return True
         return item
     except AttributeError:
         # Likely cause: Nested value doesn't exist
-        if validate:
-            return False
         return None
 
 
@@ -108,10 +102,10 @@ BITOPS_FAST_FAIL_MODE = (
     if BITOPS_ENV_fast_fail_mode is not None
     # USER CONFIG
     else parse_config(bitops_user_configuration, "bitops.fail_fast")
-    if parse_config(bitops_user_configuration, "bitops.fail_fast", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.fail_fast")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.fail_fast")
-    if parse_config(bitops_build_configuration, "bitops.fail_fast", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.fail_fast")
     # DEFAULT
     else True
 )
@@ -122,10 +116,10 @@ BITOPS_RUN_MODE = (
     if BITOPS_ENV_run_mode is not None
     # USER CONFIG
     else parse_config(bitops_user_configuration, "bitops.run_mode")
-    if parse_config(bitops_user_configuration, "bitops.run_mode", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.run_mode")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.run_mode")
-    if parse_config(bitops_build_configuration, "bitops.run_mode", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.run_mode")
     # DEFAULT
     else "default"
 )
@@ -136,10 +130,10 @@ BITOPS_LOGGING_LEVEL = (
     if BITOPS_ENV_logging_level is not None
     # USER CONFIG
     else parse_config(bitops_user_configuration, "bitops.logging.level")
-    if parse_config(bitops_user_configuration, "bitops.logging.level", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.logging.level")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.logging.level")
-    if parse_config(bitops_build_configuration, "bitops.logging.level", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.logging.level")
     # DEFAULT
     else "DEBUG"
 )
@@ -147,10 +141,10 @@ BITOPS_LOGGING_LEVEL = (
 BITOPS_LOGGING_COLOR = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.color.enabled")
-    if parse_config(bitops_user_configuration, "bitops.logging.color.enabled", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.logging.color.enabled")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.logging.color.enabled")
-    if parse_config(bitops_build_configuration, "bitops.logging.color.enabled", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.logging.color.enabled")
     # DEFAULT
     else False
 )
@@ -158,10 +152,10 @@ BITOPS_LOGGING_COLOR = (
 BITOPS_LOGGING_FILENAME = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.filename")
-    if parse_config(bitops_user_configuration, "bitops.logging.filename", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.logging.filename")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.logging.filename")
-    if parse_config(bitops_build_configuration, "bitops.logging.filename", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.logging.filename")
     # DEFAULT
     else None
 )
@@ -169,10 +163,10 @@ BITOPS_LOGGING_FILENAME = (
 BITOPS_LOGGING_PATH = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.path")
-    if parse_config(bitops_user_configuration, "bitops.logging.path", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.logging.path")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.logging.path")
-    if parse_config(bitops_build_configuration, "bitops.logging.path", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.logging.path")
     # DEFAULT
     else "/var/log/bitops"
 )
@@ -180,10 +174,10 @@ BITOPS_LOGGING_PATH = (
 BITOPS_LOGGING_MASKS = (
     # USER CONFIG
     parse_config(bitops_user_configuration, "bitops.logging.masks")
-    if parse_config(bitops_user_configuration, "bitops.logging.masks", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.logging.masks")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.logging.masks")
-    if parse_config(bitops_build_configuration, "bitops.logging.masks", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.logging.masks")
     # DEFAULT
     else None
 )
@@ -195,10 +189,10 @@ BITOPS_PLUGIN_DIR = (
     if BITOPS_ENV_plugin_dir is not None
     # USER CONFIG
     else parse_config(bitops_user_configuration, "bitops.plugins.plugin_dir")
-    if parse_config(bitops_user_configuration, "bitops.plugins.plugin_dir", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.plugins.plugin_dir")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.plugins.plugin_dir")
-    if parse_config(bitops_build_configuration, "bitops.plugins.plugin_dir", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.plugins.plugin_dir")
     # DEFAULT
     else "/opt/bitops/scripts/plugins/"
 )
@@ -209,10 +203,10 @@ BITOPS_DEFAULT_FOLDER = (
     if BITOPS_ENV_default_folder is not None
     # USER CONFIG
     else parse_config(bitops_user_configuration, "bitops.default_folder")
-    if parse_config(bitops_user_configuration, "bitops.default_folder", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.default_folder")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.default_folder")
-    if parse_config(bitops_build_configuration, "bitops.default_folder", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.default_folder")
     # DEFAULT
     else "_default"
 )
@@ -223,10 +217,10 @@ BITOPS_TIMEOUT = (
     if BITOPS_ENV_timeout is not None
     # USER CONFIG
     else parse_config(bitops_user_configuration, "bitops.timeout")
-    if parse_config(bitops_user_configuration, "bitops.timeout", validate=True)
+    if parse_config(bitops_user_configuration, "bitops.timeout")
     # BITOPS CONFIG
     else parse_config(bitops_build_configuration, "bitops.timeout")
-    if parse_config(bitops_build_configuration, "bitops.timeout", validate=True)
+    if parse_config(bitops_build_configuration, "bitops.timeout")
     # DEFAULT
     else 600
 )

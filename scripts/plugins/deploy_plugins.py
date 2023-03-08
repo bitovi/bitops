@@ -94,10 +94,10 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     bitops_deployment_configuration = (
         # USER CONFIG
         parse_config(bitops_user_configuration, "bitops.deployments")
-        if parse_config(bitops_user_configuration, "bitops.deployments", validate=True)
+        if parse_config(bitops_user_configuration, "bitops.deployments")
         # BITOPS CONFIG
         else parse_config(bitops_build_configuration, "bitops.deployments")
-        if parse_config(bitops_build_configuration, "bitops.deployments", validate=True)
+        if parse_config(bitops_build_configuration, "bitops.deployments")
         # DEFAULT
         else None
     )
