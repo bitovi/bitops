@@ -102,7 +102,7 @@ if not bitops_build_configuration.bitops:
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared.
 # All this does is X if X is set, Y if Y is set, else default value
-BITOPS_fast_fail_mode = (
+BITOPS_FAST_FAIL_MODE = (
     # ENV
     BITOPS_ENV_fast_fail_mode
     if BITOPS_ENV_fast_fail_mode is not None
@@ -116,7 +116,7 @@ BITOPS_fast_fail_mode = (
     else True
 )
 
-BITOPS_run_mode = (
+BITOPS_RUN_MODE = (
     # ENV
     BITOPS_ENV_run_mode
     if BITOPS_ENV_run_mode is not None
@@ -130,7 +130,7 @@ BITOPS_run_mode = (
     else "default"
 )
 
-BITOPS_logging_level = (
+BITOPS_LOGGING_LEVEL = (
     # ENV
     BITOPS_ENV_logging_level
     if BITOPS_ENV_logging_level is not None
@@ -189,7 +189,7 @@ BITOPS_LOGGING_MASKS = (
 )
 
 BITOPS_INSTALLED_PLUGINS_DIR = "/opt/bitops/scripts/installed_plugins/"
-BITOPS_plugin_dir = (
+BITOPS_PLUGIN_DIR = (
     # ENV
     BITOPS_ENV_plugin_dir
     if BITOPS_ENV_plugin_dir is not None
@@ -203,7 +203,7 @@ BITOPS_plugin_dir = (
     else "/opt/bitops/scripts/plugins/"
 )
 
-BITOPS_default_folder = (
+BITOPS_DEFAULT_FOLDER = (
     # ENV
     BITOPS_ENV_default_folder
     if BITOPS_ENV_default_folder is not None
@@ -217,7 +217,7 @@ BITOPS_default_folder = (
     else "_default"
 )
 
-BITOPS_timeout = (
+BITOPS_TIMEOUT = (
     # ENV
     BITOPS_ENV_timeout
     if BITOPS_ENV_timeout is not None

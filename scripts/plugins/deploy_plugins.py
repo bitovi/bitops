@@ -12,15 +12,15 @@ from .utilities import handle_hooks, run_cmd, get_config_list
 from .config.cli import PluginConfigCLI
 from .settings import (
     parse_config,
-    BITOPS_fast_fail_mode,
+    BITOPS_FAST_FAIL_MODE,
     bitops_build_configuration,
     BITOPS_ENV_environment,
-    BITOPS_default_folder,
-    BITOPS_timeout,
-    BITOPS_plugin_dir,
+    BITOPS_DEFAULT_FOLDER,
+    BITOPS_TIMEOUT,
+    BITOPS_PLUGIN_DIR,
     BITOPS_INSTALLED_PLUGINS_DIR,
     bitops_user_configuration,
-    BITOPS_run_mode,
+    BITOPS_RUN_MODE,
 )
 from .logging import logger
 
@@ -60,9 +60,9 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     os.environ["BITOPS_DIR"] = bitops_dir
     os.environ["BITOPS_SCRIPTS_DIR"] = bitops_scripts_dir
     os.environ["BITOPS_PLUGINS_DIR"] = BITOPS_INSTALLED_PLUGINS_DIR
-    os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_fast_fail_mode)
+    os.environ["BITOPS_FAIL_FAST"] = str(BITOPS_FAST_FAIL_MODE)
     os.environ["BITOPS_KUBE_CONFIG_FILE"] = f"{temp_dir}/.kube/config"
-    os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_default_folder
+    os.environ["BITOPS_DEFAULT_ROOT_DIR"] = BITOPS_DEFAULT_FOLDER
 
     # Global environment evaluation
     # TODO: Drop support for 'ENVIRONMENT' env var
@@ -109,19 +109,19 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
     logger.info(
         f"\n\n\n~#~#~#~BITOPS DEPLOYMENT CONFIGURATION~#~#~#~            \
             \n\t TEMP_DIR:                [{temp_dir}]                          \
-            \n\t DEFAULT_FOLDER_NAME:     [{BITOPS_default_folder}]             \
+            \n\t DEFAULT_FOLDER_NAME:     [{BITOPS_DEFAULT_FOLDER}]             \
             \n\t BITOPS_ENVIRONMENT:      [{BITOPS_ENV_environment}]            \
-            \n\t TIMEOUT:                 [{BITOPS_timeout}]                    \
+            \n\t TIMEOUT:                 [{BITOPS_TIMEOUT}]                    \
             \n                                                                  \
             \n\t BITOPS_DIR:              [{bitops_dir}]                        \
             \n\t BITOPS_DEPLOYMENT_DIR:   [{bitops_deployment_dir}]             \
-            \n\t BITOPS_PLUGIN_DIR:       [{BITOPS_plugin_dir}]                 \
+            \n\t BITOPS_PLUGIN_DIR:       [{BITOPS_PLUGIN_DIR}]                 \
             \n\t BITOPS_OPERATIONS_DIR:   [{bitops_operations_dir}]             \
             \n\t BITOPS_SCRIPTS_DIR:      [{bitops_scripts_dir}]                \
             \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~# \n                        \
             "
     )
-    if BITOPS_run_mode == "validate_config":
+    if BITOPS_RUN_MODE == "validate_config":
         logger.info("Validate Configuration complete.. Exiting.")
         sys.exit(0)
 
@@ -139,7 +139,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             bitops_operations_dir + "/" + deployment
         )  # Sourced from Operations repo
         os.environ["BITOPS_INSTALLED_PLUGIN_DIR"] = plugin_dir
-        os.environ["BITOPS_PLUGIN_DIR"] = BITOPS_plugin_dir
+        os.environ["BITOPS_PLUGIN_DIR"] = BITOPS_PLUGIN_DIR
         os.environ["BITOPS_OPSREPO_ENVIRONMENT_DIR"] = opsrepo_environment_dir
         os.environ["BITOPS_PLUGIN_NAME"] = plugin_name
 
@@ -291,7 +291,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         )
         if result.returncode != 0:
             logger.warning(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] FAILED~#~#~#~")
-            if BITOPS_fast_fail_mode:
+            if BITOPS_FAST_FAIL_MODE:
                 sys.exit(result.returncode)
         else:
             logger.info(f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~")

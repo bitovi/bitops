@@ -23,17 +23,17 @@ if __name__ == "__main__":
 
     logger.info(
         f"\n\n\n#~#~#~#~ BITOPS CONFIGURATION ~#~#~#~    \
-    \n\tFAIL FAST:              [{plugins.settings.BITOPS_fast_fail_mode}]                   \
-    \n\tBITOPS RUN MODE:        [{plugins.settings.BITOPS_run_mode}]                    \
+    \n\tFAIL FAST:              [{plugins.settings.BITOPS_FAST_FAIL_MODE}]                   \
+    \n\tBITOPS RUN MODE:        [{plugins.settings.BITOPS_RUN_MODE}]                    \
     \n\tPYTHON RUN MODE:        [{RUN_MODE}]                        \
-    \n\tLOGGING LEVEL:          [{plugins.settings.BITOPS_logging_level}]                   \
+    \n\tLOGGING LEVEL:          [{plugins.settings.BITOPS_LOGGING_LEVEL}]                   \
     \n\tLOGGING COLOR:          [{plugins.settings.BITOPS_LOGGING_COLOR}]                   \
     \
     \n\tBITOPS CONFIG FILE:     [{plugins.settings.BITOPS_config_file}]                 \
     \n#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#~#\n"
     )
 
-    if plugins.settings.BITOPS_run_mode == "settings_test":
+    if plugins.settings.BITOPS_RUN_MODE == "settings_test":
         # Prints all variables from the settings.py file after it's loaded.
         print("Plugins Load complete. Exiting...")
         print(

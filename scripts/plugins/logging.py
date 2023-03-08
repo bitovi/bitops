@@ -3,7 +3,7 @@ import re
 import sys
 
 from .settings import (
-    BITOPS_logging_level,
+    BITOPS_LOGGING_LEVEL,
     BITOPS_LOGGING_COLOR,
     BITOPS_LOGGING_FILENAME,
     BITOPS_LOGGING_PATH,
@@ -94,10 +94,10 @@ formatter = BitOpsFormatter(
 
 
 logger = logging.getLogger()
-logger.setLevel(BITOPS_logging_level)
+logger.setLevel(BITOPS_LOGGING_LEVEL)
 
 handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(BITOPS_logging_level)
+handler.setLevel(BITOPS_LOGGING_LEVEL)
 
 
 handler.setFormatter(formatter)
