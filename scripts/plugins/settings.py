@@ -7,6 +7,19 @@ import yaml
 from munch import DefaultMunch
 
 
+def get_first(*args):
+    """
+    Return the first non-null variable from the input args.
+    Helpful to find the first meaningful value in the chain of vars.
+    """
+    if not args:
+        return None
+    for arg in args:
+        if arg is not None:
+            return arg
+    return args[-1]
+
+
 def load_user_bitops_config() -> DefaultMunch:
     """
     Try to load user-specified bitops config from ops repo
@@ -49,20 +62,19 @@ BITOPS_CL_args, unknowns = parser.parse_known_args()
 
 # BitOps Configuration file
 BITOPS_ENV_config_file = os.environ.get("BITOPS_BUILD_CONFIG_YAML")
-BITOPS_config_file = (
-    BITOPS_ENV_config_file
-    if BITOPS_ENV_config_file is not None
-    else BITOPS_CL_args.bitops_config_file
-    if BITOPS_CL_args.bitops_config_file is not None
-    else "bitops.config.yaml"
+BITOPS_config_file = get_first(
+    BITOPS_ENV_config_file,
+    BITOPS_CL_args.bitops_config_file,
+    "bitops.config.yaml"
 )
 with open(BITOPS_config_file, "r", encoding="utf8") as stream:
     BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
 # BitOps Schema File
 BITOPS_ENV_schema_file = os.environ.get("BITOPS_BUILD_SCHEMA_YAML")
-BITOPS_schema_file = (
-    BITOPS_ENV_schema_file if BITOPS_ENV_schema_file is not None else "bitops.schema.yaml"
+BITOPS_schema_file = get_first(
+    BITOPS_ENV_schema_file,
+    "bitops.schema.yaml"
 )
 with open(BITOPS_schema_file, "r", encoding="utf8") as stream:
     BITOPS_schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
@@ -96,131 +108,74 @@ if not bitops_build_configuration.bitops:
 # WASHED VALUES
 # This is just stacked ternary operators. Don't be scared.
 # All this does is X if X is set, Y if Y is set, else default value
-BITOPS_FAST_FAIL_MODE = (
+BITOPS_FAST_FAIL_MODE = get_first(
     # ENV
-    BITOPS_ENV_fast_fail_mode
-    if BITOPS_ENV_fast_fail_mode is not None
-    # USER CONFIG
-    else parse_config(bitops_user_configuration, "bitops.fail_fast")
-    if parse_config(bitops_user_configuration, "bitops.fail_fast")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.fail_fast")
-    if parse_config(bitops_build_configuration, "bitops.fail_fast")
-    # DEFAULT
-    else True
+    BITOPS_ENV_fast_fail_mode,
+    # user config
+    parse_config(bitops_user_configuration, "bitops.fail_fast"),
+    # build config
+    parse_config(bitops_build_configuration, "bitops.fail_fast"),
+    # default
+    True,
 )
 
-BITOPS_RUN_MODE = (
-    # ENV
-    BITOPS_ENV_run_mode
-    if BITOPS_ENV_run_mode is not None
-    # USER CONFIG
-    else parse_config(bitops_user_configuration, "bitops.run_mode")
-    if parse_config(bitops_user_configuration, "bitops.run_mode")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.run_mode")
-    if parse_config(bitops_build_configuration, "bitops.run_mode")
-    # DEFAULT
-    else "default"
+BITOPS_RUN_MODE = get_first(
+    BITOPS_ENV_run_mode,
+    parse_config(bitops_user_configuration, "bitops.run_mode"),
+    parse_config(bitops_build_configuration, "bitops.run_mode"),
+    "default",
 )
 
-BITOPS_LOGGING_LEVEL = (
-    # ENV
-    BITOPS_ENV_logging_level
-    if BITOPS_ENV_logging_level is not None
-    # USER CONFIG
-    else parse_config(bitops_user_configuration, "bitops.logging.level")
-    if parse_config(bitops_user_configuration, "bitops.logging.level")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.logging.level")
-    if parse_config(bitops_build_configuration, "bitops.logging.level")
-    # DEFAULT
-    else "DEBUG"
+BITOPS_LOGGING_LEVEL = get_first(
+    BITOPS_ENV_logging_level,
+    parse_config(bitops_user_configuration, "bitops.logging.level"),
+    parse_config(bitops_build_configuration, "bitops.logging.level"),
+    "DEBUG",
 )
 
-BITOPS_LOGGING_COLOR = (
-    # USER CONFIG
-    parse_config(bitops_user_configuration, "bitops.logging.color.enabled")
-    if parse_config(bitops_user_configuration, "bitops.logging.color.enabled")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.logging.color.enabled")
-    if parse_config(bitops_build_configuration, "bitops.logging.color.enabled")
-    # DEFAULT
-    else False
+BITOPS_LOGGING_COLOR = get_first(
+    parse_config(bitops_user_configuration, "bitops.logging.color.enabled"),
+    parse_config(bitops_build_configuration, "bitops.logging.color.enabled"),
+    False,
 )
 
-BITOPS_LOGGING_FILENAME = (
-    # USER CONFIG
-    parse_config(bitops_user_configuration, "bitops.logging.filename")
-    if parse_config(bitops_user_configuration, "bitops.logging.filename")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.logging.filename")
-    if parse_config(bitops_build_configuration, "bitops.logging.filename")
-    # DEFAULT
-    else None
+BITOPS_LOGGING_FILENAME = get_first(
+    parse_config(bitops_user_configuration, "bitops.logging.filename"),
+    parse_config(bitops_build_configuration, "bitops.logging.filename"),
+    None,
 )
 
-BITOPS_LOGGING_PATH = (
-    # USER CONFIG
-    parse_config(bitops_user_configuration, "bitops.logging.path")
-    if parse_config(bitops_user_configuration, "bitops.logging.path")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.logging.path")
-    if parse_config(bitops_build_configuration, "bitops.logging.path")
-    # DEFAULT
-    else "/var/log/bitops"
+BITOPS_LOGGING_PATH = get_first(
+    parse_config(bitops_user_configuration, "bitops.logging.path"),
+    parse_config(bitops_build_configuration, "bitops.logging.path"),
+    "/var/log/bitops",
 )
 
-BITOPS_LOGGING_MASKS = (
-    # USER CONFIG
-    parse_config(bitops_user_configuration, "bitops.logging.masks")
-    if parse_config(bitops_user_configuration, "bitops.logging.masks")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.logging.masks")
-    if parse_config(bitops_build_configuration, "bitops.logging.masks")
-    # DEFAULT
-    else None
+BITOPS_LOGGING_MASKS = get_first(
+    parse_config(bitops_user_configuration, "bitops.logging.masks"),
+    parse_config(bitops_build_configuration, "bitops.logging.masks"),
+    None,
 )
 
 BITOPS_INSTALLED_PLUGINS_DIR = "/opt/bitops/scripts/installed_plugins/"
-BITOPS_PLUGIN_DIR = (
-    # ENV
-    BITOPS_ENV_plugin_dir
-    if BITOPS_ENV_plugin_dir is not None
-    # USER CONFIG
-    else parse_config(bitops_user_configuration, "bitops.plugins.plugin_dir")
-    if parse_config(bitops_user_configuration, "bitops.plugins.plugin_dir")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.plugins.plugin_dir")
-    if parse_config(bitops_build_configuration, "bitops.plugins.plugin_dir")
-    # DEFAULT
-    else "/opt/bitops/scripts/plugins/"
+
+BITOPS_PLUGIN_DIR = get_first(
+    BITOPS_ENV_plugin_dir,
+    parse_config(bitops_user_configuration, "bitops.plugins.plugin_dir"),
+    parse_config(bitops_build_configuration, "bitops.plugins.plugin_dir"),
+    "/opt/bitops/scripts/plugins/",
 )
 
-BITOPS_DEFAULT_FOLDER = (
-    # ENV
-    BITOPS_ENV_default_folder
-    if BITOPS_ENV_default_folder is not None
-    # USER CONFIG
-    else parse_config(bitops_user_configuration, "bitops.default_folder")
-    if parse_config(bitops_user_configuration, "bitops.default_folder")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.default_folder")
-    if parse_config(bitops_build_configuration, "bitops.default_folder")
-    # DEFAULT
-    else "_default"
+BITOPS_DEFAULT_FOLDER = get_first(
+    BITOPS_ENV_default_folder,
+    parse_config(bitops_user_configuration, "bitops.default_folder"),
+    parse_config(bitops_build_configuration, "bitops.default_folder"),
+    "_default",
 )
 
-BITOPS_TIMEOUT = (
-    # ENV
-    BITOPS_ENV_timeout
-    if BITOPS_ENV_timeout is not None
-    # USER CONFIG
-    else parse_config(bitops_user_configuration, "bitops.timeout")
-    if parse_config(bitops_user_configuration, "bitops.timeout")
-    # BITOPS CONFIG
-    else parse_config(bitops_build_configuration, "bitops.timeout")
-    if parse_config(bitops_build_configuration, "bitops.timeout")
-    # DEFAULT
-    else 600
+BITOPS_TIMEOUT = get_first(
+    BITOPS_ENV_timeout,
+    parse_config(bitops_user_configuration, "bitops.timeout"),
+    parse_config(bitops_build_configuration, "bitops.timeout"),
+    600,
 )

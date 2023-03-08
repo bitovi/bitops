@@ -12,6 +12,7 @@ from .utilities import handle_hooks, run_cmd, get_config_list
 from .config.cli import PluginConfigCLI
 from .settings import (
     parse_config,
+    get_first,
     BITOPS_FAST_FAIL_MODE,
     bitops_build_configuration,
     BITOPS_ENV_environment,
@@ -91,15 +92,13 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         sys.exit(1)
     copy_tree(bitops_deployment_dir, temp_dir)
 
-    bitops_deployment_configuration = (
+    bitops_deployment_configuration = get_first(
         # USER CONFIG
-        parse_config(bitops_user_configuration, "bitops.deployments")
-        if parse_config(bitops_user_configuration, "bitops.deployments")
+        parse_config(bitops_user_configuration, "bitops.deployments"),
         # BITOPS CONFIG
-        else parse_config(bitops_build_configuration, "bitops.deployments")
-        if parse_config(bitops_build_configuration, "bitops.deployments")
+        parse_config(bitops_build_configuration, "bitops.deployments"),
         # DEFAULT
-        else None
+        None,
     )
 
     if bitops_deployment_configuration is None:
@@ -186,40 +185,28 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
         )
 
         # plugin.deployment.deployment_script
-        plugin_deploy_script = (
-            plugin_configuration.plugin.deployment.deployment_script
-            if plugin_configuration.plugin.deployment.deployment_script is not None
-            else "deploy.sh"
+        plugin_deploy_script = get_first(
+            plugin_configuration.plugin.deployment.deployment_script, "deploy.sh"
         )
 
         # plugin.deployment.language
-        plugin_deploy_language = (
-            plugin_configuration.plugin.deployment.language
-            if plugin_configuration.plugin.deployment.language is not None
-            else "bash"
-        )
+        plugin_deploy_language = get_first(plugin_configuration.plugin.deployment.language, "bash")
 
         plugin_deploy_script_path = plugin_dir + f"/{plugin_deploy_script}"
 
         # plugin.deployment.schema_parsing
-        plugin_deploy_schema_parsing_flag = (
-            plugin_configuration.plugin.deployment.core_schema_parsing
-            if plugin_configuration.plugin.deployment.core_schema_parsing is not None
-            else "true"
+        plugin_deploy_schema_parsing_flag = get_first(
+            plugin_configuration.plugin.deployment.core_schema_parsing, "true"
         )
 
         # plugin.deployment.before_hook_scripts
-        plugin_deploy_before_hook_scripts_flag = (
-            plugin_configuration.plugin.deployment.before_hook_scripts
-            if plugin_configuration.plugin.deployment.before_hook_scripts is not None
-            else "true"
+        plugin_deploy_before_hook_scripts_flag = get_first(
+            plugin_configuration.plugin.deployment.before_hook_scripts, "true"
         )
 
         # plugin.deployment.after_hook_scripts
-        plugin_deploy_after_hook_scripts_flag = (
-            plugin_configuration.plugin.deployment.after_hook_scripts
-            if plugin_configuration.plugin.deployment.after_hook_scripts is not None
-            else "true"
+        plugin_deploy_after_hook_scripts_flag = get_first(
+            plugin_configuration.plugin.deployment.after_hook_scripts, "true"
         )
 
         # Check if deploy script is present
