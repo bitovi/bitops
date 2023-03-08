@@ -6,7 +6,6 @@ import plugins.settings
 from plugins.logging import logger
 from plugins.deploy_plugins import deploy_plugins
 from plugins.install_plugins import install_plugins
-from plugins.utilities import get_config_list
 
 
 if __name__ == "__main__":

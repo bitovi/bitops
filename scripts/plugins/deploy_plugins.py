@@ -2,7 +2,7 @@ import os
 import sys
 import stat
 import tempfile
-from distutils.dir_util import copy_tree
+from shutil import copytree
 from munch import DefaultMunch
 import yaml
 
@@ -89,7 +89,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             "[https://bitovi.github.io/bitops/about/#how-bitops-works]"
         )
         sys.exit(1)
-    copy_tree(bitops_deployment_dir, temp_dir)
+
+    copytree(bitops_deployment_dir, temp_dir, dirs_exist_ok=True)
 
     bitops_deployment_configuration = (
         # USER CONFIG
