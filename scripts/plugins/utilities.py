@@ -4,7 +4,7 @@ import subprocess
 from typing import Union
 import yaml
 
-from .settings import BITOPS_FAST_FAIL_MODE
+from .settings import BITOPS_FAST_FAIL_MODE, BITOPS_RUN_MODE
 from .logging import logger, mask_message
 from .doc import get_doc
 
@@ -56,10 +56,14 @@ def load_yaml(inc_yaml):
         with open(inc_yaml, "r", encoding="utf8") as stream:
             out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as e:
+        # if in test mode:
+        if BITOPS_RUN_MODE == "testing":
+            raise e
         msg, exit_code = get_doc("missing_required_file")
         logger.error(f"{msg} [{e.filename}]")
         logger.debug(e)
         sys.exit(exit_code)
+
     return out_yaml
 
 
