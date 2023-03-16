@@ -1,8 +1,9 @@
 import os
 import unittest
 import subprocess
+from unittest.mock import patch
 
-from ..plugins.utilities import add_value_to_env, load_yaml, run_cmd
+from ...plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
 
 
 class TestAddValueToEnv(unittest.TestCase):
@@ -75,6 +76,52 @@ class TestRunCmd(unittest.TestCase):
         self.assertEqual(process.stderr, subprocess.STDOUT)
         self.assertTrue(process.universal_newlines)
         self.assertIsNotNone(process.communicate())
+
+
+class TestHandleHooks(unittest.TestCase):
+    def setUp(self):
+        self.hooks_folder = "./test_folder/hooks"
+        self.source_folder = "./test_folder/source"
+        self.hook_script = "test_script.sh"
+        self.mode = "before"
+        self.original_cwd = os.getcwd()
+
+    def tearDown(self):
+        os.chdir(self.original_cwd)
+
+    def test_handle_hooks_called_with_invalid_folder(self):
+        """
+        Test handle_hooks with invalid folder path
+        """
+        invalid_folder = "./invalid_folder"
+        result = handle_hooks(self.mode, invalid_folder, self.source_folder)
+        self.assertIsNone(result)
+
+    def test_handle_hooks_called_with_valid_folder(self):
+        """
+        Test handle_hooks with valid folder path
+        """
+        valid_folder = "./test_folder"
+        result = handle_hooks(self.mode, valid_folder, self.source_folder)
+        self.assertIsInstance(result, subprocess.Popen)
+
+    @patch("subprocess.Popen")
+    def test_handle_hooks_called_with_valid_hook_script(self, mock_subprocess_popen):
+        """
+        Test handle_hooks with valid hook script
+        """
+        valid_hook_script = "test_script.sh"
+        result = handle_hooks(self.mode, self.hooks_folder, self.source_folder)
+        mock_subprocess_popen.assert_called_with(["bash", valid_hook_script])
+        self.assertIsInstance(result, subprocess.Popen)
+
+    def test_handle_hooks_called_with_invalid_hook_script(self):
+        """
+        Test handle_hooks with invalid hook script
+        """
+        invalid_hook_script = "invalid_script.sh"
+        result = handle_hooks(self.mode, self.hooks_folder, self.source_folder)
+        self.assertIsInstance(result, subprocess.Popen)  # Should still return a Popen instance
 
 
 if __name__ == "__main__":
