@@ -1,7 +1,8 @@
 import os
 import unittest
+import subprocess
 
-from ..plugins.utilities import add_value_to_env, load_yaml
+from ..plugins.utilities import add_value_to_env, load_yaml, run_cmd
 
 
 class TestAddValueToEnv(unittest.TestCase):
@@ -61,6 +62,19 @@ class TestLoadYAML(unittest.TestCase):
     #     """
     #     with self.assertRaises(FileNotFoundError):
     #         load_yaml("invalid_file.yaml")
+
+
+class TestRunCmd(unittest.TestCase):
+    def setUp(self):
+        self.command = "ls"
+
+    def test_run_cmd(self):
+        process = run_cmd(self.command)
+        self.assertIsInstance(process, subprocess.Popen)
+        self.assertEqual(process.stdout, subprocess.PIPE)
+        self.assertEqual(process.stderr, subprocess.STDOUT)
+        self.assertTrue(process.universal_newlines)
+        self.assertIsNotNone(process.communicate())
 
 
 if __name__ == "__main__":
