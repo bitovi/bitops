@@ -165,7 +165,14 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
 
         if BITOPS_FAST_FAIL_MODE:
             logger.error(f"Data type not supported: [{data_type}]")
-            sys.exit(101)
+            raise UnSupportDataType(f"Data type not supported: [{data_type}]")
 
         logger.warning(f"Data type not supported: [{data_type}]")
         return None
+
+
+class UnSupportDataType(Exception):
+    """Raised when an unsupported data type is passed in to a function"""
+
+    def __init__(self, message):
+        self.message = message
