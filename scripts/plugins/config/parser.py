@@ -37,8 +37,7 @@ def get_config_list(config_file, schema_file):
                 f"Configuration value: [{item.name}] is required. Please ensure you "
                 "set this configuration value in the plugins `bitops.config.yaml`"
             )
-            logger.debug(item)
-            sys.exit(1)
+        sys.exit(1)
     return cli_config_list, options_config_list
 
 
