@@ -67,8 +67,8 @@ def turn_off_logger():
     """
     Disables the logger from printing. Useful for unit testing
     """
-    logger = logging.getLogger("bitops-logger")
-    logger.disabled = True
+    to_logger = logging.getLogger("bitops-logger")
+    to_logger.disabled = True
 
 
 class BitOpsFormatter(logging.Formatter):
