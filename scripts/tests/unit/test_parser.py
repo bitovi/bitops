@@ -17,10 +17,13 @@ turn_off_logger()
 
 
 class TestGetConfigList(unittest.TestCase):
+    """Test parser.py get_config_list function"""
+
     def setUp(self):
         self.root_dir = os.getcwd()
 
     def test_get_config_list_valid_inputs(self):
+        """Test parser.py get_config_list function with valid inputs"""
         config_file = "example.config.yaml"
         schema_file = "example.schema.yaml"
         cli_config_list, options_config_list = get_config_list(
@@ -33,20 +36,18 @@ class TestGetConfigList(unittest.TestCase):
         self.assertIsInstance(options_config_list, list)
 
     def test_get_config_list_invalid_file(self):
+        """Test parser.py get_config_list function with invalid inputs"""
         config_file = "invalid_config.yml"
         schema_file = "invalid_schema.yml"
         with self.assertRaises(FileNotFoundError):
             get_config_list(config_file, schema_file)
 
-    # def test_get_config_list_missing_required_config(self):
-    #     config_file = "config.yml"
-    #     schema_file = "schema.yml"
-    #     with self.assertRaises(SystemExit):
-    #         get_config_list(config_file, schema_file)
-
 
 class TestConvertYamlToDict(unittest.TestCase):
+    """Test parser.py convert_yaml_to_dict function"""
+
     def test_convert_yaml_to_dict_with_null_values(self):
+        """Test parser.py convert_yaml_to_dict function with null values replacement"""
         # Setup
         inc_yaml = {"testKey1": "testValue1", "testKey2": None}
         null_replacement = "nullReplacement"
@@ -59,6 +60,7 @@ class TestConvertYamlToDict(unittest.TestCase):
         self.assertEqual(result.testKey0, "nullReplacement")
 
     def test_convert_yaml_to_dict_without_null_values(self):
+        """Test parser.py convert_yaml_to_dict function without null values replacement"""
         # Setup
         inc_yaml = {"testKey1": "testValue1", "testKey2": None}
 
@@ -69,11 +71,10 @@ class TestConvertYamlToDict(unittest.TestCase):
         self.assertEqual(result.testKey1, "testValue1")
         self.assertEqual(result.testKey2, None)
 
-    # test_convert_yaml_to_dict_with_invalid_dict
-    # Function not needed. DefaultMunch handles incorrect typing
-
 
 class TestParseYamlKeysToList(unittest.TestCase):
+    """Test parser.py parse_yaml_keys_to_list function"""
+
     def setUp(self):
         self.valid_schema = {
             "terraform": {
@@ -111,6 +112,7 @@ class TestParseYamlKeysToList(unittest.TestCase):
         self.root_key = "terraform"
 
     def test_parse_yaml_keys_to_list(self):
+        """Test parser.py parse_yaml_keys_to_list function"""
         """
         Test parsing yaml keys to list
         """
@@ -142,6 +144,7 @@ class TestParseYamlKeysToList(unittest.TestCase):
         self.assertIsInstance(actual_keys_list, list)
 
     def test_parse_yaml_keys_to_list_invalid_rootkey(self):
+        """Test parser.py parse_yaml_keys_to_list function with invalid rootkey"""
         """
         Test prase_yaml_kwys_to_list with invalid rootkey.
         Expecting KeyError
@@ -150,6 +153,7 @@ class TestParseYamlKeysToList(unittest.TestCase):
             parse_yaml_keys_to_list(self.valid_schema, "not_a_root_key")
 
     def test_parse_yaml_keys_to_list_invalid_schema(self):
+        """Test parser.py parse_yaml_keys_to_list function with invalid schema"""
         """
         Test prase_yaml_kwys_to_list with invalid rootkey.
         Expecting TypeError
@@ -159,6 +163,8 @@ class TestParseYamlKeysToList(unittest.TestCase):
 
 
 class TestGeneratePopulatedSchemaList(unittest.TestCase):
+    """Test parser.py generate_populated_schema_list function"""
+
     def setUp(self):
         self.valid_schema = {
             "terraform": {
@@ -198,6 +204,7 @@ class TestGeneratePopulatedSchemaList(unittest.TestCase):
         }
 
     def test_generate_populated_schema_list(self):
+        """Test parser.py generate_populated_schema_list function"""
         schema_properties_list = generate_schema_keys(self.valid_schema)
         result = generate_populated_schema_list(
             convert_yaml_to_dict(self.valid_schema), schema_properties_list, self.config_yaml
@@ -221,6 +228,8 @@ class TestGeneratePopulatedSchemaList(unittest.TestCase):
 
 
 class TestGenerateSchemaKeys(unittest.TestCase):
+    """Test parser.py generate_schema_keys function"""
+
     def test_schema_keys_list_not_empty(self):
         """Test that the generated schema keys list is not empty"""
         schema = {
@@ -239,6 +248,8 @@ class TestGenerateSchemaKeys(unittest.TestCase):
 
 
 class TestPopulateParsedConfigurations(unittest.TestCase):
+    """Test parser.py populate_parsed_configurations function"""
+
     def setUp(self):
         self.valid_schema = {
             "terraform": {
@@ -282,6 +293,7 @@ class TestPopulateParsedConfigurations(unittest.TestCase):
         )
 
     def test_cli_config_list(self):
+        """Test parser.py populate_parsed_configurations function - return cli list"""
         cli_config_list = populate_parsed_configurations(self.schema_list)[0]
         # for item in cli_config_list:
         # print(item)
@@ -291,6 +303,7 @@ class TestPopulateParsedConfigurations(unittest.TestCase):
             cli_config_list[2]
 
     def test_options_config_list(self):
+        """Test parser.py populate_parsed_configurations function - return options list"""
         options_config_list = populate_parsed_configurations(self.schema_list)[1]
 
         self.assertEqual(options_config_list[0].schema_property_type, "options")
@@ -298,10 +311,12 @@ class TestPopulateParsedConfigurations(unittest.TestCase):
             options_config_list[1]
 
     def test_missing_required_config_list_empty_list(self):
+        """Test parser.py populate_parsed_configurations function - doesn't return required list"""
         required_config_list = populate_parsed_configurations(self.schema_list)[2]
         self.assertFalse(required_config_list)
 
     def test_missing_required_config_list(self):
+        """Test parser.py populate_parsed_configurations function - return required list"""
         test_required_schema_value = [
             SchemaObject(
                 "test_config",
