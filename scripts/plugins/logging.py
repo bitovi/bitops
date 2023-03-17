@@ -63,6 +63,14 @@ def formatter_message(message, use_color=BITOPS_LOGGING_COLOR):
     return message
 
 
+def turn_off_logger():
+    """
+    Disables the logger from printing. Useful for unit testing
+    """
+    logger = logging.getLogger("bitops-logger")
+    logger.disabled = True
+
+
 class BitOpsFormatter(logging.Formatter):
     """
     Class that controls the formatting of logging text, adds colors if enabled.
@@ -93,7 +101,7 @@ formatter = BitOpsFormatter(
 )
 
 
-logger = logging.getLogger()
+logger = logging.getLogger("bitops-logger")
 logger.setLevel(BITOPS_LOGGING_LEVEL)
 
 handler = logging.StreamHandler(sys.stdout)

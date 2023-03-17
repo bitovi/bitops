@@ -46,7 +46,7 @@ def add_value_to_env(export_env, value):
         )
 
 
-def load_yaml(inc_yaml):
+def load_yaml(inc_yaml, required=True):
     """
     This function attempts to load a YAML file from a given location,
     and exits if the file is not found. It returns the loaded YAML file if successful.
@@ -56,13 +56,12 @@ def load_yaml(inc_yaml):
         with open(inc_yaml, "r", encoding="utf8") as stream:
             out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
     except FileNotFoundError as e:
-        # if in test mode:
-        if BITOPS_RUN_MODE == "testing":
+        if required:
+            logger.error(
+                f"Required file was not found. To fix this please add the following file: [{e.filename}]"
+            )
+            logger.debug(e)
             raise e
-        msg, exit_code = get_doc("missing_required_file")
-        logger.error(f"{msg} [{e.filename}]")
-        logger.debug(e)
-        sys.exit(exit_code)
 
     return out_yaml
 
@@ -76,11 +75,15 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ) as process:
-            for combined_output in process.stdout:
+            combined_output = ""
+            for output in process.stdout:
                 # TODO: parse output for secrets
                 # TODO: specify plugin and output tight output (no extra newlines)
                 # TODO: can we modify a specific handler to add handler.terminator = "" ?
-                sys.stdout.write(mask_message(combined_output))
+                # TODO: This should be updated to use logger if possible
+                # TODO: This should have a quiet option
+                combined_output += output
+            logger.info(mask_message(combined_output))
 
             # This polls the async function to get information
             # about the status of the process execution.
@@ -89,7 +92,7 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
 
     except Exception as exc:
         logger.error(exc)
-        sys.exit(101)
+        raise exc
     return process
 
 
@@ -99,6 +102,8 @@ def handle_hooks(mode, hooks_folder, source_folder):
     """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
+        return
+    if mode not in ["before", "after"]:
         return
 
     original_directory = os.getcwd()
@@ -119,7 +124,10 @@ def handle_hooks(mode, hooks_folder, source_folder):
         plugin_before_hook_script_path = hooks_folder + "/" + hook_script
         os.chmod(plugin_before_hook_script_path, 775)
 
-        result = run_cmd(["bash", plugin_before_hook_script_path])
+        try:
+            result = run_cmd(["bash", plugin_before_hook_script_path])
+        except Exception:
+            sys.exit(101)
         if result.returncode == 0:
             logger.info(f"~#~#~#~{umode} HOOK [{hook_script}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(result.stdout)
@@ -130,3 +138,4 @@ def handle_hooks(mode, hooks_folder, source_folder):
                 sys.exit(result.returncode)
 
     os.chdir(original_directory)
+    return True

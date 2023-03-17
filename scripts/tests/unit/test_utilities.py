@@ -2,8 +2,10 @@ import os
 import unittest
 import subprocess
 from unittest.mock import patch
-
 from ...plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
+from ...plugins.logging import turn_off_logger
+
+turn_off_logger()
 
 
 class TestAddValueToEnv(unittest.TestCase):
@@ -57,34 +59,45 @@ class TestLoadYAML(unittest.TestCase):
         self.assertIsNotNone(out_yaml)
         self.assertIsInstance(out_yaml, dict)
 
-    # def test_load_yaml_with_invalid_filename(self):
-    #     """
-    #     Test the load_yaml function with a non-existent file.
-    #     """
-    #     with self.assertRaises(FileNotFoundError):
-    #         load_yaml("invalid_file.yaml")
+    def test_load_yaml_with_required_invalid_filename(self):
+        """
+        Test the load_yaml function with a non-existent file.
+        """
+        with self.assertRaises(FileNotFoundError):
+            load_yaml("invalid_file.yaml")
+
+    def test_load_yaml_with_invalid_filename(self):
+        """
+        Test the load_yaml function with a non-existent file.
+        """
+        self.assertIsNone(load_yaml("invalid_file.yaml", required=False))
 
 
 class TestRunCmd(unittest.TestCase):
-    def setUp(self):
-        self.command = "ls"
-
-    def test_run_cmd(self):
-        process = run_cmd(self.command)
+    def test_valid_run_cmd(self):
+        """
+        Test the run_cmd function with a valid command
+        """
+        process = run_cmd("ls")
         self.assertIsInstance(process, subprocess.Popen)
-        self.assertEqual(process.stdout, subprocess.PIPE)
-        self.assertEqual(process.stderr, subprocess.STDOUT)
         self.assertTrue(process.universal_newlines)
-        self.assertIsNotNone(process.communicate())
+        self.assertEqual(process.returncode, 0)
+        self.assertEqual(process.args, "ls")
+
+    def test_invalid_run_cmd(self):
+        """
+        Test the run_cmd function with a valid command
+        """
+        with self.assertRaises(Exception) as context:
+            run_cmd("not_a_real_command")
+        self.assertIsInstance(context.exception, FileNotFoundError)
 
 
 class TestHandleHooks(unittest.TestCase):
     def setUp(self):
-        self.hooks_folder = "./test_folder/hooks"
-        self.source_folder = "./test_folder/source"
-        self.hook_script = "test_script.sh"
-        self.mode = "before"
         self.original_cwd = os.getcwd()
+        self.hooks_folder = f"{self.original_cwd}/scripts/tests/test_assets/bitops.before-deploy.d"
+        self.source_folder = f"{self.original_cwd}/scripts/tests/test_assets"
 
     def tearDown(self):
         os.chdir(self.original_cwd)
@@ -93,35 +106,25 @@ class TestHandleHooks(unittest.TestCase):
         """
         Test handle_hooks with invalid folder path
         """
+
         invalid_folder = "./invalid_folder"
-        result = handle_hooks(self.mode, invalid_folder, self.source_folder)
+        result = handle_hooks("before", invalid_folder, self.source_folder)
+        self.assertIsNone(result)
+
+    def test_handle_hooks_called_with_invalid_mode(self):
+        """
+        Test handle_hooks with invalid mode
+        """
+        result = handle_hooks("random_mode.exe", self.hooks_folder, self.source_folder)
         self.assertIsNone(result)
 
     def test_handle_hooks_called_with_valid_folder(self):
         """
         Test handle_hooks with valid folder path
         """
-        valid_folder = "./test_folder"
-        result = handle_hooks(self.mode, valid_folder, self.source_folder)
-        self.assertIsInstance(result, subprocess.Popen)
 
-    @patch("subprocess.Popen")
-    def test_handle_hooks_called_with_valid_hook_script(self, mock_subprocess_popen):
-        """
-        Test handle_hooks with valid hook script
-        """
-        valid_hook_script = "test_script.sh"
-        result = handle_hooks(self.mode, self.hooks_folder, self.source_folder)
-        mock_subprocess_popen.assert_called_with(["bash", valid_hook_script])
-        self.assertIsInstance(result, subprocess.Popen)
-
-    def test_handle_hooks_called_with_invalid_hook_script(self):
-        """
-        Test handle_hooks with invalid hook script
-        """
-        invalid_hook_script = "invalid_script.sh"
-        result = handle_hooks(self.mode, self.hooks_folder, self.source_folder)
-        self.assertIsInstance(result, subprocess.Popen)  # Should still return a Popen instance
+        result = handle_hooks("before", self.hooks_folder, self.source_folder)
+        self.assertTrue(result)
 
 
 if __name__ == "__main__":

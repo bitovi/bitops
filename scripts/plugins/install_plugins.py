@@ -223,7 +223,10 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,to
             logger.error(f"File does not exist: [{plugin_install_script_path}]")
             sys.exit(1)
 
-        result = run_cmd([plugin_install_language, plugin_install_script_path])
+        try:
+            result = run_cmd([plugin_install_language, plugin_install_script_path])
+        except Exception:
+            sys.exit(101)
         if result.returncode == 0:
             logger.info(f"~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(

@@ -17,9 +17,11 @@ def get_config_list(config_file, schema_file):
     \n\t PLUGIN SCHEMA FILE PATH:           [{schema_file}]    \
     \n\n"
     )
-
-    schema_yaml = load_yaml(schema_file)
-    config_yaml = load_yaml(config_file)
+    try:
+        schema_yaml = load_yaml(schema_file)
+        config_yaml = load_yaml(config_file)
+    except FileNotFoundError:
+        exit(2)
     schema = convert_yaml_to_dict(schema_yaml)
     schema_properties_list = generate_schema_keys(schema)
     schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)
