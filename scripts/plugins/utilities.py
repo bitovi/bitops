@@ -4,9 +4,8 @@ import subprocess
 from typing import Union
 import yaml
 
-from .settings import BITOPS_FAST_FAIL_MODE, BITOPS_RUN_MODE
+from .settings import BITOPS_FAST_FAIL_MODE
 from .logging import logger, mask_message
-from .doc import get_doc
 
 
 def add_value_to_env(export_env, value):
@@ -58,7 +57,8 @@ def load_yaml(inc_yaml, required=True):
     except FileNotFoundError as e:
         if required:
             logger.error(
-                f"Required file was not found. To fix this please add the following file: [{e.filename}]"
+                f"Required file was not found. \
+                    To fix this please add the following file: [{e.filename}]"
             )
             logger.debug(e)
             raise e
@@ -82,18 +82,18 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
                 # TODO: can we modify a specific handler to add handler.terminator = "" ?
                 # TODO: This should be updated to use logger if possible
                 # TODO: This should have a quiet option
-                combined_output += output
+                combined_output.join(output)
             logger.info(mask_message(combined_output))
 
             # This polls the async function to get information
             # about the status of the process execution.
             # Namely the return code which is used elsewhere.
             process.communicate()
+            return process
 
     except Exception as exc:
         logger.error(exc)
         raise exc
-    return process
 
 
 def handle_hooks(mode, hooks_folder, source_folder):

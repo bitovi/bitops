@@ -1,7 +1,6 @@
 import os
 import unittest
 import subprocess
-from unittest.mock import patch
 from ...plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
 from ...plugins.logging import turn_off_logger
 
@@ -9,6 +8,8 @@ turn_off_logger()
 
 
 class TestAddValueToEnv(unittest.TestCase):
+    """Testing add_value_to_env utilties function"""
+
     def setUp(self):
         self.export_env = ""
         self.value = ""
@@ -43,9 +44,7 @@ class TestAddValueToEnv(unittest.TestCase):
 
 
 class TestLoadYAML(unittest.TestCase):
-    """
-    Class for testing the load_yaml function.
-    """
+    """Testing load_yaml utilties function"""
 
     def setUp(self):
         root_dir = os.getcwd()
@@ -74,6 +73,8 @@ class TestLoadYAML(unittest.TestCase):
 
 
 class TestRunCmd(unittest.TestCase):
+    """Testing run_cmd utilties function"""
+
     def test_valid_run_cmd(self):
         """
         Test the run_cmd function with a valid command
@@ -94,6 +95,8 @@ class TestRunCmd(unittest.TestCase):
 
 
 class TestHandleHooks(unittest.TestCase):
+    """Testing handle_hooks utilties function"""
+
     def setUp(self):
         self.original_cwd = os.getcwd()
         self.hooks_folder = f"{self.original_cwd}/scripts/tests/test_assets/bitops.before-deploy.d"
