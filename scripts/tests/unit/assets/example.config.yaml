@@ -1,0 +1,5 @@
+example:
+  cli:
+    example-file: this.example-file
+  options:
+    skip-example: true

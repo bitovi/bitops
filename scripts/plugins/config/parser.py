@@ -28,11 +28,11 @@ def get_config_list(config_file, schema_file):
     (
         cli_config_list,
         options_config_list,
-        required_config_list,
+        missing_required_config_list,
     ) = populate_parsed_configurations(schema_list)
-    if required_config_list:
+    if missing_required_config_list:
         logger.warning("\n~~~~~ REQUIRED CONFIG ~~~~~")
-        for item in required_config_list:
+        for item in missing_required_config_list:
             logger.error(
                 f"Configuration value: [{item.name}] is required. Please ensure you "
                 "set this configuration value in the plugins `bitops.config.yaml`"
@@ -126,7 +126,7 @@ def populate_parsed_configurations(schema_list):
     options_config_list = [
         item for item in parsed_schema_list if item.schema_property_type == "options"
     ]
-    required_config_list = [
+    missing_required_config_list = [
         item for item in parsed_schema_list if item.required is True and not item.value
     ]
 
@@ -139,4 +139,4 @@ def populate_parsed_configurations(schema_list):
     logger.debug("\n~~~~~ BAD SCHEMA CONFIG ~~~~~")
     for item in bad_config_list:
         logger.debug(item)
-    return (cli_config_list, options_config_list, required_config_list)
+    return (cli_config_list, options_config_list, missing_required_config_list)

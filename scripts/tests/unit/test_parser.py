@@ -1,14 +1,48 @@
 import unittest
-import yaml
+import os
+
+from munch import DefaultMunch
 from ...plugins.config.parser import (
     convert_yaml_to_dict,
     parse_yaml_keys_to_list,
     generate_populated_schema_list,
     generate_schema_keys,
     populate_parsed_configurations,
+    get_config_list,
 )
-from ...plugins.utilities import load_yaml
 from ...plugins.config.schema import SchemaObject
+from ...plugins.logging import turn_off_logger
+
+turn_off_logger()
+
+
+class TestGetConfigList(unittest.TestCase):
+    def setUp(self):
+        self.root_dir = os.getcwd()
+
+    def test_get_config_list_valid_inputs(self):
+        config_file = "example.config.yaml"
+        schema_file = "example.schema.yaml"
+        cli_config_list, options_config_list = get_config_list(
+            f"{self.root_dir}/scripts/tests/test_assets/{config_file}",
+            f"{self.root_dir}/scripts/tests/test_assets/{schema_file}",
+        )
+        self.assertIsNotNone(cli_config_list)
+        self.assertIsNotNone(options_config_list)
+        self.assertIsInstance(cli_config_list, list)
+        self.assertIsInstance(options_config_list, list)
+
+    def test_get_config_list_invalid_file(self):
+        config_file = "invalid_config.yml"
+        schema_file = "invalid_schema.yml"
+        with self.assertRaises(FileNotFoundError):
+            get_config_list(config_file, schema_file)
+
+    # def test_get_config_list_missing_required_config(self):
+    #     config_file = "config.yml"
+    #     schema_file = "schema.yml"
+    #     with self.assertRaises(SystemExit):
+    #         get_config_list(config_file, schema_file)
 
 
 class TestConvertYamlToDict(unittest.TestCase):
@@ -204,38 +238,92 @@ class TestGenerateSchemaKeys(unittest.TestCase):
         self.assertIn("example_schema.property_2", generate_schema_keys(schema))
 
 
-# class TestPopulateParsedConfigurations(unittest.TestCase):
-#     def test_bad_config_list(self):
-#         schema_list = [
-#             {"value": "BAD_CONFIG", "schema_property_type": "cli", "required": False},
-#             {"value": "GOOD_CONFIG", "schema_property_type": "cli", "required": False},
-#             {"value": "", "schema_property_type": "options", "required": True},
-#         ]
-#         bad_config_list = populate_parsed_configurations(schema_list)[0]
-#         self.assertEqual(len(bad_config_list), 1)
-#         self.assertEqual(bad_config_list[0]["value"], "BAD_CONFIG")
+class TestPopulateParsedConfigurations(unittest.TestCase):
+    def setUp(self):
+        self.valid_schema = {
+            "terraform": {
+                "type": "object",
+                "properties": {
+                    "cli": {
+                        "type": "object",
+                        "properties": {
+                            "targets": {
+                                "type": "list",
+                                "parameter": "target",
+                                "export_env": "TF_TARGETS",
+                            },
+                            "stack-action": {
+                                "type": "string",
+                                "export_env": "TERRAFORM_COMMAND",
+                                "required": True,
+                                "default": "plan",
+                            },
+                        },
+                    },
+                    "options": {
+                        "type": "object",
+                        "properties": {
+                            "skip-deploy": {
+                                "type": "boolean",
+                                "parameter": "skip-deploy",
+                                "export_env": "TERRAFORM_SKIP_DEPLOY",
+                            }
+                        },
+                    },
+                },
+            },
+        }
+        self.config_yaml = {
+            "terraform": {"cli": {"stack-action": "apply"}, "options": {"skip-deploy": True}},
+        }
+        schema_properties_list = generate_schema_keys(self.valid_schema)
+        self.schema_list = generate_populated_schema_list(
+            convert_yaml_to_dict(self.valid_schema), schema_properties_list, self.config_yaml
+        )
 
-# def test_parsed_schema_list(self):
-#     schema_list = [
-#         {"value": "BAD_CONFIG", "schema_property_type": "cli", "required": False},
-#         {"value": "GOOD_CONFIG", "schema_property_type": "cli", "required": False},
-#         {"value": "", "schema_property_type": "options", "required": True},
-#     ]
-#     parsed_schema_list = populate_parsed_configurations(schema_list)[1]
-#     self.assertEqual(len(parsed_schema_list), 2)
-#     self.assertEqual(parsed_schema_list[0]["value"], "GOOD_CONFIG")
-#     self.assertEqual(parsed_schema_list[1]["value"], "")
+    def test_cli_config_list(self):
+        cli_config_list = populate_parsed_configurations(self.schema_list)[0]
+        # for item in cli_config_list:
+        # print(item)
+        self.assertEqual(cli_config_list[0].schema_property_type, "cli")
+        self.assertEqual(cli_config_list[1].schema_property_type, "cli")
+        with self.assertRaises(IndexError):
+            cli_config_list[2]
 
-# def test_required_config_list(self):
-#     schema_list = [
-#         {"value": "BAD_CONFIG", "schema_property_type": "cli", "required": False},
-#         {"value": "GOOD_CONFIG", "schema_property_type": "cli", "required": False},
-#         {"value": "", "schema_property_type": "options", "required": True},
-#     ]
-#     required_config_list = populate_parsed_configurations(schema_list)[2]
-#     self.assertEqual(len(required_config_list), 1)
-#     self.assertEqual(required_config_list[0]["value"], "")
-#     self.assertEqual(required_config_list[0]["required"], True)
+    def test_options_config_list(self):
+        options_config_list = populate_parsed_configurations(self.schema_list)[1]
+
+        self.assertEqual(options_config_list[0].schema_property_type, "options")
+        with self.assertRaises(IndexError):
+            options_config_list[1]
+
+    def test_missing_required_config_list_empty_list(self):
+        required_config_list = populate_parsed_configurations(self.schema_list)[2]
+        self.assertFalse(required_config_list)
+
+    def test_missing_required_config_list(self):
+        test_required_schema_value = [
+            SchemaObject(
+                "test_config",
+                "terraform.cli.test_config",
+                DefaultMunch.fromDict(
+                    {
+                        "type": "string",
+                        "export_env": "TEST_COMMAND",
+                        "required": True,
+                        "default": "",
+                    }
+                ),
+            )
+        ]
+
+        self.schema_list += test_required_schema_value
+        required_config_list = populate_parsed_configurations(self.schema_list)[2]
+        self.assertTrue(required_config_list)
+        self.assertEqual(required_config_list[0].name, "test_config")
+        self.assertTrue(required_config_list[0].required)
+        with self.assertRaises(IndexError):
+            required_config_list[1]
 
 
 if __name__ == "__main__":
