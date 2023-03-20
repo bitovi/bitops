@@ -1,9 +1,9 @@
 import unittest
 import os
 
-from ...plugins.config.schema import SchemaObject, UnSupportDataType
+from plugins.config.schema import SchemaObject, UnSupportDataType
 
-from ...plugins.logging import turn_off_logger
+from plugins.logging import turn_off_logger
 
 turn_off_logger()
 
@@ -71,24 +71,30 @@ class TestSchemaObject(unittest.TestCase):
     def test_apply_data_type(self):
         """Test SchemaObject apply_data_type function"""
         # test string
-        result = SchemaObject._apply_data_type("string", "value")
+        result = SchemaObject._apply_data_type(  # pylint: disable=protected-access
+            "string", "value"
+        )
         self.assertEqual(result, "value")
 
         # test int
-        result = SchemaObject._apply_data_type("int", "3")
+        result = SchemaObject._apply_data_type("int", "3")  # pylint: disable=protected-access
         self.assertEqual(result, 3)
 
         # test boolean
-        result = SchemaObject._apply_data_type("boolean", "true")
+        result = SchemaObject._apply_data_type(  # pylint: disable=protected-access
+            "boolean", "true"
+        )
         self.assertTrue(result)
 
         # test list
-        result = SchemaObject._apply_data_type("list", ["a", "b", "c"])
+        result = SchemaObject._apply_data_type(  # pylint: disable=protected-access
+            "list", ["a", "b", "c"]
+        )
         self.assertEqual(result, ["a", "b", "c"])
 
         # test invalid
         with self.assertRaises(UnSupportDataType):
-            SchemaObject._apply_data_type("invalid", "value")
+            SchemaObject._apply_data_type("invalid", "value")  # pylint: disable=protected-access
 
 
 if __name__ == "__main__":
