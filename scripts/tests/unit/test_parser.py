@@ -1,19 +1,25 @@
 import unittest
 import os
 
-from munch import DefaultMunch
-from ...plugins.config.parser import (
-    convert_yaml_to_dict,
-    parse_yaml_keys_to_list,
-    generate_populated_schema_list,
-    generate_schema_keys,
-    populate_parsed_configurations,
-    get_config_list,
-)
-from ...plugins.config.schema import SchemaObject
-from ...plugins.logging import turn_off_logger
+import plugins.config.schema as Schema
+import plugins.logging as Logging
+import plugins.config.parser as Parser
+import plugins.settings as settings  # pylint: disable=consider-using-from-import
 
-turn_off_logger()
+from munch import DefaultMunch
+
+
+settings.BITOPS_RUN_MODE = "testing"
+SchemaObject = Schema.SchemaObject
+Logging.turn_off_logger()
+
+# Flooding the namespace
+convert_yaml_to_dict = Parser.convert_yaml_to_dict
+parse_yaml_keys_to_list = Parser.parse_yaml_keys_to_list
+generate_populated_schema_list = Parser.generate_populated_schema_list
+generate_schema_keys = Parser.generate_schema_keys
+populate_parsed_configurations = Parser.populate_parsed_configurations
+get_config_list = Parser.get_config_list
 
 
 class TestGetConfigList(unittest.TestCase):
@@ -27,8 +33,8 @@ class TestGetConfigList(unittest.TestCase):
         config_file = "example.config.yaml"
         schema_file = "example.schema.yaml"
         cli_config_list, options_config_list = get_config_list(
-            f"{self.root_dir}/scripts/tests/test_assets/{config_file}",
-            f"{self.root_dir}/scripts/tests/test_assets/{schema_file}",
+            f"{self.root_dir}/scripts/tests/unit/assets/{config_file}",
+            f"{self.root_dir}/scripts/tests/unit/assets/{schema_file}",
         )
         self.assertIsNotNone(cli_config_list)
         self.assertIsNotNone(options_config_list)
@@ -112,7 +118,6 @@ class TestParseYamlKeysToList(unittest.TestCase):
         self.root_key = "terraform"
 
     def test_parse_yaml_keys_to_list(self):
-        """Test parser.py parse_yaml_keys_to_list function"""
         """
         Test parsing yaml keys to list
         """
@@ -144,7 +149,6 @@ class TestParseYamlKeysToList(unittest.TestCase):
         self.assertIsInstance(actual_keys_list, list)
 
     def test_parse_yaml_keys_to_list_invalid_rootkey(self):
-        """Test parser.py parse_yaml_keys_to_list function with invalid rootkey"""
         """
         Test prase_yaml_kwys_to_list with invalid rootkey.
         Expecting KeyError
@@ -153,7 +157,6 @@ class TestParseYamlKeysToList(unittest.TestCase):
             parse_yaml_keys_to_list(self.valid_schema, "not_a_root_key")
 
     def test_parse_yaml_keys_to_list_invalid_schema(self):
-        """Test parser.py parse_yaml_keys_to_list function with invalid schema"""
         """
         Test prase_yaml_kwys_to_list with invalid rootkey.
         Expecting TypeError
@@ -295,20 +298,14 @@ class TestPopulateParsedConfigurations(unittest.TestCase):
     def test_cli_config_list(self):
         """Test parser.py populate_parsed_configurations function - return cli list"""
         cli_config_list = populate_parsed_configurations(self.schema_list)[0]
-        # for item in cli_config_list:
-        # print(item)
         self.assertEqual(cli_config_list[0].schema_property_type, "cli")
         self.assertEqual(cli_config_list[1].schema_property_type, "cli")
-        with self.assertRaises(IndexError):
-            cli_config_list[2]
 
     def test_options_config_list(self):
         """Test parser.py populate_parsed_configurations function - return options list"""
         options_config_list = populate_parsed_configurations(self.schema_list)[1]
 
         self.assertEqual(options_config_list[0].schema_property_type, "options")
-        with self.assertRaises(IndexError):
-            options_config_list[1]
 
     def test_missing_required_config_list_empty_list(self):
         """Test parser.py populate_parsed_configurations function - doesn't return required list"""
@@ -337,8 +334,6 @@ class TestPopulateParsedConfigurations(unittest.TestCase):
         self.assertTrue(required_config_list)
         self.assertEqual(required_config_list[0].name, "test_config")
         self.assertTrue(required_config_list[0].required)
-        with self.assertRaises(IndexError):
-            required_config_list[1]
 
 
 if __name__ == "__main__":

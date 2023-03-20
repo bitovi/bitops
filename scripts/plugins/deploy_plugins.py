@@ -221,7 +221,7 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
             try:
                 cli_config_list, _ = get_config_list(opsrepo_config_file, plugin_schema_file)
             except FileNotFoundError:
-                logger.error(f"Schema and Configuration files are required. Exiting...")
+                logger.error("Schema and Configuration files are required. Exiting...")
                 sys.exit(2)
             # Compose a CLI and export it as "BITOPS_{PLUGIN}_CLI}"
             cli = PluginConfigCLI(cli_config_list)

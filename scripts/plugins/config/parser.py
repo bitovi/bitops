@@ -1,4 +1,5 @@
 import sys
+import plugins.settings as settings  # pylint: disable=consider-using-from-import
 
 from munch import DefaultMunch
 from ..logging import logger
@@ -20,7 +21,9 @@ def get_config_list(config_file, schema_file):
     try:
         schema_yaml = load_yaml(schema_file)
         config_yaml = load_yaml(config_file)
-    except FileNotFoundError:
+    except FileNotFoundError as exc:
+        if settings.BITOPS_RUN_MODE == "testing":
+            raise exc
         sys.exit(2)
     schema = convert_yaml_to_dict(schema_yaml)
     schema_properties_list = generate_schema_keys(schema)
