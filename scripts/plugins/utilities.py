@@ -66,7 +66,9 @@ def load_yaml(inc_yaml, required=True):
     return out_yaml
 
 
-def run_cmd(command: Union[list, str]) -> subprocess.Popen:
+def run_cmd(
+    command: Union[list, str]
+) -> subprocess.Popen:  # pylint: disable=inconsistent-return-statements
     """Run a linux command and return Popen instance as a result"""
     try:
         with subprocess.Popen(
@@ -102,9 +104,9 @@ def handle_hooks(mode, hooks_folder, source_folder):
     """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
-        return
+        return None
     if mode not in ["before", "after"]:
-        return
+        return None
 
     original_directory = os.getcwd()
     os.chdir(source_folder)

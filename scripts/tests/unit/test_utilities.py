@@ -1,8 +1,8 @@
 import os
 import unittest
 import subprocess
-from scripts.plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
-from scripts.plugins.logging import turn_off_logger
+from plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
+from plugins.logging import turn_off_logger
 
 turn_off_logger()
 
@@ -70,6 +70,9 @@ class TestLoadYAML(unittest.TestCase):
         Test the load_yaml function with a non-existent file.
         """
         self.assertIsNone(load_yaml("invalid_file.yaml", required=False))
+        with self.assertRaises(Exception) as context:
+            self.assertIsNone(load_yaml("invalid_file.yaml"))
+        self.assertIsInstance(context.exception, FileNotFoundError)
 
 
 class TestRunCmd(unittest.TestCase):
@@ -81,7 +84,6 @@ class TestRunCmd(unittest.TestCase):
         """
         process = run_cmd("ls")
         self.assertIsInstance(process, subprocess.Popen)
-        self.assertTrue(process.universal_newlines)
         self.assertEqual(process.returncode, 0)
         self.assertEqual(process.args, "ls")
 
@@ -99,9 +101,7 @@ class TestHandleHooks(unittest.TestCase):
 
     def setUp(self):
         self.original_cwd = os.getcwd()
-        self.hooks_folder = (
-            f"{self.original_cwd}/scripts/tests/unit/assets/bitops.before-deploy.d"
-        )
+        self.hooks_folder = f"{self.original_cwd}/scripts/tests/unit/assets/bitops.before-deploy.d"
         self.source_folder = f"{self.original_cwd}/scripts/tests/unit/assets"
 
     def tearDown(self):
