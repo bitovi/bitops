@@ -100,9 +100,9 @@ class TestHandleHooks(unittest.TestCase):
     def setUp(self):
         self.original_cwd = os.getcwd()
         self.hooks_folder = (
-            f"{self.original_cwd}/scripts/tests/unit/test_assets/bitops.before-deploy.d"
+            f"{self.original_cwd}/scripts/tests/unit/assets/bitops.before-deploy.d"
         )
-        self.source_folder = f"{self.original_cwd}/scripts/tests/unit/test_assets"
+        self.source_folder = f"{self.original_cwd}/scripts/tests/unit/assets"
 
     def tearDown(self):
         os.chdir(self.original_cwd)
