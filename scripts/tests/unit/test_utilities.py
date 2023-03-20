@@ -1,8 +1,8 @@
 import os
 import unittest
 import subprocess
-from ...plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
-from ...plugins.logging import turn_off_logger
+from scripts.plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
+from scripts.plugins.logging import turn_off_logger
 
 turn_off_logger()
 
@@ -99,8 +99,10 @@ class TestHandleHooks(unittest.TestCase):
 
     def setUp(self):
         self.original_cwd = os.getcwd()
-        self.hooks_folder = f"{self.original_cwd}/scripts/tests/test_assets/bitops.before-deploy.d"
-        self.source_folder = f"{self.original_cwd}/scripts/tests/test_assets"
+        self.hooks_folder = (
+            f"{self.original_cwd}/scripts/tests/unit/test_assets/bitops.before-deploy.d"
+        )
+        self.source_folder = f"{self.original_cwd}/scripts/tests/unit/test_assets"
 
     def tearDown(self):
         os.chdir(self.original_cwd)
