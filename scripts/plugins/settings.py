@@ -86,6 +86,7 @@ bitops_user_configuration = DefaultMunch.fromDict(BITOPS_user_config_yaml, None)
 BITOPS_ENV_fast_fail_mode = os.environ.get("BITOPS_FAST_FAIL")
 BITOPS_ENV_run_mode = os.environ.get("BITOPS_MODE")  # TODO: CLEAN
 BITOPS_ENV_logging_level = os.environ.get("BITOPS_LOGGING_LEVEL")
+BITOPS_ENV_logging_filename = os.environ.get("BITOPS_LOGGING_FILENAME")
 BITOPS_ENV_plugin_dir = os.environ.get("BITOPS_PLUGIN_DIR")
 
 BITOPS_ENV_default_folder = os.environ.get("BITOPS_DEFAULT_FOLDER")
@@ -135,6 +136,7 @@ BITOPS_LOGGING_COLOR = get_first(
 )
 
 BITOPS_LOGGING_FILENAME = get_first(
+    BITOPS_ENV_logging_filename,
     parse_config(bitops_user_configuration, "bitops.logging.filename"),
     parse_config(bitops_build_configuration, "bitops.logging.filename"),
     None,
