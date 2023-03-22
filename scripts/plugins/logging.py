@@ -112,7 +112,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-if BITOPS_LOGGING_FILENAME is not None:
+if BITOPS_LOGGING_FILENAME:
     # This assumes that the user wants to save output to a filename
 
     # Create the directory if it doesn't exist
