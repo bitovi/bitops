@@ -95,7 +95,7 @@ Then load [http://localhost:8000](http://localhost:8000)
 
 ## Community
 ### 📅 Office Hours
-Join us for our bi-weekly office hours. We'll be there to answer any questions you have about BitOps, GitOps, project plans, and features.
+Join us weekly for free DevOps office hours, organized by Bitovi. The BitOps core team will be there to answer any questions you have about BitOps, GitOps, project plans, features, and support.
 See https://github.com/bitovi/bitops/discussions/288 for the schedule and calendar link.
 
 ### 📝 Survey
