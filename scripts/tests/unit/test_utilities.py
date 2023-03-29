@@ -58,21 +58,12 @@ class TestLoadYAML(unittest.TestCase):
         self.assertIsNotNone(out_yaml)
         self.assertIsInstance(out_yaml, dict)
 
-    def test_load_yaml_with_required_invalid_filename(self):
+    def test_load_yaml_with_invalid_filename(self):
         """
         Test the load_yaml function with a non-existent file.
         """
         with self.assertRaises(FileNotFoundError):
             load_yaml("invalid_file.yaml")
-
-    def test_load_yaml_with_invalid_filename(self):
-        """
-        Test the load_yaml function with a non-existent file.
-        """
-        self.assertIsNone(load_yaml("invalid_file.yaml", required=False))
-        with self.assertRaises(Exception) as context:
-            self.assertIsNone(load_yaml("invalid_file.yaml"))
-        self.assertIsInstance(context.exception, FileNotFoundError)
 
 
 class TestRunCmd(unittest.TestCase):

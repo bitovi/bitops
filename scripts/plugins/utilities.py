@@ -45,23 +45,14 @@ def add_value_to_env(export_env, value):
         )
 
 
-def load_yaml(inc_yaml, required=True):
+def load_yaml(filename: str) -> Union[dict, None]:
     """
     This function attempts to load a YAML file from a given location,
     and exits if the file is not found. It returns the loaded YAML file if successful.
     """
     out_yaml = None
-    try:
-        with open(inc_yaml, "r", encoding="utf8") as stream:
-            out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-    except FileNotFoundError as e:
-        if required:
-            logger.error(
-                f"Required file was not found. \
-                    To fix this please add the following file: [{e.filename}]"
-            )
-            logger.debug(e)
-            raise e
+    with open(filename, "r", encoding="utf8") as stream:
+        out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
 
     return out_yaml
 
