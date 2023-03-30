@@ -2,9 +2,6 @@ import os
 import subprocess
 from unittest import mock, TestCase
 from plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
-from plugins.logging import turn_off_logger
-
-turn_off_logger()
 
 
 class TestAddValueToEnv(TestCase):
