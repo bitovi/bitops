@@ -1,5 +1,6 @@
 import os
 import subprocess
+from io import StringIO
 from unittest import mock, TestCase
 from plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
 
@@ -66,8 +67,8 @@ class TestLoadYAML(TestCase):
 class TestRunCmd(TestCase):
     """Testing run_cmd utilties function"""
 
-    @mock.patch("sys.stdout")
-    def test_valid_run_cmd(self, argv):  # pylint: disable=unused-argument
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_valid_run_cmd(self, stdout):
         """
         Test the run_cmd function with a valid command
         """
@@ -75,9 +76,10 @@ class TestRunCmd(TestCase):
         self.assertIsInstance(process, subprocess.Popen)
         self.assertEqual(process.returncode, 0)
         self.assertEqual(process.args, "ls")
+        self.assertIn("README.md", stdout.getvalue())
+        self.assertIn("LICENSE.md", stdout.getvalue())
 
-    @mock.patch("sys.stdout")
-    def test_invalid_run_cmd(self, argv):  # pylint: disable=unused-argument
+    def test_invalid_run_cmd(self):
         """
         Test the run_cmd function with an invalid command should throw an exception
         """
@@ -97,8 +99,7 @@ class TestHandleHooks(TestCase):
     def tearDown(self):
         os.chdir(self.original_cwd)
 
-    @mock.patch("sys.stdout")
-    def test_handle_hooks_called_with_invalid_folder(self, argv):  # pylint: disable=unused-argument
+    def test_handle_hooks_called_with_invalid_folder(self):
         """
         Test handle_hooks with invalid folder path
         """
@@ -112,10 +113,11 @@ class TestHandleHooks(TestCase):
         result = handle_hooks("random_mode.exe", self.hooks_folder, self.source_folder)
         self.assertFalse(result)
 
-    @mock.patch("sys.stdout")
-    def test_handle_hooks_called_with_valid_folder(self, argv):  # pylint: disable=unused-argument
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_handle_hooks_called_with_valid_folder(self, stdout):
         """
         Test handle_hooks with valid folder path
         """
         result = handle_hooks("before", self.hooks_folder, self.source_folder)
         self.assertTrue(result)
+        self.assertIn("In before_test.sh", stdout.getvalue())
