@@ -65,7 +65,6 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
         stderr=subprocess.STDOUT,
         universal_newlines=True,
     ) as process:
-        combined_output = ""
         for combined_output in process.stdout:
             # TODO: specify plugin and output tight output (no extra newlines)
             sys.stdout.write(mask_message(combined_output))

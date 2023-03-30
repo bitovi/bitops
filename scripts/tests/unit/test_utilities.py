@@ -70,7 +70,7 @@ class TestRunCmd(TestCase):
     """Testing run_cmd utilties function"""
 
     @mock.patch("sys.stdout")
-    def test_valid_run_cmd(self, argv):
+    def test_valid_run_cmd(self, argv):  # pylint: disable=unused-argument
         """
         Test the run_cmd function with a valid command
         """
@@ -80,7 +80,7 @@ class TestRunCmd(TestCase):
         self.assertEqual(process.args, "ls")
 
     @mock.patch("sys.stdout")
-    def test_invalid_run_cmd(self, argv):
+    def test_invalid_run_cmd(self, argv):  # pylint: disable=unused-argument
         """
         Test the run_cmd function with an invalid command should throw an exception
         """
@@ -101,7 +101,7 @@ class TestHandleHooks(TestCase):
         os.chdir(self.original_cwd)
 
     @mock.patch("sys.stdout")
-    def test_handle_hooks_called_with_invalid_folder(self, argv):
+    def test_handle_hooks_called_with_invalid_folder(self, argv):  # pylint: disable=unused-argument
         """
         Test handle_hooks with invalid folder path
         """
@@ -116,7 +116,7 @@ class TestHandleHooks(TestCase):
         self.assertIsNone(result)
 
     @mock.patch("sys.stdout")
-    def test_handle_hooks_called_with_valid_folder(self, argv):
+    def test_handle_hooks_called_with_valid_folder(self, argv):  # pylint: disable=unused-argument
         """
         Test handle_hooks with valid folder path
         """
