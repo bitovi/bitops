@@ -225,7 +225,10 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,to
 
         try:
             result = run_cmd([plugin_install_language, plugin_install_script_path])
-        except Exception:
+        except Exception as e:
+            logger.error(
+                f"Failed to run plugin install script: [{plugin_install_script_path}]. Error: [{e}]"
+            )
             sys.exit(101)
         if result.returncode == 0:
             logger.info(f"~#~#~#~INSTALLING PLUGIN [{plugin_config}] SUCCESSFULLY COMPLETED~#~#~#~")

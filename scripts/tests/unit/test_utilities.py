@@ -1,13 +1,13 @@
 import os
-import unittest
 import subprocess
+from unittest import mock, TestCase
 from plugins.utilities import add_value_to_env, load_yaml, run_cmd, handle_hooks
 from plugins.logging import turn_off_logger
 
 turn_off_logger()
 
 
-class TestAddValueToEnv(unittest.TestCase):
+class TestAddValueToEnv(TestCase):
     """Testing add_value_to_env utilties function"""
 
     def setUp(self):
@@ -43,7 +43,7 @@ class TestAddValueToEnv(unittest.TestCase):
         self.assertEqual(os.environ["BITOPS_" + self.export_env], " ".join(self.value))
 
 
-class TestLoadYAML(unittest.TestCase):
+class TestLoadYAML(TestCase):
     """Testing load_yaml utilties function"""
 
     def setUp(self):
@@ -66,10 +66,11 @@ class TestLoadYAML(unittest.TestCase):
             load_yaml("invalid_file.yaml")
 
 
-class TestRunCmd(unittest.TestCase):
+class TestRunCmd(TestCase):
     """Testing run_cmd utilties function"""
 
-    def test_valid_run_cmd(self):
+    @mock.patch("sys.stdout")
+    def test_valid_run_cmd(self, argv):
         """
         Test the run_cmd function with a valid command
         """
@@ -78,16 +79,17 @@ class TestRunCmd(unittest.TestCase):
         self.assertEqual(process.returncode, 0)
         self.assertEqual(process.args, "ls")
 
-    def test_invalid_run_cmd(self):
+    @mock.patch("sys.stdout")
+    def test_invalid_run_cmd(self, argv):
         """
-        Test the run_cmd function with a valid command
+        Test the run_cmd function with an invalid command should throw an exception
         """
         with self.assertRaises(Exception) as context:
             run_cmd("not_a_real_command")
         self.assertIsInstance(context.exception, FileNotFoundError)
 
 
-class TestHandleHooks(unittest.TestCase):
+class TestHandleHooks(TestCase):
     """Testing handle_hooks utilties function"""
 
     def setUp(self):
@@ -98,13 +100,12 @@ class TestHandleHooks(unittest.TestCase):
     def tearDown(self):
         os.chdir(self.original_cwd)
 
-    def test_handle_hooks_called_with_invalid_folder(self):
+    @mock.patch("sys.stdout")
+    def test_handle_hooks_called_with_invalid_folder(self, argv):
         """
         Test handle_hooks with invalid folder path
         """
-
-        invalid_folder = "./invalid_folder"
-        result = handle_hooks("before", invalid_folder, self.source_folder)
+        result = handle_hooks("before", "./invalid_folder", self.source_folder)
         self.assertIsNone(result)
 
     def test_handle_hooks_called_with_invalid_mode(self):
@@ -114,14 +115,10 @@ class TestHandleHooks(unittest.TestCase):
         result = handle_hooks("random_mode.exe", self.hooks_folder, self.source_folder)
         self.assertIsNone(result)
 
-    def test_handle_hooks_called_with_valid_folder(self):
+    @mock.patch("sys.stdout")
+    def test_handle_hooks_called_with_valid_folder(self, argv):
         """
         Test handle_hooks with valid folder path
         """
-
         result = handle_hooks("before", self.hooks_folder, self.source_folder)
         self.assertTrue(result)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -57,36 +57,24 @@ def load_yaml(filename: str) -> Union[dict, None]:
     return out_yaml
 
 
-def run_cmd(
-    command: Union[list, str]
-) -> subprocess.Popen:  # pylint: disable=inconsistent-return-statements
+def run_cmd(command: Union[list, str]) -> subprocess.Popen:
     """Run a linux command and return Popen instance as a result"""
-    try:
-        with subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        ) as process:
-            combined_output = ""
-            for output in process.stdout:
-                # TODO: parse output for secrets
-                # TODO: specify plugin and output tight output (no extra newlines)
-                # TODO: can we modify a specific handler to add handler.terminator = "" ?
-                # TODO: This should be updated to use logger if possible
-                # TODO: This should have a quiet option
-                combined_output.join(output)
-            logger.info(mask_message(combined_output))
+    with subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+    ) as process:
+        combined_output = ""
+        for combined_output in process.stdout:
+            # TODO: specify plugin and output tight output (no extra newlines)
+            sys.stdout.write(mask_message(combined_output))
+        # This polls the async function to get information
+        # about the status of the process execution.
+        # Namely the return code which is used elsewhere.
+        process.communicate()
 
-            # This polls the async function to get information
-            # about the status of the process execution.
-            # Namely the return code which is used elsewhere.
-            process.communicate()
-            return process
-
-    except Exception as exc:
-        logger.error(exc)
-        raise exc
+    return process
 
 
 def handle_hooks(mode, hooks_folder, source_folder):
@@ -119,7 +107,8 @@ def handle_hooks(mode, hooks_folder, source_folder):
 
         try:
             result = run_cmd(["bash", plugin_before_hook_script_path])
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to execute before_hook script command. Error: {e}")
             sys.exit(101)
         if result.returncode == 0:
             logger.info(f"~#~#~#~{umode} HOOK [{hook_script}] SUCCESSFULLY COMPLETED~#~#~#~")
