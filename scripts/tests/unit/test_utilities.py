@@ -103,14 +103,14 @@ class TestHandleHooks(TestCase):
         Test handle_hooks with invalid folder path
         """
         result = handle_hooks("before", "./invalid_folder", self.source_folder)
-        self.assertIsNone(result)
+        self.assertFalse(result)
 
     def test_handle_hooks_called_with_invalid_mode(self):
         """
         Test handle_hooks with invalid mode
         """
         result = handle_hooks("random_mode.exe", self.hooks_folder, self.source_folder)
-        self.assertIsNone(result)
+        self.assertFalse(result)
 
     @mock.patch("sys.stdout")
     def test_handle_hooks_called_with_valid_folder(self, argv):  # pylint: disable=unused-argument

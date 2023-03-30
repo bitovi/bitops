@@ -76,15 +76,15 @@ def run_cmd(command: Union[list, str]) -> subprocess.Popen:
     return process
 
 
-def handle_hooks(mode, hooks_folder, source_folder):
+def handle_hooks(mode, hooks_folder, source_folder) -> bool:
     """
     Processes a bitops before/after hook by invoking bash script(s) within the hooks folder(s).
     """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
-        return None
+        return False
     if mode not in ["before", "after"]:
-        return None
+        return False
 
     original_directory = os.getcwd()
     os.chdir(source_folder)
