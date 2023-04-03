@@ -95,4 +95,4 @@ This VSCode config (in `.vscode/`) allows running the Python debugging in a BitO
 * Set the breakpoints in the code
 * Run it
 
-<video width=800  src="/assets/videos/BitOps - VSCode python debugging.mp4" controls preload></video>
+<video width=800  src="https://user-images.githubusercontent.com/1533818/229613747-2ab62348-06d7-4e78-8731-2e931a79b387.mp4" controls preload></video>
