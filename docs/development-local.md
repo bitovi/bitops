@@ -82,3 +82,17 @@ Before submitting a PR it is recommended that you locally run a linter to ensure
 tox -e black
 tox -e pylint
 ```
+
+## Python Debugging with VSCode
+If you are using VSCode, you can rely on the Python and Docker extensions to [debug your code](https://code.visualstudio.com/docs/containers/debug-python).
+
+This VSCode config allows running the Python debugging in a BitOps container, sharing the directories with the local python source code and plugin code.
+
+### Instructions
+
+* The BitOps repository contains two configuration files in the `.vscode/` directory: `launch.json` and `tasks.json`
+* The new Launch button `Docker: bitops deploy` should be available under the `Run & Debug` (left panel) of VSCode
+* Set the breakpoints in the code
+* Run it
+
+<video width=800  src="/assets/videos/BitOps - VSCode python debugging.mp4" controls preload></video>
