@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Docker: bitops deploy",
+            "type": "docker",
+            "request": "launch",
+            // reference the Docker task from .vscode/tasks.json
+            "preLaunchTask": "docker-run: bitops deploy",
+            "python": {
+                // share the bitops core path with the container
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/opt/bitops"
+                    }
+                ],
+                "projectType": "general"
+            }
+        }
+    ]
+}

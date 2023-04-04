@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "docker-run",
+      "label": "docker-run: bitops deploy",
+      "platform": "python",
+      "dockerRun": {
+        // 'dev' tag is built from the current 'main' branch
+        // use that image as a base
+        "image": "bitovi/bitops:dev",
+        "env": {
+          "VSCODE_DEBUG": "true",
+          // disable logging to file
+          "BITOPS_LOGGING_FILENAME": "false",
+        },
+        // "bitops-dev" is an ops repository, same level as "bitops" core
+        // includes extra ENV files in a 'docker.env' file
+        // !Configure for your environment
+        "envFiles": [
+          "${workspaceFolder}/../bitops-dev/docker.env"
+        ],
+        "volumes": [
+          // share the bitops core
+          {
+            "localPath": "${workspaceFolder}",
+            "containerPath": "/opt/bitops",
+          },
+          // custom bitops config
+          {
+            "localPath": "${workspaceFolder}/../bitops-dev/bitops.config.yaml",
+            "containerPath": "/opt/bitops/bitops.config.yaml",
+          },
+          // ops repo path
+          // !Configure for yourself
+          {
+            "localPath": "${workspaceFolder}/../bitops-dev",
+            "containerPath": "/opt/bitops_deployment",
+          },
+          // Ansible plugin sharing
+          // !Configure for yourself
+          {
+            "localPath": "${workspaceFolder}/../bitops-ansible",
+            "containerPath": "/opt/bitops/scripts/installed_plugins/ansible",
+          },
+        ]
+      },
+      // entrypoint for running the BitOps (originally a Docker entrypoint)
+      "python": {
+        "file": "scripts/main.py",
+        "args": [
+          "deploy"
+        ],
+      }
+    }
+  ]
+}
