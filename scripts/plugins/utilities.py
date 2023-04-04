@@ -6,7 +6,6 @@ import yaml
 
 from .settings import BITOPS_FAST_FAIL_MODE
 from .logging import logger, mask_message
-from .doc import get_doc
 
 
 def add_value_to_env(export_env, value):
@@ -46,56 +45,46 @@ def add_value_to_env(export_env, value):
         )
 
 
-def load_yaml(inc_yaml):
+def load_yaml(filename: str) -> Union[dict, None]:
     """
     This function attempts to load a YAML file from a given location,
     and exits if the file is not found. It returns the loaded YAML file if successful.
     """
     out_yaml = None
-    try:
-        with open(inc_yaml, "r", encoding="utf8") as stream:
-            out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
-    except FileNotFoundError as e:
-        msg, exit_code = get_doc("missing_required_file")
-        logger.error(f"{msg} [{e.filename}]")
-        logger.debug(e)
-        sys.exit(exit_code)
+    with open(filename, "r", encoding="utf8") as stream:
+        out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+
     return out_yaml
 
 
 def run_cmd(command: Union[list, str]) -> subprocess.Popen:
     """Run a linux command and return Popen instance as a result"""
-    try:
-        with subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        ) as process:
-            for combined_output in process.stdout:
-                # TODO: parse output for secrets
-                # TODO: specify plugin and output tight output (no extra newlines)
-                # TODO: can we modify a specific handler to add handler.terminator = "" ?
-                sys.stdout.write(mask_message(combined_output))
+    with subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        universal_newlines=True,
+    ) as process:
+        for combined_output in process.stdout:
+            # TODO: specify plugin and output tight output (no extra newlines)
+            sys.stdout.write(mask_message(combined_output))
+        # This polls the async function to get information
+        # about the status of the process execution.
+        # Namely the return code which is used elsewhere.
+        process.communicate()
 
-            # This polls the async function to get information
-            # about the status of the process execution.
-            # Namely the return code which is used elsewhere.
-            process.communicate()
-
-    except Exception as exc:
-        logger.error(exc)
-        sys.exit(101)
     return process
 
 
-def handle_hooks(mode, hooks_folder, source_folder):
+def handle_hooks(mode, hooks_folder, source_folder) -> bool:
     """
     Processes a bitops before/after hook by invoking bash script(s) within the hooks folder(s).
     """
     # Checks if the folder exists, if not, move on
     if not os.path.isdir(hooks_folder):
-        return
+        return False
+    if mode not in ["before", "after"]:
+        return False
 
     original_directory = os.getcwd()
     os.chdir(source_folder)
@@ -115,7 +104,11 @@ def handle_hooks(mode, hooks_folder, source_folder):
         plugin_before_hook_script_path = hooks_folder + "/" + hook_script
         os.chmod(plugin_before_hook_script_path, 775)
 
-        result = run_cmd(["bash", plugin_before_hook_script_path])
+        try:
+            result = run_cmd(["bash", plugin_before_hook_script_path])
+        except Exception as e:
+            logger.error(f"Failed to execute before_hook script command. Error: {e}")
+            sys.exit(101)
         if result.returncode == 0:
             logger.info(f"~#~#~#~{umode} HOOK [{hook_script}] SUCCESSFULLY COMPLETED~#~#~#~")
             logger.debug(result.stdout)
@@ -126,3 +119,4 @@ def handle_hooks(mode, hooks_folder, source_folder):
                 sys.exit(result.returncode)
 
     os.chdir(original_directory)
+    return True
