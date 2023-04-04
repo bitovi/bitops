@@ -25,7 +25,7 @@ def get_config_list(config_file, schema_file):
             f"Required config file was not found. \
                 To fix this please add the following file: [{e.filename}]"
         )
-        sys.exit(2)
+        sys.exit(101)
     schema = convert_yaml_to_dict(schema_yaml)
     schema_properties_list = generate_schema_keys(schema)
     schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)
