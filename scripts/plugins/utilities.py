@@ -47,8 +47,9 @@ def add_value_to_env(export_env, value):
 
 def load_yaml(filename: str) -> Union[dict, None]:
     """
-    This function attempts to load a YAML file from a given location,
-    and exits if the file is not found. It returns the loaded YAML file if successful.
+    This function attempts to load a YAML file from a given location.
+    It raises a FileNotFoundError exception if the file is not found
+    and returns the loaded YAML file if successful.
     """
     out_yaml = None
     with open(filename, "r", encoding="utf8") as stream:

@@ -1,0 +1,17 @@
+example:
+    type: object
+    properties:
+      cli:
+        type: object
+        properties:
+          example-file:
+            type: string
+            parameter: example-file
+            export_env: EXAMPLE_FILE
+      options:
+        type: object
+        properties:
+          skip-example:
+            type: boolean
+            parameter: skip-example
+            export_env: SKIP_EXAMPLE

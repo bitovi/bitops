@@ -2,9 +2,9 @@ import sys
 import os
 import re
 
-from ..logging import logger
-from ..settings import BITOPS_FAST_FAIL_MODE
-from ..utilities import add_value_to_env
+from plugins.logging import logger
+from plugins.settings import BITOPS_FAST_FAIL_MODE
+from plugins.utilities import add_value_to_env
 
 
 class SchemaObject:  # pylint: disable=too-many-instance-attributes
@@ -165,7 +165,14 @@ class SchemaObject:  # pylint: disable=too-many-instance-attributes
 
         if BITOPS_FAST_FAIL_MODE:
             logger.error(f"Data type not supported: [{data_type}]")
-            sys.exit(101)
+            raise SchemaUnsupportedDataType(f"Data type not supported: [{data_type}]")
 
         logger.warning(f"Data type not supported: [{data_type}]")
         return None
+
+
+class SchemaUnsupportedDataType(Exception):
+    """Raised when an unsupported data type is passed in to a function"""
+
+    def __init__(self, message):
+        self.message = message

@@ -1,9 +1,9 @@
 import sys
 
 from munch import DefaultMunch
-from ..logging import logger
-from ..utilities import load_yaml
-from .schema import SchemaObject
+from plugins.logging import logger
+from plugins.utilities import load_yaml
+from plugins.config.schema import SchemaObject
 
 
 def get_config_list(config_file, schema_file):
@@ -25,24 +25,23 @@ def get_config_list(config_file, schema_file):
             f"Required config file was not found. \
                 To fix this please add the following file: [{e.filename}]"
         )
-        sys.exit(101)
+        raise e
     schema = convert_yaml_to_dict(schema_yaml)
     schema_properties_list = generate_schema_keys(schema)
     schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)
     (
         cli_config_list,
         options_config_list,
-        required_config_list,
+        missing_required_config_list,
     ) = populate_parsed_configurations(schema_list)
-    if required_config_list:
+    if missing_required_config_list:
         logger.warning("\n~~~~~ REQUIRED CONFIG ~~~~~")
-        for item in required_config_list:
+        for item in missing_required_config_list:
             logger.error(
                 f"Configuration value: [{item.name}] is required. Please ensure you "
                 "set this configuration value in the plugins `bitops.config.yaml`"
             )
-            logger.debug(item)
-            sys.exit(1)
+        sys.exit(1)
     return cli_config_list, options_config_list
 
 
@@ -131,7 +130,7 @@ def populate_parsed_configurations(schema_list):
     options_config_list = [
         item for item in parsed_schema_list if item.schema_property_type == "options"
     ]
-    required_config_list = [
+    missing_required_config_list = [
         item for item in parsed_schema_list if item.required is True and not item.value
     ]
 
@@ -144,4 +143,4 @@ def populate_parsed_configurations(schema_list):
     logger.debug("\n~~~~~ BAD SCHEMA CONFIG ~~~~~")
     for item in bad_config_list:
         logger.debug(item)
-    return (cli_config_list, options_config_list, required_config_list)
+    return (cli_config_list, options_config_list, missing_required_config_list)

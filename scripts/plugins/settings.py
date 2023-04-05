@@ -88,6 +88,7 @@ BITOPS_ENV_run_mode = os.environ.get("BITOPS_MODE")  # TODO: CLEAN
 BITOPS_ENV_logging_level = os.environ.get("BITOPS_LOGGING_LEVEL")
 BITOPS_ENV_logging_filename = os.environ.get("BITOPS_LOGGING_FILENAME")
 BITOPS_ENV_plugin_dir = os.environ.get("BITOPS_PLUGIN_DIR")
+BITOPS_ENV_logging_path = os.environ.get("BITOPS_LOGGING_PATH")
 
 BITOPS_ENV_default_folder = os.environ.get("BITOPS_DEFAULT_FOLDER")
 # v2.0.0: Fallback to 'ENVIRONMENT' in case when 'BITOPS_ENVIRONMENT' is not set
@@ -143,6 +144,7 @@ BITOPS_LOGGING_FILENAME = get_first(
 )
 
 BITOPS_LOGGING_PATH = get_first(
+    BITOPS_ENV_logging_path,
     parse_config(bitops_user_configuration, "bitops.logging.path"),
     parse_config(bitops_build_configuration, "bitops.logging.path"),
     "/var/log/bitops",
