@@ -1,25 +1,16 @@
 import unittest
 import os
 
-import plugins.config.schema as Schema
-import plugins.logging as Logging
-import plugins.config.parser as Parser
-import plugins.settings as settings  # pylint: disable=consider-using-from-import
-
+from plugins.config.schema import SchemaObject
+from plugins.config.parser import (
+    convert_yaml_to_dict,
+    parse_yaml_keys_to_list,
+    generate_populated_schema_list,
+    generate_schema_keys,
+    populate_parsed_configurations,
+    get_config_list,
+)
 from munch import DefaultMunch
-
-
-settings.BITOPS_RUN_MODE = "testing"
-SchemaObject = Schema.SchemaObject
-Logging.turn_off_logger()
-
-# Flooding the namespace
-convert_yaml_to_dict = Parser.convert_yaml_to_dict
-parse_yaml_keys_to_list = Parser.parse_yaml_keys_to_list
-generate_populated_schema_list = Parser.generate_populated_schema_list
-generate_schema_keys = Parser.generate_schema_keys
-populate_parsed_configurations = Parser.populate_parsed_configurations
-get_config_list = Parser.get_config_list
 
 
 class TestGetConfigList(unittest.TestCase):
@@ -334,7 +325,3 @@ class TestPopulateParsedConfigurations(unittest.TestCase):
         self.assertTrue(required_config_list)
         self.assertEqual(required_config_list[0].name, "test_config")
         self.assertTrue(required_config_list[0].required)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -1,10 +1,9 @@
 import sys
-import plugins.settings as settings  # pylint: disable=consider-using-from-import
 
 from munch import DefaultMunch
-from ..logging import logger
-from ..utilities import load_yaml
-from .schema import SchemaObject
+from plugins.logging import logger
+from plugins.utilities import load_yaml
+from plugins.config.schema import SchemaObject
 
 
 def get_config_list(config_file, schema_file):
@@ -26,7 +25,7 @@ def get_config_list(config_file, schema_file):
             f"Required config file was not found. \
                 To fix this please add the following file: [{e.filename}]"
         )
-        sys.exit(101)
+        raise e
     schema = convert_yaml_to_dict(schema_yaml)
     schema_properties_list = generate_schema_keys(schema)
     schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)

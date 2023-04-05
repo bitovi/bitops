@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from plugins.config.schema import SchemaObject, UnSupportDataType
+from plugins.config.schema import SchemaObject, SchemaUnsupportedDataType
 
 from plugins.logging import turn_off_logger
 
@@ -93,9 +93,5 @@ class TestSchemaObject(unittest.TestCase):
         self.assertEqual(result, ["a", "b", "c"])
 
         # test invalid
-        with self.assertRaises(UnSupportDataType):
+        with self.assertRaises(SchemaUnsupportedDataType):
             SchemaObject._apply_data_type("invalid", "value")  # pylint: disable=protected-access
-
-
-if __name__ == "__main__":
-    unittest.main()
