@@ -21,10 +21,12 @@ def get_config_list(config_file, schema_file):
     try:
         schema_yaml = load_yaml(schema_file)
         config_yaml = load_yaml(config_file)
-    except FileNotFoundError as exc:
-        if settings.BITOPS_RUN_MODE == "testing":
-            raise exc
-        sys.exit(2)
+    except FileNotFoundError as e:
+        logger.error(
+            f"Required config file was not found. \
+                To fix this please add the following file: [{e.filename}]"
+        )
+        sys.exit(101)
     schema = convert_yaml_to_dict(schema_yaml)
     schema_properties_list = generate_schema_keys(schema)
     schema_list = generate_populated_schema_list(schema, schema_properties_list, config_yaml)

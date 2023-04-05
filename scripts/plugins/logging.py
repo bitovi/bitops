@@ -65,10 +65,9 @@ def formatter_message(message, use_color=BITOPS_LOGGING_COLOR):
 
 def turn_off_logger():
     """
-    Disables the logger from printing. Useful for unit testing
+    Disables the logger from printing.
     """
-    to_logger = logging.getLogger("bitops-logger")
-    to_logger.disabled = True
+    logging.getLogger("bitops-logger").disabled = True
 
 
 class BitOpsFormatter(logging.Formatter):
@@ -112,7 +111,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-if BITOPS_LOGGING_FILENAME is not None:
+if BITOPS_LOGGING_FILENAME not in [None, "", "false"]:
     # This assumes that the user wants to save output to a filename
 
     # Create the directory if it doesn't exist

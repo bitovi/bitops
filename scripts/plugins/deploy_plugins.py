@@ -290,7 +290,8 @@ def deploy_plugins():  # pylint: disable=too-many-locals,too-many-branches,too-m
                 logger.info(
                     f"\n~#~#~#~DEPLOYING OPS REPO [{deployment}] SUCCESSFULLY COMPLETED~#~#~#~"
                 )
-        except Exception:
+        except Exception as e:
+            logger.error(f"Error running deployment script: {e}")
             sys.exit(101)
 
         # ~#~#~#~#~#~# STAGE 5 - AFTER HOOKS #~#~#~#~#~#~#
