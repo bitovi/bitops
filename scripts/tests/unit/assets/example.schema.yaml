@@ -15,4 +15,3 @@ example:
             type: boolean
             parameter: skip-example
             export_env: SKIP_EXAMPLE
-  
