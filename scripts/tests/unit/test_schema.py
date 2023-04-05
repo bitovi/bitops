@@ -1,14 +1,10 @@
-import unittest
 import os
+from unittest import TestCase
 
 from plugins.config.schema import SchemaObject, SchemaUnsupportedDataType
 
-from plugins.logging import turn_off_logger
 
-turn_off_logger()
-
-
-class TestSchemaObject(unittest.TestCase):
+class TestSchemaObject(TestCase):
     """Testing the SchemaObject"""
 
     def setUp(self):
@@ -92,6 +88,13 @@ class TestSchemaObject(unittest.TestCase):
         )
         self.assertEqual(result, ["a", "b", "c"])
 
+    def test_apply_data_type_invalid(self):
+        """Test SchemaObject apply_data_type function with invalid data
+        type should throw an Exception and print an error to stdout"""
         # test invalid
-        with self.assertRaises(SchemaUnsupportedDataType):
-            SchemaObject._apply_data_type("invalid", "value")  # pylint: disable=protected-access
+        with self.assertLogs("bitops-logger", level="ERROR") as captured:
+            with self.assertRaises(SchemaUnsupportedDataType):
+                SchemaObject._apply_data_type(  # pylint: disable=protected-access
+                    "invalid", "value"
+                )
+            self.assertIn("Data type not supported: [invalid]", captured.output[0])

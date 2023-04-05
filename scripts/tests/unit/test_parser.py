@@ -1,5 +1,5 @@
-import unittest
 import os
+from unittest import TestCase
 
 from plugins.config.schema import SchemaObject
 from plugins.config.parser import (
@@ -13,7 +13,7 @@ from plugins.config.parser import (
 from munch import DefaultMunch
 
 
-class TestGetConfigList(unittest.TestCase):
+class TestGetConfigList(TestCase):
     """Test parser.py get_config_list function"""
 
     def setUp(self):
@@ -36,11 +36,16 @@ class TestGetConfigList(unittest.TestCase):
         """Test parser.py get_config_list function with invalid inputs"""
         config_file = "invalid_config.yml"
         schema_file = "invalid_schema.yml"
-        with self.assertRaises(FileNotFoundError):
-            get_config_list(config_file, schema_file)
+        with self.assertLogs("bitops-logger", level="ERROR") as log:
+            with self.assertRaises(FileNotFoundError):
+                get_config_list(config_file, schema_file)
+            self.assertIn("Required config file was not found", log.output[0])
+            self.assertIn(
+                "To fix this please add the following file: [invalid_schema.yml]", log.output[0]
+            )
 
 
-class TestConvertYamlToDict(unittest.TestCase):
+class TestConvertYamlToDict(TestCase):
     """Test parser.py convert_yaml_to_dict function"""
 
     def test_convert_yaml_to_dict_with_null_values(self):
@@ -69,7 +74,7 @@ class TestConvertYamlToDict(unittest.TestCase):
         self.assertEqual(result.testKey2, None)
 
 
-class TestParseYamlKeysToList(unittest.TestCase):
+class TestParseYamlKeysToList(TestCase):
     """Test parser.py parse_yaml_keys_to_list function"""
 
     def setUp(self):
@@ -156,7 +161,7 @@ class TestParseYamlKeysToList(unittest.TestCase):
             parse_yaml_keys_to_list("not_a_schema", self.root_key)
 
 
-class TestGeneratePopulatedSchemaList(unittest.TestCase):
+class TestGeneratePopulatedSchemaList(TestCase):
     """Test parser.py generate_populated_schema_list function"""
 
     def setUp(self):
@@ -221,7 +226,7 @@ class TestGeneratePopulatedSchemaList(unittest.TestCase):
         self.assertEqual(result[0].description, None)
 
 
-class TestGenerateSchemaKeys(unittest.TestCase):
+class TestGenerateSchemaKeys(TestCase):
     """Test parser.py generate_schema_keys function"""
 
     def test_schema_keys_list_not_empty(self):
@@ -241,7 +246,7 @@ class TestGenerateSchemaKeys(unittest.TestCase):
         self.assertIn("example_schema.property_2", generate_schema_keys(schema))
 
 
-class TestPopulateParsedConfigurations(unittest.TestCase):
+class TestPopulateParsedConfigurations(TestCase):
     """Test parser.py populate_parsed_configurations function"""
 
     def setUp(self):
