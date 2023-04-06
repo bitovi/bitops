@@ -26,7 +26,7 @@ Check the [`main`](https://github.com/bitovi/bitops) repository branch to see th
 
 ### Done in v2.5.0
   - **Core:** Ops repo `bitops.config.yaml` override and deployment sequence control
-  - **Core:** Unit tests coverage
+  - **Core:** Unit tests
 
 ### Done in v2.4.0
   - **Plugins:** ENV variable mapping based on plugin schema
