@@ -12,7 +12,7 @@ Create an Issue, open a Discussion, join our Community and we'll be happy to wor
 - **CLI:** Ops repo generator
 - **Plugins:** Custom version pinning
 - **Community:** Ops repo catalog
-- **Core:** Automated testing
+- **Core:** Integration tests
 - **Plugins:** Automated testing and validation
 - **Core:** Run a deployment sub-step per tool
 - **Core:** Schema validation and error reporting
@@ -23,7 +23,10 @@ Check the [`main`](https://github.com/bitovi/bitops) repository branch to see th
 
 ## Release History
 ### In Development
+
+### Done in v2.5.0
   - **Core:** Ops repo `bitops.config.yaml` override and deployment sequence control
+  - **Core:** Unit tests coverage
 
 ### Done in v2.4.0
   - **Plugins:** ENV variable mapping based on plugin schema
