@@ -30,7 +30,7 @@ jobs:
       run: cp ./prebuilt-config/omnibus/bitops.config.yaml ./bitops.config.yaml
     - name: Publish Omnibus dev Docker Image (Push)
       env:
-        REGISTRY_URL: "bitovi/bitops"
+        REGISTRY_URL: "armabit/bitops"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         # on 'main' branch build 'omnibus' image and publish it as 'dev' Docker tag
@@ -81,7 +81,7 @@ jobs:
 
     - name: Publish Docker Image (Workflow Dispatch)
       env:
-        REGISTRY_URL: "bitovi/bitops"
+        REGISTRY_URL: "armabit/bitops"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
         # On a versioned release push '2.0.0-omnibus', '2.0.0-aws-ansible', etc Docker tags
