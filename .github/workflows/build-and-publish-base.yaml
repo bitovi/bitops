@@ -48,7 +48,7 @@ jobs:
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #  
     - name: Publish Docker Image (Push)
       env:
-        REGISTRY_URL: "bitovi/bitops"
+        REGISTRY_URL: "armabit/bitops"
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
@@ -65,7 +65,7 @@ jobs:
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- # 
     - name: Publish Docker Image (Workflow dispatch)
       env:
-        REGISTRY_URL: "bitovi/bitops"
+        REGISTRY_URL: "armabit/bitops"
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
@@ -84,7 +84,7 @@ jobs:
     # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- #
     - name: Publish Docker Image (Release)
       env:
-        REGISTRY_URL: "bitovi/bitops"
+        REGISTRY_URL: "armabit/bitops"
         DEFAULT_BRANCH: "plugins"
         DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME}}
         DOCKER_PASS: ${{ secrets.DOCKERHUB_PASSWORD}}
