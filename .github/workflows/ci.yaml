@@ -119,9 +119,15 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          # On merge to default 'main' branch push current 'dev-base' Docker tag
-          tags: bitovi/bitops:dev-base
-          push: false
+          tags: armabit/bitops:dev-base
+
+      - name: Push base Docker image
+        uses: docker/build-push-action@v4
+        if: ${{ github.ref_name == 'main' }}
+        with:
+          context: .
+          tags: armabit/bitops:dev-base
+          push: true
 
       - name: List Docker images
         run: docker images
