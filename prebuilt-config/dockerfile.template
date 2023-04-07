@@ -1,1 +1,1 @@
-FROM bitovi/bitops:{{ tags.bitops_base | default("dev-base") }}
+FROM armabit/bitops:{{ tags.bitops_base | default("dev-base") }}
