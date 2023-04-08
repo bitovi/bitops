@@ -173,7 +173,7 @@ jobs:
       - 
         name: Build FROM 'dev-base' Dockerfile
         uses: cuchi/jinja2-action@v1.2.0
-        if: github.ref_name == 'main'
+        if: ${{ (github.ref_name == 'main') || (github.event_name == 'pull_request') }}
         with:
           template: prebuilt-config/dockerfile.template
           output_file: ./Dockerfile
