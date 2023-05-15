@@ -154,8 +154,9 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
     -v /path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/sample-plugin \
     bitovi/bitops:dev
     ```
-    
-    > Note the docker-context name of the plugin dir `/path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/***sample-plugin***` must exactly match the name in `/path/to/bitops-plugins/bitops.schema.yaml`: 
+
+    > Note the docker-context name of the plugin dir `/path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/***sample-plugin***` must exactly match the name in `/path/to/bitops-plugins/bitops.schema.yaml`:
+    >
     > ```yaml
     > sample-plugin:
     > ```
@@ -166,7 +167,7 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
     # in /path/to/sample-ops-repo
     echo _scripts/deploy.local.sh >> .gitignore
     ```
-    
+
     <!--
     > **Note:** To see the full code so far, see [docs/examples/plugin-examples/plugin-no-install/duplicate-environment](../docs/examples/plugin-examples/plugin-no-install/duplicate-environment)
     -->
@@ -177,8 +178,9 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
      # in /path/to/sample-ops-repo/_scripts
      ./deploy.local.sh
     ```
-    
+
     If things go well, the output should look like this:
+
     ```sh
     > ./deploy.local.sh
     2023-05-15 18:37:12,675 bitops-logger WARNING 
@@ -198,16 +200,16 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
     BitOps has finished!
     ```
 
-
-
 ## 4. Handling the Plugin Install Script
+
 If your new plugin needs to run some install scripts (e.g. to install a CLI tool, for example), you'll need to build your own version of BitOps locally.
 
 > **Note:** For more information on how to do this, see [plugins](../plugins.md).
 
+### 4.1 Update the Plugin to Add an Install Script
 
-### 4.1. Update the Plugin to Add an Install Script
 Add the `install` configuration to your plugin's `plugin.config.yaml`
+
 ```yaml
 plugin:
   # this plugin has install instructions
@@ -224,89 +226,88 @@ plugin:
 
 Add your install script:
 
-`install.sh`
 ```sh
+# /path/to/bitops-plugins/install.sh
+
 #!/bin/bash
 set -e
 
-echo ""
-echo "When including a plugin in a BitOps install, this script will be called during docker build."
-echo "It should be used to install any dependencies required to actually run your plugin."
-echo "BitOps uses alpine linux as its base, so you'll want to use apk commands (Alpine Package Keeper)"
-echo ""
+echo "In the install script for the sample-plugin"
 
-apk info
-
-echo "In the install script for the duplicate-environment"
-
-echo "Install your things here"
+apk update && apk upgrade
+# add your actual installers here
 ```
-
 
 ### 4.2. Build a BitOps image
 
 Create a new directory to hold your custom BitOps config:
+
 ```sh
-mkdir /path/to/bitops-custom
-cd /path/to/bitops-custom
+mkdir -p /path/to/bitops-images/sample-plugin-image
+cd /path/to/bitops-images/sample-plugin-image
 ```
 
-#### 4.2.1. Add the BitOps config
-First, add your BitOps level `bitops.config.yaml` and include a reference to your local file dependency (via `plugins`) and a reference in the `deployments` section:
+#### 4.2.1. Add the BitOps configz
+
+First, add your BitOps level `bitops.config.yaml` and include a reference to your local file dependency via the `plugins` and  `deployments` sections:
+
 ```yaml
+# /path/to/bitops-plugins/bitops-images/sample-plugin-image/bitops.config.yaml
+# Note that again these are docker-context paths, not local paths.
+
 bitops:
-  fail_fast: true
-  run_mode: default   # (Unused for now)
-  logging:      
-    level: DEBUG              # Sets the logging level
-    color:
-      enabled: true           # Enables colored logs
-    filename: bitops-run      # log filename
-    err: bitops.logs          # error logs filename
-    path: /var/logs/bitops    # path to log folder
-  default_folder: _default
   plugins:    
-    duplicate-environment:
+    sample-plugin:
       source: file:///opt/bitops-local-plugins/duplicate-environment
   deployments:
-    duplicate-environment:
-      plugin: duplicate-environment
+    sample-plugin:
+      plugin: sample-plugin
 ```
-> **Note:** This is the same file as above (`/path/to/ops-repo/plugin-no-install/duplicate-environment/bitops-level/bitops.config.yaml`), but we've filled in the `plugins.duplicate-environment` object to include a `file://` source.  We will not use the previous file and will instead focus on this file.
 
+> **Note:** This is the same file as above (`/path/to/ops-repo/plugin-no-install/duplicate-environment/bitops-level/bitops.config.yaml`), but we've filled in the `plugins.duplicate-environment` object to include a `file://` source.  We will not use the previous file and will instead focus on this file.
+>
 > **Note:** The path of the source is reserved by BitOps for locally developed plugins.  When you build a custom BitOps image, if there is a `plugins` directory as a sibling to the `Dockerfile`, BitOps will copy that file into the container at `/opt/bitops-local-plugins`.
 
-#### 4.2.2. Add your Dockerfile
+#### 4.2.2 Add your Dockerfile
 
-`Dockerfile`
 ```Dockerfile
+# /path/to/bitops-plugins/bitops-images/sample-plugin-image/Dockerfile
 FROM bitovi/bitops:base
 ```
 
-#### 4.2.3. Copy plugin code to the BitOps directory
+#### 4.2.3 Copy plugin code to the BitOps directory
+
 In order for the build to have access to your local plugin files, they'll need to be in the same directory as the `Dockerfile`.  One quick way to do this is to set up a simple script to run prior to your docker build to clean and re-copy the plugin files:
 
-`copy-plugins.sh`
 ```sh
+# /path/to/bitops-images/copy-plugins.sh
+
 #!/bin/bash
 
-mkdir -p /path/to/bitops-custom/plugins
+PLUGIN_NAME=sample-plugin
+BITOVI_ROOT_PATH=/path/to/bitops-plugins
 
-# duplicate-environment
-rm -rf /path/to/bitops-custom/plugins/duplicate-environment
-cp -r /path/to/bitops-plugins/duplicate-environment /path/to/bitops-custom/plugins/duplicate-environment
+CUSTOM_IMAGE_PATH="$BITOVI_ROOT_PATH/bitops-images/$PLUGIN_NAME-plugin-image"
+PLUGIN_PATH="$BITOVI_ROOT_PATH/$PLUGIN_NAME"
+
+mkdir -p "$CUSTOM_IMAGE_PATH/plugins"
+
+# clean and copy to the image build dir
+rm -rf $CUSTOM_IMAGE_PATH/plugins/$PLUGIN_NAME
+cp -r $PLUGIN_PATH "$CUSTOM_IMAGE_PATH/plugins/$PLUGIN_NAME"
+
 ```
 
-> **Note:** The `/path/to/bitops-custom/plugins` directory is reserved by BitOps for the purpose of developing plugins locally.
+#### 4.2.4 Build the image
 
-
-#### 4.2.4. Build the image
 ```sh
 ./copy-plugins.sh
-docker build bitops --tag bitovi/bitops:local-custom --progress=plain --no-cache .
+
+docker build --tag bitovi/bitops:local-sample-plugin --no-cache .
 ```
 
 #### 4.2.5. Test your plugin
+
 ```sh
 docker run --rm --name bitops \
 -e BITOPS_ENVIRONMENT="duplicate-environment" \
@@ -315,30 +316,21 @@ docker run --rm --name bitops \
 -v /path/to/bitops-level/bitops.config.yaml:/opt/bitops/bitops.config.yaml \
 -v /opt/bitops/scripts/plugins/terraform \
 -v /path/to/bitops-plugins/duplicate-environment:/opt/bitops/scripts/installed_plugins/duplicate-environment \
-bitops:local-custom
+bitops:local-sample-plugin
 ```
 
+## 5. Fully Remote Development
 
-## 5. Handling the Plugin Install Script (remote)
-As an alternative way to develop plugins locally is simply to host the plugin code/config remotely and specify the plugin via url instead of `file://` like:
+An alternative to local plugin development is to host the plugin code remotely and specify the plugin via url instead of `file://` like:
+
 ```yaml
 bitops:
-  fail_fast: true
-  run_mode: default   # (Unused for now)
-  logging:      
-    level: DEBUG              # Sets the logging level
-    color:
-      enabled: true           # Enables colored logs
-    filename: bitops-run      # log filename
-    err: bitops.logs          # error logs filename
-    path: /var/logs/bitops    # path to log folder
-  default_folder: _default
   plugins:    
-    duplicate-environment:
-      source: https://github.com/your-org/your-plugin
+    sample-plugin:
+      source: https://github.com/your-org/sample-plugin
   deployments:
-    duplicate-environment:
-      plugin: duplicate-environment
+    sample-plugin:
+      plugin: sample-plugin
 ```
 
-Then, you can follow the steps in #5 above (sans the `copy-plugins.sh` script).
+Then, you can follow the steps in #5 above (without the `copy-plugins.sh` script).
