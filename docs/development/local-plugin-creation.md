@@ -6,8 +6,7 @@ So you wanna build a BitOps plugin, eh?  Follow along for how to do it locally!
 
 ```sh
 cd /path/to/bitops-plugins
-mkdir sample-plugin
-cd sample-plugin
+mkdir sample-plugin && cd sample-plugin
 ```
 
 More information on what goes in a plugin [here](../plugins.md).
@@ -35,10 +34,8 @@ sample-plugin:
 
 Next, create a simple `deploy.sh` script.  This script does some checks and shows how to use some of the system `BITOPS_` available environment variables then outputs configuration values defined by the `bitops.schema.yaml` in `cli` and `options` sections.
 
-
 ```sh
 # /path/to/bitops-plugins/deploy.sh
-
 
 #!/bin/bash
 set -e
@@ -66,13 +63,11 @@ cd $BITOPS_OPSREPO_ENVIRONMENT_DIR
 echo "Listing contents of sample-plugin Root: $BITOPS_OPSREPO_ENVIRONMENT_DIR"
 ls -al .
 
-
 echo "Running the plugin CLI: (SKIPPED)"
 
 echo "Options:"
-echo "SAMPLE_PLUGIN_FOO"
+echo "SAMPLE_PLUGIN_FOO: $SAMPLE_PLUGIN_FOO"
 # Expected result: "foo_value"
-echo "$SAMPLE_PLUGIN_FOO"
 ```
 
 > **Note:** Much of the above is best practice boilerplate and is not strictly necessary.
@@ -118,7 +113,7 @@ To test your plugin, you'll need BitOps to run with a `bitops.config.yaml` that 
 
 Create a `bitops.config.yaml` at the `test-env` level in your `sample-ops-repo`, and add a `plugins` and `deployments` reference to your plugin:
 
-- Note the `file:///opt/...` path in the example. This is the path that will result when the plugin is installed into the BitOps Docker container running it - NOT the path on your local machine.
+  - Note the `file:///opt/...` path in the example. This is the path that will result when the plugin is installed into the BitOps Docker container running it - NOT the path on your local machine.
 
 ```yaml
 # /path/to/sample-ops-repo/test-env/sample-plugin/bitops.config.yaml
@@ -134,14 +129,27 @@ bitops:
 ### 3.2. Run your test
 To run BitOps against a local plugin, you'll need to mount the plugin to the location BitOps expects plugins to be:
 
-1. Create a `_scripts` folder at the root level of your `ops-repo` dir:
+1. Create a `_scripts` folder at the root level of your `ops-repo` dir.
+2. Create a `deploy.local.sh` file to script the upcoming `docker run` command.
+3. Make sure to `chmod +x` the deploy script.
 
     ```sh
     # in /path/to/sample-ops-repo
     mkdir _scripts && cd _scripts
-    touch deploy.sh
-    chmod +x deploy.sh
+    touch deploy.local.sh
+    chmod +x deploy.local.sh
     ```
+
+1. Create a `.gitignore` to keep the deploy file out of the upstream repo:
+
+    ```sh
+    # in /path/to/sample-ops-repo
+    echo _scripts/deploy.local.sh >> .gitignore
+    ```
+
+    <!--
+    > **Note:** To see the full code so far, see [docs/examples/plugin-examples/plugin-no-install/duplicate-environment](../docs/examples/plugin-examples/plugin-no-install/duplicate-environment)
+    -->
 
 1. Copy this content into `deploy.local.sh`:
 
@@ -152,7 +160,7 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
     -e BITOPS_ENVIRONMENT="test-env" \
     -v /path/to/sample-ops-repo:/opt/bitops_deployment \
     -v /path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/sample-plugin \
-    bitovi/bitops:dev
+    bitovi/bitops:latest
     ```
 
     > Note the docker-context name of the plugin dir `/path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/***sample-plugin***` must exactly match the name in `/path/to/bitops-plugins/bitops.schema.yaml`:
@@ -160,17 +168,6 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
     > ```yaml
     > sample-plugin:
     > ```
-
-1. Create a `gitignore` to keep the deploy file out of the upstream repo:
-
-    ```sh
-    # in /path/to/sample-ops-repo
-    echo _scripts/deploy.local.sh >> .gitignore
-    ```
-
-    <!--
-    > **Note:** To see the full code so far, see [docs/examples/plugin-examples/plugin-no-install/duplicate-environment](../docs/examples/plugin-examples/plugin-no-install/duplicate-environment)
-    -->
 
 1. Run it!
 
@@ -196,13 +193,13 @@ To run BitOps against a local plugin, you'll need to mount the plugin to the loc
     -rw-r--r--    1 root     root            31 May 15 18:36 bitops.config.yaml
     Running the plugin CLI: (SKIPPED)
     Options:
-    AZURE_FOO: baz
+    AZURE_FOO: foo_value
     BitOps has finished!
     ```
 
 ## 4. Handling the Plugin Install Script
 
-If your new plugin needs to run some install scripts (e.g. to install a CLI tool, for example), you'll need to build your own version of BitOps locally.
+If your new plugin needs to run some install scripts (e.g. to install a CLI tool), you'll need to build your own version of BitOps locally.
 
 > **Note:** For more information on how to do this, see [plugins](../plugins.md).
 
@@ -220,11 +217,9 @@ plugin:
   deployment:
     language: bash
     deployment_script: deploy.sh
-    core_schema_parsing: true
-    life_cycle_scripts: true
 ```
 
-Add your install script:
+Create your install script:
 
 ```sh
 # /path/to/bitops-plugins/install.sh
@@ -240,14 +235,17 @@ apk update && apk upgrade
 
 ### 4.2. Build a BitOps image
 
-Create a new directory to hold your custom BitOps config:
+Create a new directory to hold your custom BitOps config. 
+
+In this case we're putting it in our `bitops-plugins` parent dir, but you could put it anywhere.
 
 ```sh
-mkdir -p /path/to/bitops-images/sample-plugin-image
-cd /path/to/bitops-images/sample-plugin-image
+IMAGE_PATH=/path/to/bitops-plugins/bitops-images/sample-plugin-image
+
+mkdir -p $IMAGE_PATH && cd $IMAGE_PATH
 ```
 
-#### 4.2.1. Add the BitOps configz
+#### 4.2.1 Add the BitOps config
 
 First, add your BitOps level `bitops.config.yaml` and include a reference to your local file dependency via the `plugins` and  `deployments` sections:
 
@@ -258,13 +256,13 @@ First, add your BitOps level `bitops.config.yaml` and include a reference to you
 bitops:
   plugins:    
     sample-plugin:
-      source: file:///opt/bitops-local-plugins/duplicate-environment
+      source: file:///opt/bitops-local-plugins/sample-plugin
   deployments:
     sample-plugin:
       plugin: sample-plugin
 ```
 
-> **Note:** This is the same file as above (`/path/to/ops-repo/plugin-no-install/duplicate-environment/bitops-level/bitops.config.yaml`), but we've filled in the `plugins.duplicate-environment` object to include a `file://` source.  We will not use the previous file and will instead focus on this file.
+> **Note:** This is the same file as above (`/path/to/ops-repo/test-env/sample-plugin/bitops.config.yaml`), but we've updated the `plugins.sample-plugin` object to include a `file://` source.
 >
 > **Note:** The path of the source is reserved by BitOps for locally developed plugins.  When you build a custom BitOps image, if there is a `plugins` directory as a sibling to the `Dockerfile`, BitOps will copy that file into the container at `/opt/bitops-local-plugins`.
 
@@ -272,6 +270,7 @@ bitops:
 
 ```Dockerfile
 # /path/to/bitops-plugins/bitops-images/sample-plugin-image/Dockerfile
+
 FROM bitovi/bitops:base
 ```
 
@@ -285,10 +284,10 @@ In order for the build to have access to your local plugin files, they'll need t
 #!/bin/bash
 
 PLUGIN_NAME=sample-plugin
-BITOVI_ROOT_PATH=/path/to/bitops-plugins
+PLUGIN_ROOT_PATH=/path/to/bitops-plugins
 
-CUSTOM_IMAGE_PATH="$BITOVI_ROOT_PATH/bitops-images/$PLUGIN_NAME-plugin-image"
-PLUGIN_PATH="$BITOVI_ROOT_PATH/$PLUGIN_NAME"
+CUSTOM_IMAGE_PATH="$PLUGIN_ROOT_PATH/bitops-images/$PLUGIN_NAME-plugin-image"
+PLUGIN_PATH="$PLUGIN_ROOT_PATH/$PLUGIN_NAME"
 
 mkdir -p "$CUSTOM_IMAGE_PATH/plugins"
 
@@ -309,13 +308,12 @@ docker build --tag bitovi/bitops:local-sample-plugin --no-cache .
 #### 4.2.5. Test your plugin
 
 ```sh
+PATH_ROOT=~/Bitovi/github/bitops-plugins # modify to your path here
+
 docker run --rm --name bitops \
--e BITOPS_ENVIRONMENT="duplicate-environment" \
--v /path/to/bitops:/opt/bitops \
--v /path/to/ops-repo/plugin-install:/opt/bitops_deployment \
--v /path/to/bitops-level/bitops.config.yaml:/opt/bitops/bitops.config.yaml \
--v /opt/bitops/scripts/plugins/terraform \
--v /path/to/bitops-plugins/duplicate-environment:/opt/bitops/scripts/installed_plugins/duplicate-environment \
+-e BITOPS_ENVIRONMENT="test-env" \
+-v $PATH_ROOT/sample-ops-repo:/opt/bitops_deployment \
+-v $PATH_ROOT/sample-plugin:/opt/bitops/scripts/installed_plugins/sample-plugin \
 bitops:local-sample-plugin
 ```
 
