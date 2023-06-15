@@ -1,0 +1,63 @@
+.bitovi-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* align horizontal */
+    align-items: flex-start; /* align vertical */
+    text-align: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+.bitovi-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    text-align: center;
+    flex: 1;
+    margin: 20px;
+  }
+
+@media screen and (max-width: 800px) {
+    .bitovi-row {
+        flex-direction: column;
+        align-items: center;
+        /* margin-left: -100px; */
+    }
+  }
+
+/* override to save the empty space in the header */
+.md-main__inner {
+    margin-top: -15px;
+}
+
+.bitovi-list {
+    margin-left: -50px;
+}
+
+.bitovi-list ul {
+    text-align: left;
+    list-style-type: none;
+}
+
+.bitovi-list ul li:before {
+    content: '✅';
+    margin-left: 50px;
+    margin-right: 10px
+}
+
+/* Disable Hubspot chat widget */
+#hubspot-messages-iframe-container {
+    display: none !important;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+#user-survey-btn {
+    padding: 7px;
+    border-radius: 7px;
+    background-color: #1b7bcf;
+    color: white;
+}

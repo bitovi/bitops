@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+# https://www.mkdocs.org/user-guide/customizing-your-theme/#overriding-template-blocks
+{% block extrahead %}
+        {% set title = config.site_name %}
+        {% if page and page.meta and page.meta.title %}
+        {% set title = title ~ " - " ~ page.meta.title %}
+        {% elif page and page.title and not page.is_homepage %}
+        {% set title = title ~ " - " ~ page.title %}
+        {% endif %}
+
+        <meta name="description" content="{{ config.site_description }}">
+        <meta name="author" content="Bitovi">
+        <!-- Social Meta Tags -->
+        <meta property="og:url" content="{{ page.canonical_url }}">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ title }}">
+        <meta property="og:description" content="{{ config.site_description }}">
+        <meta property="og:image" content="https://bitops.sh/assets/images/website-preview.png">
+        <!-- Twitter Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="twitter:domain" content="bitops.sh">
+        <meta property="twitter:url" content="{{ page.canonical_url }}">
+        <meta name="twitter:title" content="{{ title }}">
+        <meta name="twitter:description" content="{{ config.site_description }}">
+        <meta name="twitter:image" content="https://bitops.sh/assets/images/website-preview.png">
+{% endblock %}
+
+{% block announce %}
+  We're conducting a survey to help us improve BitOps. &nbsp;
+  <a href="https://forms.gle/mDLBE63UF9CdcqdG7" id="user-survey-btn" target="_blank">Take the survey</a>
+{% endblock %}

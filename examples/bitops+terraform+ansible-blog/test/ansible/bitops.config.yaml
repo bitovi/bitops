@@ -1,0 +1,4 @@
+ansible:
+    cli:
+        main-playbook: playbook.yaml
+    options: {}

@@ -1,0 +1,11 @@
+helm:
+  cli:
+    namespace: bitops
+    debug: false
+    atomic: true
+  options:
+    release-name: bitops-monitoring
+    kubeconfig:
+      fetch:
+        enabled: true
+        cluster-name: bitops-test-opscruise-ekscluster

@@ -1,0 +1,11 @@
+bitops:
+  fail_fast: true
+  logging:      
+    level: WARNING              # Sets the logging level
+    color:
+      enabled: true           # Enables colored logs
+  plugins:    
+    duplicate-environment: {}
+  deployments:
+    duplicate-environment:
+      plugin: duplicate-environment

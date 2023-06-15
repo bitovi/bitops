@@ -1,0 +1,10 @@
+- hosts: bitops_servers
+  tasks:
+   - name: ensure nginx is at the latest version
+     apt: name=nginx state=latest
+     become: yes
+
+   - name: start nginx
+     service:
+         name: nginx
+         state: started

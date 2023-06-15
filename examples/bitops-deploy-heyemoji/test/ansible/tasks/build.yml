@@ -1,0 +1,7 @@
+- name: build container image
+  docker_image:
+    name: "{{ default_container_image }}"
+    build:
+      path: "{{ heyemoji_path }}"
+    source: build
+    state: present

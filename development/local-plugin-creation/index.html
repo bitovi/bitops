@@ -1,0 +1,1522 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="BitOps is like bootstrap but for the infrastructure. It centralizes, organizes, and deploys your Infrastructure-as-Code.">
+      
+      
+      
+        <link rel="canonical" href="https://bitops.sh/development/local-plugin-creation/">
+      
+      
+        <link rel="prev" href="../../plugins/">
+      
+      
+        <link rel="next" href="../../lifecycle/">
+      
+      <link rel="icon" href="../../assets/images/logo/Bitops(RGB)_L2_Icon_4C.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Plugin creation guide - BitOps Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Lato";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+        
+        
+        
+        
+
+        <meta name="description" content="BitOps is like bootstrap but for the infrastructure. It centralizes, organizes, and deploys your Infrastructure-as-Code.">
+        <meta name="author" content="Bitovi">
+        <!-- Social Meta Tags -->
+        <meta property="og:url" content="https://bitops.sh/development/local-plugin-creation/">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="BitOps Documentation - Plugin creation guide">
+        <meta property="og:description" content="BitOps is like bootstrap but for the infrastructure. It centralizes, organizes, and deploys your Infrastructure-as-Code.">
+        <meta property="og:image" content="https://bitops.sh/assets/images/website-preview.png">
+        <!-- Twitter Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="twitter:domain" content="bitops.sh">
+        <meta property="twitter:url" content="https://bitops.sh/development/local-plugin-creation/">
+        <meta name="twitter:title" content="BitOps Documentation - Plugin creation guide">
+        <meta name="twitter:description" content="BitOps is like bootstrap but for the infrastructure. It centralizes, organizes, and deploys your Infrastructure-as-Code.">
+        <meta name="twitter:image" content="https://bitops.sh/assets/images/website-preview.png">
+
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="light" data-md-color-primary="red" data-md-color-accent="red">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plugin-creation-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+              <button class="md-banner__button md-icon" aria-label="Don't show this again">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+              </button>
+            
+            
+  We're conducting a survey to help us improve BitOps. &nbsp;
+  <a href="https://forms.gle/mDLBE63UF9CdcqdG7" id="user-survey-btn" target="_blank">Take the survey</a>
+
+          </div>
+          
+            <script>var content,el=document.querySelector("[data-md-component=announce]");el&&(content=el.querySelector(".md-typeset"),__md_hash(content.innerHTML)===__md_get("__announce")&&(el.hidden=!0))</script>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="BitOps Documentation" class="md-header__button md-logo" aria-label="BitOps Documentation" data-md-component="logo">
+      
+  <img src="../../assets/images/logo/Bitops(RGB)_L2_Icon_4C.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BitOps Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plugin creation guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://www.bitovi.com/devops" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="m244 84 11.1 12 12-11.98C300.6 51.37 347 36.51 392.6 44.1c68.9 11.48 119.4 71.1 119.4 141v5.8c0 41.5-17.2 81.2-47.6 109.5L283.7 469.1c-7.5 7-17.4 10.9-27.7 10.9s-20.2-3.9-27.7-10.9L47.59 300.4C17.23 272.1 0 232.4 0 190.9v-5.8c0-69.9 50.52-129.52 119.4-141 44.7-7.59 92 7.27 124.6 39.9-.9 0 0 .01 0 0zm11.1 79.9-45-46.8c-21.7-20.82-52.5-30.7-82.8-25.66C81.55 99.07 48 138.7 48 185.1v5.8c0 28.2 11.71 55.2 32.34 74.4L256 429.3l175.7-164c20.6-19.2 32.3-46.2 32.3-74.4v-5.8c0-46.4-33.6-86.03-79.3-93.66-30.3-5.04-61.1 4.84-82.8 25.66l-46.8 46.8z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Built By Bitovi
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../getting-started/" class="md-tabs__link">
+      Getting Started
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../operations-repo-structure/" class="md-tabs__link">
+      Operations Repository
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../configuration-base/" class="md-tabs__link">
+        Configuration
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../examples/" class="md-tabs__link">
+      Examples
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../versioning/" class="md-tabs__link">
+        Releases
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../development-local/" class="md-tabs__link">
+        Development
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../plugins/" class="md-tabs__link md-tabs__link--active">
+        Plugins
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../lifecycle/" class="md-tabs__link">
+      Lifecycle
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        About
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="BitOps Documentation" class="md-nav__button md-logo" aria-label="BitOps Documentation" data-md-component="logo">
+      
+  <img src="../../assets/images/logo/Bitops(RGB)_L2_Icon_4C.png" alt="logo">
+
+    </a>
+    BitOps Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://www.bitovi.com/devops" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="m244 84 11.1 12 12-11.98C300.6 51.37 347 36.51 392.6 44.1c68.9 11.48 119.4 71.1 119.4 141v5.8c0 41.5-17.2 81.2-47.6 109.5L283.7 469.1c-7.5 7-17.4 10.9-27.7 10.9s-20.2-3.9-27.7-10.9L47.59 300.4C17.23 272.1 0 232.4 0 190.9v-5.8c0-69.9 50.52-129.52 119.4-141 44.7-7.59 92 7.27 124.6 39.9-.9 0 0 .01 0 0zm11.1 79.9-45-46.8c-21.7-20.82-52.5-30.7-82.8-25.66C81.55 99.07 48 138.7 48 185.1v5.8c0 28.2 11.71 55.2 32.34 74.4L256 429.3l175.7-164c20.6-19.2 32.3-46.2 32.3-74.4v-5.8c0-46.4-33.6-86.03-79.3-93.66-30.3-5.04-61.1 4.84-82.8 25.66l-46.8 46.8z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Built By Bitovi
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations-repo-structure/" class="md-nav__link">
+        Operations Repository
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" tabindex="0" aria-expanded="false">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration-base/" class="md-nav__link">
+        Base Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2" tabindex="0" aria-expanded="false">
+          Cloud Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Cloud Configuration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Cloud Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cloud-configuration/configuration-aws/" class="md-nav__link">
+        AWS
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3" tabindex="0" aria-expanded="false">
+          Tool Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tool Configuration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tool Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tool-configuration/configuration-terraform/" class="md-nav__link">
+        Terraform
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tool-configuration/configuration-ansible/" class="md-nav__link">
+        Ansible
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tool-configuration/configuration-helm/" class="md-nav__link">
+        Helm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tool-configuration/configuration-cloudformation/" class="md-nav__link">
+        Cloudformation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../default-environment/" class="md-nav__link">
+        Default Environment
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="false">
+          Releases
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Releases" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Releases
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../versioning/" class="md-nav__link">
+        Versioning
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        Roadmap
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/" class="md-nav__link">
+        Upgrade
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development-local/" class="md-nav__link">
+        Local development
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../custom-image/" class="md-nav__link">
+        Custom Images
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_7" type="checkbox" id="__nav_7" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7" tabindex="0" aria-expanded="true">
+          Plugins
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Plugins
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/" class="md-nav__link">
+        Plugins
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Plugin creation guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Plugin creation guide
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-create-a-plugin-repo" class="md-nav__link">
+    1. Create a plugin repo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-create-an-ops-repo-for-testing" class="md-nav__link">
+    2. Create an ops repo for testing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-test-your-plugin" class="md-nav__link">
+    3. Test your plugin
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Test your plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-bitops-level-bitops-config" class="md-nav__link">
+    3.1. BitOps-level BitOps Config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-run-your-test" class="md-nav__link">
+    3.2. Run your test
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-handling-the-plugin-install-script" class="md-nav__link">
+    4. Handling the Plugin Install Script
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Handling the Plugin Install Script">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-update-the-plugin-to-add-an-install-script" class="md-nav__link">
+    4.1 Update the Plugin to Add an Install Script
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-build-a-bitops-image" class="md-nav__link">
+    4.2. Build a BitOps image
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2. Build a BitOps image">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421-add-the-bitops-config" class="md-nav__link">
+    4.2.1 Add the BitOps config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-add-your-dockerfile" class="md-nav__link">
+    4.2.2 Add your Dockerfile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#423-copy-plugin-code-to-the-bitops-directory" class="md-nav__link">
+    4.2.3 Copy plugin code to the BitOps directory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#424-build-the-image" class="md-nav__link">
+    4.2.4 Build the image
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#425-test-your-plugin" class="md-nav__link">
+    4.2.5. Test your plugin
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-fully-remote-development" class="md-nav__link">
+    5. Fully Remote Development
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../lifecycle/" class="md-nav__link">
+        Lifecycle
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          About
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="About" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          About
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9_2" tabindex="0" aria-expanded="false">
+          Contributing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Contributing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        Contributing Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        Development Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DCO/" class="md-nav__link">
+        DCO
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/bitovi/bitops/issues" target="_blank" class="md-nav__link">
+        Open Issues
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="plugin-creation-guide">Plugin creation guide<a class="headerlink" href="#plugin-creation-guide" title="Permanent link">#</a></h1>
+<p>So you wanna build a BitOps plugin, eh?  Follow along for how to do it locally!</p>
+<h2 id="1-create-a-plugin-repo">1. Create a plugin repo<a class="headerlink" href="#1-create-a-plugin-repo" title="Permanent link">#</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/path/to/bitops-plugins
+mkdir<span class="w"> </span>sample-plugin<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sample-plugin
+</code></pre></div>
+<p>More information on what goes in a plugin <a href="../../plugins/">here</a>.</p>
+<blockquote>
+<p>Note: If the plugin needs to install tools, you will need to build and run a local version of BitOps.  The first portion of this guide assumes the install.sh script <strong>DOES NOT</strong> needs to be run.  For more information about how to set up BitOps for local development with a plugin that requires an installation, skip to step 5 below.</p>
+</blockquote>
+<p>For this example, we'll keep to a really simple plugin.</p>
+<p>To start with, create a file called <code>bitops.schema.yaml</code> and add the following content.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/bitops-plugins/bitops.schema.yaml</span>
+
+<span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">object</span>
+<span class="w">    </span><span class="nt">properties</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">foo</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">string</span>
+<span class="w">        </span><span class="nt">export_env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SAMPLE_PLUGIN_FOO</span>
+<span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo_value</span>
+</code></pre></div>
+<p>Next, create a simple <code>deploy.sh</code> script.  This script does some checks and shows how to use some of the system <code>BITOPS_</code> available environment variables then outputs configuration values defined by the <code>bitops.schema.yaml</code> in <code>cli</code> and <code>options</code> sections.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/bitops-plugins/deploy.sh</span>
+
+<span class="c1">#!/bin/bash</span>
+<span class="nb">set</span><span class="w"> </span>-e
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Running Sample Plugin deployment script...&quot;</span>
+
+<span class="c1"># vars</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BITOPS_SCHEMA_ENV_FILE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$BITOPS_OPSREPO_ENVIRONMENT_DIR</span><span class="s2">/ENV_FILE&quot;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITOPS_OPSREPO_ENVIRONMENT_DIR</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;No sample-plugin directory. Skipping.&quot;</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Deploying sample-plugin...&quot;</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITOPS_SCHEMA_ENV_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;No sample-plugin ENV file found&quot;</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BITOPS_SCHEMA_ENV_FILE</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$BITOPS_OPSREPO_ENVIRONMENT_DIR</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Listing contents of sample-plugin Root: </span><span class="nv">$BITOPS_OPSREPO_ENVIRONMENT_DIR</span><span class="s2">&quot;</span>
+ls<span class="w"> </span>-al<span class="w"> </span>.
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Running the plugin CLI: (SKIPPED)&quot;</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Options:&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;SAMPLE_PLUGIN_FOO: </span><span class="nv">$SAMPLE_PLUGIN_FOO</span><span class="s2">&quot;</span>
+<span class="c1"># Expected result: &quot;foo_value&quot;</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Much of the above is best practice boilerplate and is not strictly necessary.</p>
+</blockquote>
+<p>Finally, create a <code>plugin.config.yaml</code> to configure how BitOps uses the plugin:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/bitops-plugins/plugin.config.yaml</span>
+
+<span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">deployment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash</span>
+<span class="w">    </span><span class="nt">deployment_script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deploy.sh</span>
+</code></pre></div>
+<h2 id="2-create-an-ops-repo-for-testing">2. Create an ops repo for testing<a class="headerlink" href="#2-create-an-ops-repo-for-testing" title="Permanent link">#</a></h2>
+<p>Now we'll create an <code>ops-repo</code> and <code>environment</code> with a directory that matches your tool:</p>
+<ul>
+<li>In this example, we have an <code>sample-ops-repo</code> dir as the root. </li>
+<li><code>test-env</code> is our new environment that we want to test the plugin on.</li>
+<li>Finally we have a directory for the <code>sample-plugin</code> plugin itself:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/sample-ops-repo/test-env/sample-plugin
+<span class="nb">cd</span><span class="w"> </span>/path/to/sample-ops-repo/test-env/sample-plugin
+</code></pre></div>
+<p>Populate the tool's <code>bitops.config.yaml</code> based on the schema defined above:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/sample-ops-repo/test-env/sample-plugin/bitops.config.yaml</span>
+
+<span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">foo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">baz</span>
+</code></pre></div>
+<h2 id="3-test-your-plugin">3. Test your plugin<a class="headerlink" href="#3-test-your-plugin" title="Permanent link">#</a></h2>
+<h3 id="31-bitops-level-bitops-config">3.1. BitOps-level BitOps Config<a class="headerlink" href="#31-bitops-level-bitops-config" title="Permanent link">#</a></h3>
+<p>To test your plugin, you'll need BitOps to run with a <code>bitops.config.yaml</code> that has your plugin defined in the <code>deployments</code>.</p>
+<p>Create a <code>bitops.config.yaml</code> at the <code>test-env</code> level in your <code>sample-ops-repo</code>, and add a <code>plugins</code> and <code>deployments</code> reference to your plugin:</p>
+<ul>
+<li>Note the <code>file:///opt/...</code> path in the example. This is the path that will result when the plugin is installed into the BitOps Docker container running it - NOT the path on your local machine.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/sample-ops-repo/test-env/sample-plugin/bitops.config.yaml</span>
+
+<span class="nt">bitops</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">plugins</span><span class="p">:</span><span class="w">    </span>
+<span class="w">    </span><span class="nt">sample-plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file:///opt/bitops/scripts/installed_plugins/sample-plugin</span>
+<span class="w">  </span><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sample-plugin</span>
+</code></pre></div>
+<h3 id="32-run-your-test">3.2. Run your test<a class="headerlink" href="#32-run-your-test" title="Permanent link">#</a></h3>
+<p>To run BitOps against a local plugin, you'll need to mount the plugin to the location BitOps expects plugins to be:</p>
+<ol>
+<li>Create a <code>_scripts</code> folder at the root level of your <code>ops-repo</code> dir.</li>
+<li>Create a <code>deploy.local.sh</code> file to script the upcoming <code>docker run</code> command.</li>
+<li>
+<p>Make sure to <code>chmod +x</code> the deploy script.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># in /path/to/sample-ops-repo</span>
+mkdir<span class="w"> </span>_scripts<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>_scripts
+touch<span class="w"> </span>deploy.local.sh
+chmod<span class="w"> </span>+x<span class="w"> </span>deploy.local.sh
+</code></pre></div>
+</li>
+<li>
+<p>Create a <code>.gitignore</code> to keep the deploy file out of the upstream repo:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># in /path/to/sample-ops-repo</span>
+<span class="nb">echo</span><span class="w"> </span>_scripts/deploy.local.sh<span class="w"> </span>&gt;&gt;<span class="w"> </span>.gitignore
+</code></pre></div>
+<p>&lt;!--</p>
+<blockquote>
+<p><strong>Note:</strong> To see the full code so far, see <a href="../docs/examples/plugin-examples/plugin-no-install/duplicate-environment">docs/examples/plugin-examples/plugin-no-install/duplicate-environment</a>
+--&gt;</p>
+</blockquote>
+</li>
+<li>
+<p>Copy this content into <code>deploy.local.sh</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span>bitops<span class="w"> </span><span class="se">\</span>
+-e<span class="w"> </span><span class="nv">BITOPS_ENVIRONMENT</span><span class="o">=</span><span class="s2">&quot;test-env&quot;</span><span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>/path/to/sample-ops-repo:/opt/bitops_deployment<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>/path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/sample-plugin<span class="w"> </span><span class="se">\</span>
+bitovi/bitops:latest
+</code></pre></div>
+<blockquote>
+<p>Note the docker-context name of the plugin dir <code>/path/to/bitops-plugins/sample-plugin:/opt/bitops/scripts/installed_plugins/***sample-plugin***</code> must exactly match the name in <code>/path/to/bitops-plugins/bitops.schema.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">sample-plugin</span><span class="p">:</span>
+</code></pre></div>
+</blockquote>
+</li>
+<li>
+<p>Run it!</p>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="c1"># in /path/to/sample-ops-repo/_scripts</span>
+<span class="w"> </span>./deploy.local.sh
+</code></pre></div>
+<p>If things go well, the output should look like this:</p>
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>./deploy.local.sh
+<span class="m">2023</span>-05-15<span class="w"> </span><span class="m">18</span>:37:12,675<span class="w"> </span>bitops-logger<span class="w"> </span>WARNING<span class="w"> </span>
+<span class="w">    </span>Optional<span class="w"> </span>file<span class="w"> </span>was<span class="w"> </span>not<span class="w"> </span>found.<span class="w"> </span>Consider<span class="w"> </span>adding<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>file:
+<span class="w"> </span><span class="o">[</span>/opt/bitops/scripts/installed_plugins/azure/plugin.config.yaml<span class="o">]</span>
+Running<span class="w"> </span>Azure<span class="w"> </span>Plugin<span class="w"> </span>deployment<span class="w"> </span>script...
+Deploying<span class="w"> </span>azure<span class="w"> </span>plugin...
+No<span class="w"> </span>azure<span class="w"> </span>plugin<span class="w"> </span>ENV<span class="w"> </span>file<span class="w"> </span>found
+Listing<span class="w"> </span>contents<span class="w"> </span>of<span class="w"> </span>azure<span class="w"> </span>plugin<span class="w"> </span>Root:<span class="w"> </span>/tmp/tmpj5lv41jw/test-env/azure
+total<span class="w"> </span><span class="m">12</span>
+drwxr-xr-x<span class="w">    </span><span class="m">2</span><span class="w"> </span>root<span class="w">     </span>root<span class="w">          </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">16</span>:19<span class="w"> </span>.
+drwxr-xr-x<span class="w">    </span><span class="m">3</span><span class="w"> </span>root<span class="w">     </span>root<span class="w">          </span><span class="m">4096</span><span class="w"> </span>May<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">18</span>:11<span class="w"> </span>..
+-rw-r--r--<span class="w">    </span><span class="m">1</span><span class="w"> </span>root<span class="w">     </span>root<span class="w">            </span><span class="m">31</span><span class="w"> </span>May<span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">18</span>:36<span class="w"> </span>bitops.config.yaml
+Running<span class="w"> </span>the<span class="w"> </span>plugin<span class="w"> </span>CLI:<span class="w"> </span><span class="o">(</span>SKIPPED<span class="o">)</span>
+Options:
+AZURE_FOO:<span class="w"> </span>foo_value
+BitOps<span class="w"> </span>has<span class="w"> </span>finished!
+</code></pre></div>
+</li>
+</ol>
+<h2 id="4-handling-the-plugin-install-script">4. Handling the Plugin Install Script<a class="headerlink" href="#4-handling-the-plugin-install-script" title="Permanent link">#</a></h2>
+<p>If your new plugin needs to run some install scripts (e.g. to install a CLI tool), you'll need to build your own version of BitOps locally.</p>
+<blockquote>
+<p><strong>Note:</strong> For more information on how to do this, see <a href="../../plugins/">plugins</a>.</p>
+</blockquote>
+<h3 id="41-update-the-plugin-to-add-an-install-script">4.1 Update the Plugin to Add an Install Script<a class="headerlink" href="#41-update-the-plugin-to-add-an-install-script" title="Permanent link">#</a></h3>
+<p>Add the <code>install</code> configuration to your plugin's <code>plugin.config.yaml</code></p>
+<div class="highlight"><pre><span></span><code><span class="nt">plugin</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># this plugin has install instructions</span>
+<span class="w">  </span><span class="nt">install</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash</span>
+<span class="w">    </span><span class="nt">install_script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">install.sh</span>
+
+<span class="w">  </span><span class="nt">deployment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash</span>
+<span class="w">    </span><span class="nt">deployment_script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deploy.sh</span>
+</code></pre></div>
+<p>Create your install script:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/bitops-plugins/install.sh</span>
+
+<span class="c1">#!/bin/bash</span>
+<span class="nb">set</span><span class="w"> </span>-e
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;In the install script for the sample-plugin&quot;</span>
+
+apk<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apk<span class="w"> </span>upgrade
+<span class="c1"># add your actual installers here</span>
+</code></pre></div>
+<h3 id="42-build-a-bitops-image">4.2. Build a BitOps image<a class="headerlink" href="#42-build-a-bitops-image" title="Permanent link">#</a></h3>
+<p>Create a new directory to hold your custom BitOps config. </p>
+<p>In this case we're putting it in our <code>bitops-plugins</code> parent dir, but you could put it anywhere.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">IMAGE_PATH</span><span class="o">=</span>/path/to/bitops-plugins/bitops-images/sample-plugin-image
+
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$IMAGE_PATH</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$IMAGE_PATH</span>
+</code></pre></div>
+<h4 id="421-add-the-bitops-config">4.2.1 Add the BitOps config<a class="headerlink" href="#421-add-the-bitops-config" title="Permanent link">#</a></h4>
+<p>First, add your BitOps level <code>bitops.config.yaml</code> and include a reference to your local file dependency via the <code>plugins</code> and  <code>deployments</code> sections:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/bitops-plugins/bitops-images/sample-plugin-image/bitops.config.yaml</span>
+<span class="c1"># Note that again these are docker-context paths, not local paths.</span>
+
+<span class="nt">bitops</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">plugins</span><span class="p">:</span><span class="w">    </span>
+<span class="w">    </span><span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file:///opt/bitops-local-plugins/sample-plugin</span>
+<span class="w">  </span><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sample-plugin</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> This is the same file as above (<code>/path/to/ops-repo/test-env/sample-plugin/bitops.config.yaml</code>), but we've updated the <code>plugins.sample-plugin</code> object to include a <code>file://</code> source.</p>
+<p><strong>Note:</strong> The path of the source is reserved by BitOps for locally developed plugins.  When you build a custom BitOps image, if there is a <code>plugins</code> directory as a sibling to the <code>Dockerfile</code>, BitOps will copy that file into the container at <code>/opt/bitops-local-plugins</code>.</p>
+</blockquote>
+<h4 id="422-add-your-dockerfile">4.2.2 Add your Dockerfile<a class="headerlink" href="#422-add-your-dockerfile" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c"># /path/to/bitops-plugins/bitops-images/sample-plugin-image/Dockerfile</span>
+
+<span class="k">FROM</span><span class="w"> </span><span class="s">bitovi/bitops:base</span>
+</code></pre></div>
+<h4 id="423-copy-plugin-code-to-the-bitops-directory">4.2.3 Copy plugin code to the BitOps directory<a class="headerlink" href="#423-copy-plugin-code-to-the-bitops-directory" title="Permanent link">#</a></h4>
+<p>In order for the build to have access to your local plugin files, they'll need to be in the same directory as the <code>Dockerfile</code>.  One quick way to do this is to set up a simple script to run prior to your docker build to clean and re-copy the plugin files:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /path/to/bitops-images/copy-plugins.sh</span>
+
+<span class="c1">#!/bin/bash</span>
+
+<span class="nv">PLUGIN_NAME</span><span class="o">=</span>sample-plugin
+<span class="nv">PLUGIN_ROOT_PATH</span><span class="o">=</span>/path/to/bitops-plugins
+
+<span class="nv">CUSTOM_IMAGE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PLUGIN_ROOT_PATH</span><span class="s2">/bitops-images/</span><span class="nv">$PLUGIN_NAME</span><span class="s2">-plugin-image&quot;</span>
+<span class="nv">PLUGIN_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PLUGIN_ROOT_PATH</span><span class="s2">/</span><span class="nv">$PLUGIN_NAME</span><span class="s2">&quot;</span>
+
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CUSTOM_IMAGE_PATH</span><span class="s2">/plugins&quot;</span>
+
+<span class="c1"># clean and copy to the image build dir</span>
+rm<span class="w"> </span>-rf<span class="w"> </span><span class="nv">$CUSTOM_IMAGE_PATH</span>/plugins/<span class="nv">$PLUGIN_NAME</span>
+cp<span class="w"> </span>-r<span class="w"> </span><span class="nv">$PLUGIN_PATH</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CUSTOM_IMAGE_PATH</span><span class="s2">/plugins/</span><span class="nv">$PLUGIN_NAME</span><span class="s2">&quot;</span>
+</code></pre></div>
+<h4 id="424-build-the-image">4.2.4 Build the image<a class="headerlink" href="#424-build-the-image" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code>./copy-plugins.sh
+
+docker<span class="w"> </span>build<span class="w"> </span>--tag<span class="w"> </span>bitovi/bitops:local-sample-plugin<span class="w"> </span>--no-cache<span class="w"> </span>.
+</code></pre></div>
+<h4 id="425-test-your-plugin">4.2.5. Test your plugin<a class="headerlink" href="#425-test-your-plugin" title="Permanent link">#</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nv">PATH_ROOT</span><span class="o">=</span>~/Bitovi/github/bitops-plugins<span class="w"> </span><span class="c1"># modify to your path here</span>
+
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--name<span class="w"> </span>bitops<span class="w"> </span><span class="se">\</span>
+-e<span class="w"> </span><span class="nv">BITOPS_ENVIRONMENT</span><span class="o">=</span><span class="s2">&quot;test-env&quot;</span><span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span><span class="nv">$PATH_ROOT</span>/sample-ops-repo:/opt/bitops_deployment<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span><span class="nv">$PATH_ROOT</span>/sample-plugin:/opt/bitops/scripts/installed_plugins/sample-plugin<span class="w"> </span><span class="se">\</span>
+bitops:local-sample-plugin
+</code></pre></div>
+<h2 id="5-fully-remote-development">5. Fully Remote Development<a class="headerlink" href="#5-fully-remote-development" title="Permanent link">#</a></h2>
+<p>An alternative to local plugin development is to host the plugin code remotely and specify the plugin via url instead of <code>file://</code> like:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">bitops</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">plugins</span><span class="p">:</span><span class="w">    </span>
+<span class="w">    </span><span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/your-org/sample-plugin</span>
+<span class="w">  </span><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">sample-plugin</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">plugin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sample-plugin</span>
+</code></pre></div>
+<p>Then, you can follow the steps in #5 above (without the <code>copy-plugins.sh</code> script).</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/bitovi/bitops" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://hub.docker.com/r/bitovi/bitops" target="_blank" rel="noopener" title="hub.docker.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1v59.4zm0-204.3h-66.1v60.7h66.1V32zm78.2 144.8H362v59.4h66.1v-59.4zm-156.3-72.1h-66.1v60.1h66.1v-60.1zm78.1 0h-66.1v60.1h66.1v-60.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1l-13.3-8.9zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm-78.1-72.1h-66.1v60.1h66.1v-60.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.bitovi.com/community/slack" target="_blank" rel="noopener" title="www.bitovi.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M94.12 315.1c0 25.9-21.16 47.06-47.06 47.06S0 341 0 315.1c0-25.9 21.16-47.06 47.06-47.06h47.06v47.06zm23.72 0c0-25.9 21.16-47.06 47.06-47.06s47.06 21.16 47.06 47.06v117.84c0 25.9-21.16 47.06-47.06 47.06s-47.06-21.16-47.06-47.06V315.1zm47.06-188.98c-25.9 0-47.06-21.16-47.06-47.06S139 32 164.9 32s47.06 21.16 47.06 47.06v47.06H164.9zm0 23.72c25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06H47.06C21.16 243.96 0 222.8 0 196.9s21.16-47.06 47.06-47.06H164.9zm188.98 47.06c0-25.9 21.16-47.06 47.06-47.06 25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06h-47.06V196.9zm-23.72 0c0 25.9-21.16 47.06-47.06 47.06-25.9 0-47.06-21.16-47.06-47.06V79.06c0-25.9 21.16-47.06 47.06-47.06 25.9 0 47.06 21.16 47.06 47.06V196.9zM283.1 385.88c25.9 0 47.06 21.16 47.06 47.06 0 25.9-21.16 47.06-47.06 47.06-25.9 0-47.06-21.16-47.06-47.06v-47.06h47.06zm0-23.72c-25.9 0-47.06-21.16-47.06-47.06 0-25.9 21.16-47.06 47.06-47.06h117.84c25.9 0 47.06 21.16 47.06 47.06 0 25.9-21.16 47.06-47.06 47.06H283.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "toc.integrate", "announce.dismiss"], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+        <script src="../../theme/js/hubspot.js"></script>
+      
+    
+  </body>
+</html>
