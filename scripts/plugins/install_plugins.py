@@ -149,7 +149,7 @@ def install_plugins():  # pylint: disable=too-many-locals,too-many-statements,to
         logger.info(f"plugin_configuration_path ==>[{plugin_configuration_path}]")
         try:
             with open(plugin_configuration_path, "r", encoding="utf8") as stream:
-                plugin_configuration_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+                plugin_configuration_yaml = yaml.load(stream, yaml.SafeLoader)
 
         except FileNotFoundError as e:
             msg, _ = get_doc("missing_optional_file")

@@ -32,7 +32,7 @@ def load_user_bitops_config() -> DefaultMunch:
             "bitops.config.yaml",
         )
         with open(config, "r", encoding="utf8") as file_handle:
-            return yaml.load(file_handle, Loader=yaml.FullLoader)
+            return yaml.load(file_handle, yaml.SafeLoader)
     except TypeError:
         # This is the case when the ENVIRONMENT variable is not set.
         # This happens during the container build
@@ -66,13 +66,13 @@ BITOPS_config_file = get_first(
     BITOPS_ENV_config_file, BITOPS_CL_args.bitops_config_file, "bitops.config.yaml"
 )
 with open(BITOPS_config_file, "r", encoding="utf8") as stream:
-    BITOPS_config_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+    BITOPS_config_yaml = yaml.load(stream, yaml.SafeLoader)
 
 # BitOps Schema File
 BITOPS_ENV_schema_file = os.environ.get("BITOPS_BUILD_SCHEMA_YAML")
 BITOPS_schema_file = get_first(BITOPS_ENV_schema_file, "bitops.schema.yaml")
 with open(BITOPS_schema_file, "r", encoding="utf8") as stream:
-    BITOPS_schema_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+    BITOPS_schema_yaml = yaml.load(stream, yaml.SafeLoader)
 
 # BitOps User configuration
 BITOPS_user_config_yaml = load_user_bitops_config()
