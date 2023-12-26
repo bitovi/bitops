@@ -6,6 +6,7 @@ import yaml
 
 from .settings import BITOPS_FAST_FAIL_MODE
 from .logging import logger, mask_message
+from security import safe_command
 
 
 def add_value_to_env(export_env, value):
@@ -60,8 +61,7 @@ def load_yaml(filename: str) -> Union[dict, None]:
 
 def run_cmd(command: Union[list, str]) -> subprocess.Popen:
     """Run a linux command and return Popen instance as a result"""
-    with subprocess.Popen(
-        command,
+    with safe_command.run(subprocess.Popen, command,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         universal_newlines=True,

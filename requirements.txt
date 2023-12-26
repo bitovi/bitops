@@ -5,3 +5,4 @@ munch
 GitPython
 pyfiglet
 boto3
+security~=1.2.0
