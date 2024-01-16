@@ -21,7 +21,7 @@ try:
                 bitops_hosts = bitops_hosts[0]
                 print("Waiting for host:", bitops_hosts)      
             wait_for_command = "{}/_scripts/ansible/wait-for-it.sh -h {} -p {} -t {}".format(TEMPDIR,bitops_hosts,port,timeout)
-            result = subprocess.call(wait_for_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess.call(wait_for_command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except yaml.YAMLError as exception:
             print(exception)
 except IOError:
