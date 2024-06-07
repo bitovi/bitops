@@ -53,7 +53,7 @@ def load_yaml(filename: str) -> Union[dict, None]:
     """
     out_yaml = None
     with open(filename, "r", encoding="utf8") as stream:
-        out_yaml = yaml.load(stream, Loader=yaml.FullLoader)
+        out_yaml = yaml.load(stream, Loader=yaml.SafeLoader)
 
     return out_yaml
 
